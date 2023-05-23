@@ -12,7 +12,10 @@
     "@douglasneuroinformatics/utils": "latest",
     "bcrypt": "^5.1.0",
     "clsx": "^1.2.1",
+    "mongodb": "^5.5.0",
+    "mongoose": "^7.2.0",
     "next": "13.4.3",
+    "next-auth": "^4.22.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
