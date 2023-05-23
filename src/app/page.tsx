@@ -1,7 +1,3 @@
 export default function Home() {
-  return (
-    <main>
-      <div>Data Bank</div>
-    </main>
-  );
+  return <div>Data Bank</div>;
 }
