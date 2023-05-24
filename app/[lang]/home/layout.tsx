@@ -3,7 +3,6 @@ import React from 'react';
 import { HomeIcon } from '@heroicons/react/24/solid';
 
 import { Sidebar } from '@/components/Sidebar';
-import { ClientTranslationsProvider } from '@/context/ClientTranslations';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
 import { type Locale } from '@/i18n-config';
 
@@ -26,9 +25,7 @@ export default async function Root({ children, params }: { children: React.React
         ]}
         title={t['meta.platformName']}
       />
-      <main>
-        <ClientTranslationsProvider t={t}>{children}</ClientTranslationsProvider>
-      </main>
+      <main>{children}</main>
     </div>
   );
 }
