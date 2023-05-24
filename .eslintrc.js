@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
   extends: ['@douglasneuroinformatics'],
   parserOptions: {
-    project: ['./tsconfig.json']
+    project: path.resolve(__dirname, 'tsconfig.json')
   },
   overrides: [
     {
