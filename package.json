@@ -22,7 +22,8 @@
     "next-auth": "^4.22.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "sharp": "^0.32.1"
   },
   "devDependencies": {
     "@douglasneuroinformatics/eslint-config": "^0.0.4",
