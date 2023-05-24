@@ -1,9 +1,8 @@
 import React from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
-import logo from '@/assets/logo.png';
+import { Branding } from './Branding';
 
 export interface SidebarProps {
   /** The title to display on the top of the sidebar */
@@ -20,12 +19,7 @@ export interface SidebarProps {
 export const Sidebar = ({ title, links }: SidebarProps) => {
   return (
     <div className="flex h-screen w-80 flex-col bg-slate-900 p-3 text-slate-300">
-      <div className="flex items-center p-1 md:p-2">
-        <Image alt="logo" className="mr-2 w-14 md:w-16" src={logo} />
-        <span className="text-sm uppercase leading-tight antialiased md:text-base" style={{ maxWidth: '7.5em' }}>
-          {title}
-        </span>
-      </div>
+      <Branding title={title} />
       <hr className="my-1" />
       <nav>
         {links.map((link) => (
