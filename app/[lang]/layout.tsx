@@ -5,9 +5,11 @@ import Image from 'next/image';
 
 import { clsx } from 'clsx';
 
-import '@/styles/index.css';
+import { ClientTranslationsProvider } from '@/context/ClientTranslations';
+import { useServerTranslations } from '@/hooks/useServerTranslations';
 import { type Locale, i18n } from '@/i18n-config';
 import logo from '@/public/logo.png';
+import '@/styles/index.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,7 +22,8 @@ export const metadata = {
   description: 'Minimum Viable Product'
 };
 
-export default function Root({ children, params }: { children: React.ReactNode; params: { lang: Locale } }) {
+export default async function Root({ children, params }: { children: React.ReactNode; params: { lang: Locale } }) {
+  const t = await useServerTranslations(params.lang);
   return (
     <html lang={params.lang}>
       <body className={clsx(inter.className, 'flex')}>
@@ -35,7 +38,9 @@ export default function Root({ children, params }: { children: React.ReactNode; 
           <nav></nav>
           <hr className="my-1 mt-auto" />
         </div>
-        {children}
+        <main>
+          <ClientTranslationsProvider t={t}>{children}</ClientTranslationsProvider>
+        </main>
       </body>
     </html>
   );

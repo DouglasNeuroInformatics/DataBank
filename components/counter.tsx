@@ -2,20 +2,17 @@
 
 import React, { useState } from 'react';
 
-export const Counter = ({
-  dictionary
-}: {
-  dictionary: {
-    increment: string;
-    decrement: string;
-  };
-}) => {
+import { useClientTranslations } from '@/hooks/useClientTranslations';
+
+export const Counter = () => {
   const [count, setCount] = useState(0);
+  const t = useClientTranslations();
+
   return (
     <p>
       This component is rendered on client:{' '}
-      <button onClick={() => setCount((n) => n - 1)}>{dictionary.decrement}</button> {count}{' '}
-      <button onClick={() => setCount((n) => n + 1)}>{dictionary.increment}</button>
+      <button onClick={() => setCount((n) => n - 1)}>{t.counter.decrement}</button> {count}{' '}
+      <button onClick={() => setCount((n) => n + 1)}>{t.counter.increment}</button>
     </p>
   );
 };
