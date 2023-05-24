@@ -13,13 +13,13 @@
     "@douglasneuroinformatics/utils": "latest",
     "@formatjs/intl-localematcher": "^0.2.32",
     "@heroicons/react": "^2.0.18",
+    "@prisma/client": "^4.14.1",
     "bcrypt": "^5.1.0",
     "clsx": "^1.2.1",
     "mongodb": "^5.5.0",
     "negotiator": "^0.6.3",
     "next": "13.4.3",
     "next-auth": "^4.22.1",
-    "prisma": "^4.14.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "server-only": "^0.0.1",
@@ -42,6 +42,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-react": "^7.32.2",
     "postcss": "8.4.23",
+    "prisma": "^4.14.1",
     "tailwindcss": "3.3.2",
     "typescript": "5.0.4"
   }
