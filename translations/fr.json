@@ -1,4 +1,5 @@
 {
+  "meta.platformName": "Banque de données",
   "server-component": {
     "welcome": "Bienvenue"
   },

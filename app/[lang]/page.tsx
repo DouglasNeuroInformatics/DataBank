@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Counter } from '@/components/Counter';
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { getTranslations } from '@/get-translations';

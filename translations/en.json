@@ -1,4 +1,5 @@
 {
+  "meta.platformName": "Data Bank",
   "server-component": {
     "welcome": "Welcome"
   },
