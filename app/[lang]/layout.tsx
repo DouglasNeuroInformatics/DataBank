@@ -5,9 +5,9 @@ import Image from 'next/image';
 
 import { clsx } from 'clsx';
 
-import logo from '@/assets/logo.png';
 import '@/styles/index.css';
 import { type Locale, i18n } from '@/i18n-config';
+import logo from '@/public/logo.png';
 
 const inter = Inter({ subsets: ['latin'] });
 

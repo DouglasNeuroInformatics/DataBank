@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Counter } from '@/components/Counter';
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
-import { getTranslations } from '@/get-translations';
+import { useServerTranslations } from '@/hooks/useServerTranslations';
 import { Locale } from '@/i18n-config';
 
 export default async function IndexPage({ params: { lang } }: { params: { lang: Locale } }) {
-  const t = await getTranslations(lang);
+  const t = await useServerTranslations(lang);
 
   return (
     <div>
