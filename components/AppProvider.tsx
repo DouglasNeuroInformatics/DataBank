@@ -15,7 +15,7 @@ export interface AppProviderProps {
 export const AppProvider = ({ children, translations }: AppProviderProps) => {
   return (
     <SessionProvider>
-      <ClientTranslationsContext.Provider value={translations}>{children}</ClientTranslationsContext.Provider>;
+      <ClientTranslationsContext.Provider value={translations}>{children}</ClientTranslationsContext.Provider>
     </SessionProvider>
   );
 };

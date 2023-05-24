@@ -36,6 +36,9 @@ const handler: unknown = NextAuth({
       }
     })
   ],
+  pages: {
+    signIn: '/en/login'
+  },
   session: {
     maxAge: 86400
   }
