@@ -1,5 +1,5 @@
-import Counter from '@/components/counter';
-import LocaleSwitcher from '@/components/locale-switcher';
+import { Counter } from '@/components/Counter';
+import { LocaleSwitcher } from '@/components/LocaleSwitcher';
 import { getTranslations } from '@/get-translations';
 import { Locale } from '@/i18n-config';
 
