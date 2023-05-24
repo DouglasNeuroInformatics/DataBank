@@ -1,3 +1,5 @@
+import { User } from '@prisma/client';
+import axios from 'axios';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -14,9 +16,13 @@ const handler: unknown = NextAuth({
         username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize(credentials, request) {
+      async authorize(credentials) {
+        const response = await axios.post<User>('/api/login', {
+          username: credentials?.username,
+          password: credentials?.password
+        });
         // Add logic here to look up the user from the credentials supplied
-        const user = { id: '1', name: 'J Smith', email: 'jsmith@example.com' };
+        const user = response.data;
 
         if (user) {
           // Any object returned will be saved in `user` property of the JWT
