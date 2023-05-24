@@ -1,9 +1,7 @@
-import { Locale } from '../../i18n-config';
-
-import Counter from './components/counter';
-import LocaleSwitcher from './components/locale-switcher';
-
+import Counter from '@/components/counter';
+import LocaleSwitcher from '@/components/locale-switcher';
 import { getTranslations } from '@/get-translations';
+import { Locale } from '@/i18n-config';
 
 export default async function IndexPage({ params: { lang } }: { params: { lang: Locale } }) {
   const t = await getTranslations(lang);
