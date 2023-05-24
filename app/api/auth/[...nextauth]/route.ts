@@ -35,7 +35,10 @@ const handler: unknown = NextAuth({
         }
       }
     })
-  ]
+  ],
+  session: {
+    maxAge: 86400
+  }
 });
 
 export { handler as GET, handler as POST };
