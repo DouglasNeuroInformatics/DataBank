@@ -12,6 +12,7 @@
     "@douglasneuroinformatics/react-components": "latest",
     "@douglasneuroinformatics/utils": "latest",
     "@formatjs/intl-localematcher": "^0.2.32",
+    "@heroicons/react": "^2.0.18",
     "bcrypt": "^5.1.0",
     "clsx": "^1.2.1",
     "mongodb": "^5.5.0",

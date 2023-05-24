@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Inter } from 'next/font/google';
 
+import { HomeIcon } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
 
 import { Sidebar } from '@/components/Sidebar';
@@ -9,7 +10,6 @@ import { ClientTranslationsProvider } from '@/context/ClientTranslations';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
 import { type Locale, i18n } from '@/i18n-config';
 import '@/styles/index.css';
-
 const inter = Inter({ subsets: ['latin'] });
 
 export function generateStaticParams() {
@@ -26,7 +26,16 @@ export default async function Root({ children, params }: { children: React.React
   return (
     <html lang={params.lang}>
       <body className={clsx(inter.className, 'flex')}>
-        <Sidebar />
+        <Sidebar
+          links={[
+            {
+              href: '/',
+              icon: <HomeIcon />,
+              label: 'Home'
+            }
+          ]}
+          title={t['meta.platformName']}
+        />
         <main>
           <ClientTranslationsProvider t={t}>{children}</ClientTranslationsProvider>
         </main>
