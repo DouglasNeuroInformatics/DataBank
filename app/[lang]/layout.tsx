@@ -2,12 +2,6 @@ import React from 'react';
 
 import { Inter } from 'next/font/google';
 
-import { HomeIcon } from '@heroicons/react/24/solid';
-import { clsx } from 'clsx';
-
-import { Sidebar } from '@/components/Sidebar';
-import { ClientTranslationsProvider } from '@/context/ClientTranslations';
-import { useServerTranslations } from '@/hooks/useServerTranslations';
 import { type Locale, i18n } from '@/i18n-config';
 import '@/styles/index.css';
 const inter = Inter({ subsets: ['latin'] });
@@ -21,25 +15,10 @@ export const metadata = {
   description: 'Minimum Viable Product'
 };
 
-export default async function Root({ children, params }: { children: React.ReactNode; params: { lang: Locale } }) {
-  const t = await useServerTranslations(params.lang);
+export default function Root({ children, params }: { children: React.ReactNode; params: { lang: Locale } }) {
   return (
     <html lang={params.lang}>
-      <body className={clsx(inter.className, 'flex')}>
-        <Sidebar
-          links={[
-            {
-              href: '/',
-              icon: <HomeIcon />,
-              label: 'Home'
-            }
-          ]}
-          title={t['meta.platformName']}
-        />
-        <main>
-          <ClientTranslationsProvider t={t}>{children}</ClientTranslationsProvider>
-        </main>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
