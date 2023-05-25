@@ -14,6 +14,26 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
+"@casl/ability@^6.3.3":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@casl/ability/-/ability-6.5.0.tgz#a151a7637886099b8ffe52a96601225004a5c157"
+  integrity sha512-3guc94ugr5ylZQIpJTLz0CDfwNi0mxKVECj1vJUPAvs+Lwunh/dcuUjwzc4MHM9D8JOYX0XUZMEPedpB3vIbOw==
+  dependencies:
+    "@ucast/mongo2js" "^1.3.0"
+
+"@douglasneuroinformatics/common@latest":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/common/-/common-0.1.0.tgz#133a0fc9bcfd3e1d56f24eba7c6b14ead0ac96c6"
+  integrity sha512-zZ2x9Ho58Ivh8B1lqpaQgtO/3+ZdZeu4Ha9dnK8I89YFh7hzEGM0On8kKWgZ0OeZ22qf1dweQQULB7YWcc/j4Q==
+  dependencies:
+    "@casl/ability" "^6.3.3"
+    "@douglasneuroinformatics/utils" latest
+    ajv "^8.12.0"
+    ajv-errors "^3.0.0"
+    ajv-formats "^2.1.1"
+    ts-arithmetic "^0.1.1"
+    type-fest "^3.10.0"
+
 "@douglasneuroinformatics/eslint-config@^0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/eslint-config/-/eslint-config-0.0.4.tgz#9577402335d4f1104292960e284c263414b4b528"
@@ -23,12 +43,13 @@
     eslint-config-prettier "^8.8.0"
     eslint-import-resolver-typescript "^3.5.5"
 
-"@douglasneuroinformatics/react-components@latest":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/react-components/-/react-components-0.1.1.tgz#85fd2494e472e62579c65fe35c69aa6dbbce5291"
-  integrity sha512-ZShjlnjnSmJYURgi3m1CkIrt29QMlnIJ7CVoCYFVzb1aAcQ5Bn+PGPbMJNp7+G+3Fczx4A3RwvwrbYtnxGC5mg==
+"@douglasneuroinformatics/react-components@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/react-components/-/react-components-0.2.0.tgz#d943fff0cda241ceef064713c2f4ce3f61f1c0a1"
+  integrity sha512-Xd+Z8pWT/EBF88T7P8o85w2cC8bbq7iGwZTZdyxI9vPPMlIRMA7F+SNzn4fwY9/EPaA3qynFysN9YGMl33+xRQ==
   dependencies:
-    "@douglasneuroinformatics/utils" "^0.1.4"
+    "@douglasneuroinformatics/common" latest
+    "@douglasneuroinformatics/utils" latest
     "@headlessui/react" "^1.7.14"
     "@heroicons/react" "^2.0.18"
     clsx "^1.2.1"
@@ -39,11 +60,6 @@
     prop-types "^15.8.1"
     react-i18next "^12.3.1"
     recharts "^2.6.2"
-
-"@douglasneuroinformatics/utils@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/utils/-/utils-0.1.4.tgz#b824c30622e451ddb73fc3cec399d25b98afd973"
-  integrity sha512-Y4Isz9ppTEggAIcfABjM9Wnl5qSdzRTTpfEsFpg8GkfyOYtkUPlcKaMbssigC1ZJmzcct2+KVIAF45FXSB77rA==
 
 "@douglasneuroinformatics/utils@latest":
   version "0.2.0"
@@ -528,6 +544,34 @@
     "@typescript-eslint/types" "5.59.7"
     eslint-visitor-keys "^3.3.0"
 
+"@ucast/core@^1.0.0", "@ucast/core@^1.4.1", "@ucast/core@^1.6.1":
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/@ucast/core/-/core-1.10.2.tgz#30b6b893479823265368e528b61b042f752f2c92"
+  integrity sha512-ons5CwXZ/51wrUPfoduC+cO7AS1/wRb0ybpQJ9RrssossDxVy4t49QxWoWgfBDvVKsz9VXzBk9z0wqTdZ+Cq8g==
+
+"@ucast/js@^3.0.0":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@ucast/js/-/js-3.0.3.tgz#6ff618a85bd95f1a8f46658cc663a1f798de327f"
+  integrity sha512-jBBqt57T5WagkAjqfCIIE5UYVdaXYgGkOFYv2+kjq2AVpZ2RIbwCo/TujJpDlwTVluUI+WpnRpoGU2tSGlEvFQ==
+  dependencies:
+    "@ucast/core" "^1.0.0"
+
+"@ucast/mongo2js@^1.3.0":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@ucast/mongo2js/-/mongo2js-1.3.4.tgz#579f9e5eb074cba54640d5c70c71c500580f3af3"
+  integrity sha512-ahazOr1HtelA5AC1KZ9x0UwPMqqimvfmtSm/PRRSeKKeE5G2SCqTgwiNzO7i9jS8zA3dzXpKVPpXMkcYLnyItA==
+  dependencies:
+    "@ucast/core" "^1.6.1"
+    "@ucast/js" "^3.0.0"
+    "@ucast/mongo" "^2.4.0"
+
+"@ucast/mongo@^2.4.0":
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/@ucast/mongo/-/mongo-2.4.3.tgz#92b1dd7c0ab06a907f2ab1422aa3027518ccc05e"
+  integrity sha512-XcI8LclrHWP83H+7H2anGCEeDq0n+12FU2mXCTz6/Tva9/9ddK/iacvvhCyW6cijAAOILmt0tWplRyRhVyZLsA==
+  dependencies:
+    "@ucast/core" "^1.4.1"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -550,6 +594,18 @@ agent-base@6:
   dependencies:
     debug "4"
 
+ajv-errors@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-3.0.0.tgz#e54f299f3a3d30fe144161e5f0d8d51196c527bc"
+  integrity sha512-V3wD15YHfHz6y0KdhYFjyy9vWtEVALT9UrxfN3zqlI6dMioHnJrqOYfyPKol3oqrnCM9uwkcdCwkJ0WUcbLMTQ==
+
+ajv-formats@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/ajv-formats/-/ajv-formats-2.1.1.tgz#6e669400659eb74973bbf2e33327180a0996b520"
+  integrity sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==
+  dependencies:
+    ajv "^8.0.0"
+
 ajv@^6.10.0, ajv@^6.12.4:
   version "6.12.6"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
@@ -558,6 +614,16 @@ ajv@^6.10.0, ajv@^6.12.4:
     fast-deep-equal "^3.1.1"
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
+
+ajv@^8.0.0, ajv@^8.12.0:
+  version "8.12.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.12.0.tgz#d1a0527323e22f53562c567c00991577dfbe19d1"
+  integrity sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
 ansi-regex@^5.0.1:
@@ -2130,6 +2196,11 @@ json-schema-traverse@^0.4.1:
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
   integrity sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==
 
+json-schema-traverse@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz#ae7bcb3656ab77a73ba5c49bf654f38e6b6860e2"
+  integrity sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==
+
 json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
@@ -2954,6 +3025,11 @@ regexp.prototype.flags@^1.4.3:
     define-properties "^1.2.0"
     functions-have-names "^1.2.3"
 
+require-from-string@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
+  integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
+
 resolve-from@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-4.0.0.tgz#4abcd852ad32dd7baabfe9b40e00a36db5f392e6"
@@ -3393,6 +3469,11 @@ tr46@~0.0.3:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
 
+ts-arithmetic@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/ts-arithmetic/-/ts-arithmetic-0.1.1.tgz#d99bc2b5c68ec00f5226ec93ff679af644cf78e0"
+  integrity sha512-3VqgsRgzaYfj+zKWn+7O66ifHwbOOnT2BoOrHwdEUBz7az0DetoZOS20+juNJh1klgzvWEi2Qxden41pomOUAQ==
+
 ts-interface-checker@^0.1.9:
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/ts-interface-checker/-/ts-interface-checker-0.1.13.tgz#784fd3d679722bc103b1b4b8030bcddb5db2a699"
@@ -3443,6 +3524,11 @@ type-fest@^0.20.2:
   version "0.20.2"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.20.2.tgz#1bf207f4b28f91583666cb5fbd327887301cd5f4"
   integrity sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==
+
+type-fest@^3.10.0:
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-3.11.0.tgz#e78ea6b50d6a6b1e4609035fb9ea8f1e3c328194"
+  integrity sha512-JaPw5U9ixP0XcpUbQoVSbxSDcK/K4nww20C3kjm9yE6cDRRhptU28AH60VWf9ltXmCrIfIbtt9J+2OUk2Uqiaw==
 
 typed-array-length@^1.0.4:
   version "1.0.4"
