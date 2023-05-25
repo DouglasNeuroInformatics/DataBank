@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { Menu, Transition } from '@headlessui/react';
@@ -7,7 +8,6 @@ import { ChevronDownIcon } from '@heroicons/react/24/solid';
 
 import { useClientTranslations } from '@/hooks/useClientTranslations';
 import { Locale, i18n } from '@/i18n-config';
-import Link from 'next/link';
 
 export const LanguageSwitcher = () => {
   const t = useClientTranslations();

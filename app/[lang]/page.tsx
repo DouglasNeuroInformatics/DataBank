@@ -2,14 +2,11 @@ import React from 'react';
 
 import Image from 'next/image';
 
-import { signIn } from 'next-auth/react';
-
 import landingImage from '@/assets/landing.jpg';
 import { LandingFooter } from '@/components/LandingFooter';
-import { Navbar } from '@/components/Navbar';
+import { LandingHeader } from '@/components/LandingHeader';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
 import { Locale } from '@/i18n-config';
-import { LandingHeader } from '@/components/LandingHeader';
 
 interface IndexPageProps {
   params: {
