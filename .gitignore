@@ -36,3 +36,5 @@ next-env.d.ts
 
 # Env
 .env
+.env.dev
+.env.prod
