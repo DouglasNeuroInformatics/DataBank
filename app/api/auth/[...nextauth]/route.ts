@@ -3,7 +3,8 @@ import axios from 'axios';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const handler: unknown = NextAuth({
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
