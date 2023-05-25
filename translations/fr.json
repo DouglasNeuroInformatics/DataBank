@@ -5,6 +5,7 @@
   "languages.fr": "Français",
   "password": "Mot de passe",
   "login": "Se connecter",
+  "createAccount": "Créer un compte",
   "unauthorizedError.message": "Informations d'identification invalides",
   "unauthorizedError.title": "Non autorisé",
   "username": "Nom d'utilisateur",

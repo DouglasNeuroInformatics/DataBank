@@ -5,6 +5,7 @@
   "languages.fr": "French",
   "password": "Password",
   "login": "Login",
+  "createAccount": "Create an Account",
   "unauthorizedError.message": "Invalid login credentials",
   "unauthorizedError.title": "Unauthorized",
   "username": "Username",
