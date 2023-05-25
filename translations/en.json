@@ -1,5 +1,6 @@
 {
   "meta.platformName": "Douglas Data Bank",
+  "form.errors.required": "This field is required",
   "server-component": {
     "welcome": "Welcome"
   },

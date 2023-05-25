@@ -1,7 +1,8 @@
-import { User } from '@prisma/client';
-import axios from 'axios';
+import bcrypt from 'bcrypt';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
+
+import prisma from '@/lib/prisma';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const handler = NextAuth({
@@ -18,22 +19,19 @@ const handler = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        const response = await axios.post<User>('/api/login', {
-          username: credentials?.username,
-          password: credentials?.password
+        const user = await prisma.user.findFirst({
+          where: {
+            username: credentials?.username
+          }
         });
-        // Add logic here to look up the user from the credentials supplied
-        const user = response.data;
 
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
+        const isAuthenticated =
+          user && credentials?.password && (await bcrypt.compare(credentials.password, user.password));
+
+        if (isAuthenticated) {
           return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
         }
+        return null;
       }
     })
   ],

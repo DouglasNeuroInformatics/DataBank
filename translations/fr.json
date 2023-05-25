@@ -1,5 +1,6 @@
 {
   "meta.platformName": "Banque de données de l'Institut Douglas",
+  "form.errors.required": "Ce champ est obligatoire",
   "server-component": {
     "welcome": "Bienvenue"
   },
