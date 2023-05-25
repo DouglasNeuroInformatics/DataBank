@@ -4,9 +4,12 @@ import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
+import { clsx } from 'clsx';
+
 import { AppProvider } from '@/components/AppProvider';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
 import { type Locale, i18n } from '@/i18n-config';
+
 import '@/styles/index.css';
 
 export function generateStaticParams() {
@@ -22,7 +25,7 @@ export default async function Root({ children, params }: { children: React.React
   const translations = await useServerTranslations(params.lang);
   return (
     <html lang={params.lang}>
-      <body className={inter.className}>
+      <body className={clsx(inter.className, 'text-slate-900')}>
         <AppProvider translations={translations}>{children}</AppProvider>
       </body>
     </html>

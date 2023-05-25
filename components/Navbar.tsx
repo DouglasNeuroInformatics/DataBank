@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 
 import { Branding } from './Branding';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 type NavLink = {
   kind?: 'link';
@@ -31,13 +32,9 @@ export const Navbar = ({ title, items }: NavbarProps) => {
       <nav className="flex flex-grow items-center justify-end gap-2">
         {items.map((item, i) =>
           item.kind === 'btn' ? (
-            <button
-              className="group p-2 font-medium text-gray-700 transition duration-300"
-              key={i}
-              onClick={item.onClick}
-            >
+            <button className="group p-2 font-medium transition duration-300" key={i} onClick={item.onClick}>
               {item.label}
-              <span className="mt-1 block h-0.5 max-w-0 bg-gray-700 transition-all duration-500 group-hover:max-w-full" />
+              <span className="block h-0.5 max-w-0 translate-y-1 bg-slate-900 transition-all duration-500 group-hover:max-w-full" />
             </button>
           ) : (
             <Link className="p-2 font-medium" href={item.href} key={item.href}>
@@ -45,6 +42,7 @@ export const Navbar = ({ title, items }: NavbarProps) => {
             </Link>
           )
         )}
+        <LanguageSwitcher />
       </nav>
     </header>
   );

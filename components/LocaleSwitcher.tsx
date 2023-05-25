@@ -3,7 +3,6 @@
 import React from 'react';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 
 import { i18n } from '@/i18n-config';
 
