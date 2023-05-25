@@ -15,50 +15,47 @@ type LoginFormData = {
 export const LoginForm = () => {
   const t = useClientTranslations();
   return (
-    <div>
-      <h3 className="">Login</h3>
-      <Form<LoginFormData>
-        content={{
+    <Form<LoginFormData>
+      content={{
+        username: {
+          kind: 'text',
+          label: t.username,
+          variant: 'short'
+        },
+        password: {
+          kind: 'text',
+          label: t.password,
+          variant: 'password'
+        }
+      }}
+      validationSchema={{
+        type: 'object',
+        properties: {
           username: {
-            kind: 'text',
-            label: 'Username',
-            variant: 'short'
+            type: 'string',
+            minLength: 1
           },
           password: {
-            kind: 'text',
-            label: 'Password',
-            variant: 'password'
+            type: 'string',
+            minLength: 1
           }
-        }}
-        validationSchema={{
-          type: 'object',
+        },
+        required: ['username', 'password'],
+        errorMessage: {
           properties: {
-            username: {
-              type: 'string',
-              minLength: 1
-            },
-            password: {
-              type: 'string',
-              minLength: 1
-            }
-          },
-          required: ['username', 'password'],
-          errorMessage: {
-            properties: {
-              username: t['form.errors.required'],
-              password: t['form.errors.required']
-            }
+            username: t['form.errors.required'],
+            password: t['form.errors.required']
           }
-        }}
-        onSubmit={(credentials) => {
-          void signIn('credentials', {
-            username: credentials.username,
-            password: credentials.password,
-            redirect: true,
-            callbackUrl: '/home'
-          });
-        }}
-      />
-    </div>
+        }
+      }}
+      onSubmit={(credentials) => {
+        void signIn('credentials', {
+          username: credentials.username,
+          password: credentials.password,
+          redirect: true,
+          callbackUrl: '/home'
+        });
+      }}
+    />
   );
 };

@@ -1,6 +1,13 @@
 {
   "meta.platformName": "Douglas Data Bank",
   "form.errors.required": "This field is required",
+  "languages.en": "English",
+  "languages.fr": "French",
+  "password": "Password",
+  "login": "Login",
+  "unauthorizedError.message": "Invalid login credentials",
+  "unauthorizedError.title": "Unauthorized",
+  "username": "Username",
   "server-component": {
     "welcome": "Welcome"
   },

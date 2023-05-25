@@ -1,6 +1,13 @@
 {
   "meta.platformName": "Banque de données de l'Institut Douglas",
   "form.errors.required": "Ce champ est obligatoire",
+  "languages.en": "Anglais",
+  "languages.fr": "Français",
+  "password": "Mot de passe",
+  "login": "Se connecter",
+  "unauthorizedError.message": "Informations d'identification invalides",
+  "unauthorizedError.title": "Non autorisé",
+  "username": "Nom d'utilisateur",
   "server-component": {
     "welcome": "Bienvenue"
   },
