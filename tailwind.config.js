@@ -1,16 +1,10 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const { createConfig } = require('@douglasneuroinformatics/react-components/tailwind.utils.cjs');
+
+export default createConfig({
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}'
-  ],
-  theme: {
-    extend: {
-      container: {
-        center: true
-      }
-    }
-  },
-  plugins: []
-};
+  ]
+});
