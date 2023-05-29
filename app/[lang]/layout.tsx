@@ -25,7 +25,7 @@ export default async function Root({ children, params }: { children: React.React
   const translations = await useServerTranslations(params.lang);
   return (
     <html lang={params.lang}>
-      <body className={clsx(inter.className, 'text-slate-900')}>
+      <body className={clsx(inter.className, 'text-slate-900 dark:bg-slate-900 dark:text-white')}>
         <AppProvider translations={translations}>{children}</AppProvider>
       </body>
     </html>
