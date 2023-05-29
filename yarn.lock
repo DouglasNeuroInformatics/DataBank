@@ -43,10 +43,10 @@
     eslint-config-prettier "^8.8.0"
     eslint-import-resolver-typescript "^3.5.5"
 
-"@douglasneuroinformatics/react-components@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/react-components/-/react-components-0.3.0.tgz#b36af2cda563d12be4c434706dba369090aaf44d"
-  integrity sha512-V3GWB9V4oj+Gx+s3SdginMp0cOvGpewRCBsSvAC35YofOY7f2V3WuzHT6XlxwDMca0SDsuJZLMz6fxtQwgl1uA==
+"@douglasneuroinformatics/react-components@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/react-components/-/react-components-0.3.1.tgz#5f1327cfeb3a215a9cb62020eb9f248047d25ba6"
+  integrity sha512-wDWLgbn8iposUCDe/WZb0tofgH1ADbALqkacv3GkkUFzwrDvrqinhUEOuHvLhC8aKFLhkEi0w9QMWsQne4C5ZA==
   dependencies:
     "@douglasneuroinformatics/common" latest
     "@douglasneuroinformatics/utils" latest

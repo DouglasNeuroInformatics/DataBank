@@ -7,6 +7,7 @@ import { Bars3Icon } from '@heroicons/react/24/solid';
 
 import { Branding } from './Branding';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ThemeSwitcher } from './ThemeToggle';
 
 type NavLink = {
   kind?: 'link';
@@ -52,6 +53,7 @@ export const Navbar = ({ title, items }: NavbarProps) => {
             )
           )}
           <LanguageSwitcher />
+          <ThemeSwitcher />
         </nav>
       )}
     </header>
