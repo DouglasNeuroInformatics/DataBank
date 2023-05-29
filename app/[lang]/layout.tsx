@@ -22,6 +22,8 @@ export const metadata = {
   description: 'Minimum Viable Product'
 };
 
+export const dynamic = 'force-static';
+
 export default async function Root({ children, params }: { children: React.ReactNode; params: { lang: Locale } }) {
   const translations = await useServerTranslations(params.lang);
   const cookieStore = cookies();

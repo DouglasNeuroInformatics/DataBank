@@ -8,6 +8,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/solid';
 
 import { useClientTranslations } from '@/hooks/useClientTranslations';
 import { Locale, i18n } from '@/i18n-config';
+import { useRedirectedPathname } from '@/hooks/useRedirectedPathname';
 
 export const LanguageSwitcher = () => {
   const t = useClientTranslations();
@@ -15,14 +16,7 @@ export const LanguageSwitcher = () => {
 
   const resolvedLanguage = pathname.split('/')[1] as Locale;
 
-  const redirectedPathName = (locale: string) => {
-    if (!pathname) {
-      return '/';
-    }
-    const segments = pathname.split('/');
-    segments[1] = locale;
-    return segments.join('/');
-  };
+  const redirectedPathName = useRedirectedPathname();
 
   return (
     <Menu as="div" className="relative">
