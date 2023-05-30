@@ -2,8 +2,6 @@
 
 import React from 'react';
 
-import { SessionProvider } from 'next-auth/react';
-
 import { ClientTranslationsContext } from '@/context/ClientTranslations';
 import { Translations } from '@/typings/translations';
 
@@ -13,9 +11,5 @@ export interface AppProviderProps {
 }
 
 export const AppProvider = ({ children, translations }: AppProviderProps) => {
-  return (
-    <SessionProvider>
-      <ClientTranslationsContext.Provider value={translations}>{children}</ClientTranslationsContext.Provider>
-    </SessionProvider>
-  );
+  return <ClientTranslationsContext.Provider value={translations}>{children}</ClientTranslationsContext.Provider>;
 };
