@@ -10,12 +10,12 @@ import { Locale } from '@/lib/i18n';
 
 interface IndexPageProps {
   params: {
-    lang: Locale;
+    locale: Locale;
   };
 }
 
 export default async function IndexPage({ params }: IndexPageProps) {
-  const t = await useServerTranslations(params.lang);
+  const t = await useServerTranslations(params.locale);
   return (
     <div className="container flex min-h-screen flex-col">
       <LandingHeader />

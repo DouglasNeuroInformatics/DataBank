@@ -24,12 +24,12 @@ export const metadata = {
 
 export const dynamic = 'force-static';
 
-export default async function Root({ children, params }: { children: React.ReactNode; params: { lang: Locale } }) {
-  const translations = await useServerTranslations(params.lang);
+export default async function Root({ children, params }: { children: React.ReactNode; params: { locale: Locale } }) {
+  const translations = await useServerTranslations(params.locale);
   const cookieStore = cookies();
   const theme = cookieStore.get('theme');
   return (
-    <html className={theme?.value} lang={params.lang}>
+    <html className={theme?.value} lang={params.locale}>
       <body className={clsx(inter.className, 'text-slate-900 dark:bg-slate-900 dark:text-white')}>
         <AppProvider translations={translations}>{children}</AppProvider>
       </body>

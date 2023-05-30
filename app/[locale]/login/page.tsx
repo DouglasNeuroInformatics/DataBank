@@ -10,12 +10,12 @@ import { LoginFooter } from '@/components/LoginFooter';
 
 interface LoginPageProps {
   params: {
-    lang: Locale;
+    locale: Locale;
   };
 }
 
 export default async function LoginPage({ params }: LoginPageProps) {
-  const t = await useServerTranslations(params.lang);
+  const t = await useServerTranslations(params.locale);
   return (
     <div className="flex h-screen items-center justify-center bg-slate-100">
       <div className="flex flex-col items-center rounded-lg bg-slate-50 px-12 py-8 sm:w-[24rem]">

@@ -11,8 +11,8 @@ export const metadata = {
   description: 'Minimum Viable Product'
 };
 
-export default async function Root({ children, params }: { children: React.ReactNode; params: { lang: Locale } }) {
-  const t = await useServerTranslations(params.lang);
+export default async function Root({ children, params }: { children: React.ReactNode; params: { locale: Locale } }) {
+  const t = await useServerTranslations(params.locale);
   return (
     <div className="flex">
       <Sidebar
