@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 import { clsx } from 'clsx';
 
-import { AppProvider } from '@/components/AppProvider';
+import { ClientTranslationsProvider } from '@/context/ClientTranslations';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
 import { type Locale, i18n } from '@/lib/i18n';
 
@@ -31,7 +31,9 @@ export default async function Root({ children, params }: { children: React.React
   return (
     <html className={theme?.value} lang={params.locale}>
       <body className={clsx(inter.className, 'text-slate-900 dark:bg-slate-900 dark:text-white')}>
-        <AppProvider translations={translations}>{children}</AppProvider>
+        <ClientTranslationsProvider translations={translations}>
+          {children}
+        </ClientTranslationsProvider>
       </body>
     </html>
   );

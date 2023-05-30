@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
@@ -9,19 +8,18 @@ import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
 import { Locale, i18n } from '@/lib/i18n';
 import { useRedirectedPathname } from '@/hooks/useRedirectedPathname';
+import { useLocale } from '@/hooks/useLocale';
 
 export const LanguageSwitcher = () => {
   const t = useClientTranslations();
-  const pathname = usePathname();
-
-  const resolvedLanguage = pathname.split('/')[1] as Locale;
+  const locale = useLocale();
 
   const redirectedPathName = useRedirectedPathname();
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button className="flex items-center font-medium">
-        <span>{t[`languages.${resolvedLanguage}`]}</span>
+      <Menu.Button className="flex items-center">
+        <span className="uppercase">{locale}</span>
         <ChevronDownIcon className="ml-1" height={16} width={16} />
       </Menu.Button>
       <Transition
@@ -36,8 +34,8 @@ export const LanguageSwitcher = () => {
         <Menu.Items className="absolute right-0 mt-2 flex min-w-full origin-top-right flex-col rounded-md border">
           {i18n.locales.map((locale) => (
             <Menu.Item key={locale}>
-              <Link className="px-3 py-2 hover:bg-slate-100" href={redirectedPathName(locale)}>
-                {t[`languages.${locale}`]}
+              <Link className="px-3 py-2 uppercase hover:bg-slate-100" href={redirectedPathName(locale)}>
+                {locale}
               </Link>
             </Menu.Item>
           ))}

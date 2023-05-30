@@ -2,8 +2,6 @@
   "meta.platformName": "Douglas Data Bank",
   "meta.organization": "Douglas Neuroinformatics Platform",
   "form.errors.required": "This field is required",
-  "languages.en": "English",
-  "languages.fr": "Français",
   "password": "Password",
   "login": "Login",
   "createAccount": "Create an Account",
@@ -11,11 +9,8 @@
   "unauthorizedError.message": "Invalid login credentials",
   "unauthorizedError.title": "Unauthorized",
   "username": "Username",
-  "server-component": {
-    "welcome": "Welcome"
-  },
-  "counter": {
-    "increment": "Increment",
-    "decrement": "Decrement"
+  "nav": {
+    "login": "Login",
+    "createAccount": "Create an Account"
   }
 }

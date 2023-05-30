@@ -1,3 +1,3 @@
-import type translations from './translations/en.json';
+import translations from '@/translations/en.json';
 
 export declare type Translations = typeof translations;

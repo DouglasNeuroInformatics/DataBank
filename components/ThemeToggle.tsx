@@ -1,10 +1,8 @@
-'use client';
+import React from 'react';
 
-import React, { useEffect, useState } from 'react';
+import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 
-import { SunIcon } from '@heroicons/react/24/outline';
-
-export const ThemeSwitcher = () => {
+export const ThemeToggle = () => {
   const handleToggle = () => {
     const root = document.querySelector('html');
     if (root) {
@@ -15,7 +13,8 @@ export const ThemeSwitcher = () => {
 
   return (
     <button type="button" onClick={handleToggle}>
-      <SunIcon height={24} width={24} />
+      <MoonIcon height={24} width={24} />
+      {/* {theme === 'dark' ? <SunIcon height={24} width={24} /> : <MoonIcon height={24} width={24} />} */}
     </button>
   );
 };

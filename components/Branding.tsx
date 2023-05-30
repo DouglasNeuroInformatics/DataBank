@@ -13,10 +13,10 @@ export interface BrandingProps {
 /** Link to the landing page with the platform name and logo */
 export const Branding = ({ title }: BrandingProps) => {
   return (
-    <Link className="flex items-center p-1 md:p-2" href="/">
-      <Image alt="logo" className="mr-2 w-14 md:w-16" src={logo} />
+    <Link className="flex items-center" href="/">
+      <Image alt="logo" height={64} src={logo} width={64} />
       {title && (
-        <span className="font-semibold lg:text-lg whitespace-nowrap" style={{ maxWidth: '7.5em' }}>
+        <span className="whitespace-nowrap font-semibold lg:text-lg" style={{ maxWidth: '7.5em' }}>
           {title}
         </span>
       )}
