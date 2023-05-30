@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "clean": "fd -H -I --prune \".next|node_modules\" --exec rm -rf",
     "dev": "next dev",
     "lint": "next lint",
     "postinstall": "prisma generate",
