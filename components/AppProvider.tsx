@@ -5,7 +5,7 @@ import React from 'react';
 import { SessionProvider } from 'next-auth/react';
 
 import { ClientTranslationsContext } from '@/context/ClientTranslations';
-import { Translations } from '@/translations';
+import { Translations } from '@/typings/translations';
 
 export interface AppProviderProps {
   children: React.ReactNode;
