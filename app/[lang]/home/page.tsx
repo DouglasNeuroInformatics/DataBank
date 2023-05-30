@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Counter } from '@/components/Counter';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
-import { Locale } from '@/i18n-config';
+import { Locale } from '@/lib/i18n';
 
 export default async function IndexPage({ params: { lang } }: { params: { lang: Locale } }) {
   const t = await useServerTranslations(lang);

@@ -9,7 +9,7 @@ import { clsx } from 'clsx';
 
 import { AppProvider } from '@/components/AppProvider';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
-import { type Locale, i18n } from '@/i18n-config';
+import { type Locale, i18n } from '@/lib/i18n';
 
 import '@/styles/index.css';
 

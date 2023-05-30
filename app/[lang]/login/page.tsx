@@ -5,7 +5,7 @@ import Image from 'next/image';
 import logo from '@/assets/logo.png';
 import { LoginForm } from '@/components/LoginForm';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
-import { Locale } from '@/i18n-config';
+import { Locale } from '@/lib/i18n';
 import { LoginFooter } from '@/components/LoginFooter';
 
 interface LoginPageProps {

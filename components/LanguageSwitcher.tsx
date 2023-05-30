@@ -7,7 +7,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 
 import { useClientTranslations } from '@/hooks/useClientTranslations';
-import { Locale, i18n } from '@/i18n-config';
+import { Locale, i18n } from '@/lib/i18n';
 import { useRedirectedPathname } from '@/hooks/useRedirectedPathname';
 
 export const LanguageSwitcher = () => {

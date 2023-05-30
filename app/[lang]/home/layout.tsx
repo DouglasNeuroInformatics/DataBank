@@ -4,7 +4,7 @@ import { HomeIcon } from '@heroicons/react/24/solid';
 
 import { Sidebar } from '@/components/Sidebar';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
-import { type Locale } from '@/i18n-config';
+import { type Locale } from '@/lib/i18n';
 
 export const metadata = {
   title: 'Data Bank',

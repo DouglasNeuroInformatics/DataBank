@@ -5,7 +5,7 @@ import React from 'react';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
 import { usePathname } from 'next/navigation';
 
-import { Locale } from '@/i18n-config';
+import { Locale } from '@/lib/i18n';
 import { useRedirectedPathname } from '@/hooks/useRedirectedPathname';
 import Link from 'next/link';
 

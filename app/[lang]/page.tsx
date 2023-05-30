@@ -6,7 +6,7 @@ import landingImage from '@/assets/landing.jpg';
 import { LandingFooter } from '@/components/LandingFooter';
 import { LandingHeader } from '@/components/LandingHeader';
 import { useServerTranslations } from '@/hooks/useServerTranslations';
-import { Locale } from '@/i18n-config';
+import { Locale } from '@/lib/i18n';
 
 interface IndexPageProps {
   params: {
