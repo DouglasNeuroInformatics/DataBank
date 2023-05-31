@@ -6,6 +6,6 @@ const translations = {
   fr: () => import('@/translations/fr.json').then((module) => module.default)
 };
 
-export function useServerTranslations(locale: Locale) {
+export async function useServerTranslations(locale: Locale) {
   return translations[locale]();
 }
