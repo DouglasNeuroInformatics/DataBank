@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 
 import Link from 'next/link';
 
@@ -19,6 +19,7 @@ interface LanguageSwitcherProps {
 }
 
 export const LanguageSwitcher = ({ dropdownDirection }: LanguageSwitcherProps) => {
+  const ref = useRef<HTMLElement>(null);
   const t = useClientTranslations();
   const locale = useLocale();
 
@@ -43,7 +44,7 @@ export const LanguageSwitcher = ({ dropdownDirection }: LanguageSwitcherProps) =
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 mt-2 flex min-w-full flex-col rounded-md border">
+        <Menu.Items className="absolute bottom-6 flex min-w-full flex-col rounded-md border bg-slate-100">
           {i18n.locales.map((locale) => (
             <Menu.Item key={locale}>
               <Link className="px-3 py-2 uppercase hover:bg-slate-100" href={redirectedPathName(locale)}>
@@ -52,6 +53,15 @@ export const LanguageSwitcher = ({ dropdownDirection }: LanguageSwitcherProps) =
             </Menu.Item>
           ))}
         </Menu.Items>
+        {/* <Menu.Items className="absolute right-0 mt-2 flex min-w-full flex-col rounded-md border">
+          {i18n.locales.map((locale) => (
+            <Menu.Item key={locale}>
+              <Link className="px-3 py-2 uppercase hover:bg-slate-100" href={redirectedPathName(locale)}>
+                {locale}
+              </Link>
+            </Menu.Item>
+          ))}
+        </Menu.Items> */}
       </Transition>
     </Menu>
   );

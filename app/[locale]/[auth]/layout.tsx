@@ -1,18 +1,17 @@
 import React from 'react';
 
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
-
 interface AuthLayoutProps {
   children: React.ReactNode;
+  params: any;
 }
 
-const AuthLayout = ({ children }: AuthLayoutProps) => (
-  <div className="flex h-screen w-screen flex-col items-center justify-center">
-    {children}
-    <div>
-      <LanguageSwitcher dropdownDirection="up" />
+const AuthLayout = ({ children, params }: AuthLayoutProps) => {
+  console.log(params);
+  return (
+    <div className="flex h-screen w-screen flex-col items-center justify-center">
+      <div className="mx-auto max-w-md">{children}</div>
     </div>
-  </div>
-);
+  );
+};
 
 export default AuthLayout;

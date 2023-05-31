@@ -24,10 +24,8 @@ export default async function Root({ children, params }: { children: React.React
   const theme = cookieStore.get('theme');
   return (
     <html className={theme?.value} lang={params.locale}>
-      <body className={clsx(inter.className, 'text-slate-900 dark:bg-slate-900 dark:text-white')}>
-        <ClientTranslationsProvider translations={translations}>
-          {children}
-        </ClientTranslationsProvider>
+      <body className={clsx(inter.className, 'bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-white')}>
+        <ClientTranslationsProvider translations={translations}>{children}</ClientTranslationsProvider>
       </body>
     </html>
   );
