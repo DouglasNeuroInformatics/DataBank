@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Form } from '@/components/Form';
 import { Locale } from '@/lib/i18n';
 import { getTranslations } from '@/utils/get-translations';
 
@@ -15,19 +16,11 @@ export default async function LoginPage({ params }: LoginPageProps) {
   const t = await getTranslations(params.locale);
   return (
     <div className="flex h-screen w-screen items-center justify-center">
-      <form action={handleLogin} className="flex max-w-md flex-col gap-3 border p-5">
-        <div className="flex flex-col">
-          <label htmlFor="username">{t.username}</label>
-          <input className="appearance-none rounded-md border px-3 py-2 shadow" name="username" type="text" />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="password">{t.password}</label>
-          <input className="appearance-none rounded-md border px-3 py-2 shadow" name="password" type="password" />
-        </div>
-        <button className="border" type="submit">
-          Login
-        </button>
-      </form>
+      <Form action={handleLogin}>
+        <Form.TextField name="username" label={t.username} type="text" />
+        <Form.TextField name="password" label={t.password} type="password" />
+        <Form.SubmitButton label={t.login} />
+      </Form>
     </div>
   );
 }
