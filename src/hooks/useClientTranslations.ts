@@ -1,3 +1,5 @@
+import 'client-only';
+
 import { useContext } from 'react';
 
 import { ClientTranslationsContext } from '@/context/ClientTranslations';

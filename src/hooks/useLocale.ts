@@ -1,3 +1,5 @@
+import 'client-only';
+
 import { usePathname } from 'next/navigation';
 
 import { type Locale } from '@/lib/i18n';
