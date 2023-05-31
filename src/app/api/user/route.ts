@@ -32,10 +32,10 @@ export async function POST(request: Request) {
     const { id, firstName, lastName } = await db.user.create({ data: { email, hashedPassword, ...rest } });
     return NextResponse.json({ id, firstName, lastName, email, password });
   } catch (error) {
+    console.error(error);
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error }, { status: 400 });
     }
-    console.error(error);
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }

@@ -14,8 +14,23 @@ type LoginCredentials = {
   password: string;
 };
 
-const CreateAccountPage = () => {
+const LoginPage = () => {
   const t = useClientTranslations();
+
+  const login = async (data: LoginCredentials) => {
+    const response = await fetch('/api/auth/login', {
+      body: JSON.stringify(data),
+      method: 'POST'
+    });
+    if (!response.ok) {
+      // eslint-disable-next-line no-alert
+      alert(`${response.status}: ${response.statusText}`);
+      return;
+    }
+    // eslint-disable-next-line no-alert
+    alert('Success!');
+  };
+
   return (
     <div className="flex w-full flex-col gap-4 rounded-lg bg-white px-6 py-8 shadow-xl ring-1 ring-slate-900/5 dark:bg-slate-800 md:p-8">
       <div className="mb-3 flex flex-col items-center text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
@@ -41,9 +56,7 @@ const CreateAccountPage = () => {
           },
           required: ['email', 'password']
         }}
-        onSubmit={(data) => {
-          alert(JSON.stringify(data));
-        }}
+        onSubmit={(data) => void login(data)}
       />
       <div className="flex w-full justify-between">
         <LanguageSwitcher dropdownDirection="up" />
@@ -53,4 +66,4 @@ const CreateAccountPage = () => {
   );
 };
 
-export default CreateAccountPage;
+export default LoginPage;
