@@ -23,7 +23,7 @@ export const LanguageSwitcher = ({ dropdownDirection }: LanguageSwitcherProps) =
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button className="flex items-center">
+      <Menu.Button className="flex items-center justify-center border p-2 dark:border-slate-600">
         <span className="uppercase">{locale}</span>
         <ChevronDownIcon
           className={clsx('ml-1', { 'rotate-180': dropdownDirection === 'up' })}
@@ -42,7 +42,7 @@ export const LanguageSwitcher = ({ dropdownDirection }: LanguageSwitcherProps) =
       >
         <Menu.Items
           className={clsx('absolute flex min-w-full flex-col rounded-md border bg-slate-100 dark:bg-slate-900', {
-            'bottom-6': dropdownDirection === 'up',
+            'bottom-12': dropdownDirection === 'up',
             'right-0 mt-2 origin-right': dropdownDirection !== 'up'
           })}
         >

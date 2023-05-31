@@ -17,7 +17,7 @@ export const ThemeToggle = () => {
   };
 
   return (
-    <button type="button" onClick={handleToggle}>
+    <button className="rounded-full p-2 transition-transform hover:bg-slate-200 dark:hover:bg-slate-700" type="button" onClick={handleToggle}>
       {theme === 'dark' ? <SunIcon height={24} width={24} /> : <MoonIcon height={24} width={24} />}
     </button>
   );
