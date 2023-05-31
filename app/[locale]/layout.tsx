@@ -13,16 +13,10 @@ import { getTranslations } from '@/utils/get-translations';
 
 import '@/styles/index.css';
 
-export function generateStaticParams() {
-  return i18n.locales.map((locale) => ({ lang: locale }));
-}
-
 export const metadata = {
   title: 'Data Bank',
   description: 'Minimum Viable Product'
 };
-
-export const dynamic = 'force-static';
 
 export default async function Root({ children, params }: { children: React.ReactNode; params: { locale: Locale } }) {
   const translations = await getTranslations(params.locale);
