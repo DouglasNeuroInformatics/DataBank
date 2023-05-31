@@ -5,8 +5,8 @@ import React from 'react';
 import Link from 'next/link';
 
 import { Branding } from './Branding';
-import { ThemeToggle } from './ThemeToggle';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { ThemeToggle } from './ThemeToggle';
 
 interface NavLink {
   href: string;

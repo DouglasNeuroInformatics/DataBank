@@ -1,6 +1,6 @@
 import { usePathname } from 'next/navigation';
 
-import { Locale } from '@/lib/i18n';
+import { type Locale } from '@/lib/i18n';
 
 export function useRedirectedPathname() {
   const pathname = usePathname();

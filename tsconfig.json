@@ -11,7 +11,8 @@
     "moduleResolution": "node",
     "noEmit": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"],
+      "@/typings/*": ["./typings/*"]
     },
     "plugins": [
       {
@@ -25,5 +26,5 @@
     "typeRoots": ["node_modules/@types", "typings"]
   },
   "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next.config.js", ".next/types/**/*.ts"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]
 }
