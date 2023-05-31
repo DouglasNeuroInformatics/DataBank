@@ -1,13 +1,16 @@
 import { type Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';
+import { type Simplify } from 'type-fest';
 import { z } from 'zod';
 
 import db from '@/lib/prisma';
 
-type CreateUserData = Omit<Prisma.UserCreateInput, 'hashedPassword'> & {
-  password: string;
-};
+export type CreateUserData = Simplify<
+  Omit<Prisma.UserCreateInput, 'id' | 'hashedPassword' | 'emailVerified'> & {
+    password: string;
+  }
+>;
 
 const createUserSchema: z.ZodType<CreateUserData> = z.object({
   firstName: z.string().min(1),
