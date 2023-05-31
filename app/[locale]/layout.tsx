@@ -8,8 +8,8 @@ const inter = Inter({ subsets: ['latin'] });
 import { clsx } from 'clsx';
 
 import { ClientTranslationsProvider } from '@/context/ClientTranslations';
-import { useServerTranslations } from '@/hooks/useServerTranslations';
 import { type Locale, i18n } from '@/lib/i18n';
+import { getTranslations } from '@/utils/get-translations';
 
 import '@/styles/index.css';
 
@@ -25,7 +25,7 @@ export const metadata = {
 export const dynamic = 'force-static';
 
 export default async function Root({ children, params }: { children: React.ReactNode; params: { locale: Locale } }) {
-  const translations = await useServerTranslations(params.locale);
+  const translations = await getTranslations(params.locale);
   const cookieStore = cookies();
   const theme = cookieStore.get('theme');
   return (

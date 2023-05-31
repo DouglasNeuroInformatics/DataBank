@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { useServerTranslations } from '@/hooks/useServerTranslations';
-import { Locale } from '@/lib/i18n';
 import { Navbar } from '@/components/Navbar';
+import { Locale } from '@/lib/i18n';
+import { getTranslations } from '@/utils/get-translations';
 
 interface IndexPageProps {
   params: {
@@ -11,7 +11,7 @@ interface IndexPageProps {
 }
 
 export default async function IndexPage({ params }: IndexPageProps) {
-  const t = await useServerTranslations(params.locale);
+  const t = await getTranslations(params.locale);
   return (
     <React.Fragment>
       <header>
