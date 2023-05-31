@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server';
 
 import { i18n } from './lib/i18n';
 
-const PUBLIC_ASSETS = ['landing.jpg', 'logo.png'];
+const STATIC_FILE_EXTENSIONS = ['jpg', 'png', 'svg'];
 
 function getLocale(request: NextRequest): string | undefined {
   // Negotiator expects plain object so we need to transform headers
@@ -22,8 +22,10 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
-  if (PUBLIC_ASSETS.includes(pathname)) {
-    return;
+  for (const extension of STATIC_FILE_EXTENSIONS) {
+    if (pathname.endsWith(`.${extension}`)) {
+      return;
+    }
   }
 
   // Check if there is any supported locale in the pathname
@@ -47,6 +49,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Matcher ignoring `/_next/` and `/api/`
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
 };
