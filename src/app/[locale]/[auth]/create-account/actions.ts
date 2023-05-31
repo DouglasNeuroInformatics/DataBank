@@ -15,7 +15,7 @@ const createUserDataSchema = z.object({
 
 type CreateUserData = z.infer<typeof createUserDataSchema>;
 
-export async function handleCreateAccount(formData: FormData) {
+export async function createAccount(formData: FormData) {
   let data: CreateUserData;
   try {
     data = await createUserDataSchema.parseAsync(Object.fromEntries(formData.entries()));

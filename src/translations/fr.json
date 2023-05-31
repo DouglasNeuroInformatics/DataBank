@@ -13,5 +13,8 @@
   "nav": {
     "login": "Se connecter",
     "createAccount": "Créer un compte"
-  }
+  },
+  "firstName": "Prénom",
+  "lastName": "Nom de famille",
+  "submit": "Soumettre"
 }

@@ -13,5 +13,8 @@
   "nav": {
     "login": "Login",
     "createAccount": "Create an Account"
-  }
+  },
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "submit": "Submit"
 }
