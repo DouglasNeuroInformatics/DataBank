@@ -25,7 +25,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "server-only": "^0.0.1",
-    "sharp": "^0.32.1"
+    "sharp": "^0.32.1",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@douglasneuroinformatics/eslint-config": "^0.0.4",

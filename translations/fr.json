@@ -2,6 +2,7 @@
   "meta.platformName": "Banque de données de l'Institut Douglas",
   "meta.organization": "Douglas Neuroinformatics Platform",
   "form.errors.required": "Ce champ est obligatoire",
+  "email": "Courriel",
   "password": "Mot de passe",
   "login": "Se connecter",
   "createAccount": "Créer un compte",

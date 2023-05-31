@@ -2,6 +2,7 @@
   "meta.platformName": "Douglas Data Bank",
   "meta.organization": "Douglas Neuroinformatics Platform",
   "form.errors.required": "This field is required",
+  "email": "Email",
   "password": "Password",
   "login": "Login",
   "createAccount": "Create an Account",
