@@ -18,11 +18,11 @@ export default async function IndexPage({ params }: IndexPageProps) {
         <Navbar
           links={[
             {
-              href: '/login',
+              href: `/${params.locale}/auth/login`,
               label: t.nav.login
             },
             {
-              href: '/create-account',
+              href: `/${params.locale}/auth/create-account`,
               label: t.nav.createAccount
             }
           ]}
