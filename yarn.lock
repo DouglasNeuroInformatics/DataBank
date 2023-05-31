@@ -52,6 +52,11 @@
     react-i18next "^12.3.1"
     recharts "^2.6.2"
 
+"@douglasneuroinformatics/utils@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/utils/-/utils-0.2.1.tgz#8c7e4e5e838506bdb9f248faaac0b5d4f1fb11c6"
+  integrity sha512-9bp7WQSmG4xYbI79gDc2T25J/8GGqzV4XC75erQEFROZhdNHQgNSnrI48u+uR3xszlMCJuZ0K0c5Up/C/I/2Pw==
+
 "@douglasneuroinformatics/utils@latest":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/utils/-/utils-0.2.0.tgz#d85ffe82234d6574affcd9622d8d516e93606f3d"
