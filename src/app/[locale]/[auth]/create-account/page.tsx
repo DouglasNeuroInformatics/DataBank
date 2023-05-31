@@ -12,6 +12,21 @@ import { useClientTranslations } from '@/hooks/useClientTranslations';
 
 const CreateAccountPage = () => {
   const t = useClientTranslations();
+
+  const createAccount = async (data: CreateUserData) => {
+    const response = await fetch('/api/user', {
+      body: JSON.stringify(data),
+      method: 'POST'
+    });
+    if (!response.ok) {
+      // eslint-disable-next-line no-alert
+      alert(`${response.status}: ${response.statusText}`);
+      return;
+    }
+    // eslint-disable-next-line no-alert
+    alert('Success!');
+  };
+
   return (
     <div className="flex w-full flex-col gap-4 rounded-lg bg-white px-6 py-8 shadow-xl ring-1 ring-slate-900/5 dark:bg-slate-800 md:p-8">
       <div className="mb-3 flex flex-col items-center text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
@@ -48,7 +63,7 @@ const CreateAccountPage = () => {
           required: ['firstName', 'lastName', 'email', 'password']
         }}
         onSubmit={(data) => {
-          alert(JSON.stringify(data));
+          void createAccount(data);
         }}
       />
       <div className="flex w-full justify-between">
