@@ -1,9 +1,8 @@
 import React from 'react';
 
-import Image from 'next/image';
-
 import { login } from './actions';
 
+import { Branding } from '@/components/Branding';
 import { Form } from '@/components/Form';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -21,8 +20,8 @@ export default async function LoginPage({ params }: LoginPageProps) {
   return (
     <Form action={login}>
       <Form.Header>
-        <Image alt="logo" className="mb-2" height={64} src="/logo.png" width={64} />
-        <h3>{t.login}</h3>
+        <Branding />
+        <h3 className="mt-2">{t.login}</h3>
       </Form.Header>
       <Form.TextField label={t.email} name="email" type="text" />
       <Form.TextField label={t.password} name="password" type="password" />

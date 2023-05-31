@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 
 import Image from 'next/image';
@@ -15,7 +17,7 @@ export const Branding = ({ title }: BrandingProps) => {
   const locale = useLocale();
   return (
     <Link className="flex items-center" href={`/${locale}`}>
-      <Image alt="logo" height="64" src="/logo.png" width="64" />
+      <Image alt="logo" className="dark:brightness-150" height={64} src="/logo.png" width={64} />
       {title && (
         <span className="whitespace-nowrap font-semibold lg:text-lg" style={{ maxWidth: '7.5em' }}>
           {title}
