@@ -10,8 +10,6 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { type Locale } from '@/lib/i18n';
 import { getTranslations } from '@/utils/get-translations';
 
-
-
 interface LoginPageProps {
   params: {
     locale: Locale;
@@ -23,7 +21,7 @@ export default async function LoginPage({ params }: LoginPageProps) {
   return (
     <Form action={login}>
       <Form.Header>
-        <Image alt="logo" height={64} src="/logo.png" width={64} />
+        <Image alt="logo" className="mb-2" height={64} src="/logo.png" width={64} />
         <h3>{t.login}</h3>
       </Form.Header>
       <Form.TextField label={t.email} name="email" type="text" />

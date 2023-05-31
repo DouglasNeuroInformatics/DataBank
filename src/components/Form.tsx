@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Header = (props: { children: React.ReactNode }) => (
-  <div className="mb-3 text-center text-2xl font-medium tracking-tight text-slate-900 dark:text-white">
+  <div className="mb-3 flex flex-col items-center text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
     {props.children}
   </div>
 );
