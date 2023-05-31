@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 import { clsx } from 'clsx';
 
 import { ClientTranslationsProvider } from '@/context/ClientTranslations';
-import { type Locale, i18n } from '@/lib/i18n';
+import { type Locale } from '@/lib/i18n';
 import { getTranslations } from '@/utils/get-translations';
 
 import '@/styles/index.css';

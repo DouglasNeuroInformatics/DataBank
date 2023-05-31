@@ -7,7 +7,7 @@ interface AuthLayoutProps {
 const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center">
-      <div className="mx-auto max-w-md">{children}</div>
+      <div className="p-2 sm:w-96">{children}</div>
     </div>
   );
 };

@@ -35,7 +35,7 @@ const Footer = ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) =
 const FormComponent = (props: { action: (data: FormData) => Promise<void>; children: React.ReactNode }) => (
   <form
     action={void props.action}
-    className="flex flex-col gap-4 rounded-lg bg-white px-6 py-8 shadow-xl ring-1 ring-slate-900/5 dark:bg-slate-800 md:p-8"
+    className="flex w-full flex-col gap-4 rounded-lg bg-white px-6 py-8 shadow-xl ring-1 ring-slate-900/5 dark:bg-slate-800 md:p-8"
   >
     {props.children}
   </form>
