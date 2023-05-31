@@ -3,8 +3,9 @@ import Negotiator from 'negotiator';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-
 import { i18n } from './lib/i18n';
+
+const PUBLIC_ASSETS = ['landing.jpg', 'logo.png'];
 
 function getLocale(request: NextRequest): string | undefined {
   // Negotiator expects plain object so we need to transform headers
@@ -20,16 +21,10 @@ function getLocale(request: NextRequest): string | undefined {
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
-  // // If you have one
-  // if (
-  //   [
-  //     '/manifest.json',
-  //     '/favicon.ico',
-  //     // Your other files in `public`
-  //   ].includes(pathname)
-  // )
-  //   return
+  // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
+  if (PUBLIC_ASSETS.includes(pathname)) {
+    return;
+  }
 
   // Check if there is any supported locale in the pathname
   const pathnameIsMissingLocale = i18n.locales.every(
