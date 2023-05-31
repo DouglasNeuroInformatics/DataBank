@@ -15,12 +15,10 @@ interface LoginPageProps {
 export default async function LoginPage({ params }: LoginPageProps) {
   const t = await getTranslations(params.locale);
   return (
-    <div className="flex h-screen w-screen items-center justify-center">
-      <Form action={login}>
-        <Form.TextField name="email" label={t.email} type="text" />
-        <Form.TextField name="password" label={t.password} type="password" />
-        <Form.SubmitButton label={t.login} />
-      </Form>
-    </div>
+    <Form action={login}>
+      <Form.TextField name="email" label={t.email} type="text" />
+      <Form.TextField name="password" label={t.password} type="password" />
+      <Form.SubmitButton label={t.login} />
+    </Form>
   );
 }

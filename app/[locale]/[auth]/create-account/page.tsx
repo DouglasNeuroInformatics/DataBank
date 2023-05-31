@@ -15,14 +15,12 @@ interface CreateAccountPageProps {
 export default async function CreateAccountPage({ params }: CreateAccountPageProps) {
   const t = await getTranslations(params.locale);
   return (
-    <div className="flex h-screen w-screen items-center justify-center">
-      <Form action={handleCreateAccount}>
-        <Form.TextField name="firstName" label="First Name" type="text" />
-        <Form.TextField name="lastName" label="Last Name" type="text" />
-        <Form.TextField name="email" label="Email" type="text" />
-        <Form.TextField name="password" label="Password" type="password" />
-        <Form.SubmitButton label="Submit" />
-      </Form>
-    </div>
+    <Form action={handleCreateAccount}>
+      <Form.TextField name="firstName" label="First Name" type="text" />
+      <Form.TextField name="lastName" label="Last Name" type="text" />
+      <Form.TextField name="email" label="Email" type="text" />
+      <Form.TextField name="password" label="Password" type="password" />
+      <Form.SubmitButton label="Submit" />
+    </Form>
   );
 }
