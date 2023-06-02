@@ -2,21 +2,20 @@
 
 import React from 'react';
 
-import { trpc } from '@/server/trpc';
+import { trpc } from '@/utils/trpc';
 
 const Page = () => {
-  const name = trpc.userById.useQuery(1);
+  const greeting = trpc.sayHello.useQuery();
 
-  if (name.data == undefined) {
-    // eslint-disable-next-line no-console
-    console.log('name.data undefined');
+  if (greeting.data == undefined) {
     return <p>Loading...</p>;
   }
-  
-  // eslint-disable-next-line no-console
-  console.log(`result.data is ${JSON.stringify(name.data)}`);
 
-  return <p>Hello, {name.data.name}, greetings from client component land!</p>;
+  return (
+    <div>
+      <h1>{greeting.data}</h1>
+    </div>
+  );
 };
 
 export default Page;

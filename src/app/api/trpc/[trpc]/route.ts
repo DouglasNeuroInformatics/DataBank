@@ -1,9 +1,8 @@
 import { type FetchCreateContextFnOptions, fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
-import { appRouter } from '@/server/trpc-server';
+import { appRouter } from '@/server/routers/_app';
 
 // this is the server RPC API handler
-
 const handler = (request: Request) => {
   console.log(`incoming request ${request.url}`);
   return fetchRequestHandler({
