@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 import { i18n } from './lib/i18n';
+import { withLogging } from './middlewares/withLogging';
 
 const STATIC_FILE_EXTENSIONS = ['jpg', 'png', 'svg'];
 
@@ -18,7 +19,7 @@ function getLocale(request: NextRequest): string | undefined {
   return matchLocale(languages, locales, i18n.defaultLocale);
 }
 
-export function middleware(request: NextRequest) {
+export const middleware = withLogging((request) => {
   const pathname = request.nextUrl.pathname;
 
   // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
@@ -46,7 +47,7 @@ export function middleware(request: NextRequest) {
     // The new URL is now /en-US/products
     return NextResponse.redirect(new URL(`/${locale}/${pathname}`, request.url));
   }
-}
+});
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
