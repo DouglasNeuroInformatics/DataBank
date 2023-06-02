@@ -7,5 +7,10 @@ const translations = {
 };
 
 export async function getTranslations(locale: Locale) {
-  return translations[locale]();
+  try {
+    return translations[locale]();
+  } catch (err) {
+    console.error(locale, translations[locale]);
+    throw err;
+  }
 }

@@ -10,6 +10,7 @@ import { Branding } from '@/components/Branding';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
+import { useLocale } from '@/hooks/useLocale';
 import { trpc } from '@/utils/trpc';
 
 type LoginCredentials = {
@@ -19,24 +20,19 @@ type LoginCredentials = {
 
 const LoginPage = () => {
   const t = useClientTranslations();
+  const locale = useLocale();
   const router = useRouter();
 
   const login = trpc.auth.login.useMutation({
-    onSuccess(data, variables, context) {
+    onSuccess(data) {
       if (data) {
-        router.refresh();
+        router.push(`/${locale}/overview`);
       } else {
         // eslint-disable-next-line no-alert
         alert('ERROR');
       }
     }
   });
-
-  // const handleSubmit = async (data: LoginCredentials) => {
-  //   await login.mutateAsync(data);
-  //   // eslint-disable-next-line no-alert
-  //   alert(JSON.stringify(document.cookie));
-  // };
 
   return (
     <div className="flex w-full flex-col gap-4 rounded-lg bg-white px-6 py-8 shadow-xl ring-1 ring-slate-900/5 dark:bg-slate-800 md:p-8">
