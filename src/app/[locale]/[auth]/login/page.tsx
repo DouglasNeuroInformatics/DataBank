@@ -8,6 +8,7 @@ import { Branding } from '@/components/Branding';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
+import { trpc } from '@/utils/trpc';
 
 type LoginCredentials = {
   email: string;
@@ -17,18 +18,12 @@ type LoginCredentials = {
 const LoginPage = () => {
   const t = useClientTranslations();
 
-  const login = async (data: LoginCredentials) => {
-    const response = await fetch('/api/auth/login', {
-      body: JSON.stringify(data),
-      method: 'POST'
-    });
-    if (!response.ok) {
-      // eslint-disable-next-line no-alert
-      alert(`${response.status}: ${response.statusText}`);
-      return;
-    }
+  const login = trpc.auth.login.useMutation();
+
+  const handleSubmit = async (data: LoginCredentials) => {
+    const user = await login.mutateAsync(data);
     // eslint-disable-next-line no-alert
-    alert('Success!');
+    alert(JSON.stringify(user));
   };
 
   return (
@@ -56,7 +51,7 @@ const LoginPage = () => {
           },
           required: ['email', 'password']
         }}
-        onSubmit={(data) => void login(data)}
+        onSubmit={(data) => void handleSubmit(data)}
       />
       <div className="flex w-full justify-between">
         <LanguageSwitcher dropdownDirection="up" />

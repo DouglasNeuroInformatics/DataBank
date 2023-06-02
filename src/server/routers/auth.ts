@@ -12,7 +12,7 @@ const login = publicProcedure
       password: z.string().min(1)
     })
   )
-  .query(async ({ input }) => {
+  .mutation(async ({ input }) => {
     const user = await prisma.user.findUnique({ where: { email: input.email } });
     if (!user) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
