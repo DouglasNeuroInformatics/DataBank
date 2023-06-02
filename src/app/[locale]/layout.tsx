@@ -22,7 +22,12 @@ export const metadata = {
 export default async function Root({ children, params }: { children: React.ReactNode; params: { locale: Locale } }) {
   const translations = await getTranslations(params.locale);
   const cookieStore = cookies();
+
+  const accessToken = cookieStore.get('access_token');
   const theme = cookieStore.get('theme');
+
+  console.log(accessToken);
+  
   return (
     <html className={theme?.value} lang={params.locale}>
       <body className={clsx(inter.className, 'bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-white')}>
