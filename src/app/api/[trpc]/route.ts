@@ -10,7 +10,10 @@ const handler = (request: Request) => {
     endpoint: '/api',
     req: request,
     router: appRouter,
-    createContext
+    createContext,
+    onError: (opts) => {
+      console.log(opts.error);
+    }
   });
 };
 
