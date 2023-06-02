@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 import { clsx } from 'clsx';
 
 import { TRPCProvider } from '@/components/TRPCProvider';
+import { AuthProvider } from '@/context/Auth';
 import { ClientTranslationsProvider } from '@/context/ClientTranslations';
 import { type Locale } from '@/lib/i18n';
 import { getTranslations } from '@/utils/get-translations';
@@ -24,15 +25,15 @@ export default async function Root({ children, params }: { children: React.React
   const cookieStore = cookies();
 
   const accessToken = cookieStore.get('access_token');
-  const theme = cookieStore.get('theme');
+  const theme = cookieStore.get('theme'); // try and get system theme here?
 
-  console.log(accessToken);
-  
   return (
     <html className={theme?.value} lang={params.locale}>
       <body className={clsx(inter.className, 'bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-white')}>
         <ClientTranslationsProvider translations={translations}>
-          <TRPCProvider>{children}</TRPCProvider>
+          <AuthProvider accessToken={accessToken?.value ?? null}>
+            <TRPCProvider>{children}</TRPCProvider>
+          </AuthProvider>
         </ClientTranslationsProvider>
       </body>
     </html>
