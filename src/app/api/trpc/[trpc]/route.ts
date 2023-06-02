@@ -14,5 +14,4 @@ const handler = (request: Request) => {
   });
 };
 
-export const GET = handler;
-export const POST = handler;
+export { handler as GET, handler as POST };

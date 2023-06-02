@@ -4,7 +4,7 @@ export function createContext(opts?: FetchCreateContextFnOptions) {
   return {
     headers: opts && Object.fromEntries(opts.req.headers),
     user: {
-      isAdmin: true
+      isAdmin: false
     }
   };
 }
