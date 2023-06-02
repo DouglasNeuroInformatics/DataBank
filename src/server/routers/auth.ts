@@ -1,9 +1,16 @@
 import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 
 import { prisma } from '../prisma';
 import { publicProcedure, router } from '../trpc';
+
+const SECRET_KEY = process.env.SECRET_KEY;
+
+if (!SECRET_KEY) {
+  throw new Error('Secret key is not defined!');
+}
 
 const login = publicProcedure
   .input(
@@ -21,7 +28,7 @@ const login = publicProcedure
     if (!isCorrectPassword) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
-    return user;
+    return jwt.sign(user, SECRET_KEY);
   });
 
 export const authRouter = router({ login });
