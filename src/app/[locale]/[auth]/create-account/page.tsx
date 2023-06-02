@@ -4,27 +4,28 @@ import React from 'react';
 
 import { Form } from '@douglasneuroinformatics/react-components';
 
-import { type CreateUserData } from '@/app/api/user/route';
 import { Branding } from '@/components/Branding';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
+import { trpc } from '@/utils/trpc';
+
+export type CreateUserData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
 
 const CreateAccountPage = () => {
   const t = useClientTranslations();
 
+  const createUser = trpc.user.create.useMutation();
+
   const createAccount = async (data: CreateUserData) => {
-    const response = await fetch('/api/user', {
-      body: JSON.stringify(data),
-      method: 'POST'
-    });
-    if (!response.ok) {
-      // eslint-disable-next-line no-alert
-      alert(`${response.status}: ${response.statusText}`);
-      return;
-    }
+    const createdUser = await createUser.mutateAsync(data);
     // eslint-disable-next-line no-alert
-    alert('Success!');
+    alert(JSON.stringify({ createdUser }));
   };
 
   return (
