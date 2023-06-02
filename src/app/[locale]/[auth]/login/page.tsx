@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { Form } from '@douglasneuroinformatics/react-components';
 
 import { Branding } from '@/components/Branding';
@@ -17,14 +19,24 @@ type LoginCredentials = {
 
 const LoginPage = () => {
   const t = useClientTranslations();
+  const router = useRouter();
 
-  const login = trpc.auth.login.useMutation();
+  const login = trpc.auth.login.useMutation({
+    onSuccess(data, variables, context) {
+      if (data) {
+        router.refresh();
+      } else {
+        // eslint-disable-next-line no-alert
+        alert('ERROR');
+      }
+    }
+  });
 
-  const handleSubmit = async (data: LoginCredentials) => {
-    const user = await login.mutateAsync(data);
-    // eslint-disable-next-line no-alert
-    alert(JSON.stringify(user));
-  };
+  // const handleSubmit = async (data: LoginCredentials) => {
+  //   await login.mutateAsync(data);
+  //   // eslint-disable-next-line no-alert
+  //   alert(JSON.stringify(document.cookie));
+  // };
 
   return (
     <div className="flex w-full flex-col gap-4 rounded-lg bg-white px-6 py-8 shadow-xl ring-1 ring-slate-900/5 dark:bg-slate-800 md:p-8">
@@ -51,7 +63,7 @@ const LoginPage = () => {
           },
           required: ['email', 'password']
         }}
-        onSubmit={(data) => void handleSubmit(data)}
+        onSubmit={(data) => void login.mutateAsync(data)}
       />
       <div className="flex w-full justify-between">
         <LanguageSwitcher dropdownDirection="up" />

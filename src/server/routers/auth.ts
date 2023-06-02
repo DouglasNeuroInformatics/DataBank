@@ -32,6 +32,7 @@ const login = publicProcedure
     }
     const accessToken = jwt.sign(user, SECRET_KEY);
     ctx.setAccessToken(accessToken);
+    return { success: true };
   });
 
 export const authRouter = router({ login });

@@ -1,11 +1,12 @@
 import { type FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 
-export function createContext(opts: FetchCreateContextFnOptions) {
-  console.log(opts?.req.headers.get('cookie'));
+import { parseAccessToken } from './auth';
+
+export function createContext({ req, resHeaders }: FetchCreateContextFnOptions) {
   return {
-    headers: opts && Object.fromEntries(opts.req.headers),
+    accessToken: parseAccessToken(req),
     setAccessToken: (accessToken: string) => {
-      opts.resHeaders.set('Set-Cookie', `access-token=${accessToken}`);
+      resHeaders.set('Set-Cookie', `access-token=${accessToken}`);
     },
     user: {
       isAdmin: true
