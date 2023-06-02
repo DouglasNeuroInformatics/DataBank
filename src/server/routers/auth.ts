@@ -21,7 +21,7 @@ const login = publicProcedure
       password: z.string().min(1)
     })
   )
-  .mutation(async ({ input }) => {
+  .mutation(async ({ input, ctx }) => {
     const user = await prisma.user.findUnique({ where: { email: input.email } });
     if (!user) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
@@ -30,7 +30,8 @@ const login = publicProcedure
     if (!isCorrectPassword) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
-    return jwt.sign(user, SECRET_KEY);
+    const accessToken = jwt.sign(user, SECRET_KEY);
+    ctx.setAccessToken(accessToken);
   });
 
 export const authRouter = router({ login });
