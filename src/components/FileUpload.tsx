@@ -1,8 +1,16 @@
-import React, { useTransition } from 'react';
+'use client';
+
+import React, { useState } from 'react';
 
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
 
-export const FileUpload = (props: React.ComponentPropsWithoutRef<'form'>) => {
+interface FileUploadProps extends React.ComponentPropsWithoutRef<'form'> {
+  /** Specify the `name` attribute for the `HTMLInputElement` */
+  inputName: string;
+}
+
+export const FileUpload = ({ inputName, ...props }: FileUploadProps) => {
+  const [filename, setFilename] = useState('');
   return (
     <form {...props}>
       <div className="flex w-full items-center justify-center">
@@ -16,9 +24,16 @@ export const FileUpload = (props: React.ComponentPropsWithoutRef<'form'>) => {
               <span className="font-semibold">Click to upload</span> or drag and drop
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{filename}</p>
           </div>
-          <input id="dropzone-file" name="file" type="file" />
         </label>
+        <input
+          className="hidden"
+          id="dropzone-file"
+          name={inputName}
+          type="file"
+          onChange={(e) => setFilename(e.target.files?.[0].name ?? '')}
+        />
       </div>
       <button>Submit</button>
     </form>

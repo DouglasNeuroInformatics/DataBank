@@ -9,7 +9,7 @@ const DatasetPage = () => {
   return (
     <div>
       <PageHeading text="Manage Datasets" />
-      <FileUpload action={uploadDataset} />
+      <FileUpload action={uploadDataset} inputName="file" />
     </div>
   );
 };
