@@ -149,10 +149,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@joshunrau/eslint-config@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@joshunrau/eslint-config/-/eslint-config-2.1.1.tgz#f6cb82b0d28db811d980c65564ea06a42e36584b"
-  integrity sha512-m02iuHX0xz5iPmM4j/dpHlRpU63hcCSef1qFfaQgkX1T+5P4WXujfPmoahPPQho+MfzZKWp4Ir3dgmnOJUWgzA==
+"@joshunrau/eslint-config@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@joshunrau/eslint-config/-/eslint-config-2.1.2.tgz#c95b3891aede7dfa27c9d54ef0078cdcb080536d"
+  integrity sha512-4A9ISo/aJmR63ETR81DeBJMRIKIb0ScYa2OKbjX09dc++9/8ICjjf0yVpG3JlG4WKBS7xLqE4iZCxVlomK2g7A==
   dependencies:
     "@eslint/js" "^8.40.0"
     "@typescript-eslint/eslint-plugin" "^5.59.8"
