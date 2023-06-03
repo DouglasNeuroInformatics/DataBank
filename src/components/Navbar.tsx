@@ -1,8 +1,10 @@
 'use client';
 
+import React from 'react';
+
 import { Branding } from './Branding';
 import { LanguageToggle } from './LanguageToggle';
-import { Navigation, type NavLink } from './Navigation';
+import { type NavLink, Navigation } from './Navigation';
 import { ThemeToggle } from './ThemeToggle';
 
 interface NavbarProps {
