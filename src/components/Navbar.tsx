@@ -2,16 +2,10 @@
 
 import React from 'react';
 
-import Link from 'next/link';
-
 import { Branding } from './Branding';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { type NavLink, Navigation } from './Navigation';
 import { ThemeToggle } from './ThemeToggle';
-
-interface NavLink {
-  href: string;
-  label: string;
-}
 
 interface NavbarProps {
   links: NavLink[];
@@ -19,16 +13,10 @@ interface NavbarProps {
 
 export const Navbar = ({ links }: NavbarProps) => {
   return (
-    <header className="container flex w-screen items-center justify-between p-2">
+    <header className="container flex w-screen items-center justify-between border-b p-2">
       <Branding />
       <div className="flex items-center gap-5">
-        <nav className="flex gap-5">
-          {links.map((link) => (
-            <Link href={link.href} key={link.href + link.label}>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <Navigation className="flex gap-5" links={links} />
         <div className="h-6 border-l" />
         <ThemeToggle />
         <LanguageSwitcher />
