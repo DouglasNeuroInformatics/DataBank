@@ -1,9 +1,11 @@
 import React from 'react';
 
+import { PageHeading } from '@/components/PageHeading';
+
 const PortalPage = () => {
   return (
     <div>
-      <h1>Portal</h1>
+      <PageHeading text="Portal" />
     </div>
   );
 };

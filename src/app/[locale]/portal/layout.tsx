@@ -3,7 +3,7 @@ import React from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { ChartBarIcon, HomeIcon } from '@heroicons/react/24/solid';
+import { ChartBarIcon, HomeIcon, TableCellsIcon } from '@heroicons/react/24/solid';
 
 import { Sidebar } from '@/components/Sidebar';
 import { type Locale } from '@/lib/i18n';
@@ -41,11 +41,18 @@ const PortalLayout = async ({ children, params }: PortalLayoutProps) => {
             label: 'Overview',
             href: `/${params.locale}/portal`,
             icon: <ChartBarIcon />
+          },
+          {
+            label: 'Manage Datasets',
+            href: `/${params.locale}/portal/dataset`,
+            icon: <TableCellsIcon />
           }
         ]}
         title={t.meta.platformName}
       />
-      <div className="flex-grow">{children}</div>
+      <div className="flex-grow">
+        <main className="container">{children}</main>
+      </div>
     </div>
   );
 };

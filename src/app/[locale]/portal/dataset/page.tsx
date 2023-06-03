@@ -2,12 +2,12 @@ import React from 'react';
 
 import { PageHeading } from '@/components/PageHeading';
 
-const UserPage = () => {
+const DatasetPage = () => {
   return (
     <div>
-      <PageHeading text="User" />
+      <PageHeading text="Manage Datasets" />
     </div>
   );
 };
 
-export default UserPage;
+export default DatasetPage;
