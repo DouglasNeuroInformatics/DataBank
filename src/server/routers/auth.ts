@@ -35,4 +35,9 @@ const login = publicProcedure
     return { success: true };
   });
 
-export const authRouter = router({ login });
+const logout = publicProcedure.mutation(({ ctx }) => {
+  ctx.removeAccessToken();
+  return { success: true };
+});
+
+export const authRouter = router({ login, logout });

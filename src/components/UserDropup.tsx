@@ -2,18 +2,30 @@
 
 import React, { useRef, useState } from 'react';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { ArrowToggle, useOnClickOutside } from '@douglasneuroinformatics/react-components';
 import { Transition } from '@headlessui/react';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 
+import { LocalizedLink } from './LocalizedLink';
+
 import { useClientTranslations } from '@/hooks/useClientTranslations';
+import { useLocale } from '@/hooks/useLocale';
+import { trpc } from '@/utils/trpc';
 
 export const UserDropup = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const t = useClientTranslations();
+  const logout = trpc.auth.logout.useMutation();
+  const locale = useLocale();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout.mutate();
+    router.replace(`/${locale}`);
+  };
 
   const closeDropup = () => setIsOpen(false);
 
@@ -37,13 +49,17 @@ export const UserDropup = () => {
           show={isOpen}
         >
           <div className="absolute bottom-3 w-40 bg-slate-800 shadow-lg">
-            <button className="w-full p-2 hover:bg-slate-700" onClick={() => null}>
+            <button className="w-full p-2 hover:bg-slate-700" onClick={handleLogout}>
               {t.logout}
             </button>
             {/* <LanguageToggle className="w-full p-2 hover:bg-slate-700" onClick={closeDropup} /> */}
-            <Link className="block w-full p-2 text-center hover:bg-slate-700" href="#" onClick={closeDropup}>
+            <LocalizedLink
+              className="block w-full p-2 text-center hover:bg-slate-700"
+              href="/portal/user"
+              onClick={closeDropup}
+            >
               {t.preferences}
-            </Link>
+            </LocalizedLink>
           </div>
         </Transition>
       </div>

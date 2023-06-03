@@ -1,20 +1,25 @@
 import { type FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
-import { serialize } from 'cookie';
+import { type CookieSerializeOptions, serialize } from 'cookie';
 
 import { parseAccessToken } from './auth';
+
+const ACCESS_TOKEN_COOKIE_NAME = 'access_token';
+
+const ACCESS_TOKEN_COOKIE_OPTIONS: CookieSerializeOptions = {
+  httpOnly: true,
+  path: '/',
+  sameSite: 'lax',
+  secure: true
+};
+
 export function createContext({ req, resHeaders }: FetchCreateContextFnOptions) {
   return {
     accessToken: parseAccessToken(req),
+    removeAccessToken: () => {
+      resHeaders.set('Set-Cookie', serialize(ACCESS_TOKEN_COOKIE_NAME, '', ACCESS_TOKEN_COOKIE_OPTIONS));
+    },
     setAccessToken: (accessToken: string) => {
-      resHeaders.set(
-        'Set-Cookie',
-        serialize('access_token', accessToken, {
-          httpOnly: true,
-          path: '/',
-          sameSite: 'lax',
-          secure: true
-        })
-      );
+      resHeaders.set('Set-Cookie', serialize(ACCESS_TOKEN_COOKIE_NAME, accessToken, ACCESS_TOKEN_COOKIE_OPTIONS));
     },
     user: {
       isAdmin: true
