@@ -3,7 +3,7 @@ import React from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { ChartBarIcon } from '@heroicons/react/24/solid';
+import { ChartBarIcon, HomeIcon } from '@heroicons/react/24/solid';
 
 import { Sidebar } from '@/components/Sidebar';
 import { type Locale } from '@/lib/i18n';
@@ -27,14 +27,19 @@ const PortalLayout = async ({ children, params }: PortalLayoutProps) => {
   if (!isLoggedIn) {
     redirect(`/${params.locale}/auth/login`);
   }
-  
+
   return (
     <div className="flex">
       <Sidebar
         links={[
           {
+            label: 'Home',
+            href: `/${params.locale}`,
+            icon: <HomeIcon />
+          },
+          {
             label: 'Overview',
-            href: '/portal',
+            href: `/${params.locale}/portal`,
             icon: <ChartBarIcon />
           }
         ]}
