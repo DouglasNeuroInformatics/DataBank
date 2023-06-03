@@ -18,7 +18,12 @@ const DatasetPage = async ({ params }: DatasetPageProps) => {
   return (
     <div>
       <PageHeading text="Manage Datasets" />
-      <FileUpload action={uploadDataset} inputName="file" submitBtnLabel={t.submit} />
+      <FileUpload
+        action={uploadDataset}
+        description="Please ensure that your file is in CSV format"
+        inputName="file"
+        submitBtnLabel={t.submit}
+      />
     </div>
   );
 };

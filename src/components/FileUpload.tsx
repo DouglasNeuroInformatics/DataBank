@@ -9,12 +9,12 @@ import { clsx } from 'clsx';
 interface FileUploadProps extends React.ComponentPropsWithoutRef<'form'> {
   /** Specify the `name` attribute for the `HTMLInputElement` */
   inputName: string;
-
+  description: string;
   /** The label to display for the button to submit the file */
   submitBtnLabel: string;
 }
 
-export const FileUpload = ({ className, inputName, submitBtnLabel, ...props }: FileUploadProps) => {
+export const FileUpload = ({ className, description, inputName, submitBtnLabel, ...props }: FileUploadProps) => {
   const [filename, setFilename] = useState('');
   return (
     <form className={clsx('max-w-xs', className)} {...props}>
@@ -28,7 +28,7 @@ export const FileUpload = ({ className, inputName, submitBtnLabel, ...props }: F
             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
               <span className="font-semibold">Click to upload</span> or drag and drop
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400">{filename}</p>
           </div>
         </label>
@@ -40,7 +40,7 @@ export const FileUpload = ({ className, inputName, submitBtnLabel, ...props }: F
           onChange={(e) => setFilename(e.target.files?.[0].name ?? '')}
         />
       </div>
-      <Button className="mt-2 w-full" label={submitBtnLabel} />
+      <Button className="mt-2 w-full" disabled={!filename} label={submitBtnLabel} />
     </form>
   );
 };
