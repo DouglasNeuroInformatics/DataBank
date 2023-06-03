@@ -4,12 +4,21 @@ import { uploadDataset } from './actions';
 
 import { FileUpload } from '@/components/FileUpload';
 import { PageHeading } from '@/components/PageHeading';
+import { type Locale } from '@/lib/i18n';
+import { getTranslations } from '@/utils/get-translations';
 
-const DatasetPage = () => {
+interface DatasetPageProps {
+  params: {
+    locale: Locale;
+  };
+}
+
+const DatasetPage = async ({ params }: DatasetPageProps) => {
+  const t = await getTranslations(params.locale);
   return (
     <div>
       <PageHeading text="Manage Datasets" />
-      <FileUpload action={uploadDataset} inputName="file" />
+      <FileUpload action={uploadDataset} inputName="file" submitBtnLabel={t.submit} />
     </div>
   );
 };

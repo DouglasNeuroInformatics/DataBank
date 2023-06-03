@@ -2,17 +2,22 @@
 
 import React, { useState } from 'react';
 
+import { Button } from '@douglasneuroinformatics/react-components';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
+import { clsx } from 'clsx';
 
 interface FileUploadProps extends React.ComponentPropsWithoutRef<'form'> {
   /** Specify the `name` attribute for the `HTMLInputElement` */
   inputName: string;
+
+  /** The label to display for the button to submit the file */
+  submitBtnLabel: string;
 }
 
-export const FileUpload = ({ inputName, ...props }: FileUploadProps) => {
+export const FileUpload = ({ className, inputName, submitBtnLabel, ...props }: FileUploadProps) => {
   const [filename, setFilename] = useState('');
   return (
-    <form {...props}>
+    <form className={clsx('max-w-xs', className)} {...props}>
       <div className="flex w-full items-center justify-center">
         <label
           className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600"
@@ -35,7 +40,7 @@ export const FileUpload = ({ inputName, ...props }: FileUploadProps) => {
           onChange={(e) => setFilename(e.target.files?.[0].name ?? '')}
         />
       </div>
-      <button>Submit</button>
+      <Button className="mt-2 w-full" label={submitBtnLabel} />
     </form>
   );
 };
