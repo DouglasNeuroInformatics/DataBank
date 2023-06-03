@@ -23,7 +23,7 @@ export const LanguageToggle = ({ dropdownDirection }: LanguageToggleProps) => {
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button className="flex items-center justify-center border p-2 dark:border-slate-600">
+      <Menu.Button className="flex items-center justify-center rounded-md border p-2 dark:border-slate-600">
         <span className="uppercase">{locale}</span>
         <ChevronDownIcon
           className={clsx('ml-1', { 'rotate-180': dropdownDirection === 'up' })}
