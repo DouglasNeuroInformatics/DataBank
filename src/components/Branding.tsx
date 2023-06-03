@@ -21,10 +21,10 @@ export interface BrandingProps {
 export const Branding = ({ className, title }: BrandingProps) => {
   const locale = useLocale();
   return (
-    <Link className={clsx('flex items-center', className)} href={`/${locale}`}>
+    <Link className={clsx('flex items-center gap-2', className)} href={`/${locale}`}>
       <Image alt="logo" className="dark:brightness-150" height={64} src="/logo.png" width={64} />
       {title && (
-        <span className="whitespace-nowrap font-semibold lg:text-lg" style={{ maxWidth: '7.5em' }}>
+        <span className="text-sm uppercase leading-tight antialiased md:text-base" style={{ maxWidth: '7.5em' }}>
           {title}
         </span>
       )}

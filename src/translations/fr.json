@@ -1,10 +1,13 @@
 {
-  "meta.platformName": "Banque de données de l'Institut Douglas",
-  "meta.organization": "Douglas Neuroinformatics Platform",
+  "meta": {
+    "platformName": "Banque de données de l'Institut Douglas",
+    "organization": "Douglas Neuroinformatics Platform"
+  },
   "form.errors.required": "Ce champ est obligatoire",
   "email": "Courriel",
   "password": "Mot de passe",
   "login": "Se connecter",
+  "logout": "Se déconnecter",
   "createAccount": "Créer un compte",
   "sourceCode": "Code source",
   "unauthorizedError.message": "Informations d'identification invalides",
@@ -16,5 +19,6 @@
   },
   "firstName": "Prénom",
   "lastName": "Nom de famille",
-  "submit": "Soumettre"
+  "submit": "Soumettre",
+  "preferences": "Préférences"
 }
