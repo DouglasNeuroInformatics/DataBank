@@ -3,9 +3,9 @@ import { type CookieSerializeOptions, serialize } from 'cookie';
 
 import { parseAccessToken } from './auth';
 
-const ACCESS_TOKEN_COOKIE_NAME = 'access_token';
+export const ACCESS_TOKEN_COOKIE_NAME = 'access_token';
 
-const ACCESS_TOKEN_COOKIE_OPTIONS: CookieSerializeOptions = {
+export const ACCESS_TOKEN_COOKIE_OPTIONS: CookieSerializeOptions = {
   httpOnly: true,
   path: '/',
   sameSite: 'lax',
