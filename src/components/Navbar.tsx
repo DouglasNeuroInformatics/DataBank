@@ -1,10 +1,8 @@
 'use client';
 
-import React from 'react';
-
 import { Branding } from './Branding';
-import { LanguageSwitcher } from './LanguageSwitcher';
-import { type NavLink, Navigation } from './Navigation';
+import { LanguageToggle } from './LanguageToggle';
+import { Navigation, type NavLink } from './Navigation';
 import { ThemeToggle } from './ThemeToggle';
 
 interface NavbarProps {
@@ -19,7 +17,7 @@ export const Navbar = ({ links }: NavbarProps) => {
         <Navigation className="flex gap-5" links={links} />
         <div className="h-6 border-l" />
         <ThemeToggle />
-        <LanguageSwitcher />
+        <LanguageToggle />
       </div>
     </header>
   );

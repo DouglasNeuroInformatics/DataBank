@@ -1,13 +1,11 @@
 'use client';
 
-import React from 'react';
-
 import { useRouter } from 'next/navigation';
 
 import { Form } from '@douglasneuroinformatics/react-components';
 
 import { Branding } from '@/components/Branding';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { LanguageToggle } from '@/components/LanguageToggle';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
 import { useLocale } from '@/hooks/useLocale';
@@ -62,7 +60,7 @@ const LoginPage = () => {
         onSubmit={(data) => void login.mutateAsync(data)}
       />
       <div className="flex w-full justify-between">
-        <LanguageSwitcher dropdownDirection="up" />
+        <LanguageToggle dropdownDirection="up" />
         <ThemeToggle />
       </div>
     </div>

@@ -1,11 +1,9 @@
 'use client';
 
-import React from 'react';
-
 import { Form } from '@douglasneuroinformatics/react-components';
 
 import { Branding } from '@/components/Branding';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { LanguageToggle } from '@/components/LanguageToggle';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
 import { trpc } from '@/utils/trpc';
@@ -68,7 +66,7 @@ const CreateAccountPage = () => {
         }}
       />
       <div className="flex w-full justify-between">
-        <LanguageSwitcher dropdownDirection="up" />
+        <LanguageToggle dropdownDirection="up" />
         <ThemeToggle />
       </div>
     </div>

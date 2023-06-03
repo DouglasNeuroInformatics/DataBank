@@ -12,11 +12,11 @@ import { useLocale } from '@/hooks/useLocale';
 import { useRedirectedPathname } from '@/hooks/useRedirectedPathname';
 import { i18n } from '@/lib/i18n';
 
-interface LanguageSwitcherProps {
+interface LanguageToggleProps {
   dropdownDirection?: 'up' | 'down';
 }
 
-export const LanguageSwitcher = ({ dropdownDirection }: LanguageSwitcherProps) => {
+export const LanguageToggle = ({ dropdownDirection }: LanguageToggleProps) => {
   const locale = useLocale();
 
   const redirectedPathName = useRedirectedPathname();
