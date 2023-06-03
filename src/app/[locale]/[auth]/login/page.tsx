@@ -26,7 +26,7 @@ const LoginPage = () => {
   const login = trpc.auth.login.useMutation({
     onSuccess(data) {
       if (data) {
-        router.push(`/${locale}/overview`);
+        router.push(`/${locale}/portal`);
       } else {
         // eslint-disable-next-line no-alert
         alert('ERROR');

@@ -9,7 +9,7 @@ export const withAuth: MiddlewareFactory = (next) => {
     // assumes this is invoked after `withLocalization`
     const locale = req.nextUrl.pathname.split('/')[1];
     if (pathname.endsWith('/auth/login') && accessToken?.value) {
-      return NextResponse.redirect(new URL(`/${locale}/overview`, req.url));
+      return NextResponse.redirect(new URL(`/${locale}/portal`, req.url));
     }
     return next(req, _next);
   };
