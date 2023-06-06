@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import { Form } from '@douglasneuroinformatics/react-components';
 
 import { Branding } from '@/components/Branding';
