@@ -1,20 +1,23 @@
+'use client';
+
 import React from 'react';
+
+import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
 
 import { uploadDataset } from './actions';
 
 import { FileUpload } from '@/components/FileUpload';
 import { PageHeading } from '@/components/PageHeading';
-import { type Locale } from '@/lib/i18n';
-import { getTranslations } from '@/utils/get-translations';
+import { useClientTranslations } from '@/hooks/useClientTranslations';
 
-interface DatasetPageProps {
-  params: {
-    locale: Locale;
-  };
-}
+const DatasetPage = () => {
+  const t = useClientTranslations();
+  const { addNotification } = useNotificationsStore();
 
-const DatasetPage = async ({ params }: DatasetPageProps) => {
-  const t = await getTranslations(params.locale);
+  React.useEffect(() => {
+    addNotification({ type: 'success', message: 'Works!' });
+  }, []);
+  
   return (
     <div>
       <PageHeading text="Manage Datasets" />

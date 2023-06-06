@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 
 const inter = Inter({ subsets: ['latin'] });
 
+import { NotificationHub } from '@douglasneuroinformatics/react-components';
 import { clsx } from 'clsx';
 
 import { TRPCProvider } from '@/components/TRPCProvider';
@@ -35,6 +36,7 @@ export default async function Root({ children, params }: { children: React.React
             <TRPCProvider>{children}</TRPCProvider>
           </AuthProvider>
         </ClientTranslationsProvider>
+        <NotificationHub />
       </body>
     </html>
   );
