@@ -36,6 +36,7 @@
     "next": "13.4.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.3",
     "server-only": "^0.0.1",
     "sharp": "^0.32.1",
     "type-fest": "^3.11.1",
