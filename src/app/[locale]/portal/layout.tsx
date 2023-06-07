@@ -51,7 +51,7 @@ const PortalLayout = async ({ children, params }: PortalLayoutProps) => {
         title={t.meta.platformName}
       />
       <div className="flex-grow">
-        <main className="container">{children}</main>
+        <main className="container h-full w-full">{children}</main>
       </div>
     </div>
   );
