@@ -3,7 +3,6 @@ import React from 'react';
 import { cookies } from 'next/headers';
 
 import { NotificationHub } from '@douglasneuroinformatics/react-components';
-import { clsx } from 'clsx';
 
 import { TRPCProvider } from '@/components/TRPCProvider';
 import { AuthProvider } from '@/context/Auth';
@@ -23,10 +22,10 @@ export default async function Root({ children, params }: { children: React.React
   const cookieStore = cookies();
 
   const accessToken = cookieStore.get('access_token');
-  // const theme = cookieStore.get('theme'); // try and get system theme here?
+  const theme = cookieStore.get('theme');
 
   return (
-    <html lang={params.locale}>
+    <html className={theme?.value} lang={params.locale}>
       <body className="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-white">
         <ClientTranslationsProvider translations={translations}>
           <AuthProvider accessToken={accessToken?.value ?? null}>
