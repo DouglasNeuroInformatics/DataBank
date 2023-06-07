@@ -1,9 +1,6 @@
 import React from 'react';
 
-import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-
-const inter = Inter({ subsets: ['latin'] });
 
 import { NotificationHub } from '@douglasneuroinformatics/react-components';
 import { clsx } from 'clsx';
@@ -26,11 +23,11 @@ export default async function Root({ children, params }: { children: React.React
   const cookieStore = cookies();
 
   const accessToken = cookieStore.get('access_token');
-  const theme = cookieStore.get('theme'); // try and get system theme here?
+  // const theme = cookieStore.get('theme'); // try and get system theme here?
 
   return (
-    <html className={theme?.value} lang={params.locale}>
-      <body className={clsx(inter.className, 'bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-white')}>
+    <html lang={params.locale}>
+      <body className="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-white">
         <ClientTranslationsProvider translations={translations}>
           <AuthProvider accessToken={accessToken?.value ?? null}>
             <TRPCProvider>{children}</TRPCProvider>

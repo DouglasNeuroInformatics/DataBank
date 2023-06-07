@@ -17,10 +17,10 @@ const DatasetPage = () => {
     maxFiles: 1
   });
 
-  const fileContent = useMemo(() => {
-    addNotification({ type: 'info', message: 'Success' });
-    console.log(acceptedFiles);
-  }, [acceptedFiles]);
+  // const fileContent = useMemo(() => {
+  //   addNotification({ type: 'info', message: 'Success' });
+  //   console.log(acceptedFiles);
+  // }, [acceptedFiles]);
 
   const textContent = isDragActive
     ? 'Release your cursor to upload your dataset'
