@@ -28,6 +28,7 @@ const LoginPage = () => {
     if (result.error) {
       addNotification({ type: 'error', message: `${result.error.status || 'Error'}: ${result.error.message}` });
     } else {
+      addNotification({ type: 'success' });
       router.refresh();
     }
   };

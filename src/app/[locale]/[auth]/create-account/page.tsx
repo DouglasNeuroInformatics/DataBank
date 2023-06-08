@@ -4,7 +4,7 @@ import React from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { Form } from '@douglasneuroinformatics/react-components';
+import { Form, useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 import { Branding } from '@/components/Branding';
@@ -23,16 +23,22 @@ const CreateAccountPage = () => {
   const t = useClientTranslations();
   const router = useRouter();
   const supabase = createClientComponentClient();
+  const { addNotification } = useNotificationsStore();
 
   const createAccount = async ({ email, password }: CreateUserData) => {
-    await supabase.auth.signUp({
+    const result = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: `${location.origin}/auth/callback`
       }
     });
-    router.refresh();
+    if (result.error) {
+      addNotification({ type: 'error', message: `${result.error.status || 'Error'}: ${result.error.message}` });
+    } else {
+      addNotification({ type: 'success' });
+      router.refresh();
+    }
   };
 
   return (
