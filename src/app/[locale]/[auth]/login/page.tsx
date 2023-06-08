@@ -4,7 +4,7 @@ import React from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { Form } from '@douglasneuroinformatics/react-components';
+import { Form, useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 import { Branding } from '@/components/Branding';
@@ -21,10 +21,15 @@ const LoginPage = () => {
   const router = useRouter();
   const t = useClientTranslations();
   const supabase = createClientComponentClient();
+  const { addNotification } = useNotificationsStore();
 
   const login = async (credentials: LoginCredentials) => {
-    await supabase.auth.signInWithPassword(credentials);
-    router.refresh();
+    const result = await supabase.auth.signInWithPassword(credentials);
+    if (result.error) {
+      addNotification({ type: 'error', message: `${result.error.status || 'Error'}: ${result.error.message}` });
+    } else {
+      router.refresh();
+    }
   };
 
   return (
@@ -38,6 +43,7 @@ const LoginPage = () => {
           email: { kind: 'text', label: t.email, variant: 'short' },
           password: { kind: 'text', label: t.password, variant: 'password' }
         }}
+        submitBtnLabel={t.submit}
         validationSchema={{
           type: 'object',
           properties: {
@@ -50,7 +56,13 @@ const LoginPage = () => {
               minLength: 1
             }
           },
-          required: ['email', 'password']
+          required: ['email', 'password'],
+          errorMessage: {
+            properties: {
+              email: t['form.errors.required'],
+              password: t['form.errors.required']
+            }
+          }
         }}
         onSubmit={(data) => {
           void login(data);

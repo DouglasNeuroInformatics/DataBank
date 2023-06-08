@@ -2,7 +2,10 @@
 
 import React from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { Form } from '@douglasneuroinformatics/react-components';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 import { Branding } from '@/components/Branding';
 import { LanguageToggle } from '@/components/LanguageToggle';
@@ -18,10 +21,18 @@ export type CreateUserData = {
 
 const CreateAccountPage = () => {
   const t = useClientTranslations();
+  const router = useRouter();
+  const supabase = createClientComponentClient();
 
-  const createAccount = (data: CreateUserData) => {
-    // eslint-disable-next-line no-alert
-    alert(JSON.stringify(data));
+  const createAccount = async ({ email, password }: CreateUserData) => {
+    await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${location.origin}/auth/callback`
+      }
+    });
+    router.refresh();
   };
 
   return (
