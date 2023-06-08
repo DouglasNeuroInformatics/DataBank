@@ -16,6 +16,7 @@
     "@douglasneuroinformatics/utils": "0.2.1",
     "@formatjs/intl-localematcher": "^0.2.32",
     "@heroicons/react": "^2.0.18",
+    "@supabase/auth-helpers-nextjs": "^0.7.2",
     "clsx": "^1.2.1",
     "js-cookie": "^3.0.5",
     "negotiator": "^0.6.3",
