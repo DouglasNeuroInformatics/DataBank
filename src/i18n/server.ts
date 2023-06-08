@@ -1,5 +1,5 @@
 import 'server-only';
-import type { Locale } from '@/lib/i18n';
+import type { Locale } from '.';
 
 const translations = {
   en: () => import('@/translations/en.json').then((module) => module.default),

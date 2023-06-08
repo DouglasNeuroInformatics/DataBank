@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { Navbar } from '@/components/Navbar';
-import { type Locale } from '@/lib/i18n';
-import { getTranslations } from '@/utils/get-translations';
+import { type Locale } from '@/i18n';
+import { getTranslations } from '@/i18n/server';
 
 interface IndexPageProps {
   params: {

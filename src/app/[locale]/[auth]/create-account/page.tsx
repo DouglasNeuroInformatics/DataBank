@@ -8,7 +8,6 @@ import { Branding } from '@/components/Branding';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
-import { trpc } from '@/utils/trpc';
 
 export type CreateUserData = {
   firstName: string;
@@ -20,12 +19,9 @@ export type CreateUserData = {
 const CreateAccountPage = () => {
   const t = useClientTranslations();
 
-  const createUser = trpc.user.create.useMutation();
-
-  const createAccount = async (data: CreateUserData) => {
-    const createdUser = await createUser.mutateAsync(data);
+  const createAccount = (data: CreateUserData) => {
     // eslint-disable-next-line no-alert
-    alert(JSON.stringify({ createdUser }));
+    alert(JSON.stringify(data));
   };
 
   return (

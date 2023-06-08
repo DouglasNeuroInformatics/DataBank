@@ -4,7 +4,7 @@ import { type NextFetchEvent, type NextRequest, NextResponse } from 'next/server
 
 import { type MiddlewareFactory } from './types';
 
-import { i18n } from '@/lib/i18n';
+import { i18n } from '@/i18n';
 
 const STATIC_FILE_EXTENSIONS = ['jpg', 'png', 'svg'];
 

@@ -1,3 +1,7 @@
+import type translations from '@/translations/en.json';
+
+export type Translations = typeof translations;
+
 export type Locale = 'en' | 'fr';
 
 export type I18N = {

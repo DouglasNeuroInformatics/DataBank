@@ -10,7 +10,7 @@ import { clsx } from 'clsx';
 
 import { useLocale } from '@/hooks/useLocale';
 import { useRedirectedPathname } from '@/hooks/useRedirectedPathname';
-import { i18n } from '@/lib/i18n';
+import { i18n } from '@/i18n';
 
 interface LanguageToggleProps {
   dropdownDirection?: 'up' | 'down';
