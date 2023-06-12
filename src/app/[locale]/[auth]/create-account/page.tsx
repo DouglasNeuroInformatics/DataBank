@@ -25,16 +25,18 @@ const CreateAccountPage = () => {
   const supabase = createClientComponentClient();
   const { addNotification } = useNotificationsStore();
 
-  const createAccount = async ({ email, password }: CreateUserData) => {
-    const result = await supabase.auth.signUp({
+  const createAccount = async ({ firstName, lastName, email, password }: CreateUserData) => {
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        data: { firstName, lastName },
         emailRedirectTo: `${location.origin}/auth/callback`
       }
     });
-    if (result.error) {
-      addNotification({ type: 'error', message: `${result.error.status || 'Error'}: ${result.error.message}` });
+    if (error) {
+      console.error(error);
+      addNotification({ type: 'error', message: `${error.status || 'Error'}: ${error.message}` });
     } else {
       addNotification({ type: 'success' });
       router.refresh();
@@ -77,9 +79,7 @@ const CreateAccountPage = () => {
           },
           required: ['firstName', 'lastName', 'email', 'password']
         }}
-        onSubmit={(data) => {
-          void createAccount(data);
-        }}
+        onSubmit={createAccount}
       />
       <div className="flex w-full justify-between">
         <LanguageToggle dropdownDirection="up" />
