@@ -2,8 +2,6 @@
 
 import React from 'react';
 
-import Link from 'next/link';
-
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
@@ -12,6 +10,7 @@ import { NavLink } from './NavLink';
 
 import { useClientTranslations } from '@/hooks/useClientTranslations';
 import { useLocale } from '@/hooks/useLocale';
+import { ThemeToggle } from './ThemeToggle';
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
@@ -34,41 +33,14 @@ export const Navbar = () => {
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     <NavLink href={`/${locale}`} label={t.nav.home} />
-                    {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
-                    <a className="rounded-md px-3 py-2 text-sm font-medium text-white" href="#">
-                      Dashboard
-                    </a>
-                    <a
-                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                      href="#"
-                    >
-                      Team
-                    </a>
-                    <a
-                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                      href="#"
-                    >
-                      Projects
-                    </a>
-                    <a
-                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                      href="#"
-                    >
-                      Calendar
-                    </a>
+                    <NavLink href={`/${locale}/portal`} label={t.nav.dashboard} />
+                    <NavLink href={`/${locale}/portal/dataset`} label={t.nav.dataset} />
                   </div>
                 </div>
               </div>
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex items-center">
-                  <button
-                    className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    type="button"
-                  >
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon aria-hidden="true" className="h-6 w-6" />
-                  </button>
-
+                  <ThemeToggle className="bg-slate-800 text-slate-300 hover:text-white focus:outline-none focus:ring-1 focus:ring-slate-300 focus:ring-offset-2 focus:ring-offset-slate-800" />
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>

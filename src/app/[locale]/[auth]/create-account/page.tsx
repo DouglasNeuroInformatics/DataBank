@@ -82,7 +82,7 @@ const CreateAccountPage = () => {
       />
       <div className="flex w-full justify-between">
         <LanguageToggle dropdownDirection="up" />
-        <ThemeToggle />
+        <ThemeToggle className="hover:bg-slate-200 dark:hover:bg-slate-700" />
       </div>
     </div>
   );

@@ -16,7 +16,9 @@
   "nav": {
     "home": "Accueil",
     "login": "Se connecter",
-    "createAccount": "Créer un compte"
+    "createAccount": "Créer un compte",
+    "dashboard": "Tableau de bord",
+    "dataset": "Bases de données"
   },
   "firstName": "Prénom",
   "lastName": "Nom de famille",

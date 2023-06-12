@@ -16,7 +16,9 @@
   "nav": {
     "home": "Home",
     "login": "Login",
-    "createAccount": "Create an Account"
+    "createAccount": "Create an Account",
+    "dashboard": "Dashboard",
+    "dataset": "Datasets"
   },
   "firstName": "First Name",
   "lastName": "Last Name",
