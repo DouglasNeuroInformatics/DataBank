@@ -3,7 +3,7 @@ import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import Negotiator from 'negotiator';
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { i18n } from '@/i18n';
+import { Locale, i18n } from '@/i18n';
 
 const STATIC_FILE_EXTENSIONS = ['jpg', 'png', 'svg'];
 
@@ -25,7 +25,7 @@ export async function middleware(req: NextRequest) {
   // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
   for (const extension of STATIC_FILE_EXTENSIONS) {
     if (pathname.endsWith(`.${extension}`)) {
-      return;
+      return res;
     }
   }
 
@@ -41,12 +41,19 @@ export async function middleware(req: NextRequest) {
   }
 
   // AUTH
-
   const supabase = createMiddlewareClient({ req, res });
 
-  const userResponse = await supabase.auth.getUser();
-  console.log(userResponse);
-  
+  const [locale, segment] = pathname.split('/').filter((s) => s);
+
+  if (segment && segment !== 'auth') {
+    const auth = await supabase.auth.getUser();
+    if (auth.data.user) {
+      return res;
+    }
+    return NextResponse.redirect(new URL(`/${locale}/auth/login`, req.url));
+  }
+
+  return res;
 }
 
 export const config = {
