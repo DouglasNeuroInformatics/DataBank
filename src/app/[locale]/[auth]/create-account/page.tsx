@@ -54,6 +54,7 @@ const CreateAccountPage = () => {
           email: { kind: 'text', label: t.email, variant: 'short' },
           password: { kind: 'text', label: t.password, variant: 'password' }
         }}
+        submitBtnLabel={t['submit']}
         validationSchema={{
           type: 'object',
           properties: {
