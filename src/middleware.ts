@@ -41,15 +41,21 @@ export async function middleware(req: NextRequest) {
   }
 
   // AUTH
-  const supabase = createMiddlewareClient({ req, res });
   const locale = pathname.split('/')[1];
 
-  if (pathname === `/${locale}` || pathname.startsWith(`/${locale}/auth`)) {
+  const supabase = createMiddlewareClient({ req, res });
+  const auth = await supabase.auth.getUser();
+  const isLoggedIn = Boolean(auth.data.user);
+
+  // public routes
+  if (pathname === `/${locale}`) {
     return res;
+  } else if (pathname.startsWith(`/${locale}/auth`)) {
+    return isLoggedIn ? NextResponse.redirect(new URL(`/${locale}/portal`, req.url)) : res;
   }
 
-  const auth = await supabase.auth.getUser();
-  if (auth.data.user) {
+  // protected routes
+  if (isLoggedIn) {
     return res;
   }
   return NextResponse.redirect(new URL(`/${locale}/auth/login`, req.url));
