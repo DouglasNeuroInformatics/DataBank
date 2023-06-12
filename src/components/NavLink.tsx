@@ -17,8 +17,8 @@ export const NavLink = ({ href, label }: NavLinkProps) => {
   return (
     <Link
       className={clsx(
-        'rounded-md px-3 py-2 text-sm font-medium',
-        pathname === href ? 'text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+        'block rounded-md px-3 py-2 text-sm font-medium',
+        pathname === href ? 'text-white' : 'text-slate-300 hover:bg-slate-700 hover:text-white'
       )}
       href={href}
     >
