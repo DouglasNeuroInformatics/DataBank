@@ -3,17 +3,17 @@ import React from 'react';
 import { type Locale } from '@/i18n';
 import { getTranslations } from '@/i18n/server';
 
-interface IndexPageProps {
+interface PortalPageProps {
   params: {
     locale: Locale;
   };
 }
 
-export default async function IndexPage({ params }: IndexPageProps) {
+export default async function PortalPage({ params }: PortalPageProps) {
   const t = await getTranslations(params.locale);
   return (
-    <React.Fragment>
+    <div>
       <h1>Portal</h1>
-    </React.Fragment>
+    </div>
   );
 }
