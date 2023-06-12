@@ -10,12 +10,12 @@ import { getTranslations } from '@/i18n/server';
 
 import '@/styles/index.css';
 
-export const metadata = {
-  title: 'Data Bank',
-  description: 'Minimum Viable Product'
-};
+interface RootLayoutProps {
+  children: React.ReactNode;
+  params: { locale: Locale };
+}
 
-export default async function Root({ children, params }: { children: React.ReactNode; params: { locale: Locale } }) {
+const RootLayout = async ({ children, params }: RootLayoutProps) => {
   const translations = await getTranslations(params.locale);
   const cookieStore = cookies();
 
@@ -29,4 +29,11 @@ export default async function Root({ children, params }: { children: React.React
       </body>
     </html>
   );
-}
+};
+
+export const metadata = {
+  title: 'Data Bank',
+  description: 'Minimum Viable Product'
+};
+
+export default RootLayout;

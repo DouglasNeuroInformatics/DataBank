@@ -14,7 +14,7 @@ interface IndexPageProps {
   };
 }
 
-export default async function IndexPage({ params }: IndexPageProps) {
+const IndexPage = async ({ params }: IndexPageProps) => {
   const t = await getTranslations(params.locale);
   return (
     <React.Fragment>
@@ -32,4 +32,6 @@ export default async function IndexPage({ params }: IndexPageProps) {
       </header>
     </React.Fragment>
   );
-}
+};
+
+export default IndexPage;

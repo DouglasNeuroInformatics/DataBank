@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { Navbar } from '@/components/Navbar';
 import { type Locale } from '@/i18n';
-import { getTranslations } from '@/i18n/server';
 
 interface PortalLayoutProps {
   children: React.ReactNode;
@@ -10,14 +10,13 @@ interface PortalLayoutProps {
   };
 }
 
-export default async function PortalLayout({ children, params }: PortalLayoutProps) {
-  const t = await getTranslations(params.locale);
+const PortalLayout = ({ children }: PortalLayoutProps) => {
   return (
     <React.Fragment>
-      <header>
-        <h1>Header</h1>
-      </header>
+      <Navbar />
       <main className="container">{children}</main>
     </React.Fragment>
   );
-}
+};
+
+export default PortalLayout;

@@ -16,7 +16,7 @@ export interface BrandingProps {
 export const Branding = ({ className, title }: BrandingProps) => {
   return (
     <div className={clsx('flex items-center gap-2', className)}>
-      <Image alt="logo" className="dark:brightness-150" height={64} src="/logo.png" width={64} />
+      <Image alt="logo" className="dark:brightness-150" height={56} src="/logo.png" width={56} />
       {title && (
         <span className="text-sm uppercase leading-tight antialiased md:text-base" style={{ maxWidth: '7.5em' }}>
           {title}
