@@ -2,10 +2,24 @@
 
 import React from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { Menu, Transition } from '@headlessui/react';
 import { clsx } from 'clsx';
 
+import { useClientTranslations } from '@/hooks/useClientTranslations';
+
 export const ProfileDropdown = () => {
+  const t = useClientTranslations();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', {
+      method: 'POST'
+    });
+    router.refresh();
+  };
+
   return (
     <Menu as="div" className="relative ml-3">
       <div>
@@ -52,16 +66,9 @@ export const ProfileDropdown = () => {
             )}
           </Menu.Item>
           <Menu.Item>
-            {({ active }) => (
-              <a
-                className={clsx('block px-4 py-2 text-sm text-slate-700', {
-                  'bg-slate-100': active
-                })}
-                href="#"
-              >
-                Sign out
-              </a>
-            )}
+            <button className="block px-4 py-2 text-sm text-slate-700" type="button" onClick={handleLogout}>
+              {t.logout}
+            </button>
           </Menu.Item>
         </Menu.Items>
       </Transition>
