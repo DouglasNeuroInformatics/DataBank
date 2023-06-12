@@ -44,6 +44,8 @@ export async function middleware(req: NextRequest) {
   const locale = pathname.split('/')[1];
 
   const supabase = createMiddlewareClient({ req, res });
+  await supabase.auth.getSession();
+  
   const auth = await supabase.auth.getUser();
   const isLoggedIn = Boolean(auth.data.user);
 
