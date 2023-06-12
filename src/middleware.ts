@@ -42,18 +42,17 @@ export async function middleware(req: NextRequest) {
 
   // AUTH
   const supabase = createMiddlewareClient({ req, res });
+  const locale = pathname.split('/')[1];
 
-  const [locale, segment] = pathname.split('/').filter((s) => s);
-
-  if (segment && segment !== 'auth') {
-    const auth = await supabase.auth.getUser();
-    if (auth.data.user) {
-      return res;
-    }
-    return NextResponse.redirect(new URL(`/${locale}/auth/login`, req.url));
+  if (pathname === `/${locale}` || pathname.startsWith(`/${locale}/auth`)) {
+    return res;
   }
 
-  return res;
+  const auth = await supabase.auth.getUser();
+  if (auth.data.user) {
+    return res;
+  }
+  return NextResponse.redirect(new URL(`/${locale}/auth/login`, req.url));
 }
 
 export const config = {
