@@ -5,12 +5,12 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Form, useNotificationsStore } from '@douglasneuroinformatics/react-components';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 import { Branding } from '@/components/Branding';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
+import { supabase } from '@/lib/supabase';
 
 export type CreateUserData = {
   firstName: string;
@@ -22,7 +22,6 @@ export type CreateUserData = {
 const CreateAccountPage = () => {
   const t = useClientTranslations();
   const router = useRouter();
-  const supabase = createClientComponentClient();
   const { addNotification } = useNotificationsStore();
 
   const createAccount = async ({ firstName, lastName, email, password }: CreateUserData) => {
