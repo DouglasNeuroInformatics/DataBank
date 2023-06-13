@@ -6,6 +6,7 @@
   "scripts": {
     "build": "next build",
     "clean": "fd -H -I --prune \".next|node_modules\" --exec rm -rf",
+    "db:gen-types": "supabase gen types typescript --local > ./src/types/database.types.ts",
     "dev": "next dev",
     "format": "prettier --write src",
     "lint": "eslint --fix src",
