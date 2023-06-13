@@ -13,11 +13,11 @@ interface DatasetPageProps {
 const DatasetPage = async ({ params }: DatasetPageProps) => {
   const t = await getTranslations(params.locale);
   return (
-    <div className="grid md:grid-cols-2">
-      <div>
+    <div className="grid grid-cols-4">
+      <div className="col-span-1">
         <h3>Your Datasets</h3>
       </div>
-      <div>
+      <div className="col-span-3">
         <Table />
       </div>
     </div>
