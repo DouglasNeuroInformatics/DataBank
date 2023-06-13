@@ -2,13 +2,15 @@
 
 import React from 'react';
 
-import { Form } from '@douglasneuroinformatics/react-components';
+import { useRouter } from 'next/navigation';
+
+import { Form, useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 import { Branding } from '@/components/Branding';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
-import { trpc } from '@/utils/trpc';
 
 export type CreateUserData = {
   firstName: string;
@@ -19,13 +21,26 @@ export type CreateUserData = {
 
 const CreateAccountPage = () => {
   const t = useClientTranslations();
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+  const { addNotification } = useNotificationsStore();
 
-  const createUser = trpc.user.create.useMutation();
-
-  const createAccount = async (data: CreateUserData) => {
-    const createdUser = await createUser.mutateAsync(data);
-    // eslint-disable-next-line no-alert
-    alert(JSON.stringify({ createdUser }));
+  const createAccount = async ({ firstName, lastName, email, password }: CreateUserData) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { firstName, lastName },
+        emailRedirectTo: `${location.origin}/auth/callback`
+      }
+    });
+    if (error) {
+      console.error(error);
+      addNotification({ type: 'error', message: `${error.status || 'Error'}: ${error.message}` });
+    } else {
+      addNotification({ type: 'success' });
+      router.refresh();
+    }
   };
 
   return (
@@ -41,6 +56,7 @@ const CreateAccountPage = () => {
           email: { kind: 'text', label: t.email, variant: 'short' },
           password: { kind: 'text', label: t.password, variant: 'password' }
         }}
+        submitBtnLabel={t['submit']}
         validationSchema={{
           type: 'object',
           properties: {
@@ -63,13 +79,11 @@ const CreateAccountPage = () => {
           },
           required: ['firstName', 'lastName', 'email', 'password']
         }}
-        onSubmit={(data) => {
-          void createAccount(data);
-        }}
+        onSubmit={createAccount}
       />
       <div className="flex w-full justify-between">
         <LanguageToggle dropdownDirection="up" />
-        <ThemeToggle />
+        <ThemeToggle className="hover:bg-slate-200 dark:hover:bg-slate-700" />
       </div>
     </div>
   );

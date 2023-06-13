@@ -5,11 +5,15 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
+import { clsx } from 'clsx';
 import Cookies from 'js-cookie';
 
 type Theme = 'light' | 'dark';
 
-export const ThemeToggle = () => {
+export interface ThemeToggleProps {
+  className?: string;
+}
+export const ThemeToggle = ({ className }: ThemeToggleProps) => {
   const [theme, setTheme] = useState<Theme>();
   const router = useRouter();
 
@@ -36,7 +40,7 @@ export const ThemeToggle = () => {
 
   return (
     <button
-      className="rounded-full p-2 transition-transform hover:bg-slate-200 dark:hover:bg-slate-700"
+      className={clsx('rounded-full p-2 transition-transform', className)}
       type="button"
       onClick={() => setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'))}
     >

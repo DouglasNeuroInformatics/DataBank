@@ -10,7 +10,7 @@ import { clsx } from 'clsx';
 
 import { useLocale } from '@/hooks/useLocale';
 import { useRedirectedPathname } from '@/hooks/useRedirectedPathname';
-import { i18n } from '@/lib/i18n';
+import { i18n } from '@/i18n';
 
 interface LanguageToggleProps {
   dropdownDirection?: 'up' | 'down';
@@ -23,7 +23,7 @@ export const LanguageToggle = ({ dropdownDirection }: LanguageToggleProps) => {
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button className="flex items-center justify-center rounded-md border p-2 dark:border-slate-600">
+      <Menu.Button className="flex items-center justify-center rounded-md p-2  hover:bg-slate-200 dark:hover:bg-slate-700">
         <span className="uppercase">{locale}</span>
         <ChevronDownIcon
           className={clsx('ml-1', { 'rotate-180': dropdownDirection === 'up' })}

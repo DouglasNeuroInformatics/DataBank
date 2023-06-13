@@ -1,11 +1,19 @@
 import React from 'react';
 
-import { PageHeading } from '@/components/PageHeading';
+import { type Locale } from '@/i18n';
+import { getTranslations } from '@/i18n/server';
 
-const PortalPage = () => {
+interface PortalPageProps {
+  params: {
+    locale: Locale;
+  };
+}
+
+const PortalPage = async ({ params }: PortalPageProps) => {
+  const t = await getTranslations(params.locale);
   return (
     <div>
-      <PageHeading text="Portal" />
+      <h1>Portal</h1>
     </div>
   );
 };

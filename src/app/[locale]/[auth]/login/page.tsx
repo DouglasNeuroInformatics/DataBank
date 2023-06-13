@@ -4,14 +4,13 @@ import React from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { Form } from '@douglasneuroinformatics/react-components';
+import { Form, useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 import { Branding } from '@/components/Branding';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useClientTranslations } from '@/hooks/useClientTranslations';
-import { useLocale } from '@/hooks/useLocale';
-import { trpc } from '@/utils/trpc';
 
 type LoginCredentials = {
   email: string;
@@ -19,20 +18,20 @@ type LoginCredentials = {
 };
 
 const LoginPage = () => {
-  const t = useClientTranslations();
-  const locale = useLocale();
   const router = useRouter();
+  const t = useClientTranslations();
+  const supabase = createClientComponentClient();
+  const { addNotification } = useNotificationsStore();
 
-  const login = trpc.auth.login.useMutation({
-    onSuccess(data) {
-      if (data) {
-        router.push(`/${locale}/portal`);
-      } else {
-        // eslint-disable-next-line no-alert
-        alert('ERROR');
-      }
+  const login = async (credentials: LoginCredentials) => {
+    const result = await supabase.auth.signInWithPassword(credentials);
+    if (result.error) {
+      addNotification({ type: 'error', message: `${result.error.status || 'Error'}: ${result.error.message}` });
+    } else {
+      addNotification({ type: 'success' });
+      router.refresh();
     }
-  });
+  };
 
   return (
     <div className="flex w-full flex-col gap-4 rounded-lg bg-white px-6 py-8 shadow-xl ring-1 ring-slate-900/5 dark:bg-slate-800 md:p-8">
@@ -45,6 +44,7 @@ const LoginPage = () => {
           email: { kind: 'text', label: t.email, variant: 'short' },
           password: { kind: 'text', label: t.password, variant: 'password' }
         }}
+        submitBtnLabel={t.submit}
         validationSchema={{
           type: 'object',
           properties: {
@@ -57,13 +57,21 @@ const LoginPage = () => {
               minLength: 1
             }
           },
-          required: ['email', 'password']
+          required: ['email', 'password'],
+          errorMessage: {
+            properties: {
+              email: t['form.errors.required'],
+              password: t['form.errors.required']
+            }
+          }
         }}
-        onSubmit={(data) => void login.mutateAsync(data)}
+        onSubmit={(data) => {
+          void login(data);
+        }}
       />
       <div className="flex w-full justify-between">
         <LanguageToggle dropdownDirection="up" />
-        <ThemeToggle />
+        <ThemeToggle className="hover:bg-slate-200 dark:hover:bg-slate-700" />
       </div>
     </div>
   );

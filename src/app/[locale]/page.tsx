@@ -1,8 +1,12 @@
 import React from 'react';
 
-import { Navbar } from '@/components/Navbar';
-import { type Locale } from '@/lib/i18n';
-import { getTranslations } from '@/utils/get-translations';
+import Link from 'next/link';
+
+import { Branding } from '@/components/Branding';
+import { LanguageToggle } from '@/components/LanguageToggle';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { type Locale } from '@/i18n';
+import { getTranslations } from '@/i18n/server';
 
 interface IndexPageProps {
   params: {
@@ -10,24 +14,24 @@ interface IndexPageProps {
   };
 }
 
-export default async function IndexPage({ params }: IndexPageProps) {
+const IndexPage = async ({ params }: IndexPageProps) => {
   const t = await getTranslations(params.locale);
   return (
     <React.Fragment>
-      <header>
-        <Navbar
-          links={[
-            {
-              href: `/${params.locale}/auth/login`,
-              label: t.nav.login
-            },
-            {
-              href: `/${params.locale}/auth/create-account`,
-              label: t.nav.createAccount
-            }
-          ]}
-        />
+      <header className="container flex w-screen items-center justify-between border-b p-2">
+        <Branding />
+        <div className="flex items-center gap-5">
+          <nav className="flex gap-5">
+            <Link href={`/${params.locale}/auth/login`}>{t['login']}</Link>
+            <Link href={`/${params.locale}/auth/create-account`}>{t['createAccount']}</Link>
+          </nav>
+          <div className="h-6 border-l" />
+          <ThemeToggle />
+          <LanguageToggle />
+        </div>
       </header>
     </React.Fragment>
   );
-}
+};
+
+export default IndexPage;

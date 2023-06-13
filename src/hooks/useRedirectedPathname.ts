@@ -2,7 +2,7 @@ import 'client-only';
 
 import { usePathname } from 'next/navigation';
 
-import { type Locale } from '@/lib/i18n';
+import { type Locale } from '@/i18n';
 
 export function useRedirectedPathname() {
   const pathname = usePathname();

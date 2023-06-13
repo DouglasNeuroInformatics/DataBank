@@ -2,7 +2,7 @@
 
 import React, { createContext } from 'react';
 
-import { type Translations } from '@/typings/translations';
+import { type Translations } from '@/i18n';
 
 export const ClientTranslationsContext = createContext<Translations>(null!);
 
