@@ -45,7 +45,7 @@ export async function middleware(req: NextRequest) {
 
   const supabase = createMiddlewareClient({ req, res });
   await supabase.auth.getSession();
-  
+
   const auth = await supabase.auth.getUser();
   const isLoggedIn = Boolean(auth.data.user);
 
@@ -65,5 +65,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   // Matcher ignoring `/_next/` and `/api/`
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+  matcher: ['/((?!api|_next|favicon.ico).*)']
 };

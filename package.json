@@ -8,7 +8,7 @@
     "build:storybook": "storybook build",
     "clean": "fd -H -I --prune \".next|node_modules\" --exec rm -rf",
     "db:gen-types": "supabase gen types typescript --local > ./src/types/database.types.ts",
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "format": "prettier --write src",
     "lint": "eslint --fix src",
     "start": "next start",
