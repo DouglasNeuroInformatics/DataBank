@@ -11,11 +11,7 @@ interface PortalLayoutProps {
 }
 
 const PortalLayout = ({ children }: PortalLayoutProps) => {
-  return (
-    <Layout>
-      <main className="container">{children}</main>
-    </Layout>
-  );
+  return <Layout>{children}</Layout>;
 };
 
 export default PortalLayout;

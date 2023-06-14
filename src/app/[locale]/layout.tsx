@@ -15,6 +15,10 @@ interface RootLayoutProps {
   params: { locale: Locale };
 }
 
+export async function generateStaticParams() {
+  return Promise.resolve([{ locale: 'en' }, { locale: 'fr' }]);
+}
+
 const RootLayout = async ({ children, params }: RootLayoutProps) => {
   const translations = await getTranslations(params.locale);
   const cookieStore = cookies();
@@ -25,7 +29,7 @@ const RootLayout = async ({ children, params }: RootLayoutProps) => {
     <html className={theme?.value} lang={params.locale}>
       <body className="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-white">
         <ClientTranslationsProvider translations={translations}>{children}</ClientTranslationsProvider>
-        <NotificationHub />
+        {/* <NotificationHub /> */}
       </body>
     </html>
   );
