@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Navbar } from '@/components/Navbar';
+import { Layout } from '@/components/Layout';
 import { type Locale } from '@/i18n';
 
 interface PortalLayoutProps {
@@ -12,10 +12,9 @@ interface PortalLayoutProps {
 
 const PortalLayout = ({ children }: PortalLayoutProps) => {
   return (
-    <React.Fragment>
-      <Navbar />
+    <Layout>
       <main className="container">{children}</main>
-    </React.Fragment>
+    </Layout>
   );
 };
 
