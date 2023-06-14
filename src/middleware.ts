@@ -65,5 +65,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   // Matcher ignoring `/_next/` and `/api/`
-  matcher: ['/((?!api|_next|favicon.ico).*)']
+  matcher: ['/((?!api|_next|turbopack-hmr|favicon.ico).*)']
 };
