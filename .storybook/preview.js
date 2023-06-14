@@ -1,6 +1,6 @@
 import '../src/styles/index.css';
 
-/** @type {import('@storybook/react').Preview}*/
+/** @type {import('@storybook/react').Preview} */
 export default {
   parameters: {
     actions: { argTypesRegex: '^on[A-Z].*' },
@@ -9,6 +9,7 @@ export default {
         color: /(background|color)$/i,
         date: /Date$/
       }
-    }
+    },
+    layout: 'fullscreen'
   }
 };
