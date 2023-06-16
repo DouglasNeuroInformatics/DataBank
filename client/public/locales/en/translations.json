@@ -2,6 +2,7 @@
   "email": "email",
   "password": "password",
   "login": "login",
+  "createAccount": "create an account",
   "requiredField": "This is a required field",
   "unauthorizedError.message": "Invalid login credentials",
   "unauthorizedError.title": "Unauthorized"

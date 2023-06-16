@@ -2,6 +2,7 @@
   "email": "courriel",
   "password": "mot de passe",
   "login": "se connecter",
+  "createAccount": "créer un compte",
   "requiredField": "Ce champ est obligatoire",
   "unauthorizedError.message": "Informations d'identification invalides",
   "unauthorizedError.title": "Non autorisé"

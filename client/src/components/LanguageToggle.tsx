@@ -1,40 +1,15 @@
 import React from 'react';
 
-import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
 import i18next from 'i18next';
-
-const languages = {
-  en: {
-    nativeName: 'English'
-  },
-  fr: {
-    nativeName: 'Français'
-  }
-};
 
 interface LanguageToggleProps {
   dropdownDirection?: 'up' | 'down';
 }
 
 export const LanguageToggle = ({ dropdownDirection }: LanguageToggleProps) => {
-  const notifications = useNotificationsStore();
-
-  const inactiveLanguage = Object.keys(languages).find((l) => l !== i18next.resolvedLanguage) as
-    | keyof typeof languages
-    | undefined;
-
-  const handleClick: React.MouseEventHandler<HTMLButtonElement> = async () => {
-    try {
-      await i18next.changeLanguage(inactiveLanguage);
-    } catch (error) {
-      console.error(error);
-      notifications.addNotification({ type: 'error', message: 'Failed to change languages' });
-    }
-  };
-
   return (
     <Menu as="div" className="relative bg-inherit">
       <Menu.Button

@@ -1,21 +1,9 @@
-import { Link } from 'react-router-dom';
-
-import { ThemeToggle } from '@/components';
+import { LandingHeader } from '../components/LandingHeader';
 
 export const LandingPage = () => {
   return (
     <>
-      <header className="bg-white p-2 shadow dark:bg-slate-800">
-        <div className="container flex justify-between">
-          <img alt="logo" className="h-10" src="/logo.png" />
-          <div>
-            <nav>
-              <Link to="/login">Login</Link>
-            </nav>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <LandingHeader />
       <h1>Landing Page</h1>
     </>
   );
