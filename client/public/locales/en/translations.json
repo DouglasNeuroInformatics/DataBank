@@ -14,5 +14,7 @@
   "learnMore": "Learn More",
   "submit": "Submit",
   "firstName": "First Name",
-  "lastName": "Last Name"
+  "lastName": "Last Name",
+  "verifyAccount": "Check Your Email",
+  "verificationCode": "Verification Code"
 }

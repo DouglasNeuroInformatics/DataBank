@@ -9,6 +9,7 @@ export type UserRole = 'admin' | 'standard';
 export type JwtPayload = {
   email: string;
   role: UserRole;
+  isVerified: boolean;
 };
 
 export type LoginCredentials = {

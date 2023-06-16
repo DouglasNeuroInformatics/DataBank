@@ -14,5 +14,7 @@
   "learnMore": "En savoir plus",
   "submit": "Soumettre",
   "firstName": "Prénom",
-  "lastName": "Nom"
+  "lastName": "Nom",
+  "verifyAccount": "Vérifiez votre courriel",
+  "verificationCode": "Code de vérification"
 }

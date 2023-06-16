@@ -25,7 +25,8 @@ export class AuthService {
 
     const payload: JwtPayload = {
       email,
-      role: user.role
+      role: user.role,
+      isVerified: user.isVerified
     };
 
     const accessToken = await this.jwtService.signAsync(payload);
