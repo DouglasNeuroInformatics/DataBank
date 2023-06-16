@@ -5,5 +5,9 @@
   "createAccount": "créer un compte",
   "requiredField": "Ce champ est obligatoire",
   "unauthorizedError.message": "Informations d'identification invalides",
-  "unauthorizedError.title": "Non autorisé"
+  "unauthorizedError.title": "Non autorisé",
+  "platformName": "La banque de données du Douglas",
+  "platformDescription": "La banque de données du Douglas est une plateforme web pour la gestion, la mise à jour et le partage d'ensembles de données tabulaires",
+  "getStarted": "Commencer",
+  "learnMore": "En savoir plus"
 }

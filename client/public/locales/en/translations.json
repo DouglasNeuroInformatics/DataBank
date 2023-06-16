@@ -5,5 +5,9 @@
   "createAccount": "create an account",
   "requiredField": "This is a required field",
   "unauthorizedError.message": "Invalid login credentials",
-  "unauthorizedError.title": "Unauthorized"
+  "unauthorizedError.title": "Unauthorized",
+  "platformName": "The Douglas Data Bank",
+  "platformDescription": "The Douglas Data Bank is a web-based platform for managing, versioning, and sharing tabular datasets",
+  "getStarted": "Get Started",
+  "learnMore": "Learn More"
 }

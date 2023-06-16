@@ -1,10 +1,13 @@
+import { Hero } from '../components/Hero';
 import { LandingHeader } from '../components/LandingHeader';
 
 export const LandingPage = () => {
   return (
     <>
       <LandingHeader />
-      <h1>Landing Page</h1>
+      <main className="container flex flex-grow items-center justify-center">
+        <Hero />
+      </main>
     </>
   );
 };
