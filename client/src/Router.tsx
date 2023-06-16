@@ -22,18 +22,10 @@ export const Router = () => {
             </Route>
           ))
           .with({ isVerified: false }, () => (
-            <Route
-              element={
-                <Navigate
-                  replace={true}
-                  to={{ pathname: '/auth/verify-account', search: encodeURIComponent(`?email=${currentUser?.email}`) }}
-                />
-              }
-              path="*"
-            />
+            <Route element={<Navigate to={`/auth/verify-account?email=${currentUser!.email}`} />} path="*" />
           ))
           .otherwise(() => (
-            <Route element={<Navigate replace={true} to="/auth/login" />} path="*" />
+            <Route element={<Navigate replace={true} to="/" />} path="*" />
           ))}
       </Routes>
     </BrowserRouter>

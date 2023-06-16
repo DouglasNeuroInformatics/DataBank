@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -11,11 +13,12 @@ export const VerifyAccountPage = () => {
 
   const email = searchParams.get('email');
 
-  if (!email) {
-    navigate('/auth/create-account');
-  }
-  
-  console.log(searchParams.entries(), searchParams.get('email'), searchParams);
+  useEffect(() => {
+    if (!email) {
+      navigate('/');
+    }
+  }, [email]);
+
 
   const handleSubmit = (data: VerifyAccountData) => {
     alert(JSON.stringify(data));
