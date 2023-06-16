@@ -1,4 +1,4 @@
-import { type UserRole } from '@app/types';
+import { type UserRole } from '@databank/types';
 import { IsEmail, IsIn, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {

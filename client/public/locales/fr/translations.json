@@ -4,10 +4,15 @@
   "login": "se connecter",
   "createAccount": "créer un compte",
   "requiredField": "Ce champ est obligatoire",
+  "validEmail": "Veuillez saisir un courriel valide",
   "unauthorizedError.message": "Informations d'identification invalides",
   "unauthorizedError.title": "Non autorisé",
+  "alreadyRegistered": "Un utilisateur avec cet email a déjà été enregistré",
   "platformName": "La banque de données du Douglas",
   "platformDescription": "La banque de données du Douglas est une plateforme web pour la gestion, la mise à jour et le partage d'ensembles de données tabulaires",
   "getStarted": "Commencer",
-  "learnMore": "En savoir plus"
+  "learnMore": "En savoir plus",
+  "submit": "Soumettre",
+  "firstName": "Prénom",
+  "lastName": "Nom"
 }

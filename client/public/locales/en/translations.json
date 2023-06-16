@@ -4,10 +4,15 @@
   "login": "login",
   "createAccount": "create an account",
   "requiredField": "This is a required field",
+  "validEmail": "Please enter a valid email",
   "unauthorizedError.message": "Invalid login credentials",
   "unauthorizedError.title": "Unauthorized",
+  "alreadyRegistered": "A user with this email has already been registered",
   "platformName": "The Douglas Data Bank",
   "platformDescription": "The Douglas Data Bank is a web-based platform for managing, versioning, and sharing tabular datasets",
   "getStarted": "Get Started",
-  "learnMore": "Learn More"
+  "learnMore": "Learn More",
+  "submit": "Submit",
+  "firstName": "First Name",
+  "lastName": "Last Name"
 }

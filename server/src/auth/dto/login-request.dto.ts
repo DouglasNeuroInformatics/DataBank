@@ -1,4 +1,4 @@
-import { LoginCredentials } from '@app/types';
+import { LoginCredentials } from '@databank/types';
 import { IsNotEmpty } from 'class-validator';
 
 export class LoginRequestDto implements LoginCredentials {

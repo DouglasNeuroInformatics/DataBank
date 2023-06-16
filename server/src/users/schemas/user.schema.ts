@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { type UserRole } from '@app/types';
+import { type UserRole } from '@databank/types';
 import { HydratedDocument } from 'mongoose';
 
 @Schema()
