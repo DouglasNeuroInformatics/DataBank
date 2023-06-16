@@ -4,18 +4,21 @@ import { useNavigate } from 'react-router-dom';
 import { LoginForm } from '../components/LoginForm';
 
 import logo from '@/assets/logo.png';
+import { LanguageToggle, ThemeToggle } from '@/components';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   return (
-    <div className="flex h-screen items-center justify-center bg-slate-50 sm:bg-slate-100">
-      <div className="flex flex-col items-center rounded-lg bg-slate-50 px-12 py-8 sm:w-[24rem]">
+    <div className="flex h-screen w-screen items-center justify-center">
+      <div className="flex w-[22rem] flex-col items-center rounded-2xl bg-white p-8 shadow-xl ring-1 ring-slate-900/5 dark:bg-slate-800">
         <img alt="logo" className="m-1 w-16" src={logo} />
-        <h1 className="text-2xl font-bold">{t('login')}</h1>
-        <div className="mt-3 w-full">
-          <LoginForm onSuccess={() => navigate('/overview')} />
+        <h1 className="text-2xl font-bold tracking-tight first-letter:capitalize">{t('login')}</h1>
+        <LoginForm onSuccess={() => navigate('/overview')} />
+        <div className="flex w-full justify-between mt-3">
+          <LanguageToggle />
+          <ThemeToggle />
         </div>
       </div>
     </div>

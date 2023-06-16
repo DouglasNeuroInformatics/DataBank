@@ -8,7 +8,11 @@ export const ThemeToggle = () => {
   const toggleTheme = () => setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
 
   return (
-    <button className="rounded-full p-2 transition-transform" type="button" onClick={toggleTheme}>
+    <button
+      className="rounded-full p-2 transition-transform hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150"
+      type="button"
+      onClick={toggleTheme}
+    >
       {theme === 'dark' ? <SunIcon height={24} width={24} /> : <MoonIcon height={24} width={24} />}
     </button>
   );

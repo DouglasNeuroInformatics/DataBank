@@ -64,7 +64,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
         required: ['email', 'password'],
         errorMessage: {
           properties: {
-            username: t('requiredField'),
+            email: t('requiredField'),
             password: t('requiredField')
           }
         }
