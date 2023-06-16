@@ -1,4 +1,5 @@
 import { NotificationHub } from '@douglasneuroinformatics/react-components';
+import { createPortal } from 'react-dom';
 
 import { Router } from './Router';
 
@@ -8,8 +9,8 @@ import './services/i18n';
 export const App = () => {
   return (
     <>
-      <NotificationHub />
       <Router />
+      {createPortal(<NotificationHub />, document.body)}
     </>
   );
 };
