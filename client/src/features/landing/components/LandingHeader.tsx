@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { LanguageToggle, ThemeToggle } from '@/components';
+import { Logo } from '@/components/Logo';
 
 export const LandingHeader = () => {
   const { i18n, t } = useTranslation();
@@ -14,7 +15,7 @@ export const LandingHeader = () => {
   return (
     <header className="bg-white text-slate-600 shadow dark:bg-slate-800 dark:text-slate-300">
       <div className="container flex flex-wrap items-center bg-inherit p-2">
-        <img alt="logo" className="m-2 mr-10 hidden h-10 md:block" src="/logo.png" />
+        <Logo className="m-2 mr-10 hidden h-10 w-auto md:block" />
         <button className="m-2 md:hidden" type="button" onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}>
           <Bars3Icon height={32} width={32} />
         </button>
