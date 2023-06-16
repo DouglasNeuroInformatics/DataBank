@@ -6,7 +6,7 @@ export interface Greeting {
 
 export type UserRole = 'admin' | 'standard';
 
-export type JwtPayload = {
+export type CurrentUser = {
   email: string;
   role: UserRole;
   isVerified: boolean;

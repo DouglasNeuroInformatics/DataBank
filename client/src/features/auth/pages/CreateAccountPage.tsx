@@ -1,7 +1,8 @@
+import { CurrentUser } from '@databank/types';
 import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 
 import { AuthLayout } from '../components/AuthLayout';
 import { type CreateAccountData, CreateAccountForm } from '../components/CreateAccountForm';
@@ -11,8 +12,11 @@ import { useAuthStore } from '@/stores/auth-store';
 export const CreateAccountPage = () => {
   const auth = useAuthStore();
   const notifications = useNotificationsStore();
-  const handleSubmit = async (data: CreateAccountData) => {
-    const response = await axios.post('/v1/auth/account', data, {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const createAccount = async (data: CreateAccountData) => {
+    const response = await axios.post<CurrentUser>('/v1/auth/account', data, {
       validateStatus: (status) => status === 201 || status === 409
     });
     if (response.status === 409) {
@@ -22,11 +26,16 @@ export const CreateAccountPage = () => {
       });
       return;
     }
-    auth.setAccessToken(response.data.accessToken);
+    notifications.addNotification({ type: 'success' });
+    auth.setCurrentUser(response.data);
+    navigate(`/auth/verify-account?email=${data.email}`, {
+      replace: true
+    });
   };
 
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-
-  return <AuthLayout form={<CreateAccountForm onSubmit={handleSubmit} />} title={t('createAccount')} />;
+  return (
+    <AuthLayout title={t('createAccount')}>
+      <CreateAccountForm onSubmit={createAccount} />
+    </AuthLayout>
+  );
 };

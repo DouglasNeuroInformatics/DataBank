@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 
-import { JwtPayload, UserRole } from '@databank/types';
+import { CurrentUser, UserRole } from '@databank/types';
 import { Request } from 'express';
 
 import { ProtectedRouteAccess, RouteAccessType } from '../core/decorators/route-access.decorator.js';
@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
     }
 
     // Validate token and extract payload
-    let payload: JwtPayload;
+    let payload: CurrentUser;
     try {
       payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.getOrThrow('SECRET_KEY')

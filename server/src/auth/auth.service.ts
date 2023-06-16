@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { JwtPayload } from '@databank/types';
+import { CurrentUser } from '@databank/types';
 import bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service.js';
@@ -23,7 +23,7 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect password');
     }
 
-    const payload: JwtPayload = {
+    const payload: CurrentUser = {
       email,
       role: user.role,
       isVerified: user.isVerified
@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   /** Create a new standard account with verification required */
-  async createAccount(createAccountDto: CreateAccountDto) {
+  async createAccount(createAccountDto: CreateAccountDto): Promise<CurrentUser> {
     return this.usersService.createUser({ ...createAccountDto, role: 'standard', isVerified: false });
   }
 }
