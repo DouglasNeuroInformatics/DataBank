@@ -36,7 +36,7 @@ export const LandingHeader = () => {
               'block px-3 py-2 font-medium',
               i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
             )}
-            to="/login"
+            to="/auth/login"
           >
             {t('login')}
           </Link>
@@ -45,7 +45,7 @@ export const LandingHeader = () => {
               'block px-3 py-2 font-medium',
               i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
             )}
-            to="/login"
+            to="/auth/create-account"
           >
             {t('createAccount')}
           </Link>
