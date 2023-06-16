@@ -1,0 +1,8 @@
+{
+  "email": "courriel",
+  "password": "mot de passe",
+  "login": "se connecter",
+  "requiredField": "Ce champ est obligatoire",
+  "unauthorizedError.message": "Informations d'identification invalides",
+  "unauthorizedError.title": "Non autorisé"
+}

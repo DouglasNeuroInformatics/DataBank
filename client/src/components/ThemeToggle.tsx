@@ -9,7 +9,7 @@ export const ThemeToggle = () => {
 
   return (
     <button
-      className="rounded-full p-2 transition-transform hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150"
+      className="rounded-md p-2 transition-transform hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150"
       type="button"
       onClick={toggleTheme}
     >

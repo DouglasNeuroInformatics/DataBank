@@ -16,7 +16,7 @@ export const LoginPage = () => {
         <img alt="logo" className="m-1 w-16" src={logo} />
         <h1 className="text-2xl font-bold tracking-tight first-letter:capitalize">{t('login')}</h1>
         <LoginForm onSuccess={() => navigate('/overview')} />
-        <div className="flex w-full justify-between mt-3">
+        <div className="mt-3 flex w-full justify-between bg-inherit">
           <LanguageToggle />
           <ThemeToggle />
         </div>
