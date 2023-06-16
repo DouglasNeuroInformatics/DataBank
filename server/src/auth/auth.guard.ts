@@ -18,6 +18,12 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    const routeAccess = this.getRouteAccess(context);
+
+    // If public route, then no need to verify integrity of token
+    if (routeAccess === 'public') {
+      return true;
+    }
 
     // Check if token exists
     const token = this.extractTokenFromHeader(request);
@@ -39,12 +45,15 @@ export class AuthGuard implements CanActivate {
     request['user'] = payload;
 
     // Access user permissions
-    const routeAccess = this.reflector.getAllAndOverride<RouteAccessType | undefined>('RouteAccess', [
-      context.getHandler(),
-      context.getClass()
-    ]);
 
-    return routeAccess === 'public' || this.isAuthorized(request.user?.role, routeAccess);
+    return this.isAuthorized(request.user?.role, routeAccess);
+  }
+
+  /** Return the permissions required to access the current route */
+  private getRouteAccess(context: ExecutionContext): RouteAccessType {
+    return (
+      this.reflector.getAllAndOverride('RouteAccess', [context.getHandler(), context.getClass()]) ?? { role: 'admin' }
+    );
   }
 
   /** Return the access token from the request header, or null if non-existant or malformed */

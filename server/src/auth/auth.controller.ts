@@ -20,6 +20,6 @@ export class AuthController {
   @Post('account')
   @RouteAccess('public')
   createAccount(@Body() createAccountDto: CreateAccountDto) {
-    return;
+    return this.authService.createAccount(createAccountDto);
   }
 }

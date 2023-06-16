@@ -1,8 +1,8 @@
 {
-  "email": "email",
-  "password": "password",
-  "login": "login",
-  "createAccount": "create an account",
+  "email": "Email",
+  "password": "Password",
+  "login": "Login",
+  "createAccount": "Create Account",
   "requiredField": "This is a required field",
   "validEmail": "Please enter a valid email",
   "unauthorizedError.message": "Invalid login credentials",

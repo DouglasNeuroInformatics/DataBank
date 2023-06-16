@@ -9,8 +9,8 @@ import { type CreateAccountData, CreateAccountForm } from '../components/CreateA
 export const CreateAccountPage = () => {
   const notifications = useNotificationsStore();
   const handleSubmit = async (data: CreateAccountData) => {
-    const response = await axios.post('/v1/users', data, {
-      validateStatus: (status) => status === 200 || status === 409
+    const response = await axios.post('/v1/auth/account', data, {
+      validateStatus: (status) => status === 201 || status === 409
     });
     if (response.status === 409) {
       notifications.addNotification({
@@ -25,5 +25,5 @@ export const CreateAccountPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  return <AuthLayout form={<CreateAccountForm onSubmit={handleSubmit} />} title={t('login')} />;
+  return <AuthLayout form={<CreateAccountForm onSubmit={handleSubmit} />} title={t('createAccount')} />;
 };

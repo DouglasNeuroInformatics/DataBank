@@ -6,6 +6,8 @@ import bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service.js';
 
+import { CreateAccountDto } from './dto/create-account.dto.js';
+
 @Injectable()
 export class AuthService {
   constructor(private readonly jwtService: JwtService, private readonly usersService: UsersService) {}
@@ -15,7 +17,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('User with the provided email not found: ' + email);
     }
-    
+
     const isCorrectPassword = await bcrypt.compare(password, user.hashedPassword);
     if (!isCorrectPassword) {
       throw new UnauthorizedException('Incorrect password');
@@ -29,5 +31,10 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload);
 
     return { accessToken };
+  }
+
+  /** Create a new standard account with verification required */
+  async createAccount(createAccountDto: CreateAccountDto) {
+    return this.usersService.createUser({ ...createAccountDto, role: 'standard', isVerified: false });
   }
 }
