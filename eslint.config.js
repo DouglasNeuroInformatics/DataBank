@@ -55,7 +55,7 @@ export default [
     }
   },
   {
-    files: ['**/*.jsx', '**/*.tsx'],
+    files: ['**/*.jsx', '**/*.tsx', 'client/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.browser
