@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "databank",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "ws": "env-cmd bash -c 'yarn workspace @app/$0 ${@:1}'"
   },
   "devDependencies": {
-    "@app/types": "*",
+    "@databank/types": "*",
     "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",

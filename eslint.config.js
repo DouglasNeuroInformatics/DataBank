@@ -65,7 +65,7 @@ export default [
       react: reactPlugin
     },
     rules: {
-      ...reactPlugin.configs.recommended.rules,
+      ...reactPlugin.configs['jsx-runtime'].rules,
       'import/order': [
         'error',
         {

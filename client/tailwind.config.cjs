@@ -1,29 +1,17 @@
 // @ts-check
 
+const path = require('path');
+
 const baseConfig = require('@douglasneuroinformatics/react-components/tailwind.config.cjs');
+
+const componentLibraryContent = path.join(
+  path.dirname(require.resolve('@douglasneuroinformatics/react-components')),
+  '**/*.{js,cjs,mjs}'
+);
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './node_modules/@douglasneuroinformatics/react-components/dist/**/*.{js,cjs,mjs}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}'
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', componentLibraryContent],
   presets: [baseConfig],
-  darkMode: 'class',
-  theme: {
-    extend: {
-      container: {
-        center: true,
-        padding: {
-          DEFAULT: '1rem',
-          sm: '2rem',
-          lg: '4rem',
-          xl: '5rem',
-          '2xl': '6rem'
-        }
-      }
-    }
-  }
+  darkMode: 'class'
 };

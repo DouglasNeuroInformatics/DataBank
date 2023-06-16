@@ -1,0 +1,8 @@
+{
+  "email": "email",
+  "password": "password",
+  "login": "login",
+  "requiredField": "This is a required field",
+  "unauthorizedError.message": "Invalid login credentials",
+  "unauthorizedError.title": "Unauthorized"
+}
