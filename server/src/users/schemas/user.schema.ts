@@ -3,6 +3,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type UserRole } from '@databank/types';
 import { HydratedDocument } from 'mongoose';
 
+import { VerificationCode, VerificationCodeSchema } from '@/auth/schemas/verification-code.schema.js';
+
 @Schema()
 export class User {
   @Prop({ required: true, unique: true })
@@ -20,6 +22,9 @@ export class User {
   /** The timestamp when the user verified their email */
   @Prop({ required: false })
   verifiedAt: number;
+
+  @Prop({ required: false, type: VerificationCodeSchema })
+  verificationCode: VerificationCode;
 }
 
 export type UserDocument = HydratedDocument<User>;

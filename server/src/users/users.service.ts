@@ -7,6 +7,8 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { User } from './schemas/user.schema.js';
 
+import { VerificationCode } from '@/auth/schemas/verification-code.schema.js';
+
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
@@ -34,5 +36,10 @@ export class UsersService {
 
   async findByEmail(email: string) {
     return this.userModel.findOne({ email });
+  }
+
+  /** Set the verification code for the user with the email */
+  async setVerificationCode(email: string, verificationCode: VerificationCode) {
+    return this.userModel.findOneAndUpdate({ email }, { verificationCode });
   }
 }

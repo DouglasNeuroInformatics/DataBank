@@ -9,6 +9,8 @@ import { AuthController } from './auth.controller.js';
 import { AuthGuard } from './auth.guard.js';
 import { AuthService } from './auth.service.js';
 
+import { MailModule } from '@/mail/mail.module.js';
+
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -18,6 +20,7 @@ import { AuthService } from './auth.service.js';
         secret: configService.getOrThrow<string>('SECRET_KEY')
       })
     }),
+    MailModule,
     UsersModule
   ],
   controllers: [AuthController],
