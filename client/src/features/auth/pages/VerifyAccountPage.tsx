@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
 import { AuthLayout } from '../components/AuthLayout';
+import { Countdown } from '../components/Countdown';
 import { VerificationCodeInput } from '../components/VerificationCodeInput';
+
 export const VerifyAccountPage = () => {
-  const timeRemaining = useRef<number>(null);
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const email = searchParams.get('email');
@@ -18,17 +19,13 @@ export const VerifyAccountPage = () => {
   };
 
   useEffect(() => {
-    void sendVerificationCode();
+    sendVerificationCode();
   }, []);
 
   return (
     <AuthLayout title={t('verifyAccount')}>
       <VerificationCodeInput className="my-5" onComplete={(code) => alert(code)} />
-      <div className="w-full">
-        <span>
-          {t('timeRemaining')}: {timeRemaining.current}
-        </span>
-      </div>
+      <Countdown seconds={3600} />
     </AuthLayout>
   );
 };
