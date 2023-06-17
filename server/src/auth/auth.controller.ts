@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { type CurrentUser } from '@databank/types';
 
@@ -17,6 +17,7 @@ import { RequestUser } from '@/core/decorators/request-user.decorator.js';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({ summary: 'Login', description: 'Request an access token from the server' })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @RouteAccess('public')
@@ -24,18 +25,21 @@ export class AuthController {
     return this.authService.login(email, password);
   }
 
+  @ApiOperation({ summary: 'Create Account', description: 'Create a new account as a standard user' })
   @Post('account')
   @RouteAccess('public')
   createAccount(@Body() createAccountDto: CreateAccountDto) {
     return this.authService.createAccount(createAccountDto);
   }
 
+  @ApiOperation({ summary: 'Request Verification Code', description: 'Request a verification code' })
   @Post('verification-code')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   sendVerificationCode(@RequestUser() user: CurrentUser) {
     return this.authService.sendVerificationCode(user);
   }
 
+  @ApiOperation({ summary: 'Verify Account', description: 'Verify an account using a verification code' })
   @Post('verify')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   verifyAccount(@RequestUser() user: CurrentUser, @Body() verifyAccountDto: VerifyAccountDto) {
