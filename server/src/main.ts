@@ -13,7 +13,10 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    // logger: ['error', 'warn', 'debug']
+  });
+
   app.enableCors();
   app.enableVersioning({
     defaultVersion: '1',
@@ -34,10 +37,14 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('/', app, document, {
-    customCssUrl: 'http://localhost:5500/swagger.css',
+  SwaggerModule.setup('/api', app, document, {
+    customCss: 'my custom css',
+    customJs: '/main.js',
+    customJsStr: 'console.log("hello")',
+    customCssUrl: '/swagger.css',
     customfavIcon: '/favicon.ico',
-    customSiteTitle: 'The Douglas Data Bank API'
+    customSiteTitle: 'The Douglas Data Bank API',
+    explorer: true
   });
 
   const configService = app.get(ConfigService);
@@ -48,3 +55,4 @@ async function bootstrap() {
 }
 
 void bootstrap();
+// test(): ensure custom static assets are injected into html
