@@ -12,6 +12,7 @@ export function setupDocs(app: NestExpressApplication) {
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('Auth')
+    .addTag('Users')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
