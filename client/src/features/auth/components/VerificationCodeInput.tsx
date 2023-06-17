@@ -9,7 +9,7 @@ const CODE_LENGTH = 6;
 
 interface VerificationCodeInputProps {
   className?: string;
-  onComplete: (code: string) => void | Promise<void>;
+  onComplete: (code: number) => Promise<void>;
 }
 
 function getUpdatedDigits(digits: Array<number | null>, index: number, value: number | null) {
@@ -27,7 +27,7 @@ export const VerificationCodeInput = ({ className, onComplete }: VerificationCod
   useEffect(() => {
     const isComplete = digits.every((value) => Number.isInteger(value));
     if (isComplete) {
-      void onComplete(digits.join(''));
+      void onComplete(parseInt(digits.join('')));
       setDigits(range(CODE_LENGTH).map(() => null));
     }
   }, [digits]);

@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react';
-
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -18,13 +16,18 @@ export const VerifyAccountPage = () => {
     console.log(response);
   };
 
-  useEffect(() => {
-    sendVerificationCode();
-  }, []);
+  const verifyCode = async (code: number) => {
+    const response = await axios.post('/v1/auth/verify', { code });
+    console.log(response);
+  };
+
+  // useEffect(() => {
+  //   sendVerificationCode();
+  // }, []);
 
   return (
     <AuthLayout title={t('verifyAccount')}>
-      <VerificationCodeInput className="my-5" onComplete={(code) => alert(code)} />
+      <VerificationCodeInput className="my-5" onComplete={verifyCode} />
       <Countdown seconds={3600} />
     </AuthLayout>
   );

@@ -7,6 +7,7 @@ import { RouteAccess } from '../core/decorators/route-access.decorator.js';
 import { AuthService } from './auth.service.js';
 import { CreateAccountDto } from './dto/create-account.dto.js';
 import { LoginRequestDto } from './dto/login-request.dto.js';
+import { VerifyAccountDto } from './dto/verify-account.dto.js';
 
 import { RequestUser } from '@/core/decorators/request-user.decorator.js';
 
@@ -31,5 +32,11 @@ export class AuthController {
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   sendVerificationCode(@RequestUser() user: CurrentUser) {
     return this.authService.sendVerificationCode(user);
+  }
+
+  @Post('verify')
+  @RouteAccess({ allowUnverified: true, role: 'standard' })
+  verifyAccount(@RequestUser() user: CurrentUser, @Body() verifyAccountDto: VerifyAccountDto) {
+    return this.authService.verifyAccount(user, verifyAccountDto);
   }
 }

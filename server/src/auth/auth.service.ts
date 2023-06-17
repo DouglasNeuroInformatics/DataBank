@@ -9,6 +9,7 @@ import bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service.js';
 
 import { CreateAccountDto } from './dto/create-account.dto.js';
+import { VerifyAccountDto } from './dto/verify-account.dto.js';
 import { VerificationCode } from './schemas/verification-code.schema.js';
 
 import { MailService } from '@/mail/mail.service.js';
@@ -55,10 +56,19 @@ export class AuthService {
     };
     await this.usersService.setVerificationCode(user.email, verificationCode);
     await this.mailService.sendMail({
-      to: 'joshua.unrau@mail.mcgill.ca',
+      to: user.email,
       subject: 'Douglas Data Bank: Verification Code',
       text: 'Your verification code is ' + verificationCode.value
     });
     return { expires: 3600 };
+  }
+
+  async verifyAccount({ email }: CurrentUser, { code }: VerifyAccountDto) {
+    const user = await this.usersService.findByEmail(email);
+    if (user?.verificationCode.value === code && user.verificationCode.expiry > Date.now()) {
+      await user.updateOne({ isVerified: true });
+      return;
+    }
+    throw new UnauthorizedException();
   }
 }

@@ -38,6 +38,8 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
 
+  
+
   /** Set the verification code for the user with the email */
   async setVerificationCode(email: string, verificationCode: VerificationCode) {
     return this.userModel.findOneAndUpdate({ email }, { verificationCode });
