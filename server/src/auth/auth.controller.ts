@@ -1,4 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { type CurrentUser } from '@databank/types';
 
@@ -11,6 +12,7 @@ import { VerifyAccountDto } from './dto/verify-account.dto.js';
 
 import { RequestUser } from '@/core/decorators/request-user.decorator.js';
 
+@ApiTags('Auth')
 @Controller({ path: 'auth' })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
