@@ -38,4 +38,8 @@ export class AuthService {
   async createAccount(createAccountDto: CreateAccountDto): Promise<CurrentUser> {
     return this.usersService.createUser({ ...createAccountDto, role: 'standard', isVerified: false });
   }
+
+  async sendVerificationCode(user: CurrentUser) {
+    return { expires: 3600 };
+  }
 }

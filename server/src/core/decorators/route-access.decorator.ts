@@ -6,6 +6,7 @@ type PublicRouteAccess = 'public';
 
 export type ProtectedRouteAccess = {
   role: UserRole;
+  allowUnverified?: boolean;
 };
 
 export type RouteAccessType = PublicRouteAccess | ProtectedRouteAccess;

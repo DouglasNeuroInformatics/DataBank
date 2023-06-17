@@ -1,32 +1,34 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
+import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { AuthLayout } from '../components/AuthLayout';
-import { VerifyAccountData, VerifyAccountForm } from '../components/VerifyAccountForm';
-
+import { VerificationCodeInput } from '../components/VerificationCodeInput';
 export const VerifyAccountPage = () => {
-  const navigate = useNavigate();
+  const timeRemaining = useRef<number>(null);
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-
   const email = searchParams.get('email');
 
-  useEffect(() => {
-    if (!email) {
-      navigate('/');
-    }
-  }, [email]);
-
-
-  const handleSubmit = (data: VerifyAccountData) => {
-    alert(JSON.stringify(data));
+  const sendVerificationCode = async () => {
+    const response = await axios.post('/v1/auth/verification-code');
+    console.log(response);
   };
+
+  useEffect(() => {
+    void sendVerificationCode();
+  }, []);
 
   return (
     <AuthLayout title={t('verifyAccount')}>
-      <VerifyAccountForm onSubmit={handleSubmit} />
+      <VerificationCodeInput className="my-5" onComplete={(code) => alert(code)} />
+      <div className="w-full">
+        <span>
+          {t('timeRemaining')}: {timeRemaining.current}
+        </span>
+      </div>
     </AuthLayout>
   );
 };

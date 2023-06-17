@@ -16,5 +16,7 @@
   "firstName": "First Name",
   "lastName": "Last Name",
   "verifyAccount": "Check Your Email",
-  "verificationCode": "Verification Code"
+  "verificationCode": "Verification Code",
+  "timeRemaining": "Time Remaining",
+  "invalidCodeFormat": "Failed to paste verification code. Please ensure the format is correct."
 }

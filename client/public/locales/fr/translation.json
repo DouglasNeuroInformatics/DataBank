@@ -16,5 +16,7 @@
   "firstName": "Prénom",
   "lastName": "Nom",
   "verifyAccount": "Vérifiez votre courriel",
-  "verificationCode": "Code de vérification"
+  "verificationCode": "Code de vérification",
+  "timeRemaining": "Temps restant",
+  "invalidCodeFormat": "Le code de vérification n'a pas été collé. Veuillez assurer que le format est correct."
 }
