@@ -66,7 +66,7 @@ export class AuthService {
   async verifyAccount({ email }: CurrentUser, { code }: VerifyAccountDto) {
     const user = await this.usersService.findByEmail(email);
     if (user?.verificationCode.value === code && user.verificationCode.expiry > Date.now()) {
-      await user.updateOne({ isVerified: true });
+      await user.updateOne({ verificationCode: undefined, verifiedAt: Date.now(), isVerified: true });
       return;
     }
     throw new UnauthorizedException();
