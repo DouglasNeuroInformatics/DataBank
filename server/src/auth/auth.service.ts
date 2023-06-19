@@ -3,7 +3,7 @@ import { randomInt } from 'crypto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { CurrentUser } from '@databank/types';
+import { CurrentUser, VerificationProcedureInfo } from '@databank/types';
 import bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service.js';
@@ -49,9 +49,9 @@ export class AuthService {
     return this.usersService.createUser({ ...createAccountDto, role: 'standard', isVerified: false });
   }
 
-  async sendVerificationCode(user: CurrentUser) {
+  async sendVerificationCode(user: CurrentUser): Promise<VerificationProcedureInfo> {
     const verificationCode: VerificationCode = {
-      expiry: Date.now() + 900000, // 15 min from now
+      expiry: Date.now() + 360000, // 6 min from now - 5 is shown to user + 1 for network latency
       value: randomInt(100000, 1000000)
     };
     await this.usersService.setVerificationCode(user.email, verificationCode);
@@ -60,7 +60,7 @@ export class AuthService {
       subject: 'Douglas Data Bank: Verification Code',
       text: 'Your verification code is ' + verificationCode.value
     });
-    return { expires: 3600 };
+    return { expiry: verificationCode.expiry };
   }
 
   async verifyAccount({ email }: CurrentUser, { code }: VerifyAccountDto) {

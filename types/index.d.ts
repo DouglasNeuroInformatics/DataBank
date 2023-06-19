@@ -16,3 +16,8 @@ export type LoginCredentials = {
   email: string;
   password: string;
 };
+
+export type VerificationProcedureInfo = {
+  /** The unix timestamp after which the code will be invalidated */
+  expiry: number;
+}

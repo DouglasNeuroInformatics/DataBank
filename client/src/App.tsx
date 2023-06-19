@@ -11,7 +11,7 @@ import './services/i18n';
 
 export const App = () => {
   return (
-    <React.Suspense fallback={<SuspenseFallback />}>
+    <React.Suspense fallback={<SuspenseFallback className="h-screen w-screen" />}>
       <Router />
       {createPortal(<NotificationHub />, document.body)}
     </React.Suspense>
