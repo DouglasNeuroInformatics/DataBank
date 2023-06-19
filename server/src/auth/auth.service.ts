@@ -1,6 +1,6 @@
 import { randomInt } from 'crypto';
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { CurrentUser, VerificationProcedureInfo } from '@databank/types';
@@ -69,6 +69,6 @@ export class AuthService {
       await user.updateOne({ verificationCode: undefined, verifiedAt: Date.now(), isVerified: true });
       return;
     }
-    throw new UnauthorizedException();
+    throw new ForbiddenException();
   }
 }

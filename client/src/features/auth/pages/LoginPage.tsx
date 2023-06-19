@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { LoginCredentials } from '@databank/types';
-import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +12,6 @@ import { useAuthStore } from '@/stores/auth-store';
 
 export const LoginPage = () => {
   const auth = useAuthStore();
-  const notifications = useNotificationsStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -27,18 +25,7 @@ export const LoginPage = () => {
   }, []);
 
   const login = async (credentials: LoginCredentials) => {
-    // Do not throw if unauthorized, so we can send a better error message
-    const response = await axios.post<{ accessToken: string }>('/v1/auth/login', credentials, {
-      validateStatus: (status) => status === 200 || status === 401
-    });
-    if (response.status === 401) {
-      notifications.addNotification({
-        type: 'error',
-        title: t('unauthorizedError.title'),
-        message: t('unauthorizedError.message')
-      });
-      return;
-    }
+    const response = await axios.post<{ accessToken: string }>('/v1/auth/login', credentials);
     auth.setAccessToken(response.data.accessToken);
     navigate('/overview');
   };

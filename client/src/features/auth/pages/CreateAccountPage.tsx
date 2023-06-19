@@ -16,16 +16,7 @@ export const CreateAccountPage = () => {
   const { t } = useTranslation();
 
   const createAccount = async (data: CreateAccountData) => {
-    const response = await axios.post<CurrentUser>('/v1/auth/account', data, {
-      validateStatus: (status) => status === 201 || status === 409
-    });
-    if (response.status === 409) {
-      notifications.addNotification({
-        type: 'error',
-        message: t('alreadyRegistered')
-      });
-      return;
-    }
+    const response = await axios.post<CurrentUser>('/v1/auth/account', data);
     notifications.addNotification({ type: 'success' });
     auth.setCurrentUser(response.data);
     navigate(`/auth/verify-account?email=${data.email}`, {

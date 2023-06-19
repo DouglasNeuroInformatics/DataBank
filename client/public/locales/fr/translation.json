@@ -18,5 +18,6 @@
   "verifyAccount": "Vérifiez votre courriel",
   "verificationCode": "Code de vérification",
   "timeRemaining": "Temps restant",
-  "invalidCodeFormat": "Le code de vérification n'a pas été collé. Veuillez assurer que le format est correct."
+  "invalidCodeFormat": "Le code de vérification n'a pas été collé. Veuillez assurer que le format est correct.",
+  "unexpectedError": "Une erreur inattendue s'est produite"
 }

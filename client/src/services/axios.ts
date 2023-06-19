@@ -1,7 +1,9 @@
+import { ExceptionResponse } from '@databank/types';
 import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, isAxiosError } from 'axios';
 
 import { useAuthStore } from '@/stores/auth-store';
+import i18n from './i18n';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_HOST;
 
@@ -21,15 +23,24 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     const notifications = useNotificationsStore.getState();
-    const message = error instanceof Error ? error.message : 'An unknown error occurred';
+
+    console.log(i18n.resolvedLanguage)
+
+    // const message = error instanceof Error ? error.message : 'An unknown error occurred';
+
+    let message: string;
+    if (isAxiosError<ExceptionResponse>(error) && error.response) {
+      message = error.response.data.message;
+    } else if (error instanceof Error) {
+      message = error.message;
+    } else {
+      message = '';
+    }
+
     notifications.addNotification({
       type: 'error',
       message
     });
-
-    if (error instanceof AxiosError) {
-      console.error(error.response);
-    }
 
     return Promise.reject(error);
   }

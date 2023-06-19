@@ -1,6 +1,8 @@
-export interface Greeting {
+/** CORE */
+
+export type ExceptionResponse = {
   message: string;
-}
+};
 
 /** AUTH */
 
@@ -20,4 +22,4 @@ export type LoginCredentials = {
 export type VerificationProcedureInfo = {
   /** The unix timestamp after which the code will be invalidated */
   expiry: number;
-}
+};
