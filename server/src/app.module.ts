@@ -1,9 +1,11 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthModule } from './auth/auth.module.js';
+import { GlobalExceptionFilter } from './core/filters/global-exception.filter.js';
+import { TranslationModule } from './translation/translation.module.js';
 import { UsersModule } from './users/users.module.js';
 
 @Module({
@@ -23,9 +25,14 @@ import { UsersModule } from './users/users.module.js';
         };
       }
     }),
+    TranslationModule,
     UsersModule
   ],
   providers: [
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter
+    },
     {
       provide: APP_PIPE,
       useClass: ValidationPipe
