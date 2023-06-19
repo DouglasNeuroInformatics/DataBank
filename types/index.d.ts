@@ -1,5 +1,7 @@
 /** CORE */
 
+export type Locale = 'en' | 'fr';
+
 export type ExceptionResponse = {
   message: string;
 };

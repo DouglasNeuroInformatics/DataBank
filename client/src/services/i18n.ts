@@ -1,3 +1,4 @@
+import { Locale } from '@databank/types';
 import { i18n as i18nLib } from '@douglasneuroinformatics/react-components';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -11,12 +12,12 @@ void i18n
   .init({
     defaultNS: 'translation',
     debug: false,
-    fallbackLng: 'en',
+    fallbackLng: 'en' satisfies Locale,
     interpolation: {
       escapeValue: false
     },
     returnObjects: true,
-    supportedLngs: ['en', 'fr']
+    supportedLngs: ['en', 'fr'] satisfies Locale[]
   });
 
 i18n.on('languageChanged', async (lang) => {
