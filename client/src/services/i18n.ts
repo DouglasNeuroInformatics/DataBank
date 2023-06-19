@@ -1,3 +1,4 @@
+import { i18n as i18nLib } from '@douglasneuroinformatics/react-components';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
@@ -17,5 +18,9 @@ void i18n
     returnObjects: true,
     supportedLngs: ['en', 'fr']
   });
+
+i18n.on('languageChanged', async (lang) => {
+  await i18nLib.changeLanguage(lang);
+});
 
 export default i18n;
