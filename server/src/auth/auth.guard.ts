@@ -8,8 +8,6 @@ import { Request } from 'express';
 
 import { ProtectedRouteAccess, RouteAccessType } from '../core/decorators/route-access.decorator.js';
 
-import { AuthenticatedRequest } from '@/core/interfaces/authenticated-request.interface.js';
-
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -19,7 +17,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+    const request = context.switchToHttp().getRequest<Request>();
     const routeAccess = this.getRouteAccess(context);
 
     // If public route, then no need to verify integrity of token
@@ -44,7 +42,7 @@ export class AuthGuard implements CanActivate {
     }
 
     // Attach user to request for route handlers
-    request['user'] = payload;
+    request.user = payload;
 
     // Access user permissions
 
