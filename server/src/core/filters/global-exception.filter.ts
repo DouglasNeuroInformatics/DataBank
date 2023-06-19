@@ -1,27 +1,32 @@
-import { ArgumentsHost, Catch, Logger } from '@nestjs/common';
-import { BaseExceptionFilter } from '@nestjs/core';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 import { TranslationService } from '@/translation/translation.service.js';
 
 @Catch()
-export class GlobalExceptionFilter extends BaseExceptionFilter {
+export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
 
-  constructor(private readonly translationService: TranslationService) {
-    super();
-  }
+  constructor(private readonly translationService: TranslationService) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
-    const context = host.switchToHttp();
-    const request = context.getRequest<Request>();
-    this.logger.error(
-      JSON.stringify({
-        method: request.method,
-        error: exception
-      })
-    );
-    super.catch(exception, host);
+    const ctx = host.switchToHttp();
+    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<Response>();
+
+    let statusCode: HttpStatus;
+    let responseBody: string | object;
+    if (exception instanceof HttpException) {
+      statusCode = exception.getStatus();
+      responseBody = exception.getResponse();
+    } else {
+      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+      responseBody = 'Internal Server Error';
+    }
+
+    this.logger.log(`${request.method}`);
+
+    response.status(statusCode).send(responseBody);
   }
 }
