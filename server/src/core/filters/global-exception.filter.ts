@@ -4,13 +4,13 @@ import { ExceptionResponse, Locale } from '@databank/types';
 import { Request, Response } from 'express';
 import { P, match } from 'ts-pattern';
 
-import { TranslationService } from '@/translation/translation.service.js';
+import { I18nService } from '@/i18n/i18n.service.js';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
 
-  constructor(private readonly translationService: TranslationService) {}
+  constructor(private readonly i18n: I18nService) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();

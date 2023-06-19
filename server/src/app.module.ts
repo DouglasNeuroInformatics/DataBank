@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthModule } from './auth/auth.module.js';
 import { GlobalExceptionFilter } from './core/filters/global-exception.filter.js';
-import { TranslationModule } from './translation/translation.module.js';
+import { I18nModule } from './i18n/i18n.module.js';
 import { UsersModule } from './users/users.module.js';
 
 @Module({
@@ -14,6 +14,7 @@ import { UsersModule } from './users/users.module.js';
     ConfigModule.forRoot({
       isGlobal: true
     }),
+    I18nModule,
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
@@ -25,7 +26,6 @@ import { UsersModule } from './users/users.module.js';
         };
       }
     }),
-    TranslationModule,
     UsersModule
   ],
   providers: [
