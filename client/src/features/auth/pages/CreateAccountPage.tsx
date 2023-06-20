@@ -25,9 +25,7 @@ export const CreateAccountPage = () => {
 
   useEffect(() => {
     if (auth.currentUser) {
-      navigate('/auth/verify-account', {
-        replace: true
-      });
+      navigate('/auth/verify-account');
     }
   }, [auth.currentUser]);
 
