@@ -16,7 +16,7 @@ export const LoginPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH) {
+    if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH === 'true') {
       void login({
         email: import.meta.env.VITE_DEV_EMAIL,
         password: import.meta.env.VITE_DEV_PASSWORD
@@ -24,10 +24,15 @@ export const LoginPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (auth.accessToken) {
+      navigate('/overview');
+    }
+  }, [auth.accessToken]);
+
   const login = async (credentials: LoginCredentials) => {
     const response = await axios.post<{ accessToken: string }>('/v1/auth/login', credentials);
     auth.setAccessToken(response.data.accessToken);
-    navigate('/overview');
   };
 
   return (
