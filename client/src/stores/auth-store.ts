@@ -6,7 +6,6 @@ export interface AuthStore {
   accessToken: string | null;
   setAccessToken: (accessToken: string) => void;
   currentUser: CurrentUser | null;
-  setCurrentUser: (currentUser: CurrentUser) => void;
   logout: () => void;
 }
 
@@ -17,9 +16,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ accessToken, currentUser });
   },
   currentUser: null,
-  setCurrentUser: (currentUser) => {
-    set({ currentUser });
-  },
   logout: () => {
     set({ accessToken: null, currentUser: null });
   }
