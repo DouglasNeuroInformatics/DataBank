@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
@@ -8,9 +8,14 @@ import { Request } from 'express';
 
 import { ProtectedRouteAccess, RouteAccessType } from '../core/decorators/route-access.decorator.js';
 
+import { I18nService } from '@/i18n/i18n.service.js';
+
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private readonly logger = new Logger(AuthGuard.name);
+
   constructor(
+    private readonly i18n: I18nService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector
@@ -28,7 +33,8 @@ export class AuthGuard implements CanActivate {
     // Check if token exists
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      this.logger.verbose('Request header does not include auth token');
+      throw new UnauthorizedException(this.i18n.translate(request.locale, 'errors.unauthorized.invalidCredentials'));
     }
 
     // Validate token and extract payload
@@ -38,7 +44,8 @@ export class AuthGuard implements CanActivate {
         secret: this.configService.getOrThrow('SECRET_KEY')
       });
     } catch (error) {
-      throw new UnauthorizedException();
+      this.logger.warn('Failed to parse JWT. Potential attacker.')
+      throw new UnauthorizedException(this.i18n.translate(request.locale, 'errors.unauthorized.invalidCredentials'));
     }
 
     // Attach user to request for route handlers
