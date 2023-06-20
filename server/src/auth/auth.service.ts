@@ -32,7 +32,7 @@ export class AuthService {
 
     const isCorrectPassword = await bcrypt.compare(password, user.hashedPassword);
     if (!isCorrectPassword) {
-      throw new UnauthorizedException('Incorrect password');
+      throw new UnauthorizedException(this.i18n.translate(locale, 'errors.unauthorized.invalidCredentials'));
     }
 
     const payload: CurrentUser = {
@@ -51,7 +51,7 @@ export class AuthService {
     return this.usersService.createUser({ ...createAccountDto, role: 'standard', isVerified: false });
   }
 
-  async sendVerificationCode(user: CurrentUser): Promise<VerificationProcedureInfo> {
+  async sendVerificationCode(user: CurrentUser, locale?: Locale): Promise<VerificationProcedureInfo> {
     const verificationCode: VerificationCode = {
       expiry: Date.now() + 360000, // 6 min from now - 5 is shown to user + 1 for network latency
       value: randomInt(100000, 1000000)
@@ -59,8 +59,8 @@ export class AuthService {
     await this.usersService.setVerificationCode(user.email, verificationCode);
     await this.mailService.sendMail({
       to: user.email,
-      subject: 'Douglas Data Bank: Verification Code',
-      text: 'Your verification code is ' + verificationCode.value
+      subject: this.i18n.translate(locale, 'verificationEmail.body'),
+      text: this.i18n.translate(locale, 'verificationEmail.body') + '\n\n' + `Code : ${verificationCode.value}`
     });
     return { expiry: verificationCode.expiry };
   }

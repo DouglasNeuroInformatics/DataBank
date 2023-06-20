@@ -2,7 +2,13 @@
   "errors": {
     "unauthorized": {
       "invalidCredentials": "Informations d'identification invalides"
+    },
+    "forbidden": {
+      "incorrectCode": "Code de validation incorrect"
     }
   },
-  "something": "else"
+  "verificationEmail": {
+    "subject": "Banque de données du Douglas : Code de vérification",
+    "body": "Bienvenue à la banque de données du Douglas. Vous trouverez votre code de vérification ci-dessous."
+  }
 }

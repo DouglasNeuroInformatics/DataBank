@@ -4,7 +4,7 @@ declare global {
   namespace Express {
     interface Request {
       locale?: Locale;
-      user?: Partial<CurrentUser>;
+      user?: CurrentUser;
     }
   }
 }

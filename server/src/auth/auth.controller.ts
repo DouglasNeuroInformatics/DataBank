@@ -36,8 +36,8 @@ export class AuthController {
   @ApiOperation({ summary: 'Request Verification Code', description: 'Request a verification code' })
   @Post('verification-code')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
-  sendVerificationCode(@RequestUser() user: CurrentUser) {
-    return this.authService.sendVerificationCode(user);
+  sendVerificationCode(@Req() request: Request) {
+    return this.authService.sendVerificationCode(request.user!, request.locale);
   }
 
   @ApiOperation({ summary: 'Verify Account', description: 'Verify an account using a verification code' })
