@@ -7,6 +7,9 @@
       "undefinedCode": "Validation code is undefined. Please request a validation code.",
       "incorrectCode": "Incorrect validation code. Please try again.",
       "expiredCode": "Validation code is expired. Please request a new validation code."
+    },
+    "notFound": {
+      "user": "User not found"
     }
   },
   "verificationEmail": {

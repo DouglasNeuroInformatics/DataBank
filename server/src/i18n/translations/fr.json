@@ -7,6 +7,9 @@
       "undefinedCode": "Le code de validation n'est pas défini. Veuillez obtenir un nouveau code de validation.",
       "incorrectCode": "Le Code de validation est incorrect. Veuillez réessayer.",
       "expiredCode": "Le code de validation a expiré. Veuillez obtenir un nouveau code de validation."
+    },
+    "notFound": {
+      "user": "Utilisateur non trouvé"
     }
   },
   "verificationEmail": {
