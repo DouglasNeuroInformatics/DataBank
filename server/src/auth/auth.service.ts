@@ -61,6 +61,7 @@ export class AuthService {
     } else {
       // set expiry to 6 min from now - 5 is shown to user + 1 for network latency
       verificationCode = {
+        attemptsMade: 0,
         expiry: Date.now() + 360000,
         value: randomInt(100000, 1000000)
       };
@@ -72,7 +73,7 @@ export class AuthService {
       subject: this.i18n.translate(locale, 'verificationEmail.body'),
       text: this.i18n.translate(locale, 'verificationEmail.body') + '\n\n' + `Code : ${verificationCode.value}`
     });
-    return { expiry: verificationCode.expiry };
+    return { attemptsMade: verificationCode.attemptsMade, expiry: verificationCode.expiry };
   }
 
   async verifyAccount({ email }: CurrentUser, { code }: VerifyAccountDto) {

@@ -22,6 +22,9 @@ export type LoginCredentials = {
 };
 
 export type VerificationProcedureInfo = {
+  /** The number of previous attempts to verify this code */
+  attemptsMade: number;
+  
   /** The unix timestamp after which the code will be invalidated */
   expiry: number;
 };
