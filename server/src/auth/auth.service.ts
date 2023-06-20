@@ -12,11 +12,13 @@ import { CreateAccountDto } from './dto/create-account.dto.js';
 import { VerifyAccountDto } from './dto/verify-account.dto.js';
 import { VerificationCode } from './schemas/verification-code.schema.js';
 
+import { I18nService } from '@/i18n/i18n.service.js';
 import { MailService } from '@/mail/mail.service.js';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly i18n: I18nService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
     private readonly usersService: UsersService
@@ -25,7 +27,7 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('User with the provided email not found: ' + email);
+      throw new UnauthorizedException(this.i18n.translate('en', 'errors.unauthorized.invalidCredentials'));
     }
 
     const isCorrectPassword = await bcrypt.compare(password, user.hashedPassword);

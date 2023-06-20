@@ -9,10 +9,12 @@ import { AuthController } from './auth.controller.js';
 import { AuthGuard } from './auth.guard.js';
 import { AuthService } from './auth.service.js';
 
+import { I18nModule } from '@/i18n/i18n.module.js';
 import { MailModule } from '@/mail/mail.module.js';
 
 @Module({
   imports: [
+    I18nModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
