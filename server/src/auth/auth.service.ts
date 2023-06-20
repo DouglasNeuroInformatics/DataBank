@@ -51,12 +51,22 @@ export class AuthService {
     return this.usersService.createUser({ ...createAccountDto, role: 'standard', isVerified: false });
   }
 
-  async sendVerificationCode(user: CurrentUser, locale?: Locale): Promise<VerificationProcedureInfo> {
-    const verificationCode: VerificationCode = {
-      expiry: Date.now() + 360000, // 6 min from now - 5 is shown to user + 1 for network latency
-      value: randomInt(100000, 1000000)
-    };
-    await this.usersService.setVerificationCode(user.email, verificationCode);
+  async sendVerificationCode({ email }: CurrentUser, locale?: Locale): Promise<VerificationProcedureInfo> {
+    const user = (await this.usersService.findByEmail(email))!;
+
+    // If there is an existing, non-expired code, use that since we record attempts for security
+    let verificationCode: VerificationCode;
+    if (user.verificationCode && user.verificationCode.expiry > Date.now()) {
+      verificationCode = user.verificationCode;
+    } else {
+      // set expiry to 6 min from now - 5 is shown to user + 1 for network latency
+      verificationCode = {
+        expiry: Date.now() + 360000,
+        value: randomInt(100000, 1000000)
+      };
+      await user.updateOne({ verificationCode });
+    }
+
     await this.mailService.sendMail({
       to: user.email,
       subject: this.i18n.translate(locale, 'verificationEmail.body'),
