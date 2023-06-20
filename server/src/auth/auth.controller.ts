@@ -1,7 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { type CurrentUser } from '@databank/types';
 import { type Request } from 'express';
 
 import { RouteAccess } from '../core/decorators/route-access.decorator.js';
@@ -10,8 +9,6 @@ import { AuthService } from './auth.service.js';
 import { CreateAccountDto } from './dto/create-account.dto.js';
 import { LoginRequestDto } from './dto/login-request.dto.js';
 import { VerifyAccountDto } from './dto/verify-account.dto.js';
-
-import { RequestUser } from '@/core/decorators/request-user.decorator.js';
 
 @ApiTags('Auth')
 @Controller({ path: 'auth' })
@@ -43,7 +40,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Verify Account', description: 'Verify an account using a verification code' })
   @Post('verify')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
-  verifyAccount(@RequestUser() user: CurrentUser, @Body() verifyAccountDto: VerifyAccountDto) {
-    return this.authService.verifyAccount(user, verifyAccountDto);
+  verifyAccount(@Req() request: Request, @Body() verifyAccountDto: VerifyAccountDto) {
+    return this.authService.verifyAccount(verifyAccountDto, request.user!, request.locale);
   }
 }

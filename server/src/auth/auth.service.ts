@@ -1,6 +1,13 @@
 import { randomInt } from 'crypto';
 
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { CurrentUser, Locale, VerificationProcedureInfo } from '@databank/types';
@@ -18,6 +25,7 @@ import { MailService } from '@/mail/mail.service.js';
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly config: ConfigService,
     private readonly i18n: I18nService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
@@ -52,17 +60,20 @@ export class AuthService {
   }
 
   async sendVerificationCode({ email }: CurrentUser, locale?: Locale): Promise<VerificationProcedureInfo> {
-    const user = (await this.usersService.findByEmail(email))!;
+    // This should never happen when called from controller, but in case it is ever called elsewhere
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException(this.i18n.translate(locale, 'errors.notFound.user'));
+    }
 
     // If there is an existing, non-expired code, use that since we record attempts for security
     let verificationCode: VerificationCode;
     if (user.verificationCode && user.verificationCode.expiry > Date.now()) {
       verificationCode = user.verificationCode;
     } else {
-      // set expiry to 6 min from now - 5 is shown to user + 1 for network latency
       verificationCode = {
         attemptsMade: 0,
-        expiry: Date.now() + 360000,
+        expiry: this.config.getOrThrow('VALIDATION_TIMEOUT'),
         value: randomInt(100000, 1000000)
       };
       await user.updateOne({ verificationCode });
@@ -76,12 +87,38 @@ export class AuthService {
     return { attemptsMade: verificationCode.attemptsMade, expiry: verificationCode.expiry };
   }
 
-  async verifyAccount({ email }: CurrentUser, { code }: VerifyAccountDto) {
+  async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser, locale?: Locale) {
     const user = await this.usersService.findByEmail(email);
-    if (user?.verificationCode.value === code && user.verificationCode.expiry > Date.now()) {
-      await user.updateOne({ verificationCode: undefined, verifiedAt: Date.now(), isVerified: true });
-      return;
+    if (!user) {
+      throw new NotFoundException(this.i18n.translate(locale, 'errors.notFound.user'));
+    } else if (!user.verificationCode) {
+      throw new ForbiddenException(this.i18n.translate(locale, 'errors.forbidden.undefinedCode'));
     }
-    throw new ForbiddenException();
+
+    const isExpired = user.verificationCode.expiry < Date.now();
+    if (isExpired) {
+      throw new ForbiddenException(this.i18n.translate(locale, 'errors.forbidden.expiredCode'));
+    }
+
+    const maxAttempts = parseInt(this.config.get('MAX_VALIDATION_ATTEMPTS')!);
+    if (!maxAttempts) {
+      throw new InternalServerErrorException(
+        `Environment variable 'MAX_VALIDATION_ATTEMPTS' must be set to a positive integer, not ${
+          this.config.get('MAX_VALIDATION_ATTEMPTS') as string
+        }`
+      );
+    }
+
+    if (user.verificationCode.attemptsMade > maxAttempts) {
+      throw new ForbiddenException(this.i18n.translate(locale, 'errors.forbidden.tooManyAttempts'));
+    }
+
+    if (user.verificationCode.value !== code) {
+      user.verificationCode.attemptsMade++;
+      await user.save();
+      throw new ForbiddenException(this.i18n.translate(locale, 'errors.forbidden.incorrectCode'));
+    }
+
+    await user.updateOne({ verificationCode: undefined, verifiedAt: Date.now(), isVerified: true });
   }
 }
