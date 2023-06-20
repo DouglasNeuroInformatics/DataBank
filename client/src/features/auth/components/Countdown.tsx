@@ -11,22 +11,21 @@ export const Countdown = ({ seconds }: CountdownProps) => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    if (count === 0) return;
     const timer = setInterval(() => {
       setCount((prevCount) => prevCount - 1);
     }, 1000);
-
     return () => clearInterval(timer);
-  }, []);
+  }, [count]);
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
-
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return (
-    <div>
+    <div className={count === 0 ? 'text-red-600' : undefined}>
       <span>{t('timeRemaining')}: </span>
       {formatTime(count)}
     </div>
