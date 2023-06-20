@@ -13,7 +13,7 @@ export const CreateAccountPage = () => {
 
   const createAccount = async (data: CreateAccountData) => {
     await axios.post('/v1/auth/account', data);
-    notifications.addNotification({ type: 'success' });
+    notifications.addNotification({ type: 'success', message: t('pleaseSignIn') });
     navigate('/auth/login');
   };
 

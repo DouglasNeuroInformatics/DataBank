@@ -19,5 +19,6 @@
   "verificationCode": "Verification Code",
   "timeRemaining": "Time Remaining",
   "invalidCodeFormat": "Failed to paste verification code. Please ensure the format is correct.",
-  "unexpectedError": "An unexpected error occurred"
+  "unexpectedError": "An unexpected error occurred",
+  "pleaseSignIn": "Please sign in to continue"
 }
