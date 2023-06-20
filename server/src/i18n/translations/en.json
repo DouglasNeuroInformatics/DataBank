@@ -6,7 +6,8 @@
     "forbidden": {
       "undefinedCode": "Validation code is undefined. Please request a validation code.",
       "incorrectCode": "Incorrect validation code. Please try again.",
-      "expiredCode": "Validation code is expired. Please request a new validation code."
+      "expiredCode": "Validation code is expired. Please request a new validation code.",
+      "tooManyAttempts": "Too many attempts to validate this code. Please request a new validation code after the timeout."
     },
     "notFound": {
       "user": "User not found"
