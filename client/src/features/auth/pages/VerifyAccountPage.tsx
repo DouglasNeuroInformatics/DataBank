@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { VerificationProcedureInfo } from '@databank/types';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
 
 import { AuthLayout } from '../components/AuthLayout';
 import { Countdown } from '../components/Countdown';
@@ -13,9 +12,7 @@ import { SuspenseFallback } from '@/components';
 
 export const VerifyAccountPage = () => {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
   const [seconds, setSeconds] = useState<number>();
-  // const email = searchParams.get('email');
 
   /** Send code and then set seconds to milliseconds remaining in minutes, rounded down, converted to seconds */
   const sendVerificationCode = async () => {

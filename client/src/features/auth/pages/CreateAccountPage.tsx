@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
+
 import { CurrentUser } from '@databank/types';
 import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { createSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { AuthLayout } from '../components/AuthLayout';
 import { type CreateAccountData, CreateAccountForm } from '../components/CreateAccountForm';
@@ -19,10 +21,15 @@ export const CreateAccountPage = () => {
     const response = await axios.post<CurrentUser>('/v1/auth/account', data);
     notifications.addNotification({ type: 'success' });
     auth.setCurrentUser(response.data);
-    navigate(`/auth/verify-account?email=${data.email}`, {
-      replace: true
-    });
   };
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      navigate('/auth/verify-account', {
+        replace: true
+      });
+    }
+  }, [auth.currentUser]);
 
   return (
     <AuthLayout title={t('createAccount')}>
