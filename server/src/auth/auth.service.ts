@@ -3,7 +3,7 @@ import { randomInt } from 'crypto';
 import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { CurrentUser, VerificationProcedureInfo } from '@databank/types';
+import { CurrentUser, Locale, VerificationProcedureInfo } from '@databank/types';
 import bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service.js';
@@ -24,10 +24,10 @@ export class AuthService {
     private readonly usersService: UsersService
   ) {}
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string, locale?: Locale) {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
-      throw new UnauthorizedException(this.i18n.translate('en', 'errors.unauthorized.invalidCredentials'));
+      throw new UnauthorizedException(this.i18n.translate(locale, 'errors.unauthorized.invalidCredentials'));
     }
 
     const isCorrectPassword = await bcrypt.compare(password, user.hashedPassword);

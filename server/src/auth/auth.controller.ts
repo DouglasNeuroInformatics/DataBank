@@ -1,7 +1,8 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { type CurrentUser } from '@databank/types';
+import { type Request } from 'express';
 
 import { RouteAccess } from '../core/decorators/route-access.decorator.js';
 
@@ -21,8 +22,8 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @RouteAccess('public')
-  login(@Body() { email, password }: LoginRequestDto) {
-    return this.authService.login(email, password);
+  login(@Body() { email, password }: LoginRequestDto, @Req() request: Request) {
+    return this.authService.login(email, password, request.locale);
   }
 
   @ApiOperation({ summary: 'Create Account', description: 'Create a new account as a standard user' })
