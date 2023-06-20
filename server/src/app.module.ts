@@ -1,7 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthModule } from './auth/auth.module.js';
 import { GlobalExceptionFilter } from './core/filters/global-exception.filter.js';
@@ -28,13 +29,21 @@ import { UsersModule } from './users/users.module.js';
         };
       }
     }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10
+    }),
     UsersModule
   ],
   providers: [
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: GlobalExceptionFilter
-    // },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    },
     {
       provide: APP_PIPE,
       useClass: ValidationPipe

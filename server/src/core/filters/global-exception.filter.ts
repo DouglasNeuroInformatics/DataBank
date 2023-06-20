@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 
-import { ExceptionResponse, Locale } from '@databank/types';
+import { ExceptionResponse } from '@databank/types';
 import { Request, Response } from 'express';
 import { P, match } from 'ts-pattern';
 
@@ -17,8 +17,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
     const res = ctx.getResponse<Response>();
 
-    const locale = this.getLocale(req);
-    console.log(locale);
+    this.logger.error(exception);
 
     let statusCode: HttpStatus;
     let message: string;
@@ -33,15 +32,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = 'Internal Server Error';
     }
 
-    this.logger.log(`${req.method}`);
-
     res.status(statusCode).send({ message } satisfies ExceptionResponse);
-  }
-
-  private getLocale(req: Request): Locale {
-    if (req.acceptsLanguages()[0].toLowerCase().startsWith('fr')) {
-      return 'fr';
-    }
-    return 'en';
   }
 }
