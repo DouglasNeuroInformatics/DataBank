@@ -1,14 +1,20 @@
-import { HomeIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, TableCellsIcon } from '@heroicons/react/24/outline';
 import { Outlet } from 'react-router-dom';
 
 import { DesktopSidebar } from './DesktopSidebar';
 import { MobileNavbar } from './MobileNavbar';
+import { NavItem } from './types';
 
-const navigation = [
+const navigation: NavItem[] = [
   {
-    label: 'Home',
-    href: '/overview',
+    label: 'Dashboard',
+    href: '/portal/dashboard',
     icon: HomeIcon
+  },
+  {
+    label: 'Editor',
+    href: '/portal/editor',
+    icon: TableCellsIcon
   }
 ];
 

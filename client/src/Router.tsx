@@ -3,6 +3,8 @@ import { match } from 'ts-pattern';
 
 import { Layout } from './components';
 import { CreateAccountPage, LoginPage, VerifyAccountPage } from './features/auth';
+import { DashboardPage } from './features/dashboard';
+import { EditorPage } from './features/editor';
 import { LandingPage } from './features/landing';
 import { UserPage } from './features/user';
 import { useAuthStore } from './stores/auth-store';
@@ -18,9 +20,10 @@ export const Router = () => {
         <Route element={<VerifyAccountPage />} path="/auth/verify-account" />
         {match(currentUser)
           .with({ isVerified: true }, () => (
-            <Route element={<Layout />}>
-              <Route index element={<div />} path="overview" />
-              <Route index element={<UserPage />} path="user" />
+            <Route element={<Layout />} path="portal">
+              <Route index element={<DashboardPage />} path="dashboard" />
+              <Route element={<EditorPage />} path="editor" />
+              <Route element={<UserPage />} path="user" />
             </Route>
           ))
           .with({ isVerified: false }, () => <Route element={<Navigate to={'/auth/verify-account'} />} path="*" />)

@@ -26,7 +26,7 @@ export const LoginPage = () => {
 
   useEffect(() => {
     if (auth.accessToken) {
-      navigate('/overview');
+      navigate('/portal');
     }
   }, [auth.accessToken]);
 
