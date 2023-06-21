@@ -29,7 +29,7 @@ export const DesktopSidebar = ({ navigation }: DesktopSidebarProps) => {
           ))}
         </nav>
       </div>
-      <div className="flex flex-shrink flex-col items-center">
+      <div className="flex flex-shrink flex-col items-center space-y-3">
         <ThemeToggle className="hover:backdrop-brightness-150" />
         <UserDropup />
       </div>
