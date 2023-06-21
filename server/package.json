@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && swc --copy-files --delete-dir-on-start --out-dir dist src",
     "dev": "NODE_ENV=development concurrently \"swc --copy-files --out-dir dist -w src\" \"nodemon dist/main\"",
-    "lint": "eslint --fix src",
+    "lint": "tsc && eslint --fix src",
     "start": "node ./dist/main.js",
     "test": "find ./src -name '*.spec.ts' -exec node --loader @swc-node/register/esm --test {} \\;"
   },

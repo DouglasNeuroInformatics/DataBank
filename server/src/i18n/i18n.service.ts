@@ -34,7 +34,7 @@ export class I18nService {
     };
   }
 
-  translate(locale?: Locale, path: Path<Translations>) {
+  translate(locale: Locale | undefined, path: Path<Translations>) {
     let item: any = this.resources[locale ?? this.defaultLocale];
     path.split('.').forEach((key) => {
       item = (item as Record<string, string>)[key];

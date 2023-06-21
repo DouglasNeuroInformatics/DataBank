@@ -1,12 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { type UserRole } from '@databank/types';
+import { type CurrentUser, type UserRole } from '@databank/types';
 import { HydratedDocument } from 'mongoose';
 
 import { VerificationCode, VerificationCodeSchema } from '@/auth/schemas/verification-code.schema.js';
 
 @Schema()
-export class User {
+export class User implements CurrentUser {
+  @Prop({ required: true })
+  firstName: string;
+
+  @Prop({ required: true })
+  lastName: string;
+
   @Prop({ required: true, unique: true })
   email: string;
 

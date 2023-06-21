@@ -43,11 +43,9 @@ export class AuthService {
       throw new UnauthorizedException(this.i18n.translate(locale, 'errors.unauthorized.invalidCredentials'));
     }
 
-    const payload: CurrentUser = {
-      email,
-      role: user.role,
-      isVerified: user.isVerified
-    };
+    const { firstName, lastName, role, isVerified } = user;
+
+    const payload: CurrentUser = { firstName, lastName, email, role, isVerified };
 
     const accessToken = await this.jwtService.signAsync(payload);
 
