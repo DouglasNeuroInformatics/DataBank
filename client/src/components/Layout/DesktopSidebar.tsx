@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import { type NavItem } from './types';
 import { UserDropup } from './UserDropup';
@@ -13,9 +13,9 @@ export const DesktopSidebar = ({ navigation }: DesktopSidebarProps) => {
   return (
     <div className="hidden h-full w-20 flex-col bg-slate-800 p-2 text-slate-100 lg:flex">
       <div className="flex-grow">
-        <div className="flex items-center justify-center">
+        <Link className="flex items-center justify-center" to="/">
           <Logo className="h-12 w-12 fill-slate-100" />
-        </div>
+        </Link>
         <hr className="my-3" />
         <nav aria-label="sidebar" className="flex flex-col items-center space-y-3">
           {navigation.map((item) => (
