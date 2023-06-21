@@ -9,6 +9,9 @@ export class Dataset {
 
   @Prop({ required: false })
   description: string;
+
+  @Prop({ required: true })
+  license: string;
 }
 
 export type DatasetDocument = HydratedDocument<Dataset>;

@@ -15,6 +15,7 @@ import { Dataset, DatasetSchema } from './schemas/dataset.schema.js';
     ])
   ],
   controllers: [DatasetsController],
-  providers: [DatasetsService]
+  providers: [DatasetsService],
+  exports: [DatasetsService]
 })
 export class DatasetsModule {}
