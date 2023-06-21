@@ -7,4 +7,7 @@ export class CreateDatasetDto {
   @IsOptional()
   @IsNotEmpty()
   description?: string;
+
+  @IsNotEmpty()
+  license: string;
 }
