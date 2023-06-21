@@ -1,7 +1,7 @@
-import { UserIcon } from '@heroicons/react/24/solid';
 import { NavLink } from 'react-router-dom';
 
 import { type NavItem } from './types';
+import { UserDropup } from './UserDropup';
 
 import { Logo } from '@/components';
 
@@ -25,9 +25,7 @@ export const DesktopSidebar = ({ navigation }: DesktopSidebarProps) => {
           ))}
         </nav>
       </div>
-      <div>
-        <UserIcon height={32} width={32} />
-      </div>
+      <UserDropup />
     </div>
   );
 
