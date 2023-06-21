@@ -31,7 +31,7 @@ export const SharedPage = () => {
             <li className="block hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150" key={item._id}>
               <Link className="block w-full px-4 py-4 sm:px-6" to={item._id}>
                 <p className="font-medium text-sky-700 dark:text-sky-300">{item.name}</p>
-                <div className="flex items-center pt-2">
+                <div className="flex items-center pt-2 text-sm ">
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   <span>
                     {`${t('lastUpdated')} ${new Date(item.updatedAt).toLocaleDateString(i18n.resolvedLanguage, {
