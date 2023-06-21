@@ -22,5 +22,6 @@
   "unexpectedError": "An unexpected error occurred",
   "pleaseSignIn": "Please sign in to continue",
   "logout": "logout",
-  "preferences": "preferences"
+  "preferences": "preferences",
+  "lastUpdated": "Last updated on"
 }

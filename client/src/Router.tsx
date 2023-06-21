@@ -6,7 +6,7 @@ import { CreateAccountPage, LoginPage, VerifyAccountPage } from './features/auth
 import { DashboardPage } from './features/dashboard';
 import { EditorPage } from './features/editor';
 import { LandingPage } from './features/landing';
-import { SharedPage } from './features/shared';
+import { SharedDatasetPage, SharedPage } from './features/shared';
 import { UserPage } from './features/user';
 import { useAuthStore } from './stores/auth-store';
 
@@ -16,15 +16,20 @@ export const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route index element={<LandingPage />} />
-        <Route element={<LoginPage />} path="/auth/login" />
-        <Route element={<CreateAccountPage />} path="/auth/create-account" />
-        <Route element={<VerifyAccountPage />} path="/auth/verify-account" />
+        <Route path="auth">
+          <Route element={<LoginPage />} path="login" />
+          <Route element={<CreateAccountPage />} path="create-account" />
+          <Route element={<VerifyAccountPage />} path="verify-account" />
+        </Route>
         {match(currentUser)
           .with({ isVerified: true }, () => (
             <Route element={<Layout />} path="portal">
               <Route index element={<DashboardPage />} path="dashboard" />
               <Route element={<EditorPage />} path="editor" />
-              <Route element={<SharedPage />} path="shared" />
+              <Route path="shared">
+                <Route index element={<SharedPage />} />
+                <Route element={<SharedDatasetPage />} path=":id" />
+              </Route>
               <Route element={<UserPage />} path="user" />
             </Route>
           ))
