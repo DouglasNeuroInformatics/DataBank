@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { GlobalExceptionFilter } from './core/filters/global-exception.filter.js';
 import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware.js';
 import { LoggerMiddleware } from './core/middleware/logger.middleware.js';
+import { DatasetsModule } from './datasets/datasets.module.js';
 import { I18nModule } from './i18n/i18n.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -17,6 +18,7 @@ import { UsersModule } from './users/users.module.js';
     ConfigModule.forRoot({
       isGlobal: true
     }),
+    DatasetsModule,
     I18nModule,
     MongooseModule.forRootAsync({
       inject: [ConfigService],
