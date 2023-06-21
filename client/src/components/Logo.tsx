@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 
 export const Logo = ({ className, ...props }: React.ComponentPropsWithoutRef<'svg'>) => (
   <svg
-    className={clsx('fill-sky-900 dark:fill-sky-600', className)}
+    className={clsx('fill-sky-900 dark:fill-slate-100', className)}
     height="1388"
     version="1"
     viewBox="0 0 1287 1041"
