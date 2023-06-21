@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { LoginCredentials } from '@databank/types';
+import { AuthPayload, LoginCredentials } from '@databank/types';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +31,7 @@ export const LoginPage = () => {
   }, [auth.accessToken]);
 
   const login = async (credentials: LoginCredentials) => {
-    const response = await axios.post<{ accessToken: string }>('/v1/auth/login', credentials);
+    const response = await axios.post<AuthPayload>('/v1/auth/login', credentials);
     auth.setAccessToken(response.data.accessToken);
   };
 

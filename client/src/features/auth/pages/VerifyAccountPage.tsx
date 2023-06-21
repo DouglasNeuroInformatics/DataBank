@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import { VerificationProcedureInfo } from '@databank/types';
+import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { AuthLayout } from '../components/AuthLayout';
 import { Countdown } from '../components/Countdown';
@@ -11,6 +13,8 @@ import { VerificationCodeInput } from '../components/VerificationCodeInput';
 import { SuspenseFallback } from '@/components';
 
 export const VerifyAccountPage = () => {
+  const notifications = useNotificationsStore();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [seconds, setSeconds] = useState<number>();
 
@@ -21,7 +25,9 @@ export const VerifyAccountPage = () => {
   };
 
   const verifyCode = async (code: number) => {
-    const response = await axios.post('/v1/auth/verify', { code });
+    await axios.post('/v1/auth/verify', { code });
+    notifications.addNotification({ type: 'success' });
+    navigate('/overview');
   };
 
   useEffect(() => {
@@ -31,7 +37,7 @@ export const VerifyAccountPage = () => {
   return seconds ? (
     <AuthLayout title={t('verifyAccount')}>
       <VerificationCodeInput className="my-5" onComplete={verifyCode} />
-      <Countdown seconds={300} />
+      <Countdown seconds={seconds} />
     </AuthLayout>
   ) : (
     <SuspenseFallback className="h-screen w-screen" />

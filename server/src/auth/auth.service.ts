@@ -10,7 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { CurrentUser, Locale, VerificationProcedureInfo } from '@databank/types';
+import { AuthPayload, CurrentUser, Locale, VerificationProcedureInfo } from '@databank/types';
 import bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service.js';
@@ -21,6 +21,7 @@ import { VerificationCode } from './schemas/verification-code.schema.js';
 
 import { I18nService } from '@/i18n/i18n.service.js';
 import { MailService } from '@/mail/mail.service.js';
+import { User } from '@/users/schemas/user.schema.js';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +33,7 @@ export class AuthService {
     private readonly usersService: UsersService
   ) {}
 
-  async login(email: string, password: string, locale?: Locale) {
+  async login(email: string, password: string, locale?: Locale): Promise<AuthPayload> {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException(this.i18n.translate(locale, 'errors.unauthorized.invalidCredentials'));
@@ -43,11 +44,7 @@ export class AuthService {
       throw new UnauthorizedException(this.i18n.translate(locale, 'errors.unauthorized.invalidCredentials'));
     }
 
-    const { firstName, lastName, role, isVerified } = user;
-
-    const payload: CurrentUser = { firstName, lastName, email, role, isVerified };
-
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.signToken(user);
 
     return { accessToken };
   }
@@ -118,5 +115,11 @@ export class AuthService {
     }
 
     await user.updateOne({ verificationCode: undefined, verifiedAt: Date.now(), isVerified: true });
+  }
+
+  private async signToken(user: User) {
+    const { email, firstName, lastName, role, isVerified } = user;
+    const payload: CurrentUser = { firstName, lastName, email, role, isVerified };
+    return this.jwtService.signAsync(payload);
   }
 }

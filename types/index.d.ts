@@ -8,6 +8,10 @@ export type ExceptionResponse = {
 
 /** AUTH */
 
+export type AuthPayload = {
+  accessToken: string;
+};
+
 export type UserRole = 'admin' | 'standard';
 
 export type CurrentUser = {
