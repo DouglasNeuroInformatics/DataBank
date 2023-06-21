@@ -2,7 +2,7 @@ const path = require('path');
 
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
-  extends: [path.resolve(__dirname, '..', '.eslintrc.cjs')],
+  extends: [path.resolve(__dirname, '..', '.eslintrc.cjs'), 'plugin:react/recommended'],
   env: {
     browser: true
   },
@@ -38,6 +38,7 @@ module.exports = {
         unnamedComponents: 'arrow-function'
       }
     ],
+    'react/react-in-jsx-scope': 'off',
     'react/jsx-sort-props': [
       'error',
       {
