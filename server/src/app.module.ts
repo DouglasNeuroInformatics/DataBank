@@ -35,7 +35,7 @@ import { UsersModule } from './users/users.module.js';
     SetupModule,
     ThrottlerModule.forRoot({
       ttl: 60,
-      limit: 10
+      limit: 100
     }),
     UsersModule
   ],
