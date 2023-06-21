@@ -26,7 +26,7 @@ export const UserDropup = () => {
       >
         <Menu.Items className="absolute bottom-12 left-0 origin-bottom-left whitespace-nowrap rounded-sm border shadow-lg border-slate-700 bg-slate-800">
           <Menu.Item>
-            <Link className="block w-full p-2 first-letter:capitalize hover:bg-slate-700" to="/user">
+            <Link className="block w-full p-2 first-letter:capitalize hover:bg-slate-700" to="/portal/user">
               {t('preferences')}
             </Link>
           </Menu.Item>
