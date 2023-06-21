@@ -11,7 +11,7 @@ export const UserDropup = () => {
   const auth = useAuthStore();
   const { i18n, t } = useTranslation();
   return (
-    <Menu as="div" className="relative m-2 flex items-center justify-center">
+    <Menu as="div" className="relative p-2">
       <Menu.Button>
         <UserCircleIcon className="h-8 w-8" />
       </Menu.Button>
@@ -24,7 +24,7 @@ export const UserDropup = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute bottom-12 left-0 origin-bottom-left whitespace-nowrap rounded-sm border shadow-lg dark:border-slate-700 dark:bg-slate-800">
+        <Menu.Items className="absolute bottom-12 left-0 origin-bottom-left whitespace-nowrap rounded-sm border shadow-lg border-slate-700 bg-slate-800">
           <Menu.Item>
             <Link className="block w-full p-2 first-letter:capitalize hover:bg-slate-700" to="/user">
               {t('preferences')}
