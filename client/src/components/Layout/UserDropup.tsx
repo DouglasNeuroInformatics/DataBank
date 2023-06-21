@@ -16,11 +16,16 @@ export const UserDropup = () => {
       <Menu.Button>
         <UserCircleIcon className="h-8 w-8" />
       </Menu.Button>
-      <Menu.Items className="absolute bottom-12 left-0 whitespace-nowrap rounded-sm border p-2 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+      <Menu.Items className="absolute bottom-12 left-0 whitespace-nowrap rounded-sm border shadow-lg dark:border-slate-700 dark:bg-slate-800">
         <Menu.Item>
-          <button className="w-full p-2 first-letter:capitalize hover:bg-slate-700" onClick={() => auth.logout()}>
+          <button className="block p-2 first-letter:capitalize hover:bg-slate-700" onClick={() => auth.logout()}>
             {t('logout')}
           </button>
+        </Menu.Item>
+        <Menu.Item>
+          <Link className="block p-2 first-letter:capitalize hover:bg-slate-700" to="/user">
+            {t('preferences')}
+          </Link>
         </Menu.Item>
       </Menu.Items>
     </Menu>
