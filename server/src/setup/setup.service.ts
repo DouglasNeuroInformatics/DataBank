@@ -23,6 +23,7 @@ export class SetupService {
     await this.connection.dropDatabase();
     await this.createAdmin(admin);
     await this.createIris();
+    await this.createBreastCancer();
   }
 
   private async isInitialized() {
@@ -46,6 +47,15 @@ export class SetupService {
       description:
         "The Iris flower data set or Fisher's Iris data set is a multivariate data set used and made famous by the British statistician and biologist Ronald Fisher in his 1936 paper The use of multiple measurements in taxonomic problems as an example of linear discriminant analysis.",
       license: 'Public Domain'
+    });
+  }
+
+  private async createBreastCancer() {
+    await this.datasetsService.createDataset({
+      name: 'Wisconsin Breast Cancer',
+      description:
+        'Features are computed from a digitized image of a fine needle aspirate (FNA) of a breast mass. They describe characteristics of the cell nuclei present in the image.',
+      license: 'CC BY-NC-SA 4.0'
     });
   }
 }

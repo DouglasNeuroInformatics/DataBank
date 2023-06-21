@@ -22,11 +22,11 @@ export const SharedPage = () => {
     <div>
       <Heading title="Shared Datasets" />
       {availableDatasets ? (
-        <div className="rounded-sm">
+        <ul className="divide-y divide-slate-300 rounded-sm shadow">
           {availableDatasets.map((item) => (
-            <div>{JSON.stringify(item)}</div>
+            <li>{JSON.stringify(item)}</li>
           ))}
-        </div>
+        </ul>
       ) : (
         <SuspenseFallback />
       )}
