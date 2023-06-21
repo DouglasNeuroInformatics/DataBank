@@ -4,7 +4,7 @@ module.exports = {
   extends: ['eslint:recommended', 'prettier'],
   ignorePatterns: ['**/*/dist/*', '**/*/node_modules/*'],
   env: {
-    es2020: true,
+    es2022: true,
     'shared-node-browser': true
   },
   parserOptions: {
