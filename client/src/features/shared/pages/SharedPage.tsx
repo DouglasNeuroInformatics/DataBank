@@ -6,7 +6,6 @@ import axios from 'axios';
 import { SuspenseFallback } from '@/components';
 import { Heading } from '@/components/Heading';
 
-
 export const SharedPage = () => {
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>();
 
@@ -22,7 +21,15 @@ export const SharedPage = () => {
   return (
     <div>
       <Heading title="Shared Datasets" />
-      {availableDatasets ? JSON.stringify(availableDatasets) : <SuspenseFallback />}
+      {availableDatasets ? (
+        <div className="rounded-sm">
+          {availableDatasets.map((item) => (
+            <div>{JSON.stringify(item)}</div>
+          ))}
+        </div>
+      ) : (
+        <SuspenseFallback />
+      )}
     </div>
   );
 };
