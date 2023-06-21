@@ -38,7 +38,9 @@ export type VerificationProcedureInfo = {
 /** DATASETS */
 
 export type DatasetInfo = {
+  _id: string;
   createdAt: string;
+  updatedAt: string;
   name: string;
   description?: string;
   license: string;

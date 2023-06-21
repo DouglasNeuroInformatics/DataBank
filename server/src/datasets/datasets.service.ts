@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { DatasetInfo } from '@databank/types';
@@ -17,5 +17,13 @@ export class DatasetsService {
 
   getAvailable(): Promise<DatasetInfo[]> {
     return this.datasetModel.find();
+  }
+
+  async getById(id: string): Promise<Dataset> {
+    const dataset = await this.datasetModel.findById(id);
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+    return dataset;
   }
 }

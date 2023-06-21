@@ -22,5 +22,6 @@
   "unexpectedError": "Une erreur inattendue s'est produite",
   "pleaseSignIn": "Veuillez vous connecter pour continuer",
   "logout": "se déconnecter",
-  "preferences": "préférences"
+  "preferences": "préférences",
+  "lastUpdated": "Dernière mise à jour le"
 }
