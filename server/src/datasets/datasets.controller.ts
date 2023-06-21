@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { DatasetsService } from './datasets.service.js';
@@ -13,5 +13,17 @@ export class DatasetsController {
   @Post()
   createDataset(@Body() createDatasetDto: CreateDatasetDto) {
     return this.datasetsService.createDataset(createDatasetDto);
+  }
+
+  @ApiOperation({ summary: 'Get All' })
+  @Get()
+  getAll() {
+    return;
+  }
+
+  @ApiOperation({ summary: 'Get For User' })
+  @Get()
+  getForUser() {
+    return this.datasetsService.getForUser();
   }
 }

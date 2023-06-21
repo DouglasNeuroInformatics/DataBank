@@ -13,4 +13,8 @@ export class DatasetsService {
   createDataset(createDatasetDto: CreateDatasetDto) {
     return this.datasetModel.create(createDatasetDto);
   }
+
+  getForUser() {
+    console.log()
+  }
 }
