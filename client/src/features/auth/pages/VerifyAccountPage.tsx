@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { VerificationProcedureInfo } from '@databank/types';
+import { AuthPayload, VerificationProcedureInfo } from '@databank/types';
 import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -11,12 +11,25 @@ import { Countdown } from '../components/Countdown';
 import { VerificationCodeInput } from '../components/VerificationCodeInput';
 
 import { SuspenseFallback } from '@/components';
+import { useAuthStore } from '@/stores/auth-store';
 
 export const VerifyAccountPage = () => {
+  const auth = useAuthStore();
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [seconds, setSeconds] = useState<number>();
+
+  useEffect(() => {
+    void sendVerificationCode();
+  }, []);
+
+  useEffect(() => {
+    console.log(auth);
+    if (auth.currentUser?.isVerified) {
+      navigate('/overview');
+    }
+  }, [auth.currentUser]);
 
   /** Send code and then set seconds to milliseconds remaining in minutes, rounded down, converted to seconds */
   const sendVerificationCode = async () => {
@@ -25,14 +38,10 @@ export const VerifyAccountPage = () => {
   };
 
   const verifyCode = async (code: number) => {
-    await axios.post('/v1/auth/verify', { code });
+    const response = await axios.post<AuthPayload>('/v1/auth/verify', { code });
     notifications.addNotification({ type: 'success' });
-    navigate('/overview');
+    auth.setAccessToken(response.data.accessToken);
   };
-
-  useEffect(() => {
-    void sendVerificationCode();
-  }, []);
 
   return seconds ? (
     <AuthLayout title={t('verifyAccount')}>

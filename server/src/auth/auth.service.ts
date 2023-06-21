@@ -82,7 +82,7 @@ export class AuthService {
     return { attemptsMade: verificationCode.attemptsMade, expiry: verificationCode.expiry };
   }
 
-  async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser, locale?: Locale) {
+  async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser, locale?: Locale): Promise<AuthPayload> {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new NotFoundException(this.i18n.translate(locale, 'errors.notFound.user'));
@@ -114,7 +114,15 @@ export class AuthService {
       throw new ForbiddenException(this.i18n.translate(locale, 'errors.forbidden.incorrectCode'));
     }
 
-    await user.updateOne({ verificationCode: undefined, verifiedAt: Date.now(), isVerified: true });
+    user.verificationCode = undefined;
+    user.verifiedAt = Date.now();
+    user.isVerified = true;
+
+    await user.save();
+
+    const accessToken = await this.signToken(user);
+
+    return { accessToken };
   }
 
   private async signToken(user: User) {

@@ -27,10 +27,10 @@ export class User implements CurrentUser {
 
   /** The timestamp when the user verified their email */
   @Prop({ required: false })
-  verifiedAt: number;
+  verifiedAt?: number;
 
   @Prop({ required: false, type: VerificationCodeSchema })
-  verificationCode: VerificationCode;
+  verificationCode?: VerificationCode;
 }
 
 export type UserDocument = HydratedDocument<User>;
