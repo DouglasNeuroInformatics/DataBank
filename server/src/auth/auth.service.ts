@@ -71,7 +71,7 @@ export class AuthService {
     } else {
       verificationCode = {
         attemptsMade: 0,
-        expiry: this.config.getOrThrow('VALIDATION_TIMEOUT'),
+        expiry: Date.now() + parseInt(this.config.getOrThrow('VALIDATION_TIMEOUT')),
         value: randomInt(100000, 1000000)
       };
       await user.updateOne({ verificationCode });
