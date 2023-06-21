@@ -5,7 +5,7 @@
     },
     "forbidden": {
       "undefinedCode": "Le code de validation n'est pas défini. Veuillez obtenir un nouveau code de validation.",
-      "incorrectCode": "Le Code de validation est incorrect. Veuillez réessayer.",
+      "incorrectCode": "Le code de validation est incorrect. Veuillez réessayer.",
       "expiredCode": "Le code de validation a expiré. Veuillez obtenir un nouveau code de validation.",
       "tooManyAttempts": "Trop de tentatives pour valider ce code. Veuillez demander un nouveau code de validation après le délai d'attente."
     },
