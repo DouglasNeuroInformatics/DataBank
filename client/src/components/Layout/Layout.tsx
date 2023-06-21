@@ -1,4 +1,4 @@
-import { ArrowDownOnSquareIcon, ArrowUpOnSquareIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { FolderArrowDownIcon, HomeIcon, TableCellsIcon } from '@heroicons/react/24/outline';
 import { Outlet } from 'react-router-dom';
 
 import { DesktopSidebar } from './DesktopSidebar';
@@ -14,12 +14,12 @@ const navigation: NavItem[] = [
   {
     label: 'Editor',
     href: '/portal/editor',
-    icon: ArrowUpOnSquareIcon
+    icon: TableCellsIcon
   },
   {
     label: 'Shared',
     href: '/portal/shared',
-    icon: ArrowDownOnSquareIcon
+    icon: FolderArrowDownIcon
   }
 ];
 
