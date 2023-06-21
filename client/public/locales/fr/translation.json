@@ -20,5 +20,7 @@
   "timeRemaining": "Temps restant",
   "invalidCodeFormat": "Le code de vérification n'a pas été collé. Veuillez assurer que le format est correct.",
   "unexpectedError": "Une erreur inattendue s'est produite",
-  "pleaseSignIn": "Veuillez vous connecter pour continuer"
+  "pleaseSignIn": "Veuillez vous connecter pour continuer",
+  "logout": "se déconnecter",
+  "preferences": "préférences"
 }
