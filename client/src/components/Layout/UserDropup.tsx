@@ -9,7 +9,7 @@ import { useAuthStore } from '@/stores/auth-store';
 
 export const UserDropup = () => {
   const auth = useAuthStore();
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   return (
     <Menu as="div" className="relative m-2 flex items-center justify-center">
       <Menu.Button>
@@ -26,14 +26,29 @@ export const UserDropup = () => {
       >
         <Menu.Items className="absolute bottom-12 left-0 origin-bottom-left whitespace-nowrap rounded-sm border shadow-lg dark:border-slate-700 dark:bg-slate-800">
           <Menu.Item>
-            <button className="block p-2 first-letter:capitalize hover:bg-slate-700" onClick={() => auth.logout()}>
-              {t('logout')}
+            <Link className="block w-full p-2 first-letter:capitalize hover:bg-slate-700" to="/user">
+              {t('preferences')}
+            </Link>
+          </Menu.Item>
+          <Menu.Item>
+            <button
+              className="block w-full p-2 text-left first-letter:capitalize hover:bg-slate-700"
+              type="button"
+              onClick={() => {
+                void i18n.changeLanguage(i18n.resolvedLanguage === 'en' ? 'fr' : 'en');
+              }}
+            >
+              {i18n.resolvedLanguage === 'en' ? 'Français' : 'English'}
             </button>
           </Menu.Item>
           <Menu.Item>
-            <Link className="block p-2 first-letter:capitalize hover:bg-slate-700" to="/user">
-              {t('preferences')}
-            </Link>
+            <button
+              className="block w-full p-2 text-left first-letter:capitalize hover:bg-slate-700"
+              type="button"
+              onClick={() => auth.logout()}
+            >
+              {t('logout')}
+            </button>
           </Menu.Item>
         </Menu.Items>
       </Transition>
