@@ -15,15 +15,9 @@ export class DatasetsController {
     return this.datasetsService.createDataset(createDatasetDto);
   }
 
-  @ApiOperation({ summary: 'Get All' })
-  @Get()
-  getAll() {
-    return;
-  }
-
-  @ApiOperation({ summary: 'Get For User' })
-  @Get()
-  getForUser() {
-    return this.datasetsService.getForUser();
+  @ApiOperation({ summary: 'Get All Datasets' })
+  @Get('available')
+  getAvailable() {
+    return this.datasetsService.getAvailable();
   }
 }

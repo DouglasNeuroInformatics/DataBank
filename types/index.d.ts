@@ -34,3 +34,11 @@ export type VerificationProcedureInfo = {
   /** The unix timestamp after which the code will be invalidated */
   expiry: number;
 };
+
+/** DATASETS */
+
+export type DatasetInfo = {
+  name: string;
+  description?: string;
+  license: string;
+};

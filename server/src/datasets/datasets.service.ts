@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { DatasetInfo } from '@databank/types';
 import { Model } from 'mongoose';
 
 import { CreateDatasetDto } from './dto/create-dataset.dto.js';
@@ -14,7 +15,7 @@ export class DatasetsService {
     return this.datasetModel.create(createDatasetDto);
   }
 
-  getForUser() {
-    console.log()
+  getAvailable(): Promise<DatasetInfo[]> {
+    return this.datasetModel.find();
   }
 }
