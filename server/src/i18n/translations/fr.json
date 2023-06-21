@@ -11,6 +11,9 @@
     },
     "notFound": {
       "user": "Utilisateur non trouvé"
+    },
+    "internalServerError": {
+      "unknown": "Une erreur inattendue s'est produite"
     }
   },
   "verificationEmail": {

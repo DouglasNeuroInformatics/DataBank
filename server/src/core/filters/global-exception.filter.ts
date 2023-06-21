@@ -17,6 +17,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
     const res = ctx.getResponse<Response>();
 
+    const locale = this.i18n.extractLocale(req);
+
     this.logger.error(exception);
 
     let statusCode: HttpStatus;
@@ -26,10 +28,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = match(exception.getResponse())
         .with(P.string, (res) => res)
         .with({ message: P.string }, (res) => res.message)
-        .otherwise(() => 'An unexpected error occurred');
+        .otherwise(() => this.i18n.translate(locale, 'errors.internalServerError.unknown'));
     } else {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-      message = 'Internal Server Error';
+      message = this.i18n.translate(locale, 'errors.internalServerError.unknown');
     }
 
     res.status(statusCode).send({ message } satisfies ExceptionResponse);
