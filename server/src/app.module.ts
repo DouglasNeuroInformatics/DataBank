@@ -10,6 +10,7 @@ import { AcceptLanguageMiddleware } from './core/middleware/accept-language.midd
 import { LoggerMiddleware } from './core/middleware/logger.middleware.js';
 import { DatasetsModule } from './datasets/datasets.module.js';
 import { I18nModule } from './i18n/i18n.module.js';
+import { SetupModule } from './setup/setup.module.js';
 import { UsersModule } from './users/users.module.js';
 
 @Module({
@@ -31,6 +32,7 @@ import { UsersModule } from './users/users.module.js';
         };
       }
     }),
+    SetupModule,
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10
@@ -38,10 +40,10 @@ import { UsersModule } from './users/users.module.js';
     UsersModule
   ],
   providers: [
-    {
-      provide: APP_FILTER,
-      useClass: GlobalExceptionFilter
-    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: GlobalExceptionFilter
+    // },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
