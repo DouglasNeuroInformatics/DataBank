@@ -10,7 +10,7 @@
     "test": "env-cmd turbo run test",
     "ws": "env-cmd bash -c 'yarn workspace @databank/$0 ${@:1}'"
   },
-    "dependencies": {
+  "dependencies": {
     "ts-pattern": "^5.0.1",
     "type-fest": "^3.12.0"
   },
