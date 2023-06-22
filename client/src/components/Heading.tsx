@@ -1,12 +1,24 @@
+import { twMerge } from 'tailwind-merge';
+
 export interface HeadingProps {
   title: string;
+  subtitle?: string;
   children?: React.ReactNode;
+  border?: boolean;
 }
 
-export const Heading = ({ title, children }: HeadingProps) => {
+export const Heading = ({ title, subtitle, children, border = true }: HeadingProps) => {
   return (
-    <div className="mb-3 gap-5 border-b border-slate-300 dark:border-slate-600 py-5 sm:flex sm:items-center sm:justify-between">
-      <h3 className="whitespace-nowrap text-lg font-medium">{title}</h3>
+    <div
+      className={twMerge(
+        'mb-3 gap-5 border-slate-300 py-5 dark:border-slate-600 sm:flex sm:items-center sm:justify-between',
+        border && 'border-b'
+      )}
+    >
+      <div>
+        <h3 className="whitespace-nowrap text-xl font-semibold">{title}</h3>
+        {subtitle && <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{subtitle}</p>}
+      </div>
       {children}
     </div>
   );
