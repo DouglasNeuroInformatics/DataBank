@@ -16,7 +16,7 @@ export class DatasetsService {
   }
 
   getAvailable(): Promise<DatasetInfo[]> {
-    return this.datasetModel.find();
+    return this.datasetModel.find({}, '-data');
   }
 
   async getById(id: string): Promise<Dataset> {

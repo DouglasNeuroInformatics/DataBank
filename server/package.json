@@ -25,9 +25,7 @@
     "mongoose": "^7.3.0",
     "nodemailer": "^6.9.3",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1",
-    "ts-pattern": "^5.0.1",
-    "type-fest": "^3.12.0"
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@nestjs/testing": "^10.0.1",

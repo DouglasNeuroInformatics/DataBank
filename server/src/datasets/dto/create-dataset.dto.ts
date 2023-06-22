@@ -1,13 +1,26 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import type { DatasetColumn, DatasetData, TDataset } from '@databank/types';
+import { IsNotEmpty, IsNotEmptyObject, IsString } from 'class-validator';
 
-export class CreateDatasetDto {
+export class CreateDatasetDto<
+  TColumns extends Record<string, DatasetColumn> = Record<string, DatasetColumn>,
+  TData extends DatasetData<TColumns> = DatasetData<TColumns>
+> implements Omit<TDataset<TColumns>, '_id' | 'createdAt' | 'updatedAt'>
+{
+  @IsString()
   @IsNotEmpty()
   name: string;
 
-  @IsOptional()
+  @IsString()
   @IsNotEmpty()
-  description?: string;
+  description: string;
 
+  @IsString()
   @IsNotEmpty()
   license: string;
+
+  @IsNotEmptyObject()
+  columns: TColumns;
+
+  @IsNotEmptyObject()
+  data: TData;
 }

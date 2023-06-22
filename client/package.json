@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite",
-    "lint": "eslint --fix src",
+    "lint": "tsc && eslint --fix src",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -27,8 +27,6 @@
     "react-i18next": "^13.0.0",
     "react-router-dom": "^6.13.0",
     "tailwind-merge": "^1.13.2",
-    "ts-pattern": "^5.0.1",
-    "type-fest": "^3.12.0",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

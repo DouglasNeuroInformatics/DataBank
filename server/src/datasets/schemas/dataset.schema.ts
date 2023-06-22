@@ -1,17 +1,35 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+import type { DatasetColumn, DatasetData, TDataset } from '@databank/types';
 import { HydratedDocument } from 'mongoose';
 
-@Schema({ timestamps: true })
-export class Dataset {
+@Schema({
+  timestamps: {
+    currentTime: () => Date.now(),
+    createdAt: true,
+    updatedAt: true
+  },
+  strict: 'throw'
+})
+export class Dataset<
+  TColumns extends Record<string, DatasetColumn> = Record<string, DatasetColumn>,
+  TData extends DatasetData<TColumns> = DatasetData<TColumns>
+> implements Omit<TDataset<TColumns>, '_id' | 'createdAt' | 'updatedAt'>
+{
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: false })
+  @Prop({ required: true })
   description: string;
 
   @Prop({ required: true })
   license: string;
+
+  @Prop({ required: true, type: Object })
+  columns: TColumns;
+
+  @Prop({ required: true, type: Object })
+  data: TData;
 }
 
 export type DatasetDocument = HydratedDocument<Dataset>;
