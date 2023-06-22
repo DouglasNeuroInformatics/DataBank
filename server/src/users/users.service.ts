@@ -28,12 +28,12 @@ export class UsersService {
   }
 
   /** Get all users in the database */
-  async getAll() {
+  getAll() {
     return this.userModel.find();
   }
 
   /** Return the user with the provided email, or null if no such user exists */
-  async findByEmail(email: string) {
+  findByEmail(email: string) {
     return this.userModel.findOne({ email });
   }
 }

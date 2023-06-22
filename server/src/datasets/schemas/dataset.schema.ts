@@ -24,7 +24,7 @@ export class Dataset<
   @Prop({ required: true })
   description: string;
 
-  @Prop({ required: true, type: MongooseSchema.Types.ObjectId })
+  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: User.name })
   owner: User;
 
   @Prop({ required: true })

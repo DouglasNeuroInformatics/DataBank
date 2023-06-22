@@ -34,7 +34,7 @@ export class AuthService {
   ) {}
 
   async login(email: string, password: string, locale?: Locale): Promise<AuthPayload> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email).select('+hashedPassword');
     if (!user) {
       throw new UnauthorizedException(this.i18n.translate(locale, 'errors.unauthorized.invalidCredentials'));
     }

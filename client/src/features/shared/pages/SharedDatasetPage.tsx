@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { TDataset } from '@databank/types';
-import { Dropdown, Table, TableColumn, useDownload } from '@douglasneuroinformatics/react-components';
+import { Button, Dropdown, Table, TableColumn, useDownload } from '@douglasneuroinformatics/react-components';
 import axios from 'axios';
 import { unparse } from 'papaparse';
 import { useParams } from 'react-router-dom';
@@ -59,12 +59,21 @@ export const SharedDatasetPage = () => {
   return dataset ? (
     <>
       <Heading subtitle={dataset.description} title={dataset.name}>
-        <Dropdown
-          className="w-min"
-          options={['CSV', 'TSV']}
-          title="Download"
-          onSelection={(option) => handleDownload(dataset, option)}
-        />
+        <div className="flex gap-3">
+          <Button
+            label="Contact Owner"
+            variant="secondary"
+            onClick={() => {
+              window.open(`mailto:${dataset.owner.email}?subject=${encodeURIComponent(dataset.name)}`, '_self');
+            }}
+          />
+          <Dropdown
+            className="w-min"
+            options={['CSV', 'TSV']}
+            title="Download"
+            onSelection={(option) => handleDownload(dataset, option)}
+          />
+        </div>
       </Heading>
       <div className="flex-grow-0 overflow-hidden pb-3">
         <Table columns={columns} data={data} />
