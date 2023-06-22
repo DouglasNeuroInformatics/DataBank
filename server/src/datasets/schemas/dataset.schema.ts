@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import type { DatasetColumn, DatasetData, TDataset } from '@databank/types';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+
+import { User } from '@/users/schemas/user.schema.js';
 
 @Schema({
   timestamps: {
@@ -21,6 +23,9 @@ export class Dataset<
 
   @Prop({ required: true })
   description: string;
+
+  @Prop({ required: true, type: MongooseSchema.Types.ObjectId })
+  owner: User;
 
   @Prop({ required: true })
   license: string;
