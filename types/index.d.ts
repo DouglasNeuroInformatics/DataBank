@@ -37,12 +37,24 @@ export type VerificationProcedureInfo = {
   expiry: number;
 };
 
+/** USER */
+
+export type TUser = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: UserRole;
+  isVerified: boolean;
+  verifiedAt?: number;
+};
+
 /** DATASETS */
 
 export type DatasetInfo = {
   _id: string;
   createdAt: number;
   updatedAt: number;
+  owner: TUser;
   name: string;
   description: string;
   license: string;

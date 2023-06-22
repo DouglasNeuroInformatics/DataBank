@@ -22,10 +22,11 @@ export class DatasetsService {
   }
 
   async getById(id: string): Promise<Dataset> {
-    const dataset = await this.datasetModel.findById(id);
+    const dataset = await this.datasetModel.findById(id); //.populate('owner').lean();
     if (!dataset) {
       throw new NotFoundException();
     }
+    await dataset.populate('owner');
     return dataset;
   }
 }
