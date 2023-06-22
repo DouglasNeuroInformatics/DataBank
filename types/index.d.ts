@@ -1,6 +1,6 @@
 /** CORE */
 
-import { Simplify } from 'type-fest';
+import { Primitive, Simplify } from 'type-fest';
 
 export type Locale = 'en' | 'fr';
 
@@ -56,11 +56,13 @@ export type DatasetColumn = {
 };
 
 export type DatasetData<TColumns extends Record<string, DatasetColumn>> = {
-  [K in keyof TColumns]: any;
+  [key: string]: {
+    [K in keyof TColumns]: Primitive;
+  };
 };
 
 export type TDataset<
-  TColumns extends Record<string, DatasetColumn>,
+  TColumns extends Record<string, DatasetColumn> = Record<string, DatasetColumn>,
   TData extends DatasetData<TColumns> = DatasetData<TColumns>
 > = Simplify<
   DatasetInfo & {

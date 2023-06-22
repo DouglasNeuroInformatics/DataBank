@@ -26,9 +26,12 @@ export const SharedPage = () => {
     <div>
       <Heading title="Shared Datasets" />
       {availableDatasets ? (
-        <ul className="divide-y divide-slate-300 rounded-sm shadow">
+        <ul className="divide-y divide-slate-200 rounded-sm shadow dark:divide-slate-700">
           {availableDatasets.map((item) => (
-            <li className="block hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150" key={item._id}>
+            <li
+              className="hover: block bg-slate-50 ring-1 dark:bg-slate-800 ring-black ring-opacity-5 transition-all hover:scale-[101%] hover:shadow-lg"
+              key={item._id}
+            >
               <Link className="block w-full px-4 py-4 sm:px-6" to={item._id}>
                 <p className="font-medium text-sky-700 dark:text-sky-300">{item.name}</p>
                 <div className="flex items-center pt-2 text-sm ">
