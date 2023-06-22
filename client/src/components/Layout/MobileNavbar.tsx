@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
-import { type NavLink } from './types';
+import { type NavItem } from './types';
 
 import { Logo } from '@/components';
 
 export interface MobileNavbarProps {
-  navigation: NavLink[];
+  navigation: NavItem[];
 }
 
 export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
@@ -69,7 +69,7 @@ export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
                             href={item.href}
                             key={item.label}
                           >
-                            {item.icon}
+                            <item.icon className="h-6 w-6" />
                             <span className="ml-2">{item.label}</span>
                           </a>
                         ))}
