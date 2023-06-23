@@ -10,10 +10,10 @@ export interface DatasetCardProps {
 export const DatasetCard = ({ dataset, onClick }: DatasetCardProps) => {
   const { t, i18n } = useTranslation();
   return (
-    <div className="border border-slate-200 bg-slate-50 ring-1 ring-black ring-opacity-5 hover:bg-slate-100 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700">
+    <div className="@container border border-slate-200 bg-slate-50 ring-1 ring-black ring-opacity-5 hover:bg-slate-100 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700">
       <button className="w-full px-4 py-4 text-left sm:px-6" type="button" onClick={() => onClick(dataset)}>
         <p className="font-medium text-sky-700 dark:text-sky-300">{dataset.name}</p>
-        <div className="flex items-center pt-2 text-sm ">
+        <div className="@xs:flex hidden items-center pt-2 text-sm">
           <CalendarIcon className="mr-2 h-4 w-4" />
           <span>
             {`${t('lastUpdated')} ${new Date(dataset.updatedAt).toLocaleDateString(i18n.resolvedLanguage, {

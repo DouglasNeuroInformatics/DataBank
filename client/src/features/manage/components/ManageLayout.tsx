@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 
 import { DatasetInfo } from '@databank/types';
 import axios from 'axios';
-import { Link, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 
+import { DatasetCard } from '@/components/DatasetCard';
 import { Heading } from '@/components/Heading';
 import { useAuthStore } from '@/stores/auth-store';
 
 export const ManageLayout = () => {
+  const navigate = useNavigate();
   const { currentUser } = useAuthStore();
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>([]);
 
@@ -19,14 +21,14 @@ export const ManageLayout = () => {
   }, [currentUser]);
 
   return (
-    <div className="h-full w-full">
+    <div className="flex h-full w-full flex-col">
       <Heading title="Manage Datasets" />
       <div className="flex h-full gap-5 overflow-hidden">
         <div className="h-full w-1/4 border border-dashed">
           <ul className="h-full divide-y divide-slate-300 overflow-scroll" role="list">
             {availableDatasets.map((dataset) => (
-              <li className="p-4 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150" key={dataset._id}>
-                <Link to={dataset._id}>{dataset.name}</Link>
+              <li key={dataset._id}>
+                <DatasetCard dataset={dataset} onClick={() => navigate(dataset._id)} />
               </li>
             ))}
           </ul>
