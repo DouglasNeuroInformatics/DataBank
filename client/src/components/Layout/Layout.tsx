@@ -12,8 +12,8 @@ const navigation: NavItem[] = [
     icon: HomeIcon
   },
   {
-    label: 'Editor',
-    href: '/portal/editor',
+    label: 'Manage',
+    href: '/portal/manage',
     icon: TableCellsIcon
   },
   {
@@ -28,7 +28,7 @@ export const Layout = () => {
     <div className="flex h-screen flex-col lg:flex-row">
       <DesktopSidebar navigation={navigation} />
       <MobileNavbar navigation={navigation} />
-      <main className="container flex flex-1 flex-col overflow-hidden mb-3">
+      <main className="container mb-3 flex flex-1 flex-col overflow-hidden">
         <Outlet />
       </main>
     </div>

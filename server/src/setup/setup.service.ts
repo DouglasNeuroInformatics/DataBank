@@ -33,16 +33,18 @@ export class SetupService {
 
     const iris = await this.loadStarterDataset('iris.json');
 
-    await this.datasetsService.createDataset(
-      {
-        name: 'Iris',
-        description: 'The iris dataset is a classic and very easy multi-class classification dataset',
-        license: 'Public Domain',
-        columns: iris.columns,
-        data: iris.data
-      },
-      user.toObject()
-    );
+    for (let i = 1; i < 21; i++) {
+      await this.datasetsService.createDataset(
+        {
+          name: 'Iris ' + i,
+          description: 'The iris dataset is a classic and very easy multi-class classification dataset',
+          license: 'Public Domain',
+          columns: iris.columns,
+          data: iris.data
+        },
+        user.toObject()
+      );
+    }
   }
 
   private async isInitialized() {
