@@ -58,28 +58,31 @@ export const SharedDatasetPage = withTransition(() => {
   };
 
   return dataset ? (
-    <>
+    <div className="flex h-full w-full flex-col">
       <Heading subtitle={dataset.description} title={dataset.name}>
         <div className="flex gap-3">
           <Button
+            className="whitespace-nowrap"
             label="Contact Owner"
+            size="sm"
             variant="secondary"
             onClick={() => {
               window.open(`mailto:${dataset.owner.email}?subject=${encodeURIComponent(dataset.name)}`, '_self');
             }}
           />
           <Dropdown
-            className="w-min"
+            className="w-min whitespace-nowrap"
             options={['CSV', 'TSV']}
+            size="sm"
             title="Download"
             onSelection={(option) => handleDownload(dataset, option)}
           />
         </div>
       </Heading>
-      <div className="flex-grow-0 overflow-hidden pb-3">
+      <div className="flex-grow overflow-hidden pb-3">
         <Table columns={columns} data={data} />
       </div>
-    </>
+    </div>
   ) : (
     <SuspenseFallback />
   );
