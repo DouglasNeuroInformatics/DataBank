@@ -7,7 +7,7 @@ export function withTransition<T extends object>(Component: React.ComponentType<
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         initial={{ opacity: 0 }}
-        transition={{ duration: 0.1 }}
+        transition={{ duration: 0.15 }}
       >
         <Component {...props} />
       </motion.div>
