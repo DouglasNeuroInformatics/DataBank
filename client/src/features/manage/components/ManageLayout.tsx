@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { DatasetInfo } from '@databank/types';
 import axios from 'axios';
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 import { Heading } from '@/components/Heading';
 import { useAuthStore } from '@/stores/auth-store';
@@ -24,9 +24,9 @@ export const ManageLayout = () => {
       <div className="flex h-full gap-5 overflow-hidden">
         <div className="h-full w-1/4 border border-dashed">
           <ul className="h-full divide-y divide-slate-300 overflow-scroll" role="list">
-            {availableDatasets.map((item) => (
-              <li className="p-4 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150" key={item._id}>
-                {item.name}
+            {availableDatasets.map((dataset) => (
+              <li className="p-4 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150" key={dataset._id}>
+                <Link to={dataset._id}>{dataset.name}</Link>
               </li>
             ))}
           </ul>
