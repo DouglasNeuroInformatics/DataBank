@@ -9,8 +9,8 @@ import { match } from 'ts-pattern';
 import { Layout } from './components';
 import { CreateAccountPage, LoginPage, VerifyAccountPage } from './features/auth';
 import { DashboardPage } from './features/dashboard';
-import { EditorPage } from './features/editor';
 import { LandingPage } from './features/landing';
+import { ManageDatasetPage, ManageLayout, ManagePage } from './features/manage';
 import { SharedDatasetPage, SharedPage } from './features/shared';
 import { UserPage } from './features/user';
 import { useAuthStore } from './stores/auth-store';
@@ -44,7 +44,10 @@ const AppRoutes = () => {
           .with({ isVerified: true }, () => (
             <Route element={<Layout />} path="portal">
               <Route index element={<DashboardPage />} path="dashboard" />
-              <Route element={<EditorPage />} path="editor" />
+              <Route element={<ManageLayout />} path="manage">
+                <Route index element={<ManagePage />} />
+                <Route element={<ManageDatasetPage />} path=":id" />
+              </Route>
               <Route path="shared">
                 <Route index element={<SharedPage />} />
                 <Route element={<SharedDatasetPage />} path=":id" />
