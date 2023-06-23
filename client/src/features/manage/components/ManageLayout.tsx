@@ -28,15 +28,7 @@ export const ManageLayout = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <Heading title="Manage Datasets">
-        <Button
-          label="Add New"
-          size="sm"
-          onClick={() => {
-            navigate('/portal/create');
-          }}
-        />
-      </Heading>
+      <Heading title="Manage Datasets" />
       <div className="flex h-full gap-5 overflow-hidden">
         <div className="h-full w-1/3 2xl:w-1/4">
           <SearchBar className="my-3" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
