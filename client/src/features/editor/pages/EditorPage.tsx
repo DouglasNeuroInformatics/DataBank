@@ -4,8 +4,9 @@ import { CreateDatasetData, CreateDatasetModal } from '../components/CreateDatas
 import { EmptyState } from '../components/EmptyState';
 
 import { Heading } from '@/components/Heading';
+import { withTransition } from '@/utils/withTransition';
 
-export const EditorPage = () => {
+export const EditorPage = withTransition(() => {
   const [isCreateDatasetOpen, setIsCreateDatasetOpen] = useState(false);
 
   const handleSubmitDataset = (data: CreateDatasetData) => {
@@ -30,4 +31,4 @@ export const EditorPage = () => {
       />
     </div>
   );
-};
+});
