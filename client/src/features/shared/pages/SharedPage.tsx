@@ -23,19 +23,21 @@ export const SharedPage = withTransition(() => {
   }, []);
 
   return (
-    <div>
+    <div className="flex h-full w-full flex-col">
       <Heading title="Shared Datasets" />
-      {availableDatasets ? (
-        <ul className="divide-y divide-slate-200 rounded-sm shadow dark:divide-slate-700">
-          {availableDatasets.map((dataset) => (
-            <li key={dataset._id}>
-              <DatasetCard dataset={dataset} onClick={({ _id }) => navigate(_id)} />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <SuspenseFallback />
-      )}
+      <div className="overflow-hidden">
+        {availableDatasets ? (
+          <ul className="h-full overflow-x-visible overflow-y-scroll rounded-sm shadow">
+            {availableDatasets.map((dataset) => (
+              <li key={dataset._id}>
+                <DatasetCard dataset={dataset} onClick={({ _id }) => navigate(_id)} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <SuspenseFallback />
+        )}
+      </div>
     </div>
   );
 });
