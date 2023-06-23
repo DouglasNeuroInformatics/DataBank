@@ -34,7 +34,7 @@ export const SharedPage = () => {
     <div className="flex h-full w-full flex-col">
       <Heading title="Shared Datasets" />
       <SearchBar
-        className="my-3 rounded-sm"
+        className="mb-3 rounded-sm"
         size="sm"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}

@@ -29,18 +29,17 @@ export const ManageLayout = () => {
   return (
     <div className="flex h-full w-full flex-col">
       <Heading title="Manage Datasets" />
-      <div className="flex h-full gap-5 overflow-hidden">
-        <div className="h-full w-1/3 2xl:w-1/4">
-          <SearchBar
-            className="my-3 rounded-sm"
-            size="sm"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <ul
-            className="h-full divide-y divide-slate-300 overflow-scroll rounded-sm first:[&>div]:bg-black"
-            role="list"
-          >
+      <div className="w-full">
+        <SearchBar
+          className="mb-3 rounded-sm"
+          size="sm"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      <div className="flex gap-5 overflow-y-hidden">
+        <div className="flex w-1/3 flex-col 2xl:w-1/4">
+          <ul className="h-full divide-y divide-slate-300 overflow-scroll rounded-sm" role="list">
             {filteredDatasets.map((dataset) => (
               <li key={dataset._id}>
                 <DatasetCard dataset={dataset} onClick={() => navigate(dataset._id)} />
