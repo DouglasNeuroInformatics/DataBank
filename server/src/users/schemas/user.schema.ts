@@ -1,12 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { type CurrentUser, TUser, type UserRole } from '@databank/types';
+import { TUser, type UserRole } from '@databank/types';
 import { HydratedDocument } from 'mongoose';
 
 import { VerificationCode, VerificationCodeSchema } from '@/auth/schemas/verification-code.schema.js';
 
-@Schema()
-export class User implements CurrentUser, TUser {
+@Schema({
+  toObject: {
+    transform: (doc, ret) => {
+      ret.id = doc.id as string;
+      return ret;
+    }
+  }
+})
+export class User implements TUser {
   @Prop({ required: true })
   firstName: string;
 

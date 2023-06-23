@@ -20,7 +20,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @RouteAccess('public')
   login(@Body() { email, password }: LoginRequestDto, @Req() request: Request) {
-    return this.authService.login(email, password, request.locale);
+    return this.authService.login(email, password, request.user.locale);
   }
 
   @ApiOperation({ summary: 'Create Account', description: 'Create a new account as a standard user' })
@@ -34,13 +34,13 @@ export class AuthController {
   @Post('verification-code')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   sendVerificationCode(@Req() request: Request) {
-    return this.authService.sendVerificationCode(request.user!, request.locale);
+    return this.authService.sendVerificationCode(request.user, request.user.locale);
   }
 
   @ApiOperation({ summary: 'Verify Account', description: 'Verify an account using a verification code' })
   @Post('verify')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   verifyAccount(@Req() request: Request, @Body() verifyAccountDto: VerifyAccountDto) {
-    return this.authService.verifyAccount(verifyAccountDto, request.user!, request.locale);
+    return this.authService.verifyAccount(verifyAccountDto, request.user, request.user.locale);
   }
 }

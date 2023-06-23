@@ -21,7 +21,7 @@ import { VerificationCode } from './schemas/verification-code.schema.js';
 
 import { I18nService } from '@/i18n/i18n.service.js';
 import { MailService } from '@/mail/mail.service.js';
-import { User } from '@/users/schemas/user.schema.js';
+import { User, UserDocument } from '@/users/schemas/user.schema.js';
 
 @Injectable()
 export class AuthService {
@@ -50,7 +50,7 @@ export class AuthService {
   }
 
   /** Create a new standard account with verification required */
-  async createAccount(createAccountDto: CreateAccountDto): Promise<CurrentUser> {
+  async createAccount(createAccountDto: CreateAccountDto): Promise<User> {
     return this.usersService.createUser({ ...createAccountDto, role: 'standard', isVerified: false });
   }
 
@@ -125,9 +125,9 @@ export class AuthService {
     return { accessToken };
   }
 
-  private async signToken(user: User) {
+  private async signToken(user: UserDocument) {
     const { email, firstName, lastName, role, isVerified } = user;
-    const payload: CurrentUser = { firstName, lastName, email, role, isVerified };
+    const payload: CurrentUser = { id: user.id as string, firstName, lastName, email, role, isVerified };
     return this.jwtService.signAsync(payload);
   }
 }

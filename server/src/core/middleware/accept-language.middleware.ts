@@ -9,7 +9,7 @@ export class AcceptLanguageMiddleware implements NestMiddleware {
   constructor(private readonly i18nService: I18nService) {}
 
   use(req: Request, res: Response, next: NextFunction) {
-    req.locale = this.i18nService.extractLocale(req);
+    Object.assign(req.user ?? {}, this.i18nService.extractLocale(req));
     next();
   }
 }
