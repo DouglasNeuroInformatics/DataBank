@@ -11,7 +11,7 @@ export const Heading = ({ title, subtitle, children, border = true }: HeadingPro
   return (
     <div
       className={twMerge(
-        'mb-3 gap-5 border-slate-300 py-5 dark:border-slate-600 sm:flex sm:items-center sm:justify-between',
+        'mb-3 flex flex-col gap-5 border-slate-300 py-5 dark:border-slate-600 sm:flex-row sm:items-center sm:justify-between',
         border && 'border-b'
       )}
     >
