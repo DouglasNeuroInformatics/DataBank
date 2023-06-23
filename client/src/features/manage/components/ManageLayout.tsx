@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { DatasetInfo } from '@databank/types';
-import { Button, SearchBar } from '@douglasneuroinformatics/react-components';
+import { SearchBar } from '@douglasneuroinformatics/react-components';
 import axios from 'axios';
 import { Outlet, useNavigate } from 'react-router-dom';
 
@@ -31,8 +31,16 @@ export const ManageLayout = () => {
       <Heading title="Manage Datasets" />
       <div className="flex h-full gap-5 overflow-hidden">
         <div className="h-full w-1/3 2xl:w-1/4">
-          <SearchBar className="my-3 rounded-sm" size="sm" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-          <ul className="h-full divide-y divide-slate-300 overflow-scroll" role="list">
+          <SearchBar
+            className="my-3 rounded-sm"
+            size="sm"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <ul
+            className="h-full divide-y divide-slate-300 overflow-scroll rounded-sm first:[&>div]:bg-black"
+            role="list"
+          >
             {filteredDatasets.map((dataset) => (
               <li key={dataset._id}>
                 <DatasetCard dataset={dataset} onClick={() => navigate(dataset._id)} />
