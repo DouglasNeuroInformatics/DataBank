@@ -28,7 +28,7 @@ export const Layout = () => {
     <div className="flex h-screen flex-col lg:flex-row">
       <DesktopSidebar navigation={navigation} />
       <MobileNavbar navigation={navigation} />
-      <main className="container mb-3 flex flex-1 flex-col overflow-hidden">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col overflow-hidden px-3 pb-3 md:px-6 xl:px-12">
         <Outlet />
       </main>
     </div>
