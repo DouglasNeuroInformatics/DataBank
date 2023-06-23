@@ -17,6 +17,7 @@ export type AuthPayload = {
 export type UserRole = 'admin' | 'standard';
 
 export type CurrentUser = {
+  id: string;
   email: string;
   firstName: string;
   lastName: string;

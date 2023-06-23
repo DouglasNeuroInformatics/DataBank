@@ -1,10 +1,14 @@
 import type { CurrentUser, Locale } from '@databank/types';
+import { Simplify } from 'type-fest';
 
 declare global {
   namespace Express {
     interface Request {
-      locale?: Locale;
-      user?: CurrentUser;
+      user: Simplify<
+        CurrentUser & {
+          locale: Locale;
+        }
+      >;
     }
   }
 }

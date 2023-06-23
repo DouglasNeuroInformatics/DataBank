@@ -34,7 +34,9 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       this.logger.verbose('Request header does not include auth token');
-      throw new UnauthorizedException(this.i18n.translate(request.locale, 'errors.unauthorized.invalidCredentials'));
+      throw new UnauthorizedException(
+        this.i18n.translate(request.user.locale, 'errors.unauthorized.invalidCredentials')
+      );
     }
 
     // Validate token and extract payload
@@ -44,15 +46,16 @@ export class AuthGuard implements CanActivate {
         secret: this.configService.getOrThrow('SECRET_KEY')
       });
     } catch (error) {
-      this.logger.warn('Failed to parse JWT. Potential attacker.')
-      throw new UnauthorizedException(this.i18n.translate(request.locale, 'errors.unauthorized.invalidCredentials'));
+      this.logger.warn('Failed to parse JWT. Potential attacker.');
+      throw new UnauthorizedException(
+        this.i18n.translate(request.user.locale, 'errors.unauthorized.invalidCredentials')
+      );
     }
 
     // Attach user to request for route handlers
-    request.user = payload;
+    request.user = Object.assign(request.user ?? {}, payload);
 
     // Access user permissions
-
     return this.isAuthorized(request.user?.role, routeAccess);
   }
 

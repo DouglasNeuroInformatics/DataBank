@@ -32,6 +32,7 @@ export class SetupService {
     const user = await this.createAdmin(admin);
 
     const iris = await this.loadStarterDataset('iris.json');
+
     await this.datasetsService.createDataset(
       {
         name: 'Iris',
@@ -40,7 +41,7 @@ export class SetupService {
         columns: iris.columns,
         data: iris.data
       },
-      user
+      user.toObject()
     );
   }
 

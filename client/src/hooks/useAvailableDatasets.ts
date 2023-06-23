@@ -8,11 +8,13 @@ import { useAuthStore } from '@/stores/auth-store';
 /**
  * Returns an array of info about available datasets
  * @param options.onlyCurrentUser - if true, then only datasets owned by the current user will be returned
- * @returns 
+ * @returns
  */
 export function useAvailableDatasets(options?: { onlyCurrentUser?: boolean }) {
   const auth = useAuthStore();
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>([]);
+
+  console.log(auth.currentUser);
 
   const fetchAvailable = async () => {
     //const url = '/v1/datasets/available' + options?.onlyCurrentUser ? `?owner=${auth.currentUser.}`

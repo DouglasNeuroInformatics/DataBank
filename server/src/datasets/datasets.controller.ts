@@ -17,7 +17,7 @@ export class DatasetsController {
   @ApiOperation({ summary: 'Create Dataset' })
   @Post()
   createDataset(@Req() request: Request, @Body() createDatasetDto: CreateDatasetDto) {
-    return this.datasetsService.createDataset(createDatasetDto, request.user!);
+    return this.datasetsService.createDataset(createDatasetDto, request.user);
   }
 
   @ApiOperation({ summary: 'Get All Datasets' })
