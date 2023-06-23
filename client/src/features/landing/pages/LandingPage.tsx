@@ -1,9 +1,7 @@
 import { Hero } from '../components/Hero';
 import { LandingHeader } from '../components/LandingHeader';
 
-import { withTransition } from '@/utils/withTransition';
-
-export const LandingPage = withTransition(() => {
+export const LandingPage = () => {
   return (
     <div className="flex h-screen flex-col">
       <LandingHeader />
@@ -12,4 +10,4 @@ export const LandingPage = withTransition(() => {
       </main>
     </div>
   );
-});
+};

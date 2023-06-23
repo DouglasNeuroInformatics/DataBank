@@ -2,8 +2,7 @@ import { useEffect } from 'react';
 
 import { AuthPayload } from '@databank/types';
 import axios from 'axios';
-import { AnimatePresence } from 'framer-motion';
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { match } from 'ts-pattern';
 
 import { Layout } from './components';
@@ -17,7 +16,6 @@ import { useAuthStore } from './stores/auth-store';
 
 const AppRoutes = () => {
   const { currentUser, setAccessToken } = useAuthStore();
-  const location = useLocation();
 
   useEffect(() => {
     if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH === 'true') {
@@ -32,8 +30,7 @@ const AppRoutes = () => {
   }, []);
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes key={location.key} location={location}>
+      <Routes>
         <Route index element={<LandingPage />} />
         <Route path="auth">
           <Route element={<LoginPage />} path="login" />
@@ -60,7 +57,6 @@ const AppRoutes = () => {
             <Route element={<Navigate to="/" />} path="*" />
           ))}
       </Routes>
-    </AnimatePresence>
   );
 };
 

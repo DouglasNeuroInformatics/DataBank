@@ -6,9 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/AuthLayout';
 import { type CreateAccountData, CreateAccountForm } from '../components/CreateAccountForm';
 
-import { withTransition } from '@/utils/withTransition';
-
-export const CreateAccountPage = withTransition(() => {
+export const CreateAccountPage = () => {
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -24,4 +22,4 @@ export const CreateAccountPage = withTransition(() => {
       <CreateAccountForm onSubmit={createAccount} />
     </AuthLayout>
   );
-});
+};

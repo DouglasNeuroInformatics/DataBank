@@ -9,9 +9,8 @@ import { AuthLayout } from '../components/AuthLayout';
 import { LoginForm } from '../components/LoginForm';
 
 import { useAuthStore } from '@/stores/auth-store';
-import { withTransition } from '@/utils/withTransition';
 
-export const LoginPage = withTransition(() => {
+export const LoginPage = () => {
   const auth = useAuthStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -32,4 +31,4 @@ export const LoginPage = withTransition(() => {
       <LoginForm onSubmit={login} />
     </AuthLayout>
   );
-});
+};

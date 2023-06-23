@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { DatasetInfo } from '@databank/types';
 import axios from 'axios';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import { DatasetCard } from '@/components/DatasetCard';
 import { Heading } from '@/components/Heading';

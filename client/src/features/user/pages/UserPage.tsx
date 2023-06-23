@@ -1,9 +1,8 @@
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 
 import { useAuthStore } from '@/stores/auth-store';
-import { withTransition } from '@/utils/withTransition';
 
-export const UserPage = withTransition(() => {
+export const UserPage = () => {
   const { currentUser } = useAuthStore();
 
   let fullName: string;
@@ -22,5 +21,4 @@ export const UserPage = withTransition(() => {
       <h3>{currentUser?.email}</h3>
     </div>
   );
-});
-
+};
