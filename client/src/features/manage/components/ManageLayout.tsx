@@ -31,7 +31,7 @@ export const ManageLayout = () => {
       <Heading title="Manage Datasets" />
       <div className="flex h-full gap-5 overflow-hidden">
         <div className="h-full w-1/3 2xl:w-1/4">
-          <SearchBar className="my-3" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+          <SearchBar className="my-3 rounded-sm" size="sm" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           <ul className="h-full divide-y divide-slate-300 overflow-scroll" role="list">
             {filteredDatasets.map((dataset) => (
               <li key={dataset._id}>
