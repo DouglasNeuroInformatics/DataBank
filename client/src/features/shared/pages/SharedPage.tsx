@@ -7,9 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { SuspenseFallback } from '@/components';
 import { DatasetCard } from '@/components/DatasetCard';
 import { Heading } from '@/components/Heading';
-import { withTransition } from '@/utils/withTransition';
 
-export const SharedPage = withTransition(() => {
+export const SharedPage = () => {
   const navigate = useNavigate();
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>();
 
@@ -40,4 +39,4 @@ export const SharedPage = withTransition(() => {
       </div>
     </div>
   );
-});
+};

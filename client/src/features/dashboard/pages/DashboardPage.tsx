@@ -1,10 +1,9 @@
 import { Heading } from '@/components/Heading';
-import { withTransition } from '@/utils/withTransition';
 
-export const DashboardPage = withTransition(() => {
+export const DashboardPage = () => {
   return (
     <div>
       <Heading title="Dashboard" />
     </div>
   );
-});
+};

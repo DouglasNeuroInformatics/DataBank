@@ -8,9 +8,8 @@ import { useParams } from 'react-router-dom';
 
 import { SuspenseFallback } from '@/components';
 import { Heading } from '@/components/Heading';
-import { withTransition } from '@/utils/withTransition';
 
-export const SharedDatasetPage = withTransition(() => {
+export const SharedDatasetPage = () => {
   const [dataset, setDataset] = useState<TDataset>();
   const params = useParams();
   const download = useDownload();
@@ -86,4 +85,4 @@ export const SharedDatasetPage = withTransition(() => {
   ) : (
     <SuspenseFallback />
   );
-});
+};
