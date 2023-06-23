@@ -29,7 +29,13 @@ export const ManageLayout = () => {
   return (
     <div className="flex h-full w-full flex-col">
       <Heading title="Manage Datasets">
-        <Button label="Add New" size="sm" />
+        <Button
+          label="Add New"
+          size="sm"
+          onClick={() => {
+            navigate('/portal/create');
+          }}
+        />
       </Heading>
       <div className="flex h-full gap-5 overflow-hidden">
         <div className="h-full w-1/3 2xl:w-1/4">
