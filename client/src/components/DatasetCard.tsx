@@ -14,7 +14,7 @@ export const DatasetCard = ({ className, dataset, onClick }: DatasetCardProps) =
   return (
     <div
       className={twMerge(
-        '@container border border-slate-200 bg-slate-50 ring-1 ring-black ring-opacity-5 hover:bg-slate-100 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700',
+        '@container border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700',
         className
       )}
     >
