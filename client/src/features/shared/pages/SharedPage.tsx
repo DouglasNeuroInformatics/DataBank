@@ -8,8 +8,9 @@ import { Link } from 'react-router-dom';
 
 import { SuspenseFallback } from '@/components';
 import { Heading } from '@/components/Heading';
+import { withTransition } from '@/utils/withTransition';
 
-export const SharedPage = () => {
+export const SharedPage = withTransition(() => {
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>();
   const { t, i18n } = useTranslation();
 
@@ -29,7 +30,7 @@ export const SharedPage = () => {
         <ul className="divide-y divide-slate-200 rounded-sm shadow dark:divide-slate-700">
           {availableDatasets.map((item) => (
             <li
-              className="hover: block bg-slate-50 ring-1 dark:bg-slate-800 ring-black ring-opacity-5 transition-all hover:scale-[101%] hover:shadow-lg"
+              className="hover: block bg-slate-50 ring-1 ring-black ring-opacity-5 transition-all hover:scale-[101%] hover:shadow-lg dark:bg-slate-800"
               key={item._id}
             >
               <Link className="block w-full px-4 py-4 sm:px-6" to={item._id}>
@@ -51,4 +52,4 @@ export const SharedPage = () => {
       )}
     </div>
   );
-};
+});

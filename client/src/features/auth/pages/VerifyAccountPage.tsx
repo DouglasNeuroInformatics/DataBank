@@ -12,8 +12,9 @@ import { VerificationCodeInput } from '../components/VerificationCodeInput';
 
 import { SuspenseFallback } from '@/components';
 import { useAuthStore } from '@/stores/auth-store';
+import { withTransition } from '@/utils/withTransition';
 
-export const VerifyAccountPage = () => {
+export const VerifyAccountPage = withTransition(() => {
   const auth = useAuthStore();
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
@@ -50,4 +51,4 @@ export const VerifyAccountPage = () => {
   ) : (
     <SuspenseFallback className="h-screen w-screen" />
   );
-};
+});
