@@ -1,24 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { DatasetInfo } from '@databank/types';
+import { CurrentUser, DatasetInfo } from '@databank/types';
 import { Model } from 'mongoose';
 
 import { CreateDatasetDto } from './dto/create-dataset.dto.js';
 import { Dataset } from './schemas/dataset.schema.js';
 
-import { User } from '@/users/schemas/user.schema.js';
-
 @Injectable()
 export class DatasetsService {
   constructor(@InjectModel(Dataset.name) private datasetModel: Model<Dataset>) {}
 
-  createDataset(createDatasetDto: CreateDatasetDto, owner: User) {
+  createDataset(createDatasetDto: CreateDatasetDto, owner: CurrentUser) {
     return this.datasetModel.create({ ...createDatasetDto, owner });
   }
 
-  getAvailable(): Promise<DatasetInfo[]> {
-    return this.datasetModel.find({}, '-data');
+  getAvailable(ownerId?: string): Promise<DatasetInfo[]> {
+    return this.datasetModel.find({ owner: ownerId }, '-data');
   }
 
   async getById(id: string): Promise<Dataset> {

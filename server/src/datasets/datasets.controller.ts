@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { DatasetInfo } from '@databank/types';
+import { type Request } from 'express';
 
 import { DatasetsService } from './datasets.service.js';
 import { CreateDatasetDto } from './dto/create-dataset.dto.js';
@@ -15,14 +16,14 @@ export class DatasetsController {
 
   @ApiOperation({ summary: 'Create Dataset' })
   @Post()
-  createDataset(@Body() createDatasetDto: CreateDatasetDto) {
-    return this.datasetsService.createDataset(createDatasetDto);
+  createDataset(@Req() request: Request, @Body() createDatasetDto: CreateDatasetDto) {
+    return this.datasetsService.createDataset(createDatasetDto, request.user!);
   }
 
   @ApiOperation({ summary: 'Get All Datasets' })
   @Get('available')
-  getAvailable(): Promise<DatasetInfo[]> {
-    return this.datasetsService.getAvailable();
+  getAvailable(@Query('owner', new ParseIdPipe({ isOptional: true })) ownerId?: string): Promise<DatasetInfo[]> {
+    return this.datasetsService.getAvailable(ownerId);
   }
 
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
