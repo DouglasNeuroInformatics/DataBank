@@ -4,14 +4,18 @@ import { CreateDatasetData, CreateDatasetModal } from '../components/CreateDatas
 import { EmptyState } from '../components/EmptyState';
 
 import { Heading } from '@/components/Heading';
+import { useAvailableDatasets } from '@/hooks/useAvailableDatasets';
 import { withTransition } from '@/utils/withTransition';
 
 export const EditorPage = withTransition(() => {
   const [isCreateDatasetOpen, setIsCreateDatasetOpen] = useState(false);
+  const availableDatasets = useAvailableDatasets({ onlyCurrentUser: true });
 
   const handleSubmitDataset = (data: CreateDatasetData) => {
     alert(JSON.stringify(data));
   };
+
+  console.log(availableDatasets);
 
   return (
     <div className="flex h-full flex-col">
