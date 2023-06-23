@@ -7,6 +7,7 @@ import { match } from 'ts-pattern';
 
 import { Layout } from './components';
 import { CreateAccountPage, LoginPage, VerifyAccountPage } from './features/auth';
+import { CreateDatasetPage } from './features/create';
 import { DashboardPage } from './features/dashboard';
 import { LandingPage } from './features/landing';
 import { ManageDatasetPage, ManageLayout, ManagePage } from './features/manage';
@@ -30,33 +31,36 @@ const AppRoutes = () => {
   }, []);
 
   return (
-      <Routes>
-        <Route index element={<LandingPage />} />
-        <Route path="auth">
-          <Route element={<LoginPage />} path="login" />
-          <Route element={<CreateAccountPage />} path="create-account" />
-          <Route element={<VerifyAccountPage />} path="verify-account" />
-        </Route>
-        {match(currentUser)
-          .with({ isVerified: true }, () => (
-            <Route element={<Layout />} path="portal">
-              <Route index element={<DashboardPage />} path="dashboard" />
-              <Route element={<ManageLayout />} path="manage">
-                <Route index element={<ManagePage />} />
-                <Route element={<ManageDatasetPage />} path=":id" />
-              </Route>
-              <Route path="shared">
-                <Route index element={<SharedPage />} />
-                <Route element={<SharedDatasetPage />} path=":id" />
-              </Route>
-              <Route element={<UserPage />} path="user" />
+    <Routes>
+      <Route index element={<LandingPage />} />
+      <Route path="auth">
+        <Route element={<LoginPage />} path="login" />
+        <Route element={<CreateAccountPage />} path="create-account" />
+        <Route element={<VerifyAccountPage />} path="verify-account" />
+      </Route>
+      {match(currentUser)
+        .with({ isVerified: true }, () => (
+          <Route element={<Layout />} path="portal">
+            <Route index element={<DashboardPage />} path="dashboard" />
+            <Route path="create">
+              <Route index element={<CreateDatasetPage />} />
             </Route>
-          ))
-          .with({ isVerified: false }, () => <Route element={<Navigate to={'/auth/verify-account'} />} path="*" />)
-          .otherwise(() => (
-            <Route element={<Navigate to="/" />} path="*" />
-          ))}
-      </Routes>
+            <Route element={<ManageLayout />} path="manage">
+              <Route index element={<ManagePage />} />
+              <Route element={<ManageDatasetPage />} path=":id" />
+            </Route>
+            <Route path="shared">
+              <Route index element={<SharedPage />} />
+              <Route element={<SharedDatasetPage />} path=":id" />
+            </Route>
+            <Route element={<UserPage />} path="user" />
+          </Route>
+        ))
+        .with({ isVerified: false }, () => <Route element={<Navigate to={'/auth/verify-account'} />} path="*" />)
+        .otherwise(() => (
+          <Route element={<Navigate to="/" />} path="*" />
+        ))}
+    </Routes>
   );
 };
 
