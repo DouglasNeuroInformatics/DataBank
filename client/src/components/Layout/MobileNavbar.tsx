@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 
 import { type NavItem } from './types';
 
@@ -15,8 +16,10 @@ export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <div className="flex w-full items-center justify-between bg-slate-900 p-4 lg:hidden">
-        <Logo />
+      <div className="flex w-full items-center justify-between bg-slate-900 p-4 dark:bg-slate-800 lg:hidden">
+        <Link to="/">
+          <Logo className="h-12 w-12 fill-slate-100" />
+        </Link>
         <button className="text-slate-300 hover:text-slate-200" onClick={() => setIsOpen(true)}>
           <Bars3Icon height={32} width={32} />
         </button>
@@ -46,14 +49,14 @@ export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
                 leaveTo="translate-x-full"
               >
                 <div className="pointer-events-auto w-screen max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-slate-50 py-6 shadow-xl dark:bg-slate-800">
                     <div className="px-4 sm:px-6">
                       <div className="flex items-center justify-between">
                         <Dialog.Title className="text-slate-900">
-                          <Logo />
+                          <Logo className="h-12 w-12" />
                         </Dialog.Title>
                         <button
-                          className="text-slate-400 hover:text-slate-500"
+                          className="text-slate-600 hover:text-slate-500 dark:text-slate-300"
                           type="button"
                           onClick={() => setIsOpen(false)}
                         >
@@ -61,17 +64,19 @@ export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
                         </button>
                       </div>
                     </div>
-                    <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                    <hr className="mx-4 my-4 border-slate-200" />
+                    <div className="relative flex-1 px-4 sm:px-6">
                       <nav>
                         {navigation.map((item) => (
-                          <a
-                            className="group flex items-center rounded-md p-2 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 [&>svg]:h-6 [&>svg]:w-6"
-                            href={item.href}
+                          <Link
+                            className="group flex items-center rounded-md p-2 text-base font-medium text-slate-600 dark:text-slate-300 dark:hover:text-slate-500 [&>svg]:h-6 [&>svg]:w-6"
                             key={item.label}
+                            to={item.href}
+                            onClick={() => setIsOpen(false)}
                           >
                             <item.icon className="h-6 w-6" />
                             <span className="ml-2">{item.label}</span>
-                          </a>
+                          </Link>
                         ))}
                       </nav>
                     </div>
