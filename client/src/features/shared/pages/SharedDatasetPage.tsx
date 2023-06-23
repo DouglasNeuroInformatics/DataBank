@@ -79,7 +79,7 @@ export const SharedDatasetPage = withTransition(() => {
           />
         </div>
       </Heading>
-      <div className="flex-grow overflow-hidden pb-3">
+      <div className="flex-grow overflow-hidden">
         <Table columns={columns} data={data} />
       </div>
     </div>
