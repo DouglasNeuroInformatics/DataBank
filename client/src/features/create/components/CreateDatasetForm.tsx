@@ -1,8 +1,11 @@
+import { DatasetColumn } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/react-components';
 
 export type CreateDatasetData = {
   name: string;
   description: string;
+  license: string;
+  columns: DatasetColumn[];
 };
 
 export interface CreateDatasetFormProps {
@@ -22,6 +25,33 @@ export const CreateDatasetForm = ({ onSubmit }: CreateDatasetFormProps) => {
           kind: 'text',
           label: 'Description',
           variant: 'short'
+        },
+        license: {
+          kind: 'options',
+          label: 'License',
+          options: {
+            publicDomain: 'Public Domain'
+          }
+        },
+        columns: {
+          kind: 'array',
+          label: 'Column',
+          fieldset: {
+            description: {
+              kind: 'text',
+              label: 'Description',
+              variant: 'long'
+            },
+            type: {
+              kind: 'options',
+              label: 'Type',
+              options: {
+                float: 'Float',
+                int: 'Integer',
+                str: 'String'
+              }
+            }
+          }
         }
       }}
       validationSchema={{
@@ -33,10 +63,31 @@ export const CreateDatasetForm = ({ onSubmit }: CreateDatasetFormProps) => {
           },
           description: {
             type: 'string',
-            minLength: 1,
+            minLength: 1
+          },
+          license: {
+            type: 'string',
+            minLength: 1
+          },
+          columns: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                description: {
+                  type: 'string',
+                  minLength: 1
+                },
+                type: {
+                  type: 'string',
+                  enum: ['float', 'int', 'str']
+                }
+              },
+              required: ['description', 'type']
+            }
           }
         },
-        required: ['name', 'description']
+        required: ['name', 'description', 'license']
       }}
       onSubmit={onSubmit}
     />
