@@ -8,7 +8,7 @@ export const CreateDatasetPage = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col">
       <Heading title="Create Dataset" />
       <CreateDatasetForm onSubmit={handleSubmit} />
     </div>
