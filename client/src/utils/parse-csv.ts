@@ -4,21 +4,24 @@ import { formatFileSize } from './formatFileSize';
 
 const MAX_FILE_SIZE = 10485760; // 10 MB
 
-export async function parseCSV(file: File) {
+export type ParsedCSV = {
+  fields: string[];
+  data: any;
+};
+
+export async function parseCSV(file: File): Promise<ParsedCSV> {
   return new Promise((resolve, reject) => {
     if (!file) {
-      throw new Error('File object must be defined');
+      throw reject(new Error('File object must be defined'));
     } else if (file.size > MAX_FILE_SIZE) {
-      throw new Error(`File size of ${formatFileSize(file.size)} exceeds maximum of ${formatFileSize(MAX_FILE_SIZE)}`);
+      reject(new Error(`File size of ${formatFileSize(file.size)} exceeds maximum: ${formatFileSize(MAX_FILE_SIZE)}`));
     }
     Papa.parse(file, {
       complete(results) {
         if (results.errors.length > 0) {
-          throw new Error('Failed to parse file', {
-            cause: results.errors
-          });
+          reject(new Error('Failed to parse file', { cause: results.errors }));
         }
-        resolve(results);
+        resolve({ fields: results.meta.fields ?? [], data: results.data });
       },
       error: (error) => {
         reject(error);

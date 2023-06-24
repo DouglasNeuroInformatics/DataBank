@@ -5,14 +5,14 @@ import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 
-import { parseCSV } from '@/utils/parse-csv';
+import { type ParsedCSV, parseCSV } from '@/utils/parse-csv';
 
 export interface DatasetDropzoneProps {
-  onSubmit: () => void;
+  onSubmit: ({ data, fields }: ParsedCSV) => void;
 }
 
 export const DatasetDropzone = () => {
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<File | null>(null);
   const notifications = useNotificationsStore();
   const { t } = useTranslation();
 
@@ -37,13 +37,15 @@ export const DatasetDropzone = () => {
     try {
       const results = await parseCSV(file);
       notifications.addNotification({ type: 'success' });
+      console.log(results);
     } catch (error) {
-      console.error(error);
       if (error instanceof Error) {
         notifications.addNotification({ type: 'error', message: error.message });
       } else {
         notifications.addNotification({ type: 'error', message: t('unexpectedError') });
       }
+      console.error(error);
+      setFile(null);
     }
   };
 
