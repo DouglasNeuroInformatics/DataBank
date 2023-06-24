@@ -1,4 +1,5 @@
 import { Button } from '@douglasneuroinformatics/react-components';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,7 +10,12 @@ export const Hero = () => {
   const { t } = useTranslation();
   return (
     <section className="flex gap-5">
-      <div className="flex-grow">
+      <motion.div
+        animate={{ opacity: 1, y: 0 }}
+        className="flex-grow"
+        initial={{ opacity: 0, y: 10 }}
+        transition={{ duration: 0.7 }}
+      >
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 md:text-4xl lg:text-5xl">
           {t('platformName')}
         </h1>
@@ -20,10 +26,15 @@ export const Hero = () => {
           <Button label={t('getStarted')} type="button" onClick={() => navigate('/auth/create-account')} />
           <Button label={t('learnMore')} type="button" variant="secondary" />
         </div>
-      </div>
-      <div className="hidden w-80 xl:block">
+      </motion.div>
+      <motion.div
+        animate={{ opacity: 1, x: 0, y: 0 }}
+        className="hidden w-80 xl:block"
+        initial={{ opacity: 0, x: 10, y: 10 }}
+        transition={{ duration: 0.7 }}
+      >
         <HeroIcon />
-      </div>
+      </motion.div>
     </section>
   );
 };
