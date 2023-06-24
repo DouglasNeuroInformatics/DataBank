@@ -49,19 +49,14 @@ export const DatasetDropzone = () => {
     }
   };
 
-  const textContent = isDragActive
-    ? 'Release your cursor to upload your dataset'
-    : 'Please upload your dataset by either dragging and dropping it into this area or clicking to select a file';
-
   return (
-    <div className="max-w-md">
+    <div className="w-full sm:max-w-md">
       <div
         className="flex h-64 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300"
         {...getRootProps()}
       >
         <CloudArrowUpIcon height={40} width={40} />
-        <p className="text-center text-sm">{textContent}</p>
-        <p className="text-xs">{acceptedFiles[0]?.name}</p>
+        <p className="text-center text-sm mt-1">{file ? file.name : isDragActive ? t('releaseToUpload') : t('dropHere')}</p>
         <input {...getInputProps()} />
       </div>
       <Button

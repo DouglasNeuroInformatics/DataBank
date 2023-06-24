@@ -23,5 +23,11 @@
   "pleaseSignIn": "Veuillez vous connecter pour continuer",
   "logout": "se déconnecter",
   "preferences": "préférences",
-  "lastUpdated": "Dernière mise à jour le"
+  "lastUpdated": "Dernière mise à jour le",
+  "createDataset": "Créer une base de données",
+  "dropHere": "Veuillez télécharger votre base de données en la faisant glisser et en la déposant dans cette zone ou en cliquant pour sélectionner un fichier",
+  "releaseToUpload": "Relâchez votre curseur pour télécharger votre base de données.",
+  "dashboard": "Tableau de bord",
+  "manageDatasets": "Gérer vos bases de données",
+  "sharedDatasets": "Voir les bases de données disponibles"
 }

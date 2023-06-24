@@ -23,5 +23,11 @@
   "pleaseSignIn": "Please sign in to continue",
   "logout": "logout",
   "preferences": "preferences",
-  "lastUpdated": "Last updated on"
+  "lastUpdated": "Last updated on",
+  "createDataset": "Create Dataset",
+  "dropHere": "Please upload your dataset by either dragging and dropping it into this area or clicking to select a file",
+  "releaseToUpload": "Release your cursor to upload your dataset",
+  "dashboard": "Dashboard",
+  "manageDatasets": "Manage Your Datasets",
+  "sharedDatasets": "View Shared Datasets"
 }
