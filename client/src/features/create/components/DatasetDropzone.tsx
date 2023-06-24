@@ -2,56 +2,26 @@ import { useCallback, useState } from 'react';
 
 import { Button, useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
-import { parse } from 'papaparse';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 
-import { formatFileSize } from '@/utils/formatFileSize';
-
-// 10 MB
-const MAX_FILE_SIZE = 10485760;
+import { parseCSV } from '@/utils/parse-csv';
 
 export interface DatasetDropzoneProps {
   onSubmit: () => void;
 }
 
 export const DatasetDropzone = () => {
+  const [file, setFile] = useState<File>();
   const notifications = useNotificationsStore();
   const { t } = useTranslation();
 
-  const handleDrop = useCallback(<T extends File>(acceptedFiles: T[], rejections: FileRejection[]) => {
-    rejections.forEach(({ file, errors }) => {
+  const handleDrop = useCallback((acceptedFiles: File[], rejections: FileRejection[]) => {
+    for (const { file, errors } of rejections) {
       notifications.addNotification({ type: 'error', message: `Invalid File: ${file.name}` });
       console.error(errors);
-    });
-    const file = acceptedFiles[0];
-    if (!file) {
-      return;
-    } else if (file.size > MAX_FILE_SIZE) {
-      notifications.addNotification({
-        type: 'error',
-        message: `The maximum file size is ${formatFileSize(MAX_FILE_SIZE)}`
-      });
     }
-    parse(file, {
-      header: true,
-      complete(results, file) {
-        if (results.errors.length > 0) {
-          notifications.addNotification({
-            type: 'error',
-            message: 'An error occurred. Please refer to the browser console for more details.'
-          });
-          console.error(results.errors);
-          return;
-        }
-        // eslint-disable-next-line no-console
-        console.log(results, file);
-      },
-      error: (error) => {
-        notifications.addNotification({ type: 'error', message: error.message });
-        return;
-      }
-    });
+    setFile(acceptedFiles[0]);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({
@@ -62,6 +32,20 @@ export const DatasetDropzone = () => {
     onDrop: handleDrop,
     maxFiles: 1
   });
+
+  const handleSubmit = async (file: File) => {
+    try {
+      const results = await parseCSV(file);
+      notifications.addNotification({ type: 'success' });
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        notifications.addNotification({ type: 'error', message: error.message });
+      } else {
+        notifications.addNotification({ type: 'error', message: t('unexpectedError') });
+      }
+    }
+  };
 
   const textContent = isDragActive
     ? 'Release your cursor to upload your dataset'
@@ -78,7 +62,13 @@ export const DatasetDropzone = () => {
         <p className="text-xs">{acceptedFiles[0]?.name}</p>
         <input {...getInputProps()} />
       </div>
-      <Button className="mt-2 w-full" disabled={acceptedFiles.length === 0} label={t('submit')} />
+      <Button
+        className="mt-2 w-full"
+        disabled={!file}
+        label={t('submit')}
+        type="button"
+        onClick={() => handleSubmit(file!)}
+      />
     </div>
   );
 };
