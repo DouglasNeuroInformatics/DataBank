@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { type NavItem } from './types';
 
-import { Logo } from '@/components';
+import { Logo, ThemeToggle } from '@/components';
 
 export interface MobileNavbarProps {
   navigation: NavItem[];
@@ -14,6 +15,8 @@ export interface MobileNavbarProps {
 
 export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { i18n } = useTranslation();
+
   return (
     <>
       <div className="flex w-full items-center justify-between bg-slate-900 p-4 dark:bg-slate-800 lg:hidden">
@@ -64,7 +67,7 @@ export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
                         </button>
                       </div>
                     </div>
-                    <hr className="mx-4 my-4 border-slate-200" />
+                    <hr className="mx-4 my-4 border-slate-300" />
                     <div className="relative flex-1 px-4 sm:px-6">
                       <nav>
                         {navigation.map((item) => (
@@ -79,6 +82,16 @@ export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
                           </Link>
                         ))}
                       </nav>
+                    </div>
+                    <div className="flex items-center justify-between px-4 text-slate-600 dark:text-slate-300 sm:px-6">
+                      <button
+                        className="rounded-md p-2 font-medium hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150"
+                        type="button"
+                        onClick={() => i18n.changeLanguage(i18n.resolvedLanguage === 'en' ? 'fr' : 'en')}
+                      >
+                        {i18n.resolvedLanguage === 'en' ? 'Français' : 'English'}
+                      </button>
+                      <ThemeToggle />
                     </div>
                   </div>
                 </div>
