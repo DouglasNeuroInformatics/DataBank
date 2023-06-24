@@ -4,7 +4,7 @@ import { formatFileSize } from './formatFileSize';
 
 const MAX_FILE_SIZE = 10485760; // 10 MB
 
-export function parseCSV(file: File) {
+export async function parseCSV(file: File) {
   return new Promise((resolve, reject) => {
     if (!file) {
       throw new Error('File object must be defined');
