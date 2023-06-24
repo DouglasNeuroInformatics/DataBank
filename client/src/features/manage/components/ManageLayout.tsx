@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { DatasetInfo } from '@databank/types';
 import { SearchBar } from '@douglasneuroinformatics/react-components';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { DatasetCard } from '@/components/DatasetCard';
@@ -14,6 +15,7 @@ export const ManageLayout = () => {
   const { currentUser } = useAuthStore();
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     axios
@@ -28,7 +30,7 @@ export const ManageLayout = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <Heading title="Manage Datasets" />
+      <Heading title={t('manageDatasets')} />
       <div className="w-full">
         <SearchBar
           className="mb-3 rounded-sm"
