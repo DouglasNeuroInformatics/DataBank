@@ -4,7 +4,7 @@
 
 @layer components {
   .spinner {
-    @apply text-slate-900 dark:text-white;
+    @apply text-slate-800 dark:text-slate-200;
     font-size: 45px;
     text-indent: -9999em;
     overflow: hidden;
