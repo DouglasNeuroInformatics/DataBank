@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   root: true,
@@ -48,6 +50,9 @@ module.exports = {
         'plugin:@typescript-eslint/recommended-requiring-type-checking'
       ],
       parser: '@typescript-eslint/parser',
+      parserOptions: {
+        project: path.resolve(__dirname, 'tsconfig.base.json')
+      },
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
