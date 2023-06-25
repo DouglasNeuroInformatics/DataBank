@@ -1,5 +1,8 @@
 import { DatasetColumn } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/react-components';
+import { useTranslation } from 'react-i18next';
+
+import { ParsedCSV } from '@/utils/parse-csv';
 
 export type DatasetFormData = {
   name: string;
@@ -9,42 +12,45 @@ export type DatasetFormData = {
 };
 
 export interface DatasetFormProps {
+  //initialValues: ParsedCSV;
   onSubmit: (data: DatasetFormData) => void;
 }
 
 export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
+  const { t } = useTranslation();
   return (
     <Form<DatasetFormData>
       content={{
         name: {
           kind: 'text',
-          label: 'Name',
+          label: t('name'),
           variant: 'short'
         },
         description: {
           kind: 'text',
-          label: 'Description',
-          variant: 'short'
+          label: t('description'),
+          variant: 'long'
         },
         license: {
           kind: 'options',
-          label: 'License',
+          label: t('license'),
           options: {
-            publicDomain: 'Public Domain'
+            publicDomain: t('publicDomain'),
+            other: t('other')
           }
         },
         columns: {
           kind: 'array',
-          label: 'Column',
+          label: t('column'),
           fieldset: {
             description: {
               kind: 'text',
-              label: 'Description',
+              label: t('description'),
               variant: 'long'
             },
             type: {
               kind: 'options',
-              label: 'Type',
+              label: t('dataType'),
               options: {
                 float: 'Float',
                 int: 'Integer',
@@ -53,6 +59,17 @@ export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
             }
           }
         }
+      }}
+      initialValues={{
+        name: '',
+        description: '',
+        license: '',
+        columns: [
+          {
+            description: '',
+            type: 'int'
+          }
+        ]
       }}
       validationSchema={{
         type: 'object',

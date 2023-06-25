@@ -30,5 +30,12 @@
   "dashboard": "Dashboard",
   "manageDatasets": "Manage Your Datasets",
   "sharedDatasets": "View Shared Datasets",
-  "reset": "Reset"
+  "reset": "Reset",
+  "name": "Name",
+  "description": "Description",
+  "license": "License",
+  "column": "Column",
+  "dataType": "Data Type",
+  "publicDomain": "Public Domain",
+  "other": "Other"
 }
