@@ -37,5 +37,8 @@
   "column": "Colonne",
   "dataType": "Type de données",
   "publicDomain": "Domaine public",
-  "other": "Autre"
+  "other": "Autre",
+  "integer": "Nombre entier",
+  "float": "Nombre réel",
+  "string": "Texte"
 }

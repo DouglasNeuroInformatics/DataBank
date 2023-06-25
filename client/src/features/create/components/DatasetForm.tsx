@@ -1,15 +1,11 @@
-import { DatasetColumn } from '@databank/types';
+import { DatasetEntry, TDataset } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/react-components';
 import { useTranslation } from 'react-i18next';
 
-import { ParsedCSV } from '@/utils/parse-csv';
-
-export type DatasetFormData = {
-  name: string;
-  description: string;
-  license: string;
-  columns: DatasetColumn[];
-};
+export type DatasetFormData<T extends DatasetEntry = DatasetEntry> = Omit<
+  TDataset<T>,
+  '_id' | 'createdAt' | 'updatedAt' | 'owner' | 'data'
+>;
 
 export interface DatasetFormProps {
   //initialValues: ParsedCSV;
@@ -35,14 +31,19 @@ export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
           kind: 'options',
           label: t('license'),
           options: {
-            publicDomain: t('publicDomain'),
-            other: t('other')
+            PUBLIC_DOMAIN: t('publicDomain'),
+            OTHER: t('other')
           }
         },
         columns: {
           kind: 'array',
           label: t('column'),
           fieldset: {
+            name: {
+              kind: 'text',
+              label: t('name'),
+              variant: 'short'
+            },
             description: {
               kind: 'text',
               label: t('description'),
@@ -52,22 +53,24 @@ export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
               kind: 'options',
               label: t('dataType'),
               options: {
-                float: 'Float',
-                int: 'Integer',
-                str: 'String'
+                STRING: t('string'),
+                INTEGER: t('integer'),
+                FLOAT: t('float')
               }
             }
           }
         }
       }}
+      errorMessages={t('requiredField')}
       initialValues={{
         name: '',
         description: '',
-        license: '',
+        license: null,
         columns: [
           {
+            name: '',
             description: '',
-            type: 'int'
+            type: null
           }
         ]
       }}
@@ -91,20 +94,24 @@ export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
             items: {
               type: 'object',
               properties: {
+                name: {
+                  type: 'string',
+                  minLength: 1
+                },
                 description: {
                   type: 'string',
                   minLength: 1
                 },
                 type: {
                   type: 'string',
-                  enum: ['float', 'int', 'str']
+                  enum: ['FLOAT', 'INTEGER', 'STRING']
                 }
               },
-              required: ['description', 'type']
+              required: ['description', 'name', 'type']
             }
           }
         },
-        required: ['name', 'description', 'license']
+        required: ['name', 'description', 'license', 'columns']
       }}
       onSubmit={onSubmit}
     />

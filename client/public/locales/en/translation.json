@@ -37,5 +37,8 @@
   "column": "Column",
   "dataType": "Data Type",
   "publicDomain": "Public Domain",
-  "other": "Other"
+  "other": "Other",
+  "integer": "Integer",
+  "float": "Real Number",
+  "string": "Text"
 }

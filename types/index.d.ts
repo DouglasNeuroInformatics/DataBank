@@ -1,6 +1,6 @@
 /** CORE */
 
-import { Primitive, Simplify } from 'type-fest';
+import { Simplify } from 'type-fest';
 
 export type Locale = 'en' | 'fr';
 
@@ -51,6 +51,10 @@ export type TUser = {
 
 /** DATASETS */
 
+export type DatasetLicense = 'PUBLIC_DOMAIN' | 'OTHER';
+
+export type DatasetColumnType = 'STRING' | 'FLOAT' | 'INTEGER';
+
 export type DatasetInfo = {
   _id: string;
   createdAt: number;
@@ -58,28 +62,24 @@ export type DatasetInfo = {
   owner: TUser;
   name: string;
   description: string;
-  license: string;
+  license: DatasetLicense;
 };
 
-export type DatasetColumnType = 'str' | 'float' | 'int';
+/** Corresponds to a row in the dataset */
+export type DatasetEntry = {
+  [key: string]: string | number;
+};
 
-export type DatasetColumn = {
+/** Metadata for a column in the dataset */
+export type DatasetColumn<Name extends keyof DatasetEntry> = {
+  name: Name;
   description: string;
   type: DatasetColumnType;
 };
 
-export type DatasetData<TColumns extends Record<string, DatasetColumn>> = {
-  [key: string]: {
-    [K in keyof TColumns]: Primitive;
-  };
-};
-
-export type TDataset<
-  TColumns extends Record<string, DatasetColumn> = Record<string, DatasetColumn>,
-  TData extends DatasetData<TColumns> = DatasetData<TColumns>
-> = Simplify<
+export type TDataset<T extends DatasetEntry = DatasetEntry> = Simplify<
   DatasetInfo & {
-    columns: TColumns;
-    data: TData;
+    columns: DatasetColumn<Extract<keyof T, string>>[];
+    data: T[];
   }
 >;
