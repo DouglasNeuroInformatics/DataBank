@@ -30,5 +30,12 @@
   "dashboard": "Tableau de bord",
   "manageDatasets": "Gérer vos bases de données",
   "sharedDatasets": "Voir les bases de données disponibles",
-  "reset": "Réinitialiser"
+  "reset": "Réinitialiser",
+  "name": "Nom",
+  "description": "Description",
+  "license": "Licence",
+  "column": "Colonne",
+  "dataType": "Type de données",
+  "publicDomain": "Domaine public",
+  "other": "Autre"
 }

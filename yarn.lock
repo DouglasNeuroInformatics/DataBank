@@ -34,10 +34,10 @@
     ts-arithmetic "^0.1.1"
     type-fest "^3.10.0"
 
-"@douglasneuroinformatics/react-components@^1.6.5":
-  version "1.6.5"
-  resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/react-components/-/react-components-1.6.5.tgz#59f1c86202bf68b8f0965fda4a434609b29b8681"
-  integrity sha512-b9d/eqDz0y+a55R54qBGiVanFkBRz7k9yW7tWoLrow6QtcJArsu5ecVEk9aVkSyNZgoX24lG0TNK9XjSvFuMsQ==
+"@douglasneuroinformatics/react-components@^1.6.6":
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/@douglasneuroinformatics/react-components/-/react-components-1.6.6.tgz#e09f67bad3ebe89da804e3b56b22ba14b40edbe7"
+  integrity sha512-BVfOEmDcP0n77R65qzkUujs9xooBl7+HO+ki2d1D+YhCtmKQS28WcSN6Sh1w/DJd/xf+M3HDz7M/ImNE+dXGvA==
   dependencies:
     "@douglasneuroinformatics/common" latest
     "@douglasneuroinformatics/utils" latest
