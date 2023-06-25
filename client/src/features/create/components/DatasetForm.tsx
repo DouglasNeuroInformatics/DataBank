@@ -1,20 +1,20 @@
 import { DatasetColumn } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/react-components';
 
-export type CreateDatasetData = {
+export type DatasetFormData = {
   name: string;
   description: string;
   license: string;
   columns: DatasetColumn[];
 };
 
-export interface CreateDatasetFormProps {
-  onSubmit: (data: CreateDatasetData) => void;
+export interface DatasetFormProps {
+  onSubmit: (data: DatasetFormData) => void;
 }
 
-export const CreateDatasetForm = ({ onSubmit }: CreateDatasetFormProps) => {
+export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
   return (
-    <Form<CreateDatasetData>
+    <Form<DatasetFormData>
       content={{
         name: {
           kind: 'text',
