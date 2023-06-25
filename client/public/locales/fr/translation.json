@@ -43,5 +43,8 @@
   "string": "Texte",
   "maxFileSizeError": "La taille du fichier de {{ actualSize }} dépasse la limite de {{ maxSize }}",
   "fileParseError": "Échec de l'analyse du fichier. Veuillez vous assurer que votre fichier est correctement formaté. Des informations détaillées sur les erreurs sont disponibles dans la console du navigateur.",
-  "invalidFileError": "Fichier invalide : {{ filename }}"
+  "invalidFileError": "Fichier invalide : {{ filename }}",
+  "invalidEmptyColumnError": "Nom de colonne non valide à l'index {{index}} : ne doit pas être une chaîne vide",
+  "invalidColumnNameError": "Nom de colonne incorrect : '{{columnName}}' ne doit contenir que des lettres, des chiffres ou des traits de soulignement.",
+  "unexpectedValue": "Valeur inattendue : {{value}}"
 }

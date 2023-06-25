@@ -74,6 +74,7 @@ export type DatasetEntry = {
 export type DatasetColumn<Name extends keyof DatasetEntry> = {
   name: Name;
   description: string;
+  nullable: boolean;
   type: DatasetColumnType;
 };
 
