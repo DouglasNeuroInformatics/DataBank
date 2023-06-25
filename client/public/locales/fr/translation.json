@@ -46,5 +46,8 @@
   "invalidFileError": "Fichier invalide : {{ filename }}",
   "invalidEmptyColumnError": "Nom de colonne non valide à l'index {{index}} : ne doit pas être une chaîne vide",
   "invalidColumnNameError": "Nom de colonne incorrect : '{{columnName}}' ne doit contenir que des lettres, des chiffres ou des traits de soulignement.",
-  "unexpectedValue": "Valeur inattendue : {{value}}"
+  "unexpectedValue": "Valeur inattendue : {{value}}",
+  "required": "Exigée",
+  "yes": "Oui",
+  "no": "Non"
 }

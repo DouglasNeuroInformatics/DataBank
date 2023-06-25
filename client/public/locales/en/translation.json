@@ -46,5 +46,8 @@
   "invalidFileError": "Invalid File: {{ filename }}",
   "invalidEmptyColumnError": "Invalid column name at index {{index}}: must not be empty string",
   "invalidColumnNameError": "Invalid column name: '{{columnName}}' must contain only letters, numbers, or underscores",
-  "unexpectedValue": "Unexpected Value: {{value}}"
+  "unexpectedValue": "Unexpected Value: {{value}}",
+  "required": "Required",
+  "yes": "Yes",
+  "no": "No"
 }
