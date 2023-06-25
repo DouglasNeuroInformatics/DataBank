@@ -1,6 +1,10 @@
+import { useMemo } from 'react';
+
 import { DatasetEntry, TDataset } from '@databank/types';
-import { Form } from '@douglasneuroinformatics/react-components';
+import { Form, FormValues } from '@douglasneuroinformatics/react-components';
 import { useTranslation } from 'react-i18next';
+
+import { InferredColumn } from './DatasetDropzone';
 
 export type DatasetFormData<T extends DatasetEntry = DatasetEntry> = Omit<
   TDataset<T>,
@@ -8,12 +12,27 @@ export type DatasetFormData<T extends DatasetEntry = DatasetEntry> = Omit<
 >;
 
 export interface DatasetFormProps {
-  //initialValues: ParsedCSV;
+  inferredColumns: InferredColumn[];
   onSubmit: (data: DatasetFormData) => void;
 }
 
-export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
+export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => {
   const { t } = useTranslation();
+
+  const initialValues: FormValues<DatasetFormData<DatasetEntry>> = useMemo(() => {
+    return {
+      name: '',
+      description: '',
+      license: null,
+      columns: inferredColumns.map((col) => ({
+        name: col.name,
+        description: null,
+        nullable: null,
+        type: col.type
+      }))
+    };
+  }, []);
+
   return (
     <Form<DatasetFormData>
       content={{
@@ -71,19 +90,7 @@ export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
         }
       }}
       errorMessages={t('requiredField')}
-      initialValues={{
-        name: '',
-        description: '',
-        license: null,
-        columns: [
-          {
-            name: '',
-            description: '',
-            nullable: null,
-            type: null
-          }
-        ]
-      }}
+      initialValues={initialValues}
       validationSchema={{
         type: 'object',
         properties: {
