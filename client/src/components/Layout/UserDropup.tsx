@@ -24,7 +24,7 @@ export const UserDropup = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute bottom-12 left-0 origin-bottom-left whitespace-nowrap rounded-sm border shadow-lg border-slate-700 bg-slate-800">
+        <Menu.Items className="absolute z-50 bottom-14 left-0 origin-bottom-left whitespace-nowrap rounded-sm border shadow-lg border-slate-700 bg-slate-800">
           <Menu.Item>
             <Link className="block w-full p-2 first-letter:capitalize hover:bg-slate-700" to="/portal/user">
               {t('preferences')}
