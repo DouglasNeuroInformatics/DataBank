@@ -29,5 +29,6 @@
   "releaseToUpload": "Release your cursor to upload your dataset",
   "dashboard": "Dashboard",
   "manageDatasets": "Manage Your Datasets",
-  "sharedDatasets": "View Shared Datasets"
+  "sharedDatasets": "View Shared Datasets",
+  "reset": "Reset"
 }
