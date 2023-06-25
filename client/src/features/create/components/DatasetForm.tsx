@@ -49,6 +49,15 @@ export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
               label: t('description'),
               variant: 'long'
             },
+            nullable: {
+              kind: 'binary',
+              label: t('required'),
+              variant: 'radio',
+              options: {
+                t: t('yes'),
+                f: t('no')
+              }
+            },
             type: {
               kind: 'options',
               label: t('dataType'),
@@ -70,6 +79,7 @@ export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
           {
             name: '',
             description: '',
+            nullable: null,
             type: null
           }
         ]
@@ -102,12 +112,15 @@ export const DatasetForm = ({ onSubmit }: DatasetFormProps) => {
                   type: 'string',
                   minLength: 1
                 },
+                nullable: {
+                  type: 'boolean'
+                },
                 type: {
                   type: 'string',
                   enum: ['FLOAT', 'INTEGER', 'STRING']
                 }
               },
-              required: ['description', 'name', 'type']
+              required: ['description', 'name', 'nullable', 'type']
             }
           }
         },
