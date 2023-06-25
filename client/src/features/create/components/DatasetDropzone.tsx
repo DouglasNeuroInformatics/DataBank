@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Papa from 'papaparse';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
+import { P, match } from 'ts-pattern';
 import { Simplify } from 'type-fest';
 import { ZodError, z } from 'zod';
 
@@ -43,12 +44,12 @@ function formatFileSize(bytes: number, si = false, dp = 1) {
   return bytes.toFixed(dp) + ' ' + units[u];
 }
 
-type InferredColumn = { name: string; type: DatasetColumnType | null };
-
 const parsedDataSchema = z.object({
   fields: z.string().array(),
   data: z.record(z.union([z.coerce.number(), z.string()])).array()
 });
+
+export type InferredColumn = { name: string; type: DatasetColumnType | null };
 
 export type DropzoneResult = Simplify<{
   columns: InferredColumn[];
@@ -65,8 +66,7 @@ export interface DatasetDropzoneProps {
 
 export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDropzoneProps) => {
   const [file, setFile] = useState<File | null>(null);
-  const [result, setResult] = useState<DropzoneResult | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [result, setResult] = useState<DropzoneResult | { isProcessing: boolean } | null>(null);
   const notifications = useNotificationsStore();
   const { t } = useTranslation();
 
@@ -166,13 +166,14 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
 
   const handleSubmit = useCallback(async (file: File) => {
     try {
-      setIsProcessing(true);
+      setResult({ isProcessing: true });
       const parsedData = await parseCSV(file);
       const result = await validate(parsedData);
       setResult(result);
     } catch (error) {
       console.error(error);
       setFile(null);
+      setResult(null);
       if (error instanceof ZodError) {
         console.error(error.format());
         notifications.addNotification({ type: 'error', message: t('unexpectedError') });
@@ -181,10 +182,10 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
       } else {
         notifications.addNotification({ type: 'error', message: t('unexpectedError') });
       }
-    } finally {
-      setIsProcessing(false);
     }
   }, []);
+
+  console.log(result);
 
   return (
     <div className="w-full sm:max-w-md">
@@ -192,37 +193,51 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
         className="h-64 cursor-pointer rounded-lg border-2 border-dashed border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300"
         {...getRootProps()}
       >
-        <AnimatePresence mode="wait">
-          {isProcessing ? (
-            <SuspenseFallback />
-          ) : result ? (
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              className="flex h-full items-center justify-center"
-              initial={{ opacity: 0, y: -10 }}
-              key={0}
-            >
-              <AnimatedCheckIcon
-                className="h-12 w-12"
-                onComplete={() => {
-                  onSubmit(result);
-                }}
-              />
-            </motion.div>
-          ) : (
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              className="flex h-full flex-col items-center justify-center"
-              exit={{ opacity: 0, y: 10 }}
-              key={1}
-            >
-              <CloudArrowUpIcon height={40} width={40} />
-              <p className="mt-1 text-center text-sm">
-                {file ? file.name : isDragActive ? t('releaseToUpload') : t('dropHere')}
-              </p>
-              <input {...getInputProps()} />
-            </motion.div>
-          )}
+        <AnimatePresence initial={false} mode="wait">
+          {match(result)
+            .with(P.nullish, () => (
+              <motion.div
+                animate={{ opacity: 1 }}
+                className="flex h-full flex-col items-center justify-center"
+                exit={{ opacity: 0 }}
+                initial={{ opacity: 0 }}
+                key="ready"
+              >
+                <CloudArrowUpIcon height={40} width={40} />
+                <p className="mt-1 text-center text-sm">
+                  {file ? file.name : isDragActive ? t('releaseToUpload') : t('dropHere')}
+                </p>
+                <input {...getInputProps()} />
+              </motion.div>
+            ))
+            .with({ isProcessing: P.boolean }, () => (
+              <motion.div
+                animate={{ opacity: 1 }}
+                className="flex h-full items-center justify-center"
+                exit={{ opacity: 0 }}
+                initial={{ opacity: 0 }}
+                key="processing"
+              >
+                <p>Loading</p>
+              </motion.div>
+            ))
+            .with({ columns: P.any, data: P.any }, (result) => (
+              <motion.div
+                animate={{ opacity: 1 }}
+                className="flex h-full items-center justify-center"
+                exit={{ opacity: 0 }}
+                initial={{ opacity: 0 }}
+                key="complete"
+              >
+                <AnimatedCheckIcon
+                  className="h-12 w-12"
+                  onComplete={() => {
+                    onSubmit(result);
+                  }}
+                />
+              </motion.div>
+            ))
+            .exhaustive()}
         </AnimatePresence>
       </div>
       <div className="flex gap-2">
