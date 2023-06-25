@@ -40,5 +40,8 @@
   "other": "Autre",
   "integer": "Nombre entier",
   "float": "Nombre réel",
-  "string": "Texte"
+  "string": "Texte",
+  "maxFileSizeError": "La taille du fichier de {{ actualSize }} dépasse la limite de {{ maxSize }}",
+  "fileParseError": "Échec de l'analyse du fichier. Veuillez vous assurer que votre fichier est correctement formaté. Des informations détaillées sur les erreurs sont disponibles dans la console du navigateur.",
+  "invalidFileError": "Fichier invalide : {{ filename }}"
 }

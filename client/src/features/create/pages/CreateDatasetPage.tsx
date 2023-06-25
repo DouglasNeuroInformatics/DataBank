@@ -46,15 +46,15 @@ export const CreateDatasetPage = () => {
             </motion.div>
           ))
           .otherwise(() => (
-            // <motion.div
-            //   animate={{ opacity: 1 }}
-            //   className="flex flex-grow items-center justify-center"
-            //   exit={{ opacity: 0 }}
-            //   initial={{ opacity: 0 }}
-            //   key="dataset-form"
-            // >
-            <DatasetForm onSubmit={() => null} />
-            // </motion.div>
+            <motion.div
+              animate={{ opacity: 1 }}
+              className="flex flex-grow items-center justify-center"
+              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              key="dataset-form"
+            >
+              <DatasetForm onSubmit={() => null} />
+            </motion.div>
           ))}
       </AnimatePresence>
     </div>
