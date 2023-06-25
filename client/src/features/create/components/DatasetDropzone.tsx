@@ -1,13 +1,16 @@
 import { useCallback, useState } from 'react';
 
+import { DatasetColumnType } from '@databank/types';
 import { Button, useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import Papa from 'papaparse';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
+import { Simplify } from 'type-fest';
 import { ZodError, z } from 'zod';
 
+import { SuspenseFallback } from '@/components';
 import { AnimatedCheckIcon } from '@/components/AnimatedCheckIcon';
 
 /**
@@ -40,12 +43,17 @@ function formatFileSize(bytes: number, si = false, dp = 1) {
   return bytes.toFixed(dp) + ' ' + units[u];
 }
 
-const dropzoneResultSchema = z.object({
+type InferredColumn = { name: string; type: DatasetColumnType | null };
+
+const parsedDataSchema = z.object({
   fields: z.string().array(),
-  data: z.record(z.string()).array()
+  data: z.record(z.union([z.coerce.number(), z.string()])).array()
 });
 
-export type DropzoneResult = z.infer<typeof dropzoneResultSchema>;
+export type DropzoneResult = Simplify<{
+  columns: InferredColumn[];
+  data: Record<string, string | number>[];
+}>;
 
 export interface DatasetDropzoneProps {
   /** The maximum file size in bytes (default = 10MB) */
@@ -58,16 +66,20 @@ export interface DatasetDropzoneProps {
 export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDropzoneProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<DropzoneResult | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const notifications = useNotificationsStore();
   const { t } = useTranslation();
 
-  const handleDrop = useCallback((acceptedFiles: File[], rejections: FileRejection[]) => {
-    for (const { file, errors } of rejections) {
-      notifications.addNotification({ type: 'error', message: t('invalidFileError', { filename: file.name }) });
-      console.error(errors);
-    }
-    setFile(acceptedFiles[0]);
-  }, []);
+  const handleDrop = useCallback(
+    (acceptedFiles: File[], rejections: FileRejection[]) => {
+      for (const { file, errors } of rejections) {
+        notifications.addNotification({ type: 'error', message: t('invalidFileError', { filename: file.name }) });
+        console.error(errors);
+      }
+      setFile(acceptedFiles[0]);
+    },
+    [notifications]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
@@ -78,9 +90,38 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
     maxFiles: 1
   });
 
+  /** Function to validate the structure of the parsed data and infer types */
+  const validate = useCallback(async (parsedData: unknown) => {
+    const inferType = (currentType: DatasetColumnType | null, value: string | number): DatasetColumnType => {
+      if (typeof value === 'string' || currentType === 'STRING') {
+        return 'STRING';
+      } else if (Number.isInteger(value)) {
+        return currentType === 'FLOAT' ? 'FLOAT' : 'INTEGER';
+      } else if (Number.isFinite(value)) {
+        return 'FLOAT';
+      }
+      throw new Error(t('unexpectedValue', { value }));
+    };
+
+    const { fields, data } = await parsedDataSchema.parseAsync(parsedData);
+    const columns: InferredColumn[] = fields.map((name) => ({ name, type: null }));
+    for (let i = 0; i < fields.length; i++) {
+      const columnName = fields[i];
+      const column = columns.find(({ name }) => name === columnName)!;
+      for (let j = 0; j < data.length; j++) {
+        const value = data[j][columnName];
+        column.type = inferType(column.type, value);
+        if (column.type === 'STRING') {
+          break;
+        }
+      }
+    }
+    return { columns, data };
+  }, []);
+
   // If error, promise will reject with error containing internationalized message and details will be logged to stdout
   const parseCSV = useCallback(
-    (file: File): Promise<DropzoneResult> =>
+    (file: File): Promise<{ fields: string[]; data: unknown[] }> =>
       new Promise((resolve, reject) => {
         if (!file) {
           console.error('File object must be defined');
@@ -101,18 +142,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
               console.error('Fields is undefined');
               reject(new Error(t('unexpectedError')));
             } else {
-              // I don't believe this should ever throw, but to be safe
-              try {
-                const result = dropzoneResultSchema.parse({ fields: results.meta.fields, data: results.data });
-                resolve(result);
-              } catch (error) {
-                if (error instanceof ZodError) {
-                  console.error(error.format());
-                } else {
-                  console.error(error);
-                }
-                reject(error);
-              }
+              resolve({ fields: results.meta.fields, data: results.data });
             }
           },
           error: (error) => {
@@ -120,34 +150,41 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
             reject(t('unexpectedError'));
           },
           header: true,
-          skipEmptyLines: true
-          // transformHeader(header, index) {
-          //   if (header === '') {
-          //     reject(new Error(`Invalid column name at index '${index}': must not be empty string`));
-          //   } else if (!/^[\w.-]+$/.test(header)) {
-          //     reject(new Error(`Invalid column name '${header}': must contain only letters, numbers, or underscores`));
-          //   }
-          //   return header.toUpperCase();
-          // }
+          skipEmptyLines: true,
+          transformHeader(header, index) {
+            if (header === '') {
+              reject(new Error(t('invalidEmptyColumnError', { index })));
+            } else if (!/^[\w.-]+$/.test(header)) {
+              reject(new Error(t('invalidColumnNameError', { columnName: header })));
+            }
+            return header.toUpperCase();
+          }
         });
       }),
-    []
+    [notifications]
   );
 
-  const handleSubmit = async (file: File) => {
+  const handleSubmit = useCallback(async (file: File) => {
     try {
-      const result = await parseCSV(file);
+      setIsProcessing(true);
+      const parsedData = await parseCSV(file);
+      const result = await validate(parsedData);
       setResult(result);
     } catch (error) {
       console.error(error);
       setFile(null);
-      if (error instanceof Error) {
+      if (error instanceof ZodError) {
+        console.error(error.format());
+        notifications.addNotification({ type: 'error', message: t('unexpectedError') });
+      } else if (error instanceof Error) {
         notifications.addNotification({ type: 'error', message: error.message });
       } else {
         notifications.addNotification({ type: 'error', message: t('unexpectedError') });
       }
+    } finally {
+      setIsProcessing(false);
     }
-  };
+  }, []);
 
   return (
     <div className="w-full sm:max-w-md">
@@ -156,7 +193,9 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
         {...getRootProps()}
       >
         <AnimatePresence mode="wait">
-          {result ? (
+          {isProcessing ? (
+            <SuspenseFallback />
+          ) : result ? (
             <motion.div
               animate={{ opacity: 1, y: 0 }}
               className="flex h-full items-center justify-center"

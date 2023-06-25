@@ -4,22 +4,21 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { match } from 'ts-pattern';
 
-import { DatasetDropzone } from '../components/DatasetDropzone';
+import { DatasetDropzone, DropzoneResult } from '../components/DatasetDropzone';
 import { DatasetForm } from '../components/DatasetForm';
 
 import { Heading } from '@/components/Heading';
-import { ParsedCSV } from '@/utils/parse-csv';
 
 type State = {
-  parsed: ParsedCSV | null;
+  uploaded: DropzoneResult | null;
 };
 
-type Action = { type: 'set-parsed'; value: ParsedCSV };
+type Action = { type: 'set-uploaded'; value: DropzoneResult };
 
 const reducer = (state: State, action: Action): State => {
   const updatedState = match(action)
-    .with({ type: 'set-parsed' }, (action) => {
-      return { ...state, parsed: action.value };
+    .with({ type: 'set-uploaded' }, (action) => {
+      return { ...state, uploaded: action.value };
     })
     .exhaustive();
   return updatedState;
@@ -27,14 +26,16 @@ const reducer = (state: State, action: Action): State => {
 
 export const CreateDatasetPage = () => {
   const { t } = useTranslation();
-  const [state, dispatch] = useReducer(reducer, { parsed: null });
+  const [state, dispatch] = useReducer(reducer, { uploaded: null });
+
+  console.log(state.uploaded);
 
   return (
     <div className="flex h-full flex-col">
       <Heading title={t('createDataset')} />
       <AnimatePresence mode="wait">
         {match(state)
-          .with({ parsed: null }, () => (
+          .with({ uploaded: null }, () => (
             <motion.div
               animate={{ opacity: 1 }}
               className="flex flex-grow items-center justify-center"
@@ -42,7 +43,7 @@ export const CreateDatasetPage = () => {
               initial={{ opacity: 0 }}
               key="dataset-dropzone"
             >
-              <DatasetDropzone onSubmit={(parsed) => dispatch({ type: 'set-parsed', value: parsed })} />
+              <DatasetDropzone onSubmit={(value) => dispatch({ type: 'set-uploaded', value })} />
             </motion.div>
           ))
           .otherwise(() => (
