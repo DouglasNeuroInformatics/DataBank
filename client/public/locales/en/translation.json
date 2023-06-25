@@ -40,5 +40,8 @@
   "other": "Other",
   "integer": "Integer",
   "float": "Real Number",
-  "string": "Text"
+  "string": "Text",
+  "maxFileSizeError": "File size of {{ actualSize }} exceeds limit of {{ maxSize }}",
+  "fileParseError": "Failed to parse file. Please ensure your file is formatted correctly. Detailed error information is available in the browser console.",
+  "invalidFileError": "Invalid File: {{ filename }}"
 }
