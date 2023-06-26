@@ -40,10 +40,10 @@ import { UsersModule } from './users/users.module.js';
     UsersModule
   ],
   providers: [
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: GlobalExceptionFilter
-    // },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter
+    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard

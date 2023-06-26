@@ -22,7 +22,7 @@ async function bootstrap() {
     defaultVersion: '1',
     type: VersioningType.URI
   });
-
+  
   app.useStaticAssets(path.resolve(__dirname, '..', 'public'));
   setupDocs(app);
 

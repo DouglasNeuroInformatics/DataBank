@@ -1,13 +1,13 @@
-:80 {
+databank.douglasneuroinformatics.ca {
 	encode gzip
 	rewrite /api /api/
-
+	
 	handle /api/* {
 		reverse_proxy :5500
 	}
-	
+
 	handle {
-		root * ./client/dist
+		root * /var/www/html
 		try_files {path} /index.html
 		file_server
 	}

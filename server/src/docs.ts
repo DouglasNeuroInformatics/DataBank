@@ -17,7 +17,7 @@ export function setupDocs(app: NestExpressApplication) {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  httpAdapter.get('/api-spec.json', (_, res) => {
+  httpAdapter.get('/spec.json', (_, res) => {
     res.send(document);
   });
 }
