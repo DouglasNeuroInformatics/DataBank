@@ -2,10 +2,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import url from 'node:url';
 
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 
-import { DatasetColumn } from '@databank/types';
+import { TDataset } from '@databank/types';
 import mongoose from 'mongoose';
 
 import { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
@@ -25,26 +25,14 @@ export class SetupService {
   ) {}
 
   async initApp({ admin }: SetupDto) {
-    // if (await this.isInitialized()) {
-    //   throw new ForbiddenException();
-    // }
+    if (await this.isInitialized()) {
+      throw new ForbiddenException();
+    }
     await this.connection.dropDatabase();
     const user = await this.createAdmin(admin);
 
     const iris = await this.loadStarterDataset('iris.json');
-
-    for (let i = 1; i < 21; i++) {
-      await this.datasetsService.createDataset(
-        {
-          name: 'Iris ' + i,
-          description: 'The iris dataset is a classic and very easy multi-class classification dataset',
-          license: 'Public Domain',
-          columns: iris.columns,
-          data: iris.data
-        },
-        user.toObject()
-      );
-    }
+    await this.datasetsService.createDataset(iris, user.toObject());
   }
 
   private async isInitialized() {
@@ -64,9 +52,6 @@ export class SetupService {
 
   private async loadStarterDataset(filename: string) {
     const content = await fs.readFile(path.resolve(__dirname, 'resources', filename), 'utf-8');
-    return JSON.parse(content) as {
-      columns: Record<string, DatasetColumn>;
-      data: Record<string, any>;
-    };
+    return JSON.parse(content) as TDataset;
   }
 }

@@ -1,1076 +1,1089 @@
 {
-  "columns": {
-    "SEPAL_LENGTH": {
-      "description": "sepal length in cm",
-      "type": "float"
+  "name": "Iris",
+  "description": "A small classic dataset from Fisher, 1936. One of the earliest datasets used for evaluation of classification methodologies. ",
+  "license": "PUBLIC_DOMAIN",
+  "columns": [
+    {
+      "name": "SEPAL_LENGTH",
+      "description": "Sepal length in cm",
+      "nullable": false,
+      "type": "FLOAT"
     },
-    "SEPAL_WIDTH": {
-      "description": "sepal width in cm",
-      "type": "float"
+    {
+      "name": "SEPAL_WIDTH",
+      "description": "Sepal width in cm",
+      "nullable": false,
+      "type": "FLOAT"
     },
-    "PETAL_LENGTH": {
-      "description": "petal length in cm",
-      "type": "float"
+    {
+      "name": "PETAL_LENGTH",
+      "description": "Petal length in cm",
+      "nullable": false,
+      "type": "FLOAT"
     },
-    "PETAL_WIDTH": {
-      "description": "petal width in cm",
-      "type": "float"
+    {
+      "name": "PETAL_WIDTH",
+      "description": "Petal width in cm",
+      "nullable": false,
+      "type": "FLOAT"
     },
-    "SPECIES": {
-      "description": "species of iris",
-      "type": "float"
+    {
+      "name": "SPECIES",
+      "description": "Species of Iris",
+      "nullable": false,
+      "type": "STRING"
     }
-  },
-  "data": {
-    "0": {
+  ],
+  "data": [
+    {
       "SEPAL_LENGTH": 5.1,
       "SEPAL_WIDTH": 3.5,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "1": {
+    {
       "SEPAL_LENGTH": 4.9,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "2": {
+    {
       "SEPAL_LENGTH": 4.7,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 1.3,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "3": {
+    {
       "SEPAL_LENGTH": 4.6,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "4": {
-      "SEPAL_LENGTH": 5.0,
+    {
+      "SEPAL_LENGTH": 5,
       "SEPAL_WIDTH": 3.6,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "5": {
+    {
       "SEPAL_LENGTH": 5.4,
       "SEPAL_WIDTH": 3.9,
       "PETAL_LENGTH": 1.7,
       "PETAL_WIDTH": 0.4,
       "SPECIES": "setosa"
     },
-    "6": {
+    {
       "SEPAL_LENGTH": 4.6,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.3,
       "SPECIES": "setosa"
     },
-    "7": {
-      "SEPAL_LENGTH": 5.0,
+    {
+      "SEPAL_LENGTH": 5,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "8": {
+    {
       "SEPAL_LENGTH": 4.4,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "9": {
+    {
       "SEPAL_LENGTH": 4.9,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.1,
       "SPECIES": "setosa"
     },
-    "10": {
+    {
       "SEPAL_LENGTH": 5.4,
       "SEPAL_WIDTH": 3.7,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "11": {
+    {
       "SEPAL_LENGTH": 4.8,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 1.6,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "12": {
+    {
       "SEPAL_LENGTH": 4.8,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.1,
       "SPECIES": "setosa"
     },
-    "13": {
+    {
       "SEPAL_LENGTH": 4.3,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 1.1,
       "PETAL_WIDTH": 0.1,
       "SPECIES": "setosa"
     },
-    "14": {
+    {
       "SEPAL_LENGTH": 5.8,
-      "SEPAL_WIDTH": 4.0,
+      "SEPAL_WIDTH": 4,
       "PETAL_LENGTH": 1.2,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "15": {
+    {
       "SEPAL_LENGTH": 5.7,
       "SEPAL_WIDTH": 4.4,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.4,
       "SPECIES": "setosa"
     },
-    "16": {
+    {
       "SEPAL_LENGTH": 5.4,
       "SEPAL_WIDTH": 3.9,
       "PETAL_LENGTH": 1.3,
       "PETAL_WIDTH": 0.4,
       "SPECIES": "setosa"
     },
-    "17": {
+    {
       "SEPAL_LENGTH": 5.1,
       "SEPAL_WIDTH": 3.5,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.3,
       "SPECIES": "setosa"
     },
-    "18": {
+    {
       "SEPAL_LENGTH": 5.7,
       "SEPAL_WIDTH": 3.8,
       "PETAL_LENGTH": 1.7,
       "PETAL_WIDTH": 0.3,
       "SPECIES": "setosa"
     },
-    "19": {
+    {
       "SEPAL_LENGTH": 5.1,
       "SEPAL_WIDTH": 3.8,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.3,
       "SPECIES": "setosa"
     },
-    "20": {
+    {
       "SEPAL_LENGTH": 5.4,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 1.7,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "21": {
+    {
       "SEPAL_LENGTH": 5.1,
       "SEPAL_WIDTH": 3.7,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.4,
       "SPECIES": "setosa"
     },
-    "22": {
+    {
       "SEPAL_LENGTH": 4.6,
       "SEPAL_WIDTH": 3.6,
-      "PETAL_LENGTH": 1.0,
+      "PETAL_LENGTH": 1,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "23": {
+    {
       "SEPAL_LENGTH": 5.1,
       "SEPAL_WIDTH": 3.3,
       "PETAL_LENGTH": 1.7,
       "PETAL_WIDTH": 0.5,
       "SPECIES": "setosa"
     },
-    "24": {
+    {
       "SEPAL_LENGTH": 4.8,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 1.9,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "25": {
-      "SEPAL_LENGTH": 5.0,
-      "SEPAL_WIDTH": 3.0,
+    {
+      "SEPAL_LENGTH": 5,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 1.6,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "26": {
-      "SEPAL_LENGTH": 5.0,
+    {
+      "SEPAL_LENGTH": 5,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 1.6,
       "PETAL_WIDTH": 0.4,
       "SPECIES": "setosa"
     },
-    "27": {
+    {
       "SEPAL_LENGTH": 5.2,
       "SEPAL_WIDTH": 3.5,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "28": {
+    {
       "SEPAL_LENGTH": 5.2,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "29": {
+    {
       "SEPAL_LENGTH": 4.7,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 1.6,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "30": {
+    {
       "SEPAL_LENGTH": 4.8,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 1.6,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "31": {
+    {
       "SEPAL_LENGTH": 5.4,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.4,
       "SPECIES": "setosa"
     },
-    "32": {
+    {
       "SEPAL_LENGTH": 5.2,
       "SEPAL_WIDTH": 4.1,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.1,
       "SPECIES": "setosa"
     },
-    "33": {
+    {
       "SEPAL_LENGTH": 5.5,
       "SEPAL_WIDTH": 4.2,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "34": {
+    {
       "SEPAL_LENGTH": 4.9,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 1.5,
-      "PETAL_WIDTH": 0.2,
+      "PETAL_WIDTH": 0.1,
       "SPECIES": "setosa"
     },
-    "35": {
-      "SEPAL_LENGTH": 5.0,
+    {
+      "SEPAL_LENGTH": 5,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 1.2,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "36": {
+    {
       "SEPAL_LENGTH": 5.5,
       "SEPAL_WIDTH": 3.5,
       "PETAL_LENGTH": 1.3,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "37": {
+    {
       "SEPAL_LENGTH": 4.9,
-      "SEPAL_WIDTH": 3.6,
-      "PETAL_LENGTH": 1.4,
+      "SEPAL_WIDTH": 3.1,
+      "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.1,
       "SPECIES": "setosa"
     },
-    "38": {
+    {
       "SEPAL_LENGTH": 4.4,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 1.3,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "39": {
+    {
       "SEPAL_LENGTH": 5.1,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "40": {
-      "SEPAL_LENGTH": 5.0,
+    {
+      "SEPAL_LENGTH": 5,
       "SEPAL_WIDTH": 3.5,
       "PETAL_LENGTH": 1.3,
       "PETAL_WIDTH": 0.3,
       "SPECIES": "setosa"
     },
-    "41": {
+    {
       "SEPAL_LENGTH": 4.5,
       "SEPAL_WIDTH": 2.3,
       "PETAL_LENGTH": 1.3,
       "PETAL_WIDTH": 0.3,
       "SPECIES": "setosa"
     },
-    "42": {
+    {
       "SEPAL_LENGTH": 4.4,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 1.3,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "43": {
-      "SEPAL_LENGTH": 5.0,
+    {
+      "SEPAL_LENGTH": 5,
       "SEPAL_WIDTH": 3.5,
       "PETAL_LENGTH": 1.6,
       "PETAL_WIDTH": 0.6,
       "SPECIES": "setosa"
     },
-    "44": {
+    {
       "SEPAL_LENGTH": 5.1,
       "SEPAL_WIDTH": 3.8,
       "PETAL_LENGTH": 1.9,
       "PETAL_WIDTH": 0.4,
       "SPECIES": "setosa"
     },
-    "45": {
+    {
       "SEPAL_LENGTH": 4.8,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.3,
       "SPECIES": "setosa"
     },
-    "46": {
+    {
       "SEPAL_LENGTH": 5.1,
       "SEPAL_WIDTH": 3.8,
       "PETAL_LENGTH": 1.6,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "47": {
+    {
       "SEPAL_LENGTH": 4.6,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "48": {
+    {
       "SEPAL_LENGTH": 5.3,
       "SEPAL_WIDTH": 3.7,
       "PETAL_LENGTH": 1.5,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "49": {
-      "SEPAL_LENGTH": 5.0,
+    {
+      "SEPAL_LENGTH": 5,
       "SEPAL_WIDTH": 3.3,
       "PETAL_LENGTH": 1.4,
       "PETAL_WIDTH": 0.2,
       "SPECIES": "setosa"
     },
-    "50": {
-      "SEPAL_LENGTH": 7.0,
+    {
+      "SEPAL_LENGTH": 7,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 4.7,
       "PETAL_WIDTH": 1.4,
       "SPECIES": "versicolor"
     },
-    "51": {
+    {
       "SEPAL_LENGTH": 6.4,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 4.5,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "52": {
+    {
       "SEPAL_LENGTH": 6.9,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 4.9,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "53": {
+    {
       "SEPAL_LENGTH": 5.5,
       "SEPAL_WIDTH": 2.3,
-      "PETAL_LENGTH": 4.0,
+      "PETAL_LENGTH": 4,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "54": {
+    {
       "SEPAL_LENGTH": 6.5,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 4.6,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "55": {
+    {
       "SEPAL_LENGTH": 5.7,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 4.5,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "56": {
+    {
       "SEPAL_LENGTH": 6.3,
       "SEPAL_WIDTH": 3.3,
       "PETAL_LENGTH": 4.7,
       "PETAL_WIDTH": 1.6,
       "SPECIES": "versicolor"
     },
-    "57": {
+    {
       "SEPAL_LENGTH": 4.9,
       "SEPAL_WIDTH": 2.4,
       "PETAL_LENGTH": 3.3,
-      "PETAL_WIDTH": 1.0,
+      "PETAL_WIDTH": 1,
       "SPECIES": "versicolor"
     },
-    "58": {
+    {
       "SEPAL_LENGTH": 6.6,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 4.6,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "59": {
+    {
       "SEPAL_LENGTH": 5.2,
       "SEPAL_WIDTH": 2.7,
       "PETAL_LENGTH": 3.9,
       "PETAL_WIDTH": 1.4,
       "SPECIES": "versicolor"
     },
-    "60": {
-      "SEPAL_LENGTH": 5.0,
-      "SEPAL_WIDTH": 2.0,
+    {
+      "SEPAL_LENGTH": 5,
+      "SEPAL_WIDTH": 2,
       "PETAL_LENGTH": 3.5,
-      "PETAL_WIDTH": 1.0,
+      "PETAL_WIDTH": 1,
       "SPECIES": "versicolor"
     },
-    "61": {
+    {
       "SEPAL_LENGTH": 5.9,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 4.2,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "62": {
-      "SEPAL_LENGTH": 6.0,
+    {
+      "SEPAL_LENGTH": 6,
       "SEPAL_WIDTH": 2.2,
-      "PETAL_LENGTH": 4.0,
-      "PETAL_WIDTH": 1.0,
+      "PETAL_LENGTH": 4,
+      "PETAL_WIDTH": 1,
       "SPECIES": "versicolor"
     },
-    "63": {
+    {
       "SEPAL_LENGTH": 6.1,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 4.7,
       "PETAL_WIDTH": 1.4,
       "SPECIES": "versicolor"
     },
-    "64": {
+    {
       "SEPAL_LENGTH": 5.6,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 3.6,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "65": {
+    {
       "SEPAL_LENGTH": 6.7,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 4.4,
       "PETAL_WIDTH": 1.4,
       "SPECIES": "versicolor"
     },
-    "66": {
+    {
       "SEPAL_LENGTH": 5.6,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 4.5,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "67": {
+    {
       "SEPAL_LENGTH": 5.8,
       "SEPAL_WIDTH": 2.7,
       "PETAL_LENGTH": 4.1,
-      "PETAL_WIDTH": 1.0,
+      "PETAL_WIDTH": 1,
       "SPECIES": "versicolor"
     },
-    "68": {
+    {
       "SEPAL_LENGTH": 6.2,
       "SEPAL_WIDTH": 2.2,
       "PETAL_LENGTH": 4.5,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "69": {
+    {
       "SEPAL_LENGTH": 5.6,
       "SEPAL_WIDTH": 2.5,
       "PETAL_LENGTH": 3.9,
       "PETAL_WIDTH": 1.1,
       "SPECIES": "versicolor"
     },
-    "70": {
+    {
       "SEPAL_LENGTH": 5.9,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 4.8,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "versicolor"
     },
-    "71": {
+    {
       "SEPAL_LENGTH": 6.1,
       "SEPAL_WIDTH": 2.8,
-      "PETAL_LENGTH": 4.0,
+      "PETAL_LENGTH": 4,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "72": {
+    {
       "SEPAL_LENGTH": 6.3,
       "SEPAL_WIDTH": 2.5,
       "PETAL_LENGTH": 4.9,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "73": {
+    {
       "SEPAL_LENGTH": 6.1,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 4.7,
       "PETAL_WIDTH": 1.2,
       "SPECIES": "versicolor"
     },
-    "74": {
+    {
       "SEPAL_LENGTH": 6.4,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 4.3,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "75": {
+    {
       "SEPAL_LENGTH": 6.6,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 4.4,
       "PETAL_WIDTH": 1.4,
       "SPECIES": "versicolor"
     },
-    "76": {
+    {
       "SEPAL_LENGTH": 6.8,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 4.8,
       "PETAL_WIDTH": 1.4,
       "SPECIES": "versicolor"
     },
-    "77": {
+    {
       "SEPAL_LENGTH": 6.7,
-      "SEPAL_WIDTH": 3.0,
-      "PETAL_LENGTH": 5.0,
+      "SEPAL_WIDTH": 3,
+      "PETAL_LENGTH": 5,
       "PETAL_WIDTH": 1.7,
       "SPECIES": "versicolor"
     },
-    "78": {
-      "SEPAL_LENGTH": 6.0,
+    {
+      "SEPAL_LENGTH": 6,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 4.5,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "79": {
+    {
       "SEPAL_LENGTH": 5.7,
       "SEPAL_WIDTH": 2.6,
       "PETAL_LENGTH": 3.5,
-      "PETAL_WIDTH": 1.0,
+      "PETAL_WIDTH": 1,
       "SPECIES": "versicolor"
     },
-    "80": {
+    {
       "SEPAL_LENGTH": 5.5,
       "SEPAL_WIDTH": 2.4,
       "PETAL_LENGTH": 3.8,
       "PETAL_WIDTH": 1.1,
       "SPECIES": "versicolor"
     },
-    "81": {
+    {
       "SEPAL_LENGTH": 5.5,
       "SEPAL_WIDTH": 2.4,
       "PETAL_LENGTH": 3.7,
-      "PETAL_WIDTH": 1.0,
+      "PETAL_WIDTH": 1,
       "SPECIES": "versicolor"
     },
-    "82": {
+    {
       "SEPAL_LENGTH": 5.8,
       "SEPAL_WIDTH": 2.7,
       "PETAL_LENGTH": 3.9,
       "PETAL_WIDTH": 1.2,
       "SPECIES": "versicolor"
     },
-    "83": {
-      "SEPAL_LENGTH": 6.0,
+    {
+      "SEPAL_LENGTH": 6,
       "SEPAL_WIDTH": 2.7,
       "PETAL_LENGTH": 5.1,
       "PETAL_WIDTH": 1.6,
       "SPECIES": "versicolor"
     },
-    "84": {
+    {
       "SEPAL_LENGTH": 5.4,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 4.5,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "85": {
-      "SEPAL_LENGTH": 6.0,
+    {
+      "SEPAL_LENGTH": 6,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 4.5,
       "PETAL_WIDTH": 1.6,
       "SPECIES": "versicolor"
     },
-    "86": {
+    {
       "SEPAL_LENGTH": 6.7,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 4.7,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "versicolor"
     },
-    "87": {
+    {
       "SEPAL_LENGTH": 6.3,
       "SEPAL_WIDTH": 2.3,
       "PETAL_LENGTH": 4.4,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "88": {
+    {
       "SEPAL_LENGTH": 5.6,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 4.1,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "89": {
+    {
       "SEPAL_LENGTH": 5.5,
       "SEPAL_WIDTH": 2.5,
-      "PETAL_LENGTH": 4.0,
+      "PETAL_LENGTH": 4,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "90": {
+    {
       "SEPAL_LENGTH": 5.5,
       "SEPAL_WIDTH": 2.6,
       "PETAL_LENGTH": 4.4,
       "PETAL_WIDTH": 1.2,
       "SPECIES": "versicolor"
     },
-    "91": {
+    {
       "SEPAL_LENGTH": 6.1,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 4.6,
       "PETAL_WIDTH": 1.4,
       "SPECIES": "versicolor"
     },
-    "92": {
+    {
       "SEPAL_LENGTH": 5.8,
       "SEPAL_WIDTH": 2.6,
-      "PETAL_LENGTH": 4.0,
+      "PETAL_LENGTH": 4,
       "PETAL_WIDTH": 1.2,
       "SPECIES": "versicolor"
     },
-    "93": {
-      "SEPAL_LENGTH": 5.0,
+    {
+      "SEPAL_LENGTH": 5,
       "SEPAL_WIDTH": 2.3,
       "PETAL_LENGTH": 3.3,
-      "PETAL_WIDTH": 1.0,
+      "PETAL_WIDTH": 1,
       "SPECIES": "versicolor"
     },
-    "94": {
+    {
       "SEPAL_LENGTH": 5.6,
       "SEPAL_WIDTH": 2.7,
       "PETAL_LENGTH": 4.2,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "95": {
+    {
       "SEPAL_LENGTH": 5.7,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 4.2,
       "PETAL_WIDTH": 1.2,
       "SPECIES": "versicolor"
     },
-    "96": {
+    {
       "SEPAL_LENGTH": 5.7,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 4.2,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "97": {
+    {
       "SEPAL_LENGTH": 6.2,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 4.3,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "98": {
+    {
       "SEPAL_LENGTH": 5.1,
       "SEPAL_WIDTH": 2.5,
-      "PETAL_LENGTH": 3.0,
+      "PETAL_LENGTH": 3,
       "PETAL_WIDTH": 1.1,
       "SPECIES": "versicolor"
     },
-    "99": {
+    {
       "SEPAL_LENGTH": 5.7,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 4.1,
       "PETAL_WIDTH": 1.3,
       "SPECIES": "versicolor"
     },
-    "100": {
+    {
       "SEPAL_LENGTH": 6.3,
       "SEPAL_WIDTH": 3.3,
-      "PETAL_LENGTH": 6.0,
+      "PETAL_LENGTH": 6,
       "PETAL_WIDTH": 2.5,
       "SPECIES": "virginica"
     },
-    "101": {
+    {
       "SEPAL_LENGTH": 5.8,
       "SEPAL_WIDTH": 2.7,
       "PETAL_LENGTH": 5.1,
       "PETAL_WIDTH": 1.9,
       "SPECIES": "virginica"
     },
-    "102": {
+    {
       "SEPAL_LENGTH": 7.1,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 5.9,
       "PETAL_WIDTH": 2.1,
       "SPECIES": "virginica"
     },
-    "103": {
+    {
       "SEPAL_LENGTH": 6.3,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 5.6,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "104": {
+    {
       "SEPAL_LENGTH": 6.5,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 5.8,
       "PETAL_WIDTH": 2.2,
       "SPECIES": "virginica"
     },
-    "105": {
+    {
       "SEPAL_LENGTH": 7.6,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 6.6,
       "PETAL_WIDTH": 2.1,
       "SPECIES": "virginica"
     },
-    "106": {
+    {
       "SEPAL_LENGTH": 4.9,
       "SEPAL_WIDTH": 2.5,
       "PETAL_LENGTH": 4.5,
       "PETAL_WIDTH": 1.7,
       "SPECIES": "virginica"
     },
-    "107": {
+    {
       "SEPAL_LENGTH": 7.3,
       "SEPAL_WIDTH": 2.9,
       "PETAL_LENGTH": 6.3,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "108": {
+    {
       "SEPAL_LENGTH": 6.7,
       "SEPAL_WIDTH": 2.5,
       "PETAL_LENGTH": 5.8,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "109": {
+    {
       "SEPAL_LENGTH": 7.2,
       "SEPAL_WIDTH": 3.6,
       "PETAL_LENGTH": 6.1,
       "PETAL_WIDTH": 2.5,
       "SPECIES": "virginica"
     },
-    "110": {
+    {
       "SEPAL_LENGTH": 6.5,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 5.1,
-      "PETAL_WIDTH": 2.0,
+      "PETAL_WIDTH": 2,
       "SPECIES": "virginica"
     },
-    "111": {
+    {
       "SEPAL_LENGTH": 6.4,
       "SEPAL_WIDTH": 2.7,
       "PETAL_LENGTH": 5.3,
       "PETAL_WIDTH": 1.9,
       "SPECIES": "virginica"
     },
-    "112": {
+    {
       "SEPAL_LENGTH": 6.8,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 5.5,
       "PETAL_WIDTH": 2.1,
       "SPECIES": "virginica"
     },
-    "113": {
+    {
       "SEPAL_LENGTH": 5.7,
       "SEPAL_WIDTH": 2.5,
-      "PETAL_LENGTH": 5.0,
-      "PETAL_WIDTH": 2.0,
+      "PETAL_LENGTH": 5,
+      "PETAL_WIDTH": 2,
       "SPECIES": "virginica"
     },
-    "114": {
+    {
       "SEPAL_LENGTH": 5.8,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 5.1,
       "PETAL_WIDTH": 2.4,
       "SPECIES": "virginica"
     },
-    "115": {
+    {
       "SEPAL_LENGTH": 6.4,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 5.3,
       "PETAL_WIDTH": 2.3,
       "SPECIES": "virginica"
     },
-    "116": {
+    {
       "SEPAL_LENGTH": 6.5,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 5.5,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "117": {
+    {
       "SEPAL_LENGTH": 7.7,
       "SEPAL_WIDTH": 3.8,
       "PETAL_LENGTH": 6.7,
       "PETAL_WIDTH": 2.2,
       "SPECIES": "virginica"
     },
-    "118": {
+    {
       "SEPAL_LENGTH": 7.7,
       "SEPAL_WIDTH": 2.6,
       "PETAL_LENGTH": 6.9,
       "PETAL_WIDTH": 2.3,
       "SPECIES": "virginica"
     },
-    "119": {
-      "SEPAL_LENGTH": 6.0,
+    {
+      "SEPAL_LENGTH": 6,
       "SEPAL_WIDTH": 2.2,
-      "PETAL_LENGTH": 5.0,
+      "PETAL_LENGTH": 5,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "virginica"
     },
-    "120": {
+    {
       "SEPAL_LENGTH": 6.9,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 5.7,
       "PETAL_WIDTH": 2.3,
       "SPECIES": "virginica"
     },
-    "121": {
+    {
       "SEPAL_LENGTH": 5.6,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 4.9,
-      "PETAL_WIDTH": 2.0,
+      "PETAL_WIDTH": 2,
       "SPECIES": "virginica"
     },
-    "122": {
+    {
       "SEPAL_LENGTH": 7.7,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 6.7,
-      "PETAL_WIDTH": 2.0,
+      "PETAL_WIDTH": 2,
       "SPECIES": "virginica"
     },
-    "123": {
+    {
       "SEPAL_LENGTH": 6.3,
       "SEPAL_WIDTH": 2.7,
       "PETAL_LENGTH": 4.9,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "124": {
+    {
       "SEPAL_LENGTH": 6.7,
       "SEPAL_WIDTH": 3.3,
       "PETAL_LENGTH": 5.7,
       "PETAL_WIDTH": 2.1,
       "SPECIES": "virginica"
     },
-    "125": {
+    {
       "SEPAL_LENGTH": 7.2,
       "SEPAL_WIDTH": 3.2,
-      "PETAL_LENGTH": 6.0,
+      "PETAL_LENGTH": 6,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "126": {
+    {
       "SEPAL_LENGTH": 6.2,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 4.8,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "127": {
+    {
       "SEPAL_LENGTH": 6.1,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 4.9,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "128": {
+    {
       "SEPAL_LENGTH": 6.4,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 5.6,
       "PETAL_WIDTH": 2.1,
       "SPECIES": "virginica"
     },
-    "129": {
+    {
       "SEPAL_LENGTH": 7.2,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 5.8,
       "PETAL_WIDTH": 1.6,
       "SPECIES": "virginica"
     },
-    "130": {
+    {
       "SEPAL_LENGTH": 7.4,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 6.1,
       "PETAL_WIDTH": 1.9,
       "SPECIES": "virginica"
     },
-    "131": {
+    {
       "SEPAL_LENGTH": 7.9,
       "SEPAL_WIDTH": 3.8,
       "PETAL_LENGTH": 6.4,
-      "PETAL_WIDTH": 2.0,
+      "PETAL_WIDTH": 2,
       "SPECIES": "virginica"
     },
-    "132": {
+    {
       "SEPAL_LENGTH": 6.4,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 5.6,
       "PETAL_WIDTH": 2.2,
       "SPECIES": "virginica"
     },
-    "133": {
+    {
       "SEPAL_LENGTH": 6.3,
       "SEPAL_WIDTH": 2.8,
       "PETAL_LENGTH": 5.1,
       "PETAL_WIDTH": 1.5,
       "SPECIES": "virginica"
     },
-    "134": {
+    {
       "SEPAL_LENGTH": 6.1,
       "SEPAL_WIDTH": 2.6,
       "PETAL_LENGTH": 5.6,
       "PETAL_WIDTH": 1.4,
       "SPECIES": "virginica"
     },
-    "135": {
+    {
       "SEPAL_LENGTH": 7.7,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 6.1,
       "PETAL_WIDTH": 2.3,
       "SPECIES": "virginica"
     },
-    "136": {
+    {
       "SEPAL_LENGTH": 6.3,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 5.6,
       "PETAL_WIDTH": 2.4,
       "SPECIES": "virginica"
     },
-    "137": {
+    {
       "SEPAL_LENGTH": 6.4,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 5.5,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "138": {
-      "SEPAL_LENGTH": 6.0,
-      "SEPAL_WIDTH": 3.0,
+    {
+      "SEPAL_LENGTH": 6,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 4.8,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     },
-    "139": {
+    {
       "SEPAL_LENGTH": 6.9,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 5.4,
       "PETAL_WIDTH": 2.1,
       "SPECIES": "virginica"
     },
-    "140": {
+    {
       "SEPAL_LENGTH": 6.7,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 5.6,
       "PETAL_WIDTH": 2.4,
       "SPECIES": "virginica"
     },
-    "141": {
+    {
       "SEPAL_LENGTH": 6.9,
       "SEPAL_WIDTH": 3.1,
       "PETAL_LENGTH": 5.1,
       "PETAL_WIDTH": 2.3,
       "SPECIES": "virginica"
     },
-    "142": {
+    {
       "SEPAL_LENGTH": 5.8,
       "SEPAL_WIDTH": 2.7,
       "PETAL_LENGTH": 5.1,
       "PETAL_WIDTH": 1.9,
       "SPECIES": "virginica"
     },
-    "143": {
+    {
       "SEPAL_LENGTH": 6.8,
       "SEPAL_WIDTH": 3.2,
       "PETAL_LENGTH": 5.9,
       "PETAL_WIDTH": 2.3,
       "SPECIES": "virginica"
     },
-    "144": {
+    {
       "SEPAL_LENGTH": 6.7,
       "SEPAL_WIDTH": 3.3,
       "PETAL_LENGTH": 5.7,
       "PETAL_WIDTH": 2.5,
       "SPECIES": "virginica"
     },
-    "145": {
+    {
       "SEPAL_LENGTH": 6.7,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 5.2,
       "PETAL_WIDTH": 2.3,
       "SPECIES": "virginica"
     },
-    "146": {
+    {
       "SEPAL_LENGTH": 6.3,
       "SEPAL_WIDTH": 2.5,
-      "PETAL_LENGTH": 5.0,
+      "PETAL_LENGTH": 5,
       "PETAL_WIDTH": 1.9,
       "SPECIES": "virginica"
     },
-    "147": {
+    {
       "SEPAL_LENGTH": 6.5,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 5.2,
-      "PETAL_WIDTH": 2.0,
+      "PETAL_WIDTH": 2,
       "SPECIES": "virginica"
     },
-    "148": {
+    {
       "SEPAL_LENGTH": 6.2,
       "SEPAL_WIDTH": 3.4,
       "PETAL_LENGTH": 5.4,
       "PETAL_WIDTH": 2.3,
       "SPECIES": "virginica"
     },
-    "149": {
+    {
       "SEPAL_LENGTH": 5.9,
-      "SEPAL_WIDTH": 3.0,
+      "SEPAL_WIDTH": 3,
       "PETAL_LENGTH": 5.1,
       "PETAL_WIDTH": 1.8,
       "SPECIES": "virginica"
     }
-  }
+  ]
 }
