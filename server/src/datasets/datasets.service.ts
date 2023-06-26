@@ -16,16 +16,34 @@ export class DatasetsService {
     return this.datasetModel.create({ ...createDatasetDto, owner: ownerId });
   }
 
-  getAvailable(ownerId?: string): Promise<DatasetInfo[]> {
+  getAvailable(ownerId?: string | ObjectId): Promise<DatasetInfo[]> {
     return this.datasetModel.find({ owner: ownerId }, '-data');
   }
 
-  async getById(id: string): Promise<Dataset> {
-    const dataset = await this.datasetModel.findById(id); //.populate('owner').lean();
+  async getById(id: string | ObjectId): Promise<Dataset> {
+    const dataset = await this.datasetModel.findById(id);
     if (!dataset) {
       throw new NotFoundException();
     }
     await dataset.populate('owner');
+    return dataset;
+  }
+
+  async deleteColumn(id: ObjectId, column?: string): Promise<Dataset> {
+    const dataset = await this.datasetModel.findById(id);
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+    // Replace this crap and do it properly after first demo
+    const toRemove = dataset.columns.find(({ name }) => name === column);
+    if (!toRemove) {
+      throw new NotFoundException(`Cannot find column: ${column!}`);
+    }
+    dataset.columns = dataset.columns.filter(({ name }) => name !== column);
+    for (const entry of dataset.data) {
+      delete entry[column!];
+    }
+    await dataset.save();
     return dataset;
   }
 }
