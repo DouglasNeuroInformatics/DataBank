@@ -42,7 +42,7 @@ export const Layout = () => {
       <DesktopSidebar navigation={navigation} />
       <MobileNavbar navigation={navigation} />
       <main className="h-full w-full flex-1 overflow-hidden">
-        <div className="mx-auto h-full w-full max-w-screen-2xl overflow-auto px-3 pb-3 md:px-6 xl:px-12">
+        <div className="mx-auto h-full w-full max-w-screen-2xl overflow-auto px-3 pb-3 sm:px-6 md:px-12 xl:px-24">
           <Outlet />
         </div>
       </main>
