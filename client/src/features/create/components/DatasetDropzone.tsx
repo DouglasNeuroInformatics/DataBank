@@ -2,14 +2,14 @@ import { useCallback, useState } from 'react';
 
 import { DatasetColumnType } from '@databank/types';
 import { Button, useNotificationsStore } from '@douglasneuroinformatics/react-components';
-import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import Papa from 'papaparse';
-import { FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { P, match } from 'ts-pattern';
 import { Simplify } from 'type-fest';
 import { ZodError, z } from 'zod';
+
+import { Dropzone } from './Dropzone';
 
 import { SuspenseFallback } from '@/components';
 import { AnimatedCheckIcon } from '@/components/AnimatedCheckIcon';
@@ -69,26 +69,6 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
   const [result, setResult] = useState<DropzoneResult | { isProcessing: boolean } | null>(null);
   const notifications = useNotificationsStore();
   const { t } = useTranslation();
-
-  const handleDrop = useCallback(
-    (acceptedFiles: File[], rejections: FileRejection[]) => {
-      for (const { file, errors } of rejections) {
-        notifications.addNotification({ type: 'error', message: t('invalidFileError', { filename: file.name }) });
-        console.error(errors);
-      }
-      setFile(acceptedFiles[0]);
-    },
-    [notifications]
-  );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      'text/csv': ['.csv'],
-      'text/plain': ['.csv', '.tsv']
-    },
-    onDrop: handleDrop,
-    maxFiles: 1
-  });
 
   /** Function to validate the structure of the parsed data and infer types */
   const validate = useCallback(async (parsedData: unknown) => {
@@ -185,31 +165,12 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
     }
   }, []);
 
-  console.log(result);
-
   return (
     <div className="w-full sm:max-w-md">
-      <div
-        className="h-64 cursor-pointer rounded-lg border-2 border-dashed border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300"
-        {...getRootProps()}
-      >
+      <div className="h-64 cursor-pointer rounded-lg border-2 border-dashed border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
         <AnimatePresence initial={false} mode="wait">
           {match(result)
-            .with(P.nullish, () => (
-              <motion.div
-                animate={{ opacity: 1 }}
-                className="flex h-full flex-col items-center justify-center"
-                exit={{ opacity: 0 }}
-                initial={{ opacity: 0 }}
-                key="ready"
-              >
-                <CloudArrowUpIcon height={40} width={40} />
-                <p className="mt-1 text-center text-sm">
-                  {file ? file.name : isDragActive ? t('releaseToUpload') : t('dropHere')}
-                </p>
-                <input {...getInputProps()} />
-              </motion.div>
-            ))
+            .with(P.nullish, () => <Dropzone file={file} setFile={setFile} />)
             .with({ isProcessing: P.boolean }, () => (
               <motion.div
                 animate={{ opacity: 1 }}
@@ -218,7 +179,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
                 initial={{ opacity: 0 }}
                 key="processing"
               >
-                <p>Loading</p>
+                <SuspenseFallback />
               </motion.div>
             ))
             .with({ columns: P.any, data: P.any }, (result) => (
