@@ -6,6 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
+import { json } from 'express';
+
 import { AppModule } from './app.module.js';
 import { setupDocs } from './docs.js';
 
@@ -22,7 +24,8 @@ async function bootstrap() {
     defaultVersion: '1',
     type: VersioningType.URI
   });
-  
+  app.use(json({ limit: '50MB' }));
+
   app.useStaticAssets(path.resolve(__dirname, '..', 'public'));
   setupDocs(app);
 
