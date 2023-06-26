@@ -16,7 +16,7 @@ export const CreateDatasetPage = () => {
   const [state, setState] = useState<DropzoneResult | DatasetFormData>();
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-grow flex-col min-h-full">
       <Heading title={t('createDataset')} />
       <AnimatePresence initial={false} mode="wait">
         {match(state)

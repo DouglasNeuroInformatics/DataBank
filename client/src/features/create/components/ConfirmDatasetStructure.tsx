@@ -21,7 +21,7 @@ export interface ConfirmDatasetStructureProps {
 export const ConfirmDatasetStructure = ({ dataset }: ConfirmDatasetStructureProps) => {
   const { t } = useTranslation();
   return (
-    <div className="h-full w-full items-start justify-start space-y-5">
+    <div className="flex h-full w-full flex-grow flex-col items-start justify-start space-y-5">
       <h2 className="text-lg font-medium">Dataset Structure</h2>
       <div>
         <h3 className="mb-3 text-lg">Metadata</h3>
