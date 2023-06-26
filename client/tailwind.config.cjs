@@ -6,7 +6,7 @@ const baseConfig = require('@douglasneuroinformatics/react-components/tailwind.c
 
 const componentLibraryContent = path.join(
   path.dirname(require.resolve('@douglasneuroinformatics/react-components')),
-  '**/*.{ts,tsx}'
+  '**/*.{js,jsx,ts,tsx}'
 );
 
 /** @type {import('tailwindcss').Config} */
