@@ -52,6 +52,10 @@ export class AuthGuard implements CanActivate {
       );
     }
 
+    if (!routeAccess.allowUnverified && !payload.isVerified) {
+      throw new UnauthorizedException('Verification required');
+    }
+    
     // Attach user to request for route handlers
     request.user = Object.assign(request.user ?? {}, payload);
 
