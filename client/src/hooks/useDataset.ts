@@ -17,11 +17,15 @@ export function useDataset<
   const dl = useDownload();
   const [dataset, setDataset] = useState<TData | null>(null);
 
-  useEffect(() => {
+  const revalidate = () => {
     axios
       .get<TData>(`/v1/datasets/${id}`)
       .then((response) => setDataset(response.data))
       .catch(console.error);
+  };
+
+  useEffect(() => {
+    revalidate();
   }, [id]);
 
   const download = useCallback(
@@ -57,8 +61,8 @@ export function useDataset<
   }, [dataset]);
 
   if (!dataset || !table) {
-    return { dataset: null, download: null, table };
+    return { dataset: null, download: null, table, revalidate };
   }
 
-  return { dataset, download, table };
+  return { dataset, download, table, revalidate };
 }

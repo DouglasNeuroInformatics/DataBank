@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { DatasetInfo } from '@databank/types';
@@ -29,7 +29,12 @@ export class DatasetsController {
 
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
   @Get(':id')
-  getById(@Param('id', ParseIdPipe) id: string) {
+  getById(@Param('id', ParseIdPipe) id: ObjectId) {
     return this.datasetsService.getById(id);
+  }
+
+  @Delete(':id/:column')
+  deleteColumn(@Param('id', ParseIdPipe) id: ObjectId, @Param('column') column?: string) {
+    return this.datasetsService.deleteColumn(id, column);
   }
 }
