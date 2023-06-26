@@ -40,7 +40,7 @@ export const Slider = ({ title, children, isOpen, setIsOpen }: SliderProps) => {
                 <div className="flex h-full flex-col overflow-y-scroll bg-slate-50 py-6 shadow-xl dark:bg-slate-800">
                   <div className="px-4 sm:px-6">
                     <div className="flex items-center justify-between">
-                      <Dialog.Title className="text-slate-900 font-semibold">{title}</Dialog.Title>
+                      <Dialog.Title className="text-slate-900 dark:text-slate-100 font-semibold">{title}</Dialog.Title>
                       <button
                         className="text-slate-600 hover:text-slate-500 dark:text-slate-300"
                         type="button"
