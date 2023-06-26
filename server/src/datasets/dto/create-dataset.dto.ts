@@ -1,23 +1,8 @@
-import type { DatasetColumnType, DatasetEntry, DatasetLicense, TDataset, TDatasetColumn } from '@databank/types';
+import type { DatasetEntry, DatasetLicense, TDataset } from '@databank/types';
 import { Type } from 'class-transformer';
-import { ArrayMinSize, IsArray, IsBoolean, IsIn, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { ArrayMinSize, IsArray, IsIn, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
-class DatasetColumnDto<T extends DatasetEntry> implements TDatasetColumn<T> {
-  @IsString()
-  @IsNotEmpty()
-  name: Extract<keyof T, string>;
-
-  @IsString()
-  @IsNotEmpty()
-  description: string;
-
-  @IsBoolean()
-  nullable: boolean;
-
-  @IsString()
-  @IsIn(['FLOAT', 'INTEGER', 'STRING'] satisfies DatasetColumnType[])
-  type: DatasetColumnType;
-}
+import { DatasetColumnDto } from './dataset-column.dto.js';
 
 export class CreateDatasetDto<T extends DatasetEntry = DatasetEntry>
   implements Omit<TDataset<T>, '_id' | 'createdAt' | 'updatedAt' | 'owner'>

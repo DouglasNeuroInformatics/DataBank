@@ -16,11 +16,12 @@ export const ManageDatasetPage = () => {
         <div className="flex gap-3">
           <Button
             className="whitespace-nowrap"
-            label="Contact Owner"
+            label="Add Rows"
             size="sm"
             variant="secondary"
             onClick={() => {
-              window.open(`mailto:${dataset.owner.email}?subject=${encodeURIComponent(dataset.name)}`, '_self');
+              // eslint-disable-next-line no-alert
+              alert('Work in Progress!');
             }}
           />
           <Dropdown
