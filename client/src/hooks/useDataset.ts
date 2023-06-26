@@ -46,6 +46,9 @@ export function useDataset<
       dl(filename, () => {
         return Promise.resolve(unparse(matrix, { delimiter: format === 'TSV' ? '\t' : ',' }));
       });
+      dl(dataset.name + '.dict.csv', () => {
+        return Promise.resolve(unparse(dataset.columns));
+      });
     },
     [dl, dataset]
   );
