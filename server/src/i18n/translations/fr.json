@@ -1,0 +1,23 @@
+{
+  "errors": {
+    "unauthorized": {
+      "invalidCredentials": "Informations d'identification invalides"
+    },
+    "forbidden": {
+      "undefinedCode": "Le code de validation n'est pas défini. Veuillez obtenir un nouveau code de validation.",
+      "incorrectCode": "Le code de validation est incorrect. Veuillez réessayer.",
+      "expiredCode": "Le code de validation a expiré. Veuillez obtenir un nouveau code de validation.",
+      "tooManyAttempts": "Trop de tentatives pour valider ce code. Veuillez demander un nouveau code de validation après le délai d'attente."
+    },
+    "notFound": {
+      "user": "Utilisateur non trouvé"
+    },
+    "internalServerError": {
+      "unknown": "Une erreur inattendue s'est produite"
+    }
+  },
+  "verificationEmail": {
+    "subject": "Banque de données du Douglas : Code de vérification",
+    "body": "Bienvenue à la banque de données du Douglas. Vous trouverez votre code de vérification ci-dessous."
+  }
+}

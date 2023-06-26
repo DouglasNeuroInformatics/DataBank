@@ -1,0 +1,14 @@
+:80 {
+	encode gzip
+	rewrite /api /api/
+
+	handle /api/* {
+		reverse_proxy :5500
+	}
+	
+	handle {
+		root * ./client/dist
+		try_files {path} /index.html
+		file_server
+	}
+}
