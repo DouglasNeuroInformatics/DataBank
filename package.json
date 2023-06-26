@@ -3,12 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "env-cmd turbo run build",
+    "build": "env-cmd -f .env.prod turbo run build",
     "clean": "fd -H -I --prune 'dist|node_modules' --exec rm -rf",
-    "dev": "env-cmd turbo run dev",
+    "dev": "env-cmd -f .env.dev turbo run dev",
     "lint": "turbo run lint",
-    "test": "env-cmd turbo run test",
-    "ws": "env-cmd bash -c 'yarn workspace @databank/$0 ${@:1}'"
+    "test": "env-cmd -f .env.dev turbo run test",
+    "ws": "env-cmd -f .env.dev bash -c 'yarn workspace @databank/$0 ${@:1}'"
   },
   "dependencies": {
     "ts-pattern": "^5.0.1",
