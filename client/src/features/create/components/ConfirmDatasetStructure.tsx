@@ -1,8 +1,11 @@
-import { Button } from '@douglasneuroinformatics/react-components';
+import { Button, useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import { useTranslation } from 'react-i18next';
 import { match } from 'ts-pattern';
+import { ZodError } from 'zod';
 
 import { DatasetFormData } from './DatasetForm';
+
+import { useValidationSchema } from '@/hooks/useValidationSchema';
 
 const DatasetStructureItem = (props: { label: string; value: string }) => {
   const { i18n } = useTranslation();
@@ -14,12 +17,35 @@ const DatasetStructureItem = (props: { label: string; value: string }) => {
   );
 };
 
+export type CreateDatasetData = DatasetFormData & {
+  data: Record<string, string | number>[];
+};
+
 export interface ConfirmDatasetStructureProps {
-  dataset: DatasetFormData;
+  dataset: CreateDatasetData;
+  onSubmit: (data: CreateDatasetData) => void;
 }
 
-export const ConfirmDatasetStructure = ({ dataset }: ConfirmDatasetStructureProps) => {
+export const ConfirmDatasetStructure = ({ dataset, onSubmit }: ConfirmDatasetStructureProps) => {
+  const notifications = useNotificationsStore();
   const { t } = useTranslation();
+
+  const validationSchema = useValidationSchema(dataset);
+
+  const handleSubmit = (dataset: CreateDatasetData) => {
+    try {
+      validationSchema.parse(dataset.data);
+      onSubmit(dataset);
+    } catch (error) {
+      notifications.addNotification({ type: 'error', message: t('schemaValidationFailed') });
+      if (error instanceof ZodError) {
+        console.error(error.format());
+      } else {
+        console.error(error);
+      }
+    }
+  };
+
   return (
     <div className="flex h-full w-full flex-grow flex-col items-start justify-start space-y-5">
       <h2 className="text-lg font-medium">Dataset Structure</h2>
@@ -40,12 +66,12 @@ export const ConfirmDatasetStructure = ({ dataset }: ConfirmDatasetStructureProp
         {dataset.columns.map((column) => (
           <div className="my-3 flex flex-col" key={column.name}>
             <h4 className="italic">{column.name}</h4>
-            <DatasetStructureItem label="Field Description" value={column.description} />
+            <DatasetStructureItem label={t('description')} value={column.description} />
             <DatasetStructureItem label={t('nullable')} value={column.nullable ? t('yes') : t('no')} />
           </div>
         ))}
       </div>
-      <Button label={t('submit')} />
+      <Button label={t('submit')} type="button" onClick={() => handleSubmit(dataset)} />
     </div>
   );
 };

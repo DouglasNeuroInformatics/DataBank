@@ -52,5 +52,6 @@
   "no": "No",
   "datasetName": "Dataset Name",
   "datasetDescription": "Dataset Description",
-  "datasetLicense": "Dataset License"
+  "datasetLicense": "Dataset License",
+  "schemaValidationFailed": "Schema validation failed. Please refer to the browser console for more details."
 }

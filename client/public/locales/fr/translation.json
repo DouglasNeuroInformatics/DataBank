@@ -52,5 +52,6 @@
   "no": "Non",
   "datasetName": "Nom de la base de données",
   "datasetDescription": "Description de la base de données",
-  "datasetLicense": "Licence de la base de données"
+  "datasetLicense": "Licence de la base de données",
+  "schemaValidationFailed": "La validation du schéma a échoué. Veuillez consulter la console du navigateur pour plus de détails."
 }
