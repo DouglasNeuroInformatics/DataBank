@@ -1,5 +1,6 @@
-import { Button, Dropdown } from '@douglasneuroinformatics/react-components';
-import { useParams } from 'react-router-dom';
+import { Button, Dropdown, useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { SuspenseFallback } from '@/components';
 import { DataTable } from '@/components/DataTable';
@@ -8,6 +9,8 @@ import { useDataset } from '@/hooks/useDataset';
 
 export const ManageDatasetPage = () => {
   const params = useParams();
+  const navigate = useNavigate();
+  const notifications = useNotificationsStore();
   const { dataset, download, revalidate } = useDataset(params.id!);
 
   return dataset ? (
@@ -30,6 +33,21 @@ export const ManageDatasetPage = () => {
             size="sm"
             title="Download"
             onSelection={(option) => download(option)}
+          />
+          <Dropdown
+            className="w-min whitespace-nowrap"
+            options={['Delete Dataset']}
+            size="sm"
+            title="More"
+            onSelection={() => {
+              axios
+                .delete(`/v1/datasets/${params.id!}`)
+                .then(() => {
+                  notifications.addNotification({ type: 'success' });
+                  navigate('..');
+                })
+                .catch(console.error);
+            }}
           />
         </div>
       </Heading>
