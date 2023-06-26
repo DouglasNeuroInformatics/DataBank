@@ -29,7 +29,7 @@ export function useDataset<
   }, [id]);
 
   const download = useCallback(
-    (format: 'CSV' | 'TSV') => {
+    (format: 'CSV' | 'TSV' | 'DICT') => {
       if (!dataset) {
         throw new Error(`Expected dataset with ID '${id}' is undefined`);
       }
@@ -42,13 +42,16 @@ export function useDataset<
         }
         matrix.push(row);
       }
-      const filename = dataset.name + '.' + format.toLowerCase();
-      dl(filename, () => {
-        return Promise.resolve(unparse(matrix, { delimiter: format === 'TSV' ? '\t' : ',' }));
-      });
-      dl(dataset.name + '.dict.csv', () => {
-        return Promise.resolve(unparse(dataset.columns));
-      });
+
+      if (format === 'CSV' || format === 'TSV') {
+        dl(dataset.name + '.' + format.toLowerCase(), () => {
+          return Promise.resolve(unparse(matrix, { delimiter: format === 'TSV' ? '\t' : ',' }));
+        });
+      } else if (format === 'DICT') {
+        dl(dataset.name + '.dict.csv', () => {
+          return Promise.resolve(unparse(dataset.columns));
+        });
+      }
     },
     [dl, dataset]
   );

@@ -29,7 +29,7 @@ export const ManageDatasetPage = () => {
           />
           <Dropdown
             className="w-min whitespace-nowrap"
-            options={['CSV', 'TSV']}
+            options={['CSV', 'TSV', 'DICT']}
             size="sm"
             title="Download"
             onSelection={(option) => download(option)}
