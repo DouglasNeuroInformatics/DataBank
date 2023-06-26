@@ -11,7 +11,6 @@ import { ZodError, z } from 'zod';
 
 import { Dropzone } from './Dropzone';
 
-import { SuspenseFallback } from '@/components';
 import { AnimatedCheckIcon } from '@/components/AnimatedCheckIcon';
 
 /**
@@ -66,7 +65,8 @@ export interface DatasetDropzoneProps {
 
 export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDropzoneProps) => {
   const [file, setFile] = useState<File | null>(null);
-  const [result, setResult] = useState<DropzoneResult | { isProcessing: boolean } | null>(null);
+  // const [result, setResult] = useState<DropzoneResult | { isProcessing: boolean } | null>(null);
+  const [result, setResult] = useState<DropzoneResult | null>(null);
   const notifications = useNotificationsStore();
   const { t } = useTranslation();
 
@@ -146,7 +146,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
 
   const handleSubmit = useCallback(async (file: File) => {
     try {
-      setResult({ isProcessing: true });
+      // setResult({ isProcessing: true });
       const parsedData = await parseCSV(file);
       const result = await validate(parsedData);
       setResult(result);
@@ -165,40 +165,39 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
     }
   }, []);
 
+  const [element, key] = match(result)
+    .with(P.nullish, () => [<Dropzone file={file} key="upload" setFile={setFile} />, 'upload'] as const)
+    // .with({ isProcessing: P.boolean }, () => [<SuspenseFallback key="loading" />, 'loading'] as const)
+    .with(
+      { columns: P.any, data: P.any },
+      (result) =>
+        [
+          <AnimatedCheckIcon
+            className="h-12 w-12"
+            key="loading"
+            onComplete={() => {
+              onSubmit(result);
+            }}
+          />,
+          'complete'
+        ] as const
+    )
+    .exhaustive();
+
   return (
     <div className="w-full sm:max-w-md">
       <div className="h-64 cursor-pointer rounded-lg border-2 border-dashed border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
         <AnimatePresence initial={false} mode="wait">
-          {match(result)
-            .with(P.nullish, () => <Dropzone file={file} setFile={setFile} />)
-            .with({ isProcessing: P.boolean }, () => (
-              <motion.div
-                animate={{ opacity: 1 }}
-                className="flex h-full items-center justify-center"
-                exit={{ opacity: 0 }}
-                initial={{ opacity: 0 }}
-                key="processing"
-              >
-                <SuspenseFallback />
-              </motion.div>
-            ))
-            .with({ columns: P.any, data: P.any }, (result) => (
-              <motion.div
-                animate={{ opacity: 1 }}
-                className="flex h-full items-center justify-center"
-                exit={{ opacity: 0 }}
-                initial={{ opacity: 0 }}
-                key="complete"
-              >
-                <AnimatedCheckIcon
-                  className="h-12 w-12"
-                  onComplete={() => {
-                    onSubmit(result);
-                  }}
-                />
-              </motion.div>
-            ))
-            .exhaustive()}
+          <motion.div
+            animate={{ opacity: 1 }}
+            className="flex h-full flex-col items-center justify-center"
+            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            key={key}
+            transition={{ duration: 1 }}
+          >
+            {element}
+          </motion.div>
         </AnimatePresence>
       </div>
       <div className="flex gap-2">
