@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { DatasetInfo } from '@databank/types';
@@ -9,6 +9,7 @@ import { CreateDatasetDto } from './dto/create-dataset.dto.js';
 
 import { UserId } from '@/core/decorators/user-id.decorator.js';
 import { ParseIdPipe } from '@/core/pipes/parse-id.pipe.js';
+import { UpdateDatasetColumnDto } from './dto/dataset-column.dto.js';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })
@@ -31,6 +32,15 @@ export class DatasetsController {
   @Get(':id')
   getById(@Param('id', ParseIdPipe) id: ObjectId) {
     return this.datasetsService.getById(id);
+  }
+
+  @Patch(':id/:column')
+  updateColumn(
+    @Body() dto: UpdateDatasetColumnDto,
+    @Param('id', ParseIdPipe) id: ObjectId,
+    @Param('column') column?: string
+  ) {
+    console.log(id, column, dto);
   }
 
   @Delete(':id/:column')
