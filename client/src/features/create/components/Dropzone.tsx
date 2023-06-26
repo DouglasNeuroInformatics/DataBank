@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 
@@ -36,20 +35,12 @@ export const Dropzone = ({ file, setFile }: DropzoneProps) => {
   });
 
   return (
-    <motion.div
-      animate={{ opacity: 1 }}
-      className="h-full"
-      exit={{ opacity: 0 }}
-      initial={{ opacity: 0 }}
-      key="ready"
-    >
-      <div className="flex h-full flex-col items-center justify-center" {...getRootProps()}>
-        <CloudArrowUpIcon height={40} width={40} />
-        <p className="mt-1 text-center text-sm">
-          {file ? file.name : isDragActive ? t('releaseToUpload') : t('dropHere')}
-        </p>
-        <input {...getInputProps()} />
-      </div>
-    </motion.div>
+    <div className="flex h-full flex-col items-center justify-center" {...getRootProps()}>
+      <CloudArrowUpIcon height={40} width={40} />
+      <p className="mt-1 text-center text-sm">
+        {file ? file.name : isDragActive ? t('releaseToUpload') : t('dropHere')}
+      </p>
+      <input {...getInputProps()} />
+    </div>
   );
 };
