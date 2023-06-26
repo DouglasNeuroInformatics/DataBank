@@ -10,7 +10,7 @@ import { CreateAccountPage, LoginPage, VerifyAccountPage } from './features/auth
 import { CreateDatasetPage } from './features/create';
 import { DashboardPage } from './features/dashboard';
 import { LandingPage } from './features/landing';
-import { ManageDatasetPage, ManageLayout, ManagePage } from './features/manage';
+import { ManageDatasetPage, ManagePage } from './features/manage';
 import { SharedDatasetPage, SharedPage } from './features/shared';
 import { UserPage } from './features/user';
 import { useAuthStore } from './stores/auth-store';
@@ -45,7 +45,7 @@ const AppRoutes = () => {
             <Route path="create">
               <Route index element={<CreateDatasetPage />} />
             </Route>
-            <Route element={<ManageLayout />} path="manage">
+            <Route path="manage">
               <Route index element={<ManagePage />} />
               <Route element={<ManageDatasetPage />} path=":id" />
             </Route>
