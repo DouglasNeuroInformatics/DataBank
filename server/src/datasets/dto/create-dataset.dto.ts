@@ -1,10 +1,26 @@
-import type { DatasetColumn, DatasetData, TDataset } from '@databank/types';
-import { IsNotEmpty, IsNotEmptyObject, IsString } from 'class-validator';
+import type { DatasetColumnType, DatasetEntry, DatasetLicense, TDataset, TDatasetColumn } from '@databank/types';
+import { Type } from 'class-transformer';
+import { ArrayMinSize, IsArray, IsBoolean, IsIn, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
-export class CreateDatasetDto<
-  TColumns extends Record<string, DatasetColumn> = Record<string, DatasetColumn>,
-  TData extends DatasetData<TColumns> = DatasetData<TColumns>
-> implements Omit<TDataset<TColumns>, '_id' | 'createdAt' | 'updatedAt' | 'owner'>
+class DatasetColumnDto<T extends DatasetEntry> implements TDatasetColumn<T> {
+  @IsString()
+  @IsNotEmpty()
+  name: Extract<keyof T, string>;
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @IsBoolean()
+  nullable: boolean;
+
+  @IsString()
+  @IsIn(['FLOAT', 'INTEGER', 'STRING'] satisfies DatasetColumnType[])
+  type: DatasetColumnType;
+}
+
+export class CreateDatasetDto<T extends DatasetEntry = DatasetEntry>
+  implements Omit<TDataset<T>, '_id' | 'createdAt' | 'updatedAt' | 'owner'>
 {
   @IsString()
   @IsNotEmpty()
@@ -15,12 +31,18 @@ export class CreateDatasetDto<
   description: string;
 
   @IsString()
-  @IsNotEmpty()
-  license: string;
+  @IsIn(['PUBLIC_DOMAIN', 'OTHER'] satisfies DatasetLicense[])
+  license: DatasetLicense;
 
-  @IsNotEmptyObject()
-  columns: TColumns;
+  @IsArray()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => DatasetColumnDto<T>)
+  columns: DatasetColumnDto<T>[];
 
-  @IsNotEmptyObject()
-  data: TData;
+  @IsArray()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => Object)
+  data: T[];
 }

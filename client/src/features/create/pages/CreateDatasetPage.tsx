@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import axios from 'axios';
 import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { P, match } from 'ts-pattern';
@@ -12,6 +14,7 @@ import { DatasetForm, DatasetFormData } from '../components/DatasetForm';
 import { Heading } from '@/components/Heading';
 
 export const CreateDatasetPage = () => {
+  const notifications = useNotificationsStore();
   const { t } = useTranslation();
   const [state, setState] = useState<{
     uploadData?: DropzoneResult;
@@ -21,11 +24,11 @@ export const CreateDatasetPage = () => {
     status: 'UPLOAD'
   });
 
-  const handleSubmit = (data: CreateDatasetData) => {
-    alert(JSON.stringify(data));
+  const handleSubmit = async (dataset: CreateDatasetData) => {
+    console.log(dataset);
+    await axios.post('/v1/datasets', dataset);
+    notifications.addNotification({ type: 'success' });
   };
-
-  console.log(state);
 
   return (
     <div className="flex min-h-full flex-grow flex-col">

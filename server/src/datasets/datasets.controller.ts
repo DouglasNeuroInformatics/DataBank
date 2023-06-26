@@ -1,12 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { DatasetInfo } from '@databank/types';
-import { type Request } from 'express';
+import { type ObjectId } from 'mongoose';
 
 import { DatasetsService } from './datasets.service.js';
 import { CreateDatasetDto } from './dto/create-dataset.dto.js';
 
+import { UserId } from '@/core/decorators/user-id.decorator.js';
 import { ParseIdPipe } from '@/core/pipes/parse-id.pipe.js';
 
 @ApiTags('Datasets')
@@ -16,8 +17,8 @@ export class DatasetsController {
 
   @ApiOperation({ summary: 'Create Dataset' })
   @Post()
-  createDataset(@Req() request: Request, @Body() createDatasetDto: CreateDatasetDto) {
-    return this.datasetsService.createDataset(createDatasetDto, request.user);
+  createDataset(@Body() createDatasetDto: CreateDatasetDto, @UserId() ownerId: ObjectId) {
+    return this.datasetsService.createDataset(createDatasetDto, ownerId);
   }
 
   @ApiOperation({ summary: 'Get All Datasets' })
