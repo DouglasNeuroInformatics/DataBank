@@ -19,17 +19,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     const locale = this.i18n.extractLocale(req);
 
-    this.logger.error(exception);
-
     let statusCode: HttpStatus;
     let message: string;
     if (exception instanceof HttpException) {
+      this.logger.log(JSON.stringify(exception, null, 2));
       statusCode = exception.getStatus();
       message = match(exception.getResponse())
         .with(P.string, (res) => res)
         .with({ message: P.string }, (res) => res.message)
         .otherwise(() => this.i18n.translate(locale, 'errors.internalServerError.unknown'));
     } else {
+      this.logger.error(JSON.stringify(exception, null, 2));
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       message = this.i18n.translate(locale, 'errors.internalServerError.unknown');
     }

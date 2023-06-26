@@ -28,7 +28,7 @@ axios.interceptors.response.use(
 
     let message: string;
     if (isAxiosError<ExceptionResponse>(error) && error.response) {
-      message = error.response.data.message;
+      message = `${error.response.status}: ${error.response.statusText}`;
     } else if (error instanceof Error) {
       message = error.message;
     } else {
