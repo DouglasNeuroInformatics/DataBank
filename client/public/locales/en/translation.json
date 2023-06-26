@@ -47,7 +47,10 @@
   "invalidEmptyColumnError": "Invalid column name at index {{index}}: must not be empty string",
   "invalidColumnNameError": "Invalid column name: '{{columnName}}' must contain only letters, numbers, or underscores",
   "unexpectedValue": "Unexpected Value: {{value}}",
-  "required": "Required",
+  "nullable": "Allow Null",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "datasetName": "Dataset Name",
+  "datasetDescription": "Dataset Description",
+  "datasetLicense": "Dataset License"
 }
