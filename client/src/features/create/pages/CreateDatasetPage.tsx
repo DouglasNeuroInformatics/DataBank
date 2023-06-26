@@ -20,21 +20,21 @@ export const CreateDatasetPage = () => {
       <AnimatePresence initial={false} mode="wait">
         {match(state)
           .with(P.nullish, () => (
-            <CreateDatasetStep step="upload">
+            <CreateDatasetStep key="upload" step="upload">
               <DatasetDropzone onSubmit={setState} />
             </CreateDatasetStep>
           ))
           .with({ columns: P.any, data: P.any }, (parsedData) => (
-            <CreateDatasetStep step="form">
+            <CreateDatasetStep key="form" step="form">
               <DatasetForm inferredColumns={parsedData.columns} onSubmit={setState} />
             </CreateDatasetStep>
           ))
           .with({ name: P.string, description: P.string, columns: P.any }, (formData) => (
-            <CreateDatasetStep step="confirm">
+            <CreateDatasetStep key="confirm" step="confirm">
               <div>{JSON.stringify(formData)}</div>
             </CreateDatasetStep>
           ))
-          .exhaustive()}
+          .exhaustive()}56
       </AnimatePresence>
     </div>
   );

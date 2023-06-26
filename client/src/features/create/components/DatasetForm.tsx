@@ -68,15 +68,6 @@ export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => 
               label: t('description'),
               variant: 'long'
             },
-            nullable: {
-              kind: 'binary',
-              label: t('required'),
-              variant: 'radio',
-              options: {
-                t: t('yes'),
-                f: t('no')
-              }
-            },
             type: {
               kind: 'options',
               label: t('dataType'),
@@ -84,6 +75,15 @@ export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => 
                 STRING: t('string'),
                 INTEGER: t('integer'),
                 FLOAT: t('float')
+              }
+            },
+            nullable: {
+              kind: 'binary',
+              label: t('required'),
+              variant: 'radio',
+              options: {
+                t: t('yes'),
+                f: t('no')
               }
             }
           }
