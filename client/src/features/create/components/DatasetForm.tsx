@@ -79,7 +79,7 @@ export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => 
             },
             nullable: {
               kind: 'binary',
-              label: t('required'),
+              label: t('nullable'),
               variant: 'radio',
               options: {
                 t: t('yes'),

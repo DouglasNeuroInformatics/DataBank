@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { P, match } from 'ts-pattern';
 
+import { ConfirmDatasetStructure } from '../components/ConfirmDatasetStructure';
 import { CreateDatasetStep } from '../components/CreateDatasetStep';
 import { DatasetDropzone, DropzoneResult } from '../components/DatasetDropzone';
 import { DatasetForm, DatasetFormData } from '../components/DatasetForm';
@@ -29,12 +30,13 @@ export const CreateDatasetPage = () => {
               <DatasetForm inferredColumns={parsedData.columns} onSubmit={setState} />
             </CreateDatasetStep>
           ))
-          .with({ name: P.string, description: P.string, columns: P.any }, (formData) => (
+          .with({ name: P.string, description: P.string, columns: P.any }, (data) => (
             <CreateDatasetStep key="confirm" step="confirm">
-              <div>{JSON.stringify(formData)}</div>
+              <ConfirmDatasetStructure dataset={data} />
             </CreateDatasetStep>
           ))
-          .exhaustive()}56
+          .exhaustive()}
+        56
       </AnimatePresence>
     </div>
   );

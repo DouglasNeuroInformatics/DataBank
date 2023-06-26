@@ -47,7 +47,10 @@
   "invalidEmptyColumnError": "Nom de colonne non valide à l'index {{index}} : ne doit pas être une chaîne vide",
   "invalidColumnNameError": "Nom de colonne incorrect : '{{columnName}}' ne doit contenir que des lettres, des chiffres ou des traits de soulignement.",
   "unexpectedValue": "Valeur inattendue : {{value}}",
-  "required": "Exigée",
+  "nullable": "Permettre les valeurs nulles",
   "yes": "Oui",
-  "no": "Non"
+  "no": "Non",
+  "datasetName": "Nom de la base de données",
+  "datasetDescription": "Description de la base de données",
+  "datasetLicense": "Licence de la base de données"
 }
