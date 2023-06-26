@@ -4,7 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { P, match } from 'ts-pattern';
 
-import { ConfirmDatasetStructure } from '../components/ConfirmDatasetStructure';
+import { ConfirmDatasetStructure, CreateDatasetData } from '../components/ConfirmDatasetStructure';
 import { CreateDatasetStep } from '../components/CreateDatasetStep';
 import { DatasetDropzone, DropzoneResult } from '../components/DatasetDropzone';
 import { DatasetForm, DatasetFormData } from '../components/DatasetForm';
@@ -13,30 +13,49 @@ import { Heading } from '@/components/Heading';
 
 export const CreateDatasetPage = () => {
   const { t } = useTranslation();
-  const [state, setState] = useState<DropzoneResult | DatasetFormData>();
+  const [state, setState] = useState<{
+    uploadData?: DropzoneResult;
+    formData?: DatasetFormData;
+    status: 'UPLOAD' | 'FORM' | 'CONFIRM';
+  }>({
+    status: 'UPLOAD'
+  });
+
+  const handleSubmit = (data: CreateDatasetData) => {
+    alert(JSON.stringify(data));
+  };
+
+  console.log(state);
 
   return (
-    <div className="flex flex-grow flex-col min-h-full">
+    <div className="flex min-h-full flex-grow flex-col">
       <Heading title={t('createDataset')} />
       <AnimatePresence initial={false} mode="wait">
         {match(state)
-          .with(P.nullish, () => (
+          .with({ status: 'UPLOAD' }, () => (
             <CreateDatasetStep key="upload" step="upload">
-              <DatasetDropzone onSubmit={setState} />
+              <DatasetDropzone
+                onSubmit={(uploadData) => setState((prevState) => ({ ...prevState, uploadData, status: 'FORM' }))}
+              />
             </CreateDatasetStep>
           ))
-          .with({ columns: P.any, data: P.any }, (parsedData) => (
+          .with({ status: 'FORM', uploadData: P.not(P.nullish) }, ({ uploadData }) => (
             <CreateDatasetStep key="form" step="form">
-              <DatasetForm inferredColumns={parsedData.columns} onSubmit={setState} />
+              <DatasetForm
+                inferredColumns={uploadData.columns}
+                onSubmit={(formData) => setState((prevState) => ({ ...prevState, formData, status: 'CONFIRM' }))}
+              />
             </CreateDatasetStep>
           ))
-          .with({ name: P.string, description: P.string, columns: P.any }, (data) => (
-            <CreateDatasetStep key="confirm" step="confirm">
-              <ConfirmDatasetStructure dataset={data} />
-            </CreateDatasetStep>
-          ))
-          .exhaustive()}
-        56
+          .with(
+            { status: 'CONFIRM', uploadData: P.not(P.nullish), formData: P.not(P.nullish) },
+            ({ uploadData, formData }) => (
+              <CreateDatasetStep key="confirm" step="confirm">
+                <ConfirmDatasetStructure dataset={{ ...uploadData, ...formData }} onSubmit={handleSubmit} />
+              </CreateDatasetStep>
+            )
+          )
+          .otherwise(() => null)}
       </AnimatePresence>
     </div>
   );
