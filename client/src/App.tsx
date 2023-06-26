@@ -13,7 +13,7 @@ export const App = () => {
   return (
     <React.Suspense fallback={<SuspenseFallback className="h-screen w-screen" />}>
       <Router />
-      {createPortal(<NotificationHub />, document.body)}
+      {createPortal(<NotificationHub timeout={10000} />, document.body)}
     </React.Suspense>
   );
 };

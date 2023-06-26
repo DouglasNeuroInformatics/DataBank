@@ -6,10 +6,10 @@ import { type ObjectId } from 'mongoose';
 
 import { DatasetsService } from './datasets.service.js';
 import { CreateDatasetDto } from './dto/create-dataset.dto.js';
+import { UpdateDatasetColumnDto } from './dto/dataset-column.dto.js';
 
 import { UserId } from '@/core/decorators/user-id.decorator.js';
 import { ParseIdPipe } from '@/core/pipes/parse-id.pipe.js';
-import { UpdateDatasetColumnDto } from './dto/dataset-column.dto.js';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })
@@ -34,13 +34,18 @@ export class DatasetsController {
     return this.datasetsService.getById(id);
   }
 
+  @Delete(':id')
+  deleteDataset(@Param('id', ParseIdPipe) id: ObjectId) {
+    return this.datasetsService.deleteDataset(id);
+  }
+
   @Patch(':id/:column')
   updateColumn(
     @Body() dto: UpdateDatasetColumnDto,
     @Param('id', ParseIdPipe) id: ObjectId,
     @Param('column') column?: string
   ) {
-    console.log(id, column, dto);
+    return this.datasetsService.updateColumn(dto, id, column);
   }
 
   @Delete(':id/:column')

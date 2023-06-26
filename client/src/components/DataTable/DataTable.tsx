@@ -79,7 +79,7 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
       </div>
       <>
         <Modal open={Boolean(columnToDelete)} title="Delete Column" onClose={() => setColumnToDelete(null)}>
-          <h3>Please confirm that you would like the delete the following column: {columnToDelete}</h3>
+          <h3 className="text-slate-900">Please confirm that you would like the delete the following column: {columnToDelete}</h3>
           <div className="mt-3 flex gap-2">
             <Button
               label="Delete"
@@ -90,7 +90,7 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
                 setColumnToDelete(null);
               }}
             />
-            <Button label="Cancel" type="button" variant="secondary" onClick={() => setColumnToDelete(null)} />
+            <Button className="text-slate-900" label="Cancel" type="button" variant="secondary" onClick={() => setColumnToDelete(null)} />
           </div>
         </Modal>
         <Slider
@@ -106,7 +106,12 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
           <EditColumnForm
             initialValues={dataset.columns.find((item) => item.name === columnToEdit)}
             onSubmit={(data) => {
-              alert(JSON.stringify(data));
+              axios
+                .patch(`/v1/datasets/${dataset._id}/${columnToEdit!}`, data)
+                .then(() => {
+                  notifications.addNotification({ type: 'success' });
+                })
+                .catch(console.error);
             }}
           />
         </Slider>
