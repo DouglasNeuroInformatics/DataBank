@@ -129,3 +129,4 @@ dist
 .pnp.*
 
 .env
+.env.prod
