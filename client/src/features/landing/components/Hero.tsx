@@ -9,7 +9,7 @@ export const Hero = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   return (
-    <section className="flex gap-5">
+    <section className="flex gap-5 text-center xl:text-left">
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className="flex-grow"
@@ -19,12 +19,17 @@ export const Hero = () => {
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 md:text-4xl lg:text-5xl">
           {t('platformName')}
         </h1>
-        <p className="mt-3 w-11/12 text-lg text-slate-600 dark:text-slate-300 sm:text-lg md:mt-5">
+        <p className="mx-auto mt-3 w-11/12 xl:mx-0 text-base text-slate-600 dark:text-slate-300 md:text-lg md:mt-5">
           {t('platformDescription')}
         </p>
-        <div className="mt-5 flex gap-3">
-          <Button label={t('getStarted')} type="button" onClick={() => navigate('/auth/create-account')} />
-          <Button label={t('learnMore')} type="button" variant="secondary" />
+        <div className="mt-5 flex justify-center xl:justify-start gap-3">
+          <Button
+            className="text-sm md:text-base"
+            label={t('getStarted')}
+            type="button"
+            onClick={() => navigate('/auth/create-account')}
+          />
+          <Button className="text-sm md:text-base" label={t('learnMore')} type="button" variant="secondary" />
         </div>
       </motion.div>
       <motion.div

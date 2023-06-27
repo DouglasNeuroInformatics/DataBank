@@ -29,13 +29,13 @@ export const LandingHeader = () => {
             className={clsx(
               'flex max-h-0 w-full flex-col overflow-hidden transition-[max-height] duration-300 md:max-h-fit md:w-auto md:flex-row md:items-center md:space-x-6',
               {
-                'max-h-20': isMobileNavOpen
+                'max-h-24': isMobileNavOpen
               }
             )}
           >
             <Link
               className={clsx(
-                'block px-3 py-2 font-medium',
+                'block p-3 font-medium',
                 i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
               to="/auth/login"
@@ -44,7 +44,7 @@ export const LandingHeader = () => {
             </Link>
             <Link
               className={clsx(
-                'block px-3 py-2 font-medium',
+                'block p-3 font-medium',
                 i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
               to="/auth/create-account"
