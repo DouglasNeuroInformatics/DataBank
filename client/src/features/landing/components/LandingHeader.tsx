@@ -15,7 +15,7 @@ export const LandingHeader = () => {
 
   return (
     <header className="bg-white text-slate-700 shadow dark:bg-slate-800 dark:text-slate-300">
-      <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+      <motion.div animate={{ opacity: 1 }} className="bg-inherit" initial={{ opacity: 0 }} transition={{ duration: 0.5 }}>
         <div className="container flex flex-wrap items-center bg-inherit py-2">
           <Logo className="m-2 mr-10 hidden h-10 w-auto md:block" />
           <button className="m-2 md:hidden" type="button" onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}>
