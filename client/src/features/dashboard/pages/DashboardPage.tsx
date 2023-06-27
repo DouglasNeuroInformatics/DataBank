@@ -48,7 +48,7 @@ export const DashboardPage = () => {
       <Heading title={t('dashboard')} />
       <div>
         <h3 className="mb-1 text-lg font-medium">{t('recentActivity')}</h3>
-        <ul className="divide-y divide-slate-300">
+        <ul className="divide-y divide-slate-300 dark:divide-slate-600">
           {items.map((item) => (
             <li className="py-4" key={item.timestamp}>
               <ActivityCard {...item} />
