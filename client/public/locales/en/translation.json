@@ -53,5 +53,15 @@
   "datasetName": "Dataset Name",
   "datasetDescription": "Dataset Description",
   "datasetLicense": "Dataset License",
-  "schemaValidationFailed": "Schema validation failed. Please refer to the browser console for more details."
+  "schemaValidationFailed": "Schema validation failed. Please refer to the browser console for more details.",
+  "activity.createdDataset": "Created new dataset: {{name}}",
+  "activity.updatedDataset": "Updated dataset: {{name}}",
+  "timeUnit.second": "s",
+  "timeUnit.minute": "m",
+  "timeUnit.hour": "h",
+  "timeUnit.day": "d",
+  "timeUnit.month": "m",
+  "timeUnit.year": "y",
+  "recentActivity": "Recent Activity",
+  "noResultsFound": "No Results Found"
 }

@@ -53,5 +53,15 @@
   "datasetName": "Nom de la base de données",
   "datasetDescription": "Description de la base de données",
   "datasetLicense": "Licence de la base de données",
-  "schemaValidationFailed": "La validation du schéma a échoué. Veuillez consulter la console du navigateur pour plus de détails."
+  "schemaValidationFailed": "La validation du schéma a échoué. Veuillez consulter la console du navigateur pour plus de détails.",
+  "activity.createdDataset": "Création d'une nouvelle base de données : {{name}}",
+  "activity.updatedDataset": "Mise à jour de la base de données : {{name}}",
+  "timeUnit.second": "s",
+  "timeUnit.minute": "m",
+  "timeUnit.hour": "h",
+  "timeUnit.day": "j",
+  "timeUnit.month": "m",
+  "timeUnit.year": "a",
+  "recentActivity": "Activité récente",
+  "noResultsFound": "Aucun résultat trouvé"
 }

@@ -1,4 +1,3 @@
-import { FolderPlusIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 
 import { ActivityCard } from '../components/ActivityCard';
@@ -6,27 +5,56 @@ import { ActivityCard } from '../components/ActivityCard';
 import { Heading } from '@/components/Heading';
 
 const ONE_DAY = 86400000;
+
+const items = [
+  {
+    activity: {
+      kind: 'UPDATED_DATASET',
+      datasetName: 'Iris'
+    },
+    fullName: 'Jane Doe',
+    timestamp: Date.now()
+  },
+  {
+    activity: {
+      kind: 'UPDATED_DATASET',
+      datasetName: 'Iris'
+    },
+    fullName: 'Jane Doe',
+    timestamp: Date.now() - ONE_DAY
+  },
+  {
+    activity: {
+      kind: 'UPDATED_DATASET',
+      datasetName: 'Iris'
+    },
+    fullName: 'Jane Doe',
+    timestamp: Date.now() - ONE_DAY * 2
+  },
+  {
+    activity: {
+      kind: 'CREATED_DATASET',
+      datasetName: 'Iris'
+    },
+    fullName: 'Jane Doe',
+    timestamp: Date.now() - ONE_DAY * 3
+  }
+] as const;
+
 export const DashboardPage = () => {
-  const { i18n } = useTranslation();
+  const { t } = useTranslation();
   return (
     <div>
-      <Heading title="Dashboard" />
+      <Heading title={t('dashboard')} />
       <div>
-        <h3 className="text-lg font-medium mb-5">Recent Activity</h3>
-        <div className="flex flex-col gap-5">
-          <ActivityCard icon={FolderPlusIcon} text="Jane Doe created a new dataset" timestamp={Date.now()} />
-          <ActivityCard icon={FolderPlusIcon} text="Jane Doe created a new dataset" timestamp={Date.now() - ONE_DAY} />
-          <ActivityCard
-            icon={FolderPlusIcon}
-            text="Jane Doe created a new dataset"
-            timestamp={Date.now() - ONE_DAY * 2}
-          />
-          <ActivityCard
-            icon={FolderPlusIcon}
-            text="Jane Doe created a new dataset"
-            timestamp={Date.now() - ONE_DAY * 3}
-          />
-        </div>
+        <h3 className="mb-1 text-lg font-medium">{t('recentActivity')}</h3>
+        <ul className="divide-y divide-slate-300">
+          {items.map((item) => (
+            <li className="py-4" key={item.timestamp}>
+              <ActivityCard {...item} />
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

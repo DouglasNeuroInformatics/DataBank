@@ -84,3 +84,17 @@ export type TDataset<T extends DatasetEntry = DatasetEntry> = Simplify<
     data: T[];
   }
 >;
+
+/** Activity */
+
+export type CreateDatasetActivity = {
+  kind: 'CREATED_DATASET';
+  datasetName: string;
+};
+
+export type UpdateDatasetActivity = {
+  kind: 'UPDATED_DATASET';
+  datasetName: string;
+};
+
+export type Activity = CreateDatasetActivity | UpdateDatasetActivity;

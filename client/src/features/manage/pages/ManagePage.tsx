@@ -46,7 +46,7 @@ export const ManagePage = () => {
           <SuspenseFallback />
         ) : filteredDatasets.length === 0 ? (
           <div>
-            <p>No Results Found</p>
+            <p>{t('noResultsFound')}</p>
           </div>
         ) : (
           <ul className="h-full overflow-x-visible overflow-y-scroll rounded-sm shadow">

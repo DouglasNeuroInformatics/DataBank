@@ -25,7 +25,6 @@ export const CreateDatasetPage = () => {
   });
 
   const handleSubmit = async (dataset: CreateDatasetData) => {
-    console.log(dataset);
     await axios.post('/v1/datasets', dataset);
     notifications.addNotification({ type: 'success' });
   };

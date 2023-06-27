@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { DatasetInfo } from '@databank/types';
 import { SearchBar } from '@douglasneuroinformatics/react-components';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { SuspenseFallback } from '@/components';
@@ -13,6 +14,7 @@ export const SharedPage = () => {
   const navigate = useNavigate();
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>();
   const [searchTerm, setSearchTerm] = useState('');
+  const { t } = useTranslation();
 
   const fetchAvailable = async () => {
     const response = await axios.get<DatasetInfo[]>('/v1/datasets/available');
@@ -32,7 +34,7 @@ export const SharedPage = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <Heading title="Shared Datasets" />
+      <Heading title={t('sharedDatasets')} />
       <SearchBar
         className="mb-3 rounded-sm"
         size="sm"
@@ -44,7 +46,7 @@ export const SharedPage = () => {
           <SuspenseFallback />
         ) : filteredDatasets.length === 0 ? (
           <div>
-            <p>No Results Found</p>
+            <p>{t('noResultsFound')}</p>
           </div>
         ) : (
           <ul className="h-full overflow-x-visible overflow-y-scroll rounded-sm shadow">
