@@ -1,12 +1,10 @@
-import type { DatasetEntry, DatasetLicense, TDataset } from '@databank/types';
+import type { DatasetLicense } from '@databank/types';
 import { Type } from 'class-transformer';
 import { ArrayMinSize, IsArray, IsIn, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 import { DatasetColumnDto } from './dataset-column.dto.js';
 
-export class CreateDatasetDto<T extends DatasetEntry = DatasetEntry>
-  implements Omit<TDataset<T>, '_id' | 'createdAt' | 'updatedAt' | 'owner'>
-{
+export class CreateDatasetDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -22,12 +20,6 @@ export class CreateDatasetDto<T extends DatasetEntry = DatasetEntry>
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  @Type(() => DatasetColumnDto<T>)
-  columns: DatasetColumnDto<T>[];
-
-  @IsArray()
-  @ArrayMinSize(1)
-  @ValidateNested({ each: true })
-  @Type(() => Object)
-  data: T[];
+  @Type(() => DatasetColumnDto)
+  columns: DatasetColumnDto[];
 }

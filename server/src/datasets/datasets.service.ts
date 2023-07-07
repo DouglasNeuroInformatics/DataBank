@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { DatasetColumnType, DatasetEntry, DatasetInfo } from '@databank/types';
@@ -12,8 +12,10 @@ import { Dataset } from './schemas/dataset.schema.js';
 export class DatasetsService {
   constructor(@InjectModel(Dataset.name) private datasetModel: Model<Dataset>) {}
 
-  createDataset(createDatasetDto: CreateDatasetDto, ownerId: ObjectId) {
-    console.log(createDatasetDto, ownerId);
+  async createDataset(createDatasetDto: CreateDatasetDto, ownerId: ObjectId) {
+    if (await this.datasetModel.exists({ name: createDatasetDto.name })) {
+      throw new ConflictException(`Dataset with name '${createDatasetDto.name}' 'already exists`)
+    }
     return this.datasetModel.create({ ...createDatasetDto, owner: ownerId });
   }
 
@@ -39,6 +41,7 @@ export class DatasetsService {
     if (!dataset) {
       throw new NotFoundException();
     }
+
     // Replace this crap and do it properly after first demo
     const index = dataset.columns.findIndex(({ name }) => name === column);
     if (index === -1) {
@@ -72,7 +75,7 @@ export class DatasetsService {
     return dataset;
   }
 
-  mutateTypes(data: DatasetEntry[], column: string, type: DatasetColumnType): DatasetEntry[] {
+  mutateColumn(data: DatasetEntry[], column: string, type: DatasetColumnType): DatasetEntry[] {
     for (let i = 0; i < data.length; i++) {
       const initialValue = data[i][column];
       if (type === 'FLOAT' || type === 'INTEGER') {
