@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@databank/types": "*",
-    "@douglasneuroinformatics/eslint-config": "^1.0.0",
+    "@douglasneuroinformatics/eslint-config": "^1.0.1",
     "@types/node": "^20.5.4",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
