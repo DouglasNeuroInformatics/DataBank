@@ -1,5 +1,5 @@
 {
-  "name": "@databank/client",
+  "name": "@databank/web",
   "version": "0.0.0",
   "private": true,
   "type": "module",
