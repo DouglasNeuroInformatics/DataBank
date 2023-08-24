@@ -7,6 +7,7 @@
     "isolatedModules": true,
     "module": "Node16",
     "moduleResolution": "Node16",
+    "noUncheckedIndexedAccess": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
