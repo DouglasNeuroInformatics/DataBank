@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { TDataset } from '@databank/types';
-import { Button, Modal, useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import { Button, Modal, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 
 import { Slider } from '../Slider';

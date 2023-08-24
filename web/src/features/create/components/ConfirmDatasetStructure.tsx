@@ -1,4 +1,4 @@
-import { Button, useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import { Button, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 import { match } from 'ts-pattern';
 import { ZodError } from 'zod';

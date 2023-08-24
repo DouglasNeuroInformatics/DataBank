@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';

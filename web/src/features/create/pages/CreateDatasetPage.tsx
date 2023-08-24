@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';

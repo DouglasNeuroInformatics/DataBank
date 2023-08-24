@@ -1,4 +1,4 @@
-import { Button, Dropdown, useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import { Button, Dropdown, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 

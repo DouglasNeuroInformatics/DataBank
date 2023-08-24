@@ -1,4 +1,4 @@
-import { Form } from '@douglasneuroinformatics/react-components';
+import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 
 export type CreateAccountData = {

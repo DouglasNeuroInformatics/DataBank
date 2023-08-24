@@ -1,4 +1,4 @@
-import { Button } from '@douglasneuroinformatics/react-components';
+import { Button } from '@douglasneuroinformatics/ui';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -23,11 +23,7 @@ export const Hero = () => {
           {t('platformDescription')}
         </p>
         <div className="mt-5 flex justify-center gap-3 xl:justify-start">
-          <Button
-            label={t('getStarted')}
-            type="button"
-            onClick={() => navigate('/auth/create-account')}
-          />
+          <Button label={t('getStarted')} type="button" onClick={() => navigate('/auth/create-account')} />
           <Button label={t('learnMore')} type="button" variant="secondary" />
         </div>
       </motion.div>

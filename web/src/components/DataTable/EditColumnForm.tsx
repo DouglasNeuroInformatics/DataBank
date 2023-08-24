@@ -1,5 +1,5 @@
 import { DatasetColumnType } from '@databank/types';
-import { Form, FormValues } from '@douglasneuroinformatics/react-components';
+import { Form, FormValues } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 
 export type EditColumnFormData = {

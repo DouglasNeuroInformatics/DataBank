@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { DatasetColumnType } from '@databank/types';
-import { Button, useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import { Button, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import Papa from 'papaparse';
 import { useTranslation } from 'react-i18next';

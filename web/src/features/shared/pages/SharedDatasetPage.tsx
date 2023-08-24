@@ -1,4 +1,4 @@
-import { Button, Dropdown, Table } from '@douglasneuroinformatics/react-components';
+import { Button, Dropdown, Table } from '@douglasneuroinformatics/ui';
 import { useParams } from 'react-router-dom';
 
 import { SuspenseFallback } from '@/components';

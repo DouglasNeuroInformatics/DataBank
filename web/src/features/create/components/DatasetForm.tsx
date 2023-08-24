@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { DatasetEntry, TDataset } from '@databank/types';
-import { Form, FormValues } from '@douglasneuroinformatics/react-components';
+import { Form, FormValues } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 
 import { InferredColumn } from './DatasetDropzone';

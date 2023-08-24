@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { DatasetEntry, TDataset } from '@databank/types';
-import { TableColumn, useDownload } from '@douglasneuroinformatics/react-components';
+import { TableColumn, useDownload } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { unparse } from 'papaparse';
 

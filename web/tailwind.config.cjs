@@ -2,16 +2,17 @@
 
 const path = require('path');
 
-const baseConfig = require('@douglasneuroinformatics/react-components/tailwind.config.cjs');
+const baseConfig = require('@douglasneuroinformatics/ui/tailwind.config.cjs');
 
 const componentLibraryContent = path.join(
-  path.dirname(require.resolve('@douglasneuroinformatics/react-components')),
-  '**/*.{js,jsx,ts,tsx}'
+  path.dirname(require.resolve('@douglasneuroinformatics/ui')),
+  '**/*.{js,cjs,mjs}'
 );
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', componentLibraryContent],
   presets: [baseConfig],
-  darkMode: 'class'
+  darkMode: 'class',
+  plugins: [require('@headlessui/tailwindcss'), require('@tailwindcss/container-queries')]
 };

@@ -1,6 +1,6 @@
 import { ChangeEvent, ClipboardEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 
-import { useNotificationsStore } from '@douglasneuroinformatics/react-components';
+import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { range } from '@douglasneuroinformatics/utils';
 import { clsx } from 'clsx';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { NotificationHub } from '@douglasneuroinformatics/react-components';
+import { NotificationHub } from '@douglasneuroinformatics/ui';
 import { createPortal } from 'react-dom';
 
 import { SuspenseFallback } from './components';
