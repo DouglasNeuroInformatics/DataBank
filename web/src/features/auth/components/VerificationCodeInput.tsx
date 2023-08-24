@@ -90,7 +90,7 @@ export const VerificationCodeInput = ({ className, onComplete }: VerificationCod
           maxLength={1}
           ref={inputRefs[index]}
           type="text"
-          value={digits[index] || ''}
+          value={digits[index] ?? ''}
           onChange={(e) => handleChange(e, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
           onPaste={handlePaste}
