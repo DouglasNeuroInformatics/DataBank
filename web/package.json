@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@douglasneuroinformatics/ui": "^0.1.11",
+    "@douglasneuroinformatics/ui": "^0.1.12",
     "@douglasneuroinformatics/utils": "^0.4.1",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
