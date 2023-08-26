@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { LanguageToggle, Logo, ThemeToggle } from '@/components';
+import { ThemeToggle } from '@douglasneuroinformatics/ui';
+
+import { LanguageToggle, Logo } from '@/components';
 
 export interface AuthLayoutProps {
   title: string;

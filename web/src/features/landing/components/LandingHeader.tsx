@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
+import { ThemeToggle } from '@douglasneuroinformatics/ui';
 import { Bars3Icon } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { LanguageToggle, ThemeToggle } from '@/components';
+import { LanguageToggle} from '@/components';
 import { Logo } from '@/components/Logo';
 
 export const LandingHeader = () => {
