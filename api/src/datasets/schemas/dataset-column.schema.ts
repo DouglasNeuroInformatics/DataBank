@@ -1,19 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import type { DatasetColumnType } from '@databank/types';
+import type { DatasetColumnType, DatasetEntry, TDatasetColumn } from '@databank/types';
 
 @Schema()
-export class DatasetColumn {
-  @Prop({ required: true, unique: true })
-  name: string;
-  
+export class DatasetColumn<T extends DatasetEntry = DatasetEntry> implements TDatasetColumn<T> {
+  @Prop({ required: true, type: String })
+  name: Extract<keyof T, string>;
+
   @Prop({ required: true })
   description: string;
 
   @Prop({ required: true })
   nullable: boolean;
 
-  @Prop({ required: true, type: String, enum: ['FLOAT', 'INTEGER', 'STRING'] satisfies DatasetColumnType[] })
+  @Prop({ required: true, type: String })
   type: DatasetColumnType;
 }
 
