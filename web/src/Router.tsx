@@ -25,7 +25,7 @@ const AppRoutes = () => {
           email: import.meta.env.VITE_DEV_EMAIL,
           password: import.meta.env.VITE_DEV_PASSWORD
         })
-        .then((response) => setAccessToken(response.data.accessToken))
+        .then((response) => { setAccessToken(response.data.accessToken); })
         .catch(console.error);
     }
   }, []);

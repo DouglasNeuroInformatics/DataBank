@@ -5,7 +5,7 @@ import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 
-export interface DropzoneProps {
+export type DropzoneProps = {
   file: File | null;
   setFile: (file: File) => void;
 }

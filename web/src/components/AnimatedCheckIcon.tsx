@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-export interface AnimatedCheckIconProps {
+export type AnimatedCheckIconProps = {
   className: string;
   onComplete?: () => void;
 }

@@ -21,7 +21,7 @@ export type CreateDatasetData = DatasetFormData & {
   data: Record<string, string | number>[];
 };
 
-export interface ConfirmDatasetStructureProps {
+export type ConfirmDatasetStructureProps = {
   dataset: CreateDatasetData;
   onSubmit: (data: CreateDatasetData) => void;
 }
@@ -71,7 +71,7 @@ export const ConfirmDatasetStructure = ({ dataset, onSubmit }: ConfirmDatasetStr
           </div>
         ))}
       </div>
-      <Button label={t('submit')} type="button" onClick={() => handleSubmit(dataset)} />
+      <Button label={t('submit')} type="button" onClick={() => { handleSubmit(dataset); }} />
     </div>
   );
 };

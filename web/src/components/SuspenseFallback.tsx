@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 
-export interface SuspenseFallbackProps {
+export type SuspenseFallbackProps = {
   className?: string;
 }
 

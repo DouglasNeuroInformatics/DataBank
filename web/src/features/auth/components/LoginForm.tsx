@@ -2,7 +2,7 @@ import { LoginCredentials } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 
-export interface LoginFormProps {
+export type LoginFormProps = {
   onSubmit: (credentials: LoginCredentials) => void;
 }
 

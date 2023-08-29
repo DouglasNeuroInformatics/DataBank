@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { ThemeToggle } from '@douglasneuroinformatics/ui';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -9,9 +10,8 @@ import { Slider } from '../Slider';
 import { type NavItem } from './types';
 
 import { Logo } from '@/components';
-import { ThemeToggle } from '@douglasneuroinformatics/ui';
 
-export interface MobileNavbarProps {
+export type MobileNavbarProps = {
   navigation: NavItem[];
 }
 
@@ -25,7 +25,7 @@ export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
         <Link to="/">
           <Logo className="h-12 w-12 fill-slate-100" />
         </Link>
-        <button className="text-slate-300 hover:text-slate-200" onClick={() => setIsOpen(true)}>
+        <button className="text-slate-300 hover:text-slate-200" onClick={() => { setIsOpen(true); }}>
           <Bars3Icon height={32} width={32} />
         </button>
       </div>
@@ -37,7 +37,7 @@ export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
                 className="group flex items-center rounded-md p-2 text-base font-medium text-slate-600 dark:text-slate-300 dark:hover:text-slate-500 [&>svg]:h-6 [&>svg]:w-6"
                 key={item.label}
                 to={item.href}
-                onClick={() => setIsOpen(false)}
+                onClick={() => { setIsOpen(false); }}
               >
                 <item.icon className="h-6 w-6" />
                 <span className="ml-2">{item.label}</span>

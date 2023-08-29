@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-interface CountdownProps {
+type CountdownProps = {
   seconds: number;
 }
 
@@ -15,7 +15,7 @@ export const Countdown = ({ seconds }: CountdownProps) => {
     const timer = setInterval(() => {
       setCount((prevCount) => prevCount - 1);
     }, 1000);
-    return () => clearInterval(timer);
+    return () => { clearInterval(timer); };
   }, [count]);
 
   const formatTime = (time: number) => {

@@ -11,7 +11,7 @@ export type DatasetFormData<T extends DatasetEntry = DatasetEntry> = Omit<
   '_id' | 'createdAt' | 'updatedAt' | 'owner' | 'data'
 >;
 
-export interface DatasetFormProps {
+export type DatasetFormProps = {
   inferredColumns: InferredColumn[];
   onSubmit: (data: DatasetFormData) => void;
 }
@@ -19,7 +19,7 @@ export interface DatasetFormProps {
 export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => {
   const { t } = useTranslation();
 
-  const initialValues: FormValues<DatasetFormData<DatasetEntry>> = useMemo(() => {
+  const initialValues: FormValues<DatasetFormData> = useMemo(() => {
     return {
       name: '',
       description: '',

@@ -7,12 +7,12 @@ import { useTranslation } from 'react-i18next';
 
 const CODE_LENGTH = 6;
 
-interface VerificationCodeInputProps {
+type VerificationCodeInputProps = {
   className?: string;
   onComplete: (code: number) => Promise<void>;
 }
 
-function getUpdatedDigits(digits: Array<number | null>, index: number, value: number | null) {
+function getUpdatedDigits(digits: (number | null)[], index: number, value: number | null) {
   const updatedDigits = [...digits];
   updatedDigits[index] = value;
   return updatedDigits;
@@ -21,7 +21,7 @@ function getUpdatedDigits(digits: Array<number | null>, index: number, value: nu
 export const VerificationCodeInput = ({ className, onComplete }: VerificationCodeInputProps) => {
   const notifications = useNotificationsStore();
   const { t } = useTranslation();
-  const [digits, setDigits] = useState<Array<number | null>>(range(CODE_LENGTH).map(() => null));
+  const [digits, setDigits] = useState<(number | null)[]>(range(CODE_LENGTH).map(() => null));
   const inputRefs = range(6).map(() => useRef<HTMLInputElement>(null));
 
   useEffect(() => {
@@ -91,8 +91,8 @@ export const VerificationCodeInput = ({ className, onComplete }: VerificationCod
           ref={inputRefs[index]}
           type="text"
           value={digits[index] ?? ''}
-          onChange={(e) => handleChange(e, index)}
-          onKeyDown={(e) => handleKeyDown(e, index)}
+          onChange={(e) => { handleChange(e, index); }}
+          onKeyDown={(e) => { handleKeyDown(e, index); }}
           onPaste={handlePaste}
         />
       ))}

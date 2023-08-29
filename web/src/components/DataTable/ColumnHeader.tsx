@@ -3,7 +3,7 @@ import React from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 
-export interface ColumnHeaderProps {
+export type ColumnHeaderProps = {
   label: string;
   field: string;
   width: number;
@@ -35,7 +35,7 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
             as="button"
             className="flex w-full items-center p-2 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150"
             type="button"
-            onClick={() => props.setColumnToEdit(props.field)}
+            onClick={() => { props.setColumnToEdit(props.field); }}
           >
             <PencilSquareIcon className="mr-2" height={16} width={16} />
             Edit
@@ -44,7 +44,7 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
             as="button"
             className="flex w-full items-center p-2 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150"
             type="button"
-            onClick={() => props.setColumnToDelete(props.field)}
+            onClick={() => { props.setColumnToDelete(props.field); }}
           >
             <TrashIcon className="mr-2 text-red-600" height={16} width={16} />
             Delete

@@ -1,12 +1,12 @@
 /// <reference types="vite/client" />
 
-interface ImportMetaEnv {
+type ImportMetaEnv = {
   readonly VITE_API_HOST: string;
   readonly VITE_DEV_EMAIL: string;
   readonly VITE_DEV_PASSWORD: string;
   readonly VITE_DEV_BYPASS_AUTH: 'true' | 'false' | string;
 }
 
-interface ImportMeta {
+type ImportMeta = {
   readonly env: ImportMetaEnv;
 }

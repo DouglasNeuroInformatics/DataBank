@@ -8,7 +8,7 @@ export type CreateAccountData = {
   password: string;
 };
 
-export interface CreateAccountFormProps {
+export type CreateAccountFormProps = {
   onSubmit: (data: CreateAccountData) => void;
 }
 

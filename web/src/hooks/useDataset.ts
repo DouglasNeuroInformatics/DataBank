@@ -20,7 +20,7 @@ export function useDataset<
   const revalidate = () => {
     axios
       .get<TData>(`/v1/datasets/${id}`)
-      .then((response) => setDataset(response.data))
+      .then((response) => { setDataset(response.data); })
       .catch(console.error);
   };
 

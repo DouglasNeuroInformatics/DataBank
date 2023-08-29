@@ -55,7 +55,7 @@ export type DropzoneResult = Simplify<{
   data: Record<string, string | number>[];
 }>;
 
-export interface DatasetDropzoneProps {
+export type DatasetDropzoneProps = {
   /** The maximum file size in bytes (default = 10MB) */
   maxFileSize?: number;
 
