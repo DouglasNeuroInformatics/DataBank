@@ -10,12 +10,21 @@ const __dirname = path.dirname(__filename);
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: parseInt(process.env.WEB_DEV_SERVER_PORT ?? '3000'),
+    proxy: {
+      '/api/': {
+        target: {
+          host: 'localhost',
+          port: parseInt(process.env.API_DEV_SERVER_PORT ?? '5500')
+        },
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
     }
-  },
-  server: {
-    port: process.env.VITE_DEV_SERVER_PORT
   }
 });
