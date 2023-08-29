@@ -36,7 +36,7 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
 
   useLayoutEffect(() => {
     if (ref.current) {
-      setColumnWidth(ref.current?.offsetWidth / Math.min(table.columns.length, 4));
+      setColumnWidth(ref.current.offsetWidth / Math.min(table.columns.length, 4));
     }
   }, [table]);
 
@@ -78,8 +78,16 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
         </div>
       </div>
       <>
-        <Modal open={Boolean(columnToDelete)} title="Delete Column" onClose={() => setColumnToDelete(null)}>
-          <h3 className="text-slate-900">Please confirm that you would like the delete the following column: {columnToDelete}</h3>
+        <Modal
+          open={Boolean(columnToDelete)}
+          title="Delete Column"
+          onClose={() => {
+            setColumnToDelete(null);
+          }}
+        >
+          <h3 className="text-slate-900">
+            Please confirm that you would like the delete the following column: {columnToDelete}
+          </h3>
           <div className="mt-3 flex gap-2">
             <Button
               label="Delete"
@@ -90,7 +98,15 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
                 setColumnToDelete(null);
               }}
             />
-            <Button className="text-slate-900" label="Cancel" type="button" variant="secondary" onClick={() => setColumnToDelete(null)} />
+            <Button
+              className="text-slate-900"
+              label="Cancel"
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setColumnToDelete(null);
+              }}
+            />
           </div>
         </Modal>
         <Slider

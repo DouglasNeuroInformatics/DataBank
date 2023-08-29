@@ -23,7 +23,7 @@ export const CreateAccountPage = () => {
 
   return (
     <AuthLayout title={t('createAccount')}>
-      <CreateAccountForm onSubmit={createAccount} />
+      <CreateAccountForm onSubmit={(data) => void createAccount(data)} />
     </AuthLayout>
   );
 };

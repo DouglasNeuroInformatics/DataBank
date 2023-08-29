@@ -37,7 +37,9 @@ export const CreateDatasetPage = () => {
           .with({ status: 'UPLOAD' }, () => (
             <CreateDatasetStep key="upload" step="upload">
               <DatasetDropzone
-                onSubmit={(uploadData) => setState((prevState) => ({ ...prevState, uploadData, status: 'FORM' }))}
+                onSubmit={(uploadData) => {
+                  setState((prevState) => ({ ...prevState, uploadData, status: 'FORM' }));
+                }}
               />
             </CreateDatasetStep>
           ))
@@ -45,7 +47,9 @@ export const CreateDatasetPage = () => {
             <CreateDatasetStep key="form" step="form">
               <DatasetForm
                 inferredColumns={uploadData.columns}
-                onSubmit={(formData) => setState((prevState) => ({ ...prevState, formData, status: 'CONFIRM' }))}
+                onSubmit={(formData) => {
+                  setState((prevState) => ({ ...prevState, formData, status: 'CONFIRM' }));
+                }}
               />
             </CreateDatasetStep>
           ))
@@ -53,7 +57,10 @@ export const CreateDatasetPage = () => {
             { status: 'CONFIRM', uploadData: P.not(P.nullish), formData: P.not(P.nullish) },
             ({ uploadData, formData }) => (
               <CreateDatasetStep key="confirm" step="confirm">
-                <ConfirmDatasetStructure dataset={{ ...uploadData, ...formData }} onSubmit={handleSubmit} />
+                <ConfirmDatasetStructure
+                  dataset={{ ...uploadData, ...formData }}
+                  onSubmit={(data) => void handleSubmit(data)}
+                />
               </CreateDatasetStep>
             )
           )

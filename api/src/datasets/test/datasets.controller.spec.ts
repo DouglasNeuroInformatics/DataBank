@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { beforeEach, mock, describe, it } from 'node:test';
+import { beforeEach, describe, it, mock } from 'node:test';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -19,11 +19,11 @@ describe('DatasetsController', () => {
         }
       ]
     }).compile();
-    
-    datasetsController= module.get(DatasetsController);
+
+    datasetsController = module.get(DatasetsController);
   });
 
   it('should be defined', () => {
-    assert.strictEqual(true, true)
+    assert(datasetsController);
   });
 });

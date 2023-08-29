@@ -27,7 +27,9 @@ export const SharedDatasetPage = () => {
             options={['CSV', 'TSV', 'DICT']}
             size="sm"
             title="Download"
-            onSelection={(option) => download(option)}
+            onSelection={(option) => {
+              download(option);
+            }}
           />
         </div>
       </Heading>

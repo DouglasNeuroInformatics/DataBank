@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import type { DatasetLicense } from '@databank/types';
+import type { DatasetEntry, DatasetLicense, TDataset } from '@databank/types';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
 import { DatasetColumn, DatasetColumnSchema } from './dataset-column.schema.js';
@@ -15,7 +15,9 @@ import { User } from '@/users/schemas/user.schema.js';
   },
   strict: 'throw'
 })
-export class Dataset {
+export class Dataset<T extends DatasetEntry = DatasetEntry>
+  implements Omit<TDataset<T>, '_id' | 'createdAt' | 'updatedAt'>
+{
   @Prop({ required: true })
   name: string;
 
@@ -29,7 +31,10 @@ export class Dataset {
   license: DatasetLicense;
 
   @Prop({ required: true, type: [DatasetColumnSchema] })
-  columns: DatasetColumn[];
+  columns: DatasetColumn<T>[];
+
+  @Prop({ required: true, type: [Object] })
+  data: T[];
 }
 
 export type DatasetDocument = HydratedDocument<Dataset>;

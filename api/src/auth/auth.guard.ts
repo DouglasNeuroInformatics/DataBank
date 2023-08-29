@@ -35,7 +35,7 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       this.logger.verbose('Request header does not include auth token');
       throw new UnauthorizedException(
-        this.i18n.translate(request.user.locale, 'errors.unauthorized.invalidCredentials')
+        this.i18n.translate(request.user?.locale ?? 'en', 'errors.unauthorized.invalidCredentials')
       );
     }
 
@@ -48,32 +48,37 @@ export class AuthGuard implements CanActivate {
     } catch (error) {
       this.logger.warn('Failed to parse JWT. Potential attacker.');
       throw new UnauthorizedException(
-        this.i18n.translate(request.user.locale, 'errors.unauthorized.invalidCredentials')
+        this.i18n.translate(request.user?.locale, 'errors.unauthorized.invalidCredentials')
       );
     }
 
     if (!routeAccess.allowUnverified && !payload.isVerified) {
       throw new UnauthorizedException('Verification required');
     }
-    
+
     // Attach user to request for route handlers
     request.user = Object.assign(request.user ?? {}, payload);
 
     // Access user permissions
-    return this.isAuthorized(request.user?.role, routeAccess);
+    return this.isAuthorized(request.user.role, routeAccess);
   }
 
   /** Return the permissions required to access the current route */
   private getRouteAccess(context: ExecutionContext): RouteAccessType {
-    return (
-      this.reflector.getAllAndOverride('RouteAccess', [context.getHandler(), context.getClass()]) ?? { role: 'admin' }
-    );
+    const routeAccess = this.reflector.getAllAndOverride<RouteAccessType | undefined>('RouteAccess', [
+      context.getHandler(),
+      context.getClass()
+    ]);
+    return routeAccess ?? { role: 'admin' };
   }
 
   /** Return the access token from the request header, or null if non-existant or malformed */
   private extractTokenFromHeader(request: Request): string | null {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : null;
+    if (type === 'Bearer' && typeof token === 'string') {
+      return token;
+    }
+    return null;
   }
 
   private isAuthorized(role?: UserRole, routeAccess?: ProtectedRouteAccess) {

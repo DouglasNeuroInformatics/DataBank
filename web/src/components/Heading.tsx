@@ -1,11 +1,11 @@
 import { twMerge } from 'tailwind-merge';
 
-export interface HeadingProps {
+export type HeadingProps = {
   title: string;
   subtitle?: string;
   children?: React.ReactNode;
   border?: boolean;
-}
+};
 
 export const Heading = ({ title, subtitle, children, border = true }: HeadingProps) => {
   return (

@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { CurrentUser, Locale } from '@databank/types';
 import { Simplify } from 'type-fest';
 
 declare global {
   namespace Express {
     interface Request {
-      user: Simplify<
+      user?: Simplify<
         CurrentUser & {
-          locale: Locale;
+          locale?: Locale;
         }
       >;
     }

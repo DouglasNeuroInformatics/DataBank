@@ -21,7 +21,9 @@ export const ManagePage = () => {
   useEffect(() => {
     axios
       .get<DatasetInfo[]>(`/v1/datasets/available?owner=${auth.currentUser!.id}`)
-      .then((response) => setAvailableDatasets(response.data))
+      .then((response) => {
+        setAvailableDatasets(response.data);
+      })
       .catch(console.error);
   }, []);
 
@@ -39,7 +41,9 @@ export const ManagePage = () => {
         className="mb-3 rounded-sm"
         size="sm"
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+        }}
       />
       <div className="overflow-hidden">
         {filteredDatasets === null ? (
@@ -52,7 +56,12 @@ export const ManagePage = () => {
           <ul className="h-full overflow-x-visible overflow-y-scroll rounded-sm shadow">
             {filteredDatasets.map((dataset) => (
               <li key={dataset._id}>
-                <DatasetCard dataset={dataset} onClick={({ _id }) => navigate(_id)} />
+                <DatasetCard
+                  dataset={dataset}
+                  onClick={({ _id }) => {
+                    navigate(_id);
+                  }}
+                />
               </li>
             ))}
           </ul>

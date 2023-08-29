@@ -9,6 +9,7 @@ export class AcceptLanguageMiddleware implements NestMiddleware {
   constructor(private readonly i18nService: I18nService) {}
 
   use(req: Request, res: Response, next: NextFunction) {
+    // @ts-expect-error - this is badly designed and will be deleted ASAP
     req.user = Object.assign(req.user ?? {}, {
       locale: this.i18nService.extractLocale(req)
     });

@@ -28,7 +28,7 @@ export const LoginPage = () => {
 
   return (
     <AuthLayout title={t('login')}>
-      <LoginForm onSubmit={login} />
+      <LoginForm onSubmit={(data) => void login(data)} />
     </AuthLayout>
   );
 };

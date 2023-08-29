@@ -20,8 +20,8 @@ void i18n
     supportedLngs: ['en', 'fr'] satisfies Locale[]
   });
 
-i18n.on('languageChanged', async (lang) => {
-  await i18nLib.changeLanguage(lang);
+i18n.on('languageChanged', (lang) => {
+  i18nLib.changeLanguage(lang).catch(console.error);
 });
 
 export default i18n;

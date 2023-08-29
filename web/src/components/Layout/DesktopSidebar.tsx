@@ -1,14 +1,14 @@
+import { ThemeToggle } from '@douglasneuroinformatics/ui';
 import { Link, NavLink } from 'react-router-dom';
 
 import { type NavItem } from './types';
 import { UserDropup } from './UserDropup';
 
 import { Logo } from '@/components';
-import { ThemeToggle } from '@douglasneuroinformatics/ui';
 
-export interface DesktopSidebarProps {
+export type DesktopSidebarProps = {
   navigation: NavItem[];
-}
+};
 
 export const DesktopSidebar = ({ navigation }: DesktopSidebarProps) => {
   return (

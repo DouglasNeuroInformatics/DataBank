@@ -4,10 +4,10 @@ import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/ui';
 
 import { Logo } from '@/components';
 
-export interface AuthLayoutProps {
+export type AuthLayoutProps = {
   title: string;
   children: React.ReactNode;
-}
+};
 
 export const AuthLayout = ({ title, children }: AuthLayoutProps) => {
   return (

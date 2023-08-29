@@ -45,7 +45,9 @@ export const UserDropup = () => {
             <button
               className="block w-full p-2 text-left first-letter:capitalize hover:bg-slate-700"
               type="button"
-              onClick={() => auth.logout()}
+              onClick={() => {
+                auth.logout();
+              }}
             >
               {t('logout')}
             </button>

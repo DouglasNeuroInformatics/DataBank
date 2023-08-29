@@ -20,7 +20,9 @@ export function useDataset<
   const revalidate = () => {
     axios
       .get<TData>(`/v1/datasets/${id}`)
-      .then((response) => setDataset(response.data))
+      .then((response) => {
+        setDataset(response.data);
+      })
       .catch(console.error);
   };
 
@@ -47,6 +49,7 @@ export function useDataset<
         dl(dataset.name + '.' + format.toLowerCase(), () => {
           return Promise.resolve(unparse(matrix, { delimiter: format === 'TSV' ? '\t' : ',' }));
         });
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       } else if (format === 'DICT') {
         dl(dataset.name + '.dict.csv', () => {
           return Promise.resolve(unparse(dataset.columns));
