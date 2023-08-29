@@ -85,11 +85,10 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
 
     const { fields, data } = await parsedDataSchema.parseAsync(parsedData);
     const columns: InferredColumn[] = fields.map((name) => ({ name, type: null }));
-    for (let i = 0; i < fields.length; i++) {
-      const columnName = fields[i];
+    for (const columnName of fields) {
       const column = columns.find(({ name }) => name === columnName)!;
-      for (let j = 0; j < data.length; j++) {
-        const value = data[j][columnName];
+      for (const item of data) {
+        const value = item[columnName];
         column.type = inferType(column.type, value);
         if (column.type === 'STRING') {
           break;
@@ -101,7 +100,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
 
   // If error, promise will reject with error containing internationalized message and details will be logged to stdout
   const parseCSV = useCallback(
-    (file: File): Promise<{ fields: string[]; data: unknown[] }> =>
+    (file?: File): Promise<{ fields: string[]; data: unknown[] }> =>
       new Promise((resolve, reject) => {
         if (!file) {
           console.error('File object must be defined');
@@ -113,7 +112,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
             )
           );
         }
-        Papa.parse(file, {
+        Papa.parse(file!, {
           complete(results) {
             if (results.errors.length > 0) {
               console.error(results.errors);
@@ -206,7 +205,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
           disabled={!file}
           label={t('submit')}
           type="button"
-          onClick={() => handleSubmit(file!)}
+          onClick={() => void handleSubmit(file!)}
         />
         <Button
           className="mt-2 w-full"

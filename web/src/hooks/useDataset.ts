@@ -47,6 +47,7 @@ export function useDataset<
         dl(dataset.name + '.' + format.toLowerCase(), () => {
           return Promise.resolve(unparse(matrix, { delimiter: format === 'TSV' ? '\t' : ',' }));
         });
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       } else if (format === 'DICT') {
         dl(dataset.name + '.dict.csv', () => {
           return Promise.resolve(unparse(dataset.columns));

@@ -51,7 +51,7 @@ export const ActivityCard = ({ fullName, timestamp, activity }: ActivityCardProp
 
   return (
     <div className="flex items-center justify-between space-x-3">
-      <img alt="user picture" className="h-6 w-6 rounded-full" src="https://placehold.co/400" />
+      <img alt="user" className="h-6 w-6 rounded-full" src="https://placehold.co/400" />
       <div className="flex flex-1 flex-col justify-between space-y-1 sm:flex-row">
         <div className="flex-grow space-y-1">
           <h3 className="text-sm font-medium">{fullName}</h3>
