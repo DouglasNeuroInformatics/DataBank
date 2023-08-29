@@ -98,9 +98,9 @@ export class AuthService {
     const maxAttempts = parseInt(this.config.get('MAX_VALIDATION_ATTEMPTS')!);
     if (!maxAttempts) {
       throw new InternalServerErrorException(
-        `Environment variable 'MAX_VALIDATION_ATTEMPTS' must be set to a positive integer, not ${
-          this.config.get('MAX_VALIDATION_ATTEMPTS')!
-        }`
+        `Environment variable 'MAX_VALIDATION_ATTEMPTS' must be set to a positive integer, not ${this.config.get(
+          'MAX_VALIDATION_ATTEMPTS'
+        )!}`
       );
     }
 

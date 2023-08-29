@@ -8,7 +8,7 @@ export type SliderProps = {
   children: React.ReactNode;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-}
+};
 
 export const Slider = ({ title, children, isOpen, setIsOpen }: SliderProps) => {
   return (
@@ -44,7 +44,9 @@ export const Slider = ({ title, children, isOpen, setIsOpen }: SliderProps) => {
                       <button
                         className="text-slate-600 hover:text-slate-500 dark:text-slate-300"
                         type="button"
-                        onClick={() => { setIsOpen(false); }}
+                        onClick={() => {
+                          setIsOpen(false);
+                        }}
                       >
                         <XMarkIcon aria-hidden="true" className="h-6 w-6" />
                       </button>

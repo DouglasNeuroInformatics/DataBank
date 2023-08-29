@@ -9,9 +9,10 @@
   ],
   "scripts": {
     "build": "env-cmd -f .env.prod turbo run build",
+    "check-types": "turbo run check-types",
     "clean": "fd -H -I --prune 'dist|node_modules' --exec rm -rf",
-    "deploy": "./scripts/deploy.sh",
     "dev": "env-cmd -f .env.dev turbo run dev",
+    "format": "turbo run format",
     "lint": "turbo run lint",
     "test": "env-cmd -f .env.dev turbo run test"
   },

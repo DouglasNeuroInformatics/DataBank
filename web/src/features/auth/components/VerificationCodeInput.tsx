@@ -10,7 +10,7 @@ const CODE_LENGTH = 6;
 type VerificationCodeInputProps = {
   className?: string;
   onComplete: (code: number) => Promise<void>;
-}
+};
 
 function getUpdatedDigits(digits: (number | null)[], index: number, value: number | null) {
   const updatedDigits = [...digits];
@@ -91,8 +91,12 @@ export const VerificationCodeInput = ({ className, onComplete }: VerificationCod
           ref={inputRefs[index]}
           type="text"
           value={digits[index] ?? ''}
-          onChange={(e) => { handleChange(e, index); }}
-          onKeyDown={(e) => { handleKeyDown(e, index); }}
+          onChange={(e) => {
+            handleChange(e, index);
+          }}
+          onKeyDown={(e) => {
+            handleKeyDown(e, index);
+          }}
           onPaste={handlePaste}
         />
       ))}

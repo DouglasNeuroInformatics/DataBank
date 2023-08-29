@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 export type AnimatedCheckIconProps = {
   className: string;
   onComplete?: () => void;
-}
+};
 
 export const AnimatedCheckIcon = ({ className, onComplete }: AnimatedCheckIconProps) => (
   <svg

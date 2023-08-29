@@ -61,7 +61,7 @@ export type DatasetDropzoneProps = {
 
   /** Callback to be invoked when the file has been successfully parsed */
   onSubmit: (result: DropzoneResult) => void;
-}
+};
 
 export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDropzoneProps) => {
   const [file, setFile] = useState<File | null>(null);

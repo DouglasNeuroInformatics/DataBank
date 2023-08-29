@@ -14,7 +14,7 @@ export type DatasetFormData<T extends DatasetEntry = DatasetEntry> = Omit<
 export type DatasetFormProps = {
   inferredColumns: InferredColumn[];
   onSubmit: (data: DatasetFormData) => void;
-}
+};
 
 export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => {
   const { t } = useTranslation();

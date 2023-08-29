@@ -24,7 +24,7 @@ export type CreateDatasetData = DatasetFormData & {
 export type ConfirmDatasetStructureProps = {
   dataset: CreateDatasetData;
   onSubmit: (data: CreateDatasetData) => void;
-}
+};
 
 export const ConfirmDatasetStructure = ({ dataset, onSubmit }: ConfirmDatasetStructureProps) => {
   const notifications = useNotificationsStore();
@@ -71,7 +71,13 @@ export const ConfirmDatasetStructure = ({ dataset, onSubmit }: ConfirmDatasetStr
           </div>
         ))}
       </div>
-      <Button label={t('submit')} type="button" onClick={() => { handleSubmit(dataset); }} />
+      <Button
+        label={t('submit')}
+        type="button"
+        onClick={() => {
+          handleSubmit(dataset);
+        }}
+      />
     </div>
   );
 };

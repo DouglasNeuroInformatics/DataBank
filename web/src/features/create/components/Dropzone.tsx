@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 export type DropzoneProps = {
   file: File | null;
   setFile: (file: File) => void;
-}
+};
 
 export const Dropzone = ({ file, setFile }: DropzoneProps) => {
   const notifications = useNotificationsStore();

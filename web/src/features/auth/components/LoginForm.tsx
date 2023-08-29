@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 export type LoginFormProps = {
   onSubmit: (credentials: LoginCredentials) => void;
-}
+};
 
 export const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const { t } = useTranslation();

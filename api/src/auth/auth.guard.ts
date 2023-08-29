@@ -78,7 +78,7 @@ export class AuthGuard implements CanActivate {
     if (type === 'Bearer' && typeof token === 'string') {
       return token;
     }
-    return null
+    return null;
   }
 
   private isAuthorized(role?: UserRole, routeAccess?: ProtectedRouteAccess) {

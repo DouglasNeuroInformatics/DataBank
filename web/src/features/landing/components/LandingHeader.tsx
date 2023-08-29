@@ -23,7 +23,13 @@ export const LandingHeader = () => {
       >
         <div className="container flex flex-wrap items-center bg-inherit py-2">
           <Logo className="m-2 mr-10 hidden h-10 w-auto md:block" />
-          <button className="m-2 md:hidden" type="button" onClick={() => { setIsMobileNavOpen(!isMobileNavOpen); }}>
+          <button
+            className="m-2 md:hidden"
+            type="button"
+            onClick={() => {
+              setIsMobileNavOpen(!isMobileNavOpen);
+            }}
+          >
             <Bars3Icon height={32} width={32} />
           </button>
           <div className="flex flex-grow justify-end gap-3 bg-inherit md:order-last">

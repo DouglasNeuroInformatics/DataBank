@@ -9,7 +9,7 @@ export type ColumnHeaderProps = {
   width: number;
   setColumnToEdit: (column: string) => void;
   setColumnToDelete: (column: string) => void;
-}
+};
 
 export const ColumnHeader = (props: ColumnHeaderProps) => {
   return (
@@ -35,7 +35,9 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
             as="button"
             className="flex w-full items-center p-2 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150"
             type="button"
-            onClick={() => { props.setColumnToEdit(props.field); }}
+            onClick={() => {
+              props.setColumnToEdit(props.field);
+            }}
           >
             <PencilSquareIcon className="mr-2" height={16} width={16} />
             Edit
@@ -44,7 +46,9 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
             as="button"
             className="flex w-full items-center p-2 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150"
             type="button"
-            onClick={() => { props.setColumnToDelete(props.field); }}
+            onClick={() => {
+              props.setColumnToDelete(props.field);
+            }}
           >
             <TrashIcon className="mr-2 text-red-600" height={16} width={16} />
             Delete

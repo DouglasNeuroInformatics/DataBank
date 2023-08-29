@@ -8,7 +8,7 @@ import { Logo } from '@/components';
 
 export type DesktopSidebarProps = {
   navigation: NavItem[];
-}
+};
 
 export const DesktopSidebar = ({ navigation }: DesktopSidebarProps) => {
   return (

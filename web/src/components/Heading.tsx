@@ -5,7 +5,7 @@ export type HeadingProps = {
   subtitle?: string;
   children?: React.ReactNode;
   border?: boolean;
-}
+};
 
 export const Heading = ({ title, subtitle, children, border = true }: HeadingProps) => {
   return (

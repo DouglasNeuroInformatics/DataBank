@@ -10,5 +10,5 @@ declare module 'i18next' {
     resources: {
       translation: typeof translation;
     };
-  }
+  };
 }

@@ -10,7 +10,7 @@ export type CreateAccountData = {
 
 export type CreateAccountFormProps = {
   onSubmit: (data: CreateAccountData) => void;
-}
+};
 
 export const CreateAccountForm = ({ onSubmit }: CreateAccountFormProps) => {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ export const CreateAccountForm = ({ onSubmit }: CreateAccountFormProps) => {
         firstName: { kind: 'text', label: t('firstName'), variant: 'short' },
         lastName: { kind: 'text', label: t('lastName'), variant: 'short' },
         email: { kind: 'text', label: t('email'), variant: 'short' },
-        password: { kind: 'text', label: t('password'), variant: 'password' },
+        password: { kind: 'text', label: t('password'), variant: 'password' }
       }}
       submitBtnLabel={t('submit')}
       validationSchema={{

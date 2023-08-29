@@ -7,7 +7,7 @@ export type AuthStore = {
   setAccessToken: (accessToken: string) => void;
   currentUser: CurrentUser | null;
   logout: () => void;
-}
+};
 
 export const useAuthStore = create<AuthStore>((set) => ({
   accessToken: null,

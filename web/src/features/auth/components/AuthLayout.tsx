@@ -7,7 +7,7 @@ import { Logo } from '@/components';
 export type AuthLayoutProps = {
   title: string;
   children: React.ReactNode;
-}
+};
 
 export const AuthLayout = ({ title, children }: AuthLayoutProps) => {
   return (
