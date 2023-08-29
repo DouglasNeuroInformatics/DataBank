@@ -63,5 +63,15 @@
   "timeUnit.month": "m",
   "timeUnit.year": "a",
   "recentActivity": "Activité récente",
-  "noResultsFound": "Aucun résultat trouvé"
+  "noResultsFound": "Aucun résultat trouvé",
+  "addRows": "Ajouter des lignes",
+  "download": "Télécharger",
+  "more": "En savoir plus",
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "deleteDataset": "Supprimer la base de données",
+  "confirmDeleteColumn": "Veuillez confirmer que vous souhaitez supprimer la colonne suivante : {{columnName}}",
+  "deleteColumn": "Supprimer la colonne",
+  "cancel": "Annuler",
+  "contactOwner": "Contacter le responsable"
 }

@@ -63,5 +63,15 @@
   "timeUnit.month": "m",
   "timeUnit.year": "y",
   "recentActivity": "Recent Activity",
-  "noResultsFound": "No Results Found"
+  "noResultsFound": "No Results Found",
+  "addRows": "Add Rows",
+  "download": "Download",
+  "more": "More",
+  "edit": "Edit",
+  "delete": "Delete",
+  "deleteDataset": "Delete Dataset",
+  "confirmDeleteColumn": "Please confirm that you would like the delete the following column: {{columnName}}",
+  "deleteColumn": "Delete Column",
+  "cancel": "Cancel",
+  "contactOwner": "Contact Owner"
 }
