@@ -1,5 +1,6 @@
 import { Button, Dropdown, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { SuspenseFallback } from '@/components';
@@ -12,6 +13,7 @@ export const ManageDatasetPage = () => {
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
   const { dataset, download, revalidate } = useDataset(params.id!);
+  const { t } = useTranslation();
 
   return dataset ? (
     <div className="flex h-full w-full flex-col">
@@ -19,7 +21,7 @@ export const ManageDatasetPage = () => {
         <div className="flex gap-3">
           <Button
             className="whitespace-nowrap"
-            label="Add Rows"
+            label={t('addRows')}
             size="sm"
             variant="secondary"
             onClick={() => {
@@ -31,16 +33,16 @@ export const ManageDatasetPage = () => {
             className="w-min whitespace-nowrap"
             options={['CSV', 'TSV', 'DICT']}
             size="sm"
-            title="Download"
+            title={t('download')}
             onSelection={(option) => {
               download(option);
             }}
           />
           <Dropdown
             className="w-min whitespace-nowrap"
-            options={['Delete Dataset']}
+            options={[t('deleteDataset')]}
             size="sm"
-            title="More"
+            title={t('more')}
             onSelection={() => {
               axios
                 .delete(`/v1/datasets/${params.id!}`)

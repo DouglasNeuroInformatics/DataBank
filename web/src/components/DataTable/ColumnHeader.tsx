@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 
 export type ColumnHeaderProps = {
   label: string;
@@ -12,6 +13,7 @@ export type ColumnHeaderProps = {
 };
 
 export const ColumnHeader = (props: ColumnHeaderProps) => {
+  const { t } = useTranslation();
   return (
     <Menu as="div" className="relative">
       <Menu.Button
@@ -40,7 +42,7 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
             }}
           >
             <PencilSquareIcon className="mr-2" height={16} width={16} />
-            Edit
+            {t('edit')}
           </Menu.Item>
           <Menu.Item
             as="button"
@@ -51,7 +53,7 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
             }}
           >
             <TrashIcon className="mr-2 text-red-600" height={16} width={16} />
-            Delete
+            {t('delete')}
           </Menu.Item>
         </Menu.Items>
       </Transition>

@@ -3,6 +3,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { TDataset } from '@databank/types';
 import { Button, Modal, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 import { Slider } from '../Slider';
 
@@ -15,6 +16,7 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
   const [columnWidth, setColumnWidth] = useState<number>();
   const [columnToDelete, setColumnToDelete] = useState<string | null>(null);
   const [columnToEdit, setColumnToEdit] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const deleteColumn = (columnName: string) => {
     axios
@@ -80,17 +82,17 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
       <>
         <Modal
           open={Boolean(columnToDelete)}
-          title="Delete Column"
+          title={t('deleteColumn')}
           onClose={() => {
             setColumnToDelete(null);
           }}
         >
-          <h3 className="text-slate-900">
-            Please confirm that you would like the delete the following column: {columnToDelete}
+          <h3 className="text-slate-900 dark:text-slate-100">
+            {t('confirmDeleteColumn', { columnName: columnToDelete })}
           </h3>
           <div className="mt-3 flex gap-2">
             <Button
-              label="Delete"
+              label={t('delete')}
               type="button"
               variant="danger"
               onClick={() => {
@@ -100,7 +102,7 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
             />
             <Button
               className="text-slate-900"
-              label="Cancel"
+              label={t('cancel')}
               type="button"
               variant="secondary"
               onClick={() => {
