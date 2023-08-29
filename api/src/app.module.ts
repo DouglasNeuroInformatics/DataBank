@@ -28,7 +28,7 @@ import { UsersModule } from './users/users.module.js';
         const mongoUri = configService.getOrThrow<string>('MONGO_URI');
         return {
           ignoreUndefined: true,
-          uri: `${mongoUri}/${env}`
+          uri: `${mongoUri}/databank-${env}`
         };
       }
     }),
