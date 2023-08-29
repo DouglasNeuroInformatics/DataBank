@@ -3,7 +3,8 @@ import { Link, NavLink } from 'react-router-dom';
 import { type NavItem } from './types';
 import { UserDropup } from './UserDropup';
 
-import { Logo, ThemeToggle } from '@/components';
+import { Logo } from '@/components';
+import { ThemeToggle } from '@douglasneuroinformatics/ui';
 
 export interface DesktopSidebarProps {
   navigation: NavItem[];

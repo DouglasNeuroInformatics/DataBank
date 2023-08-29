@@ -8,7 +8,8 @@ import { Slider } from '../Slider';
 
 import { type NavItem } from './types';
 
-import { Logo, ThemeToggle } from '@/components';
+import { Logo } from '@/components';
+import { ThemeToggle } from '@douglasneuroinformatics/ui';
 
 export interface MobileNavbarProps {
   navigation: NavItem[];

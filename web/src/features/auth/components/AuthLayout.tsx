@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { LanguageToggle, Logo, ThemeToggle } from '@/components';
+import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/ui';
+
+import { Logo } from '@/components';
 
 export interface AuthLayoutProps {
   title: string;
@@ -15,7 +17,7 @@ export const AuthLayout = ({ title, children }: AuthLayoutProps) => {
         <h1 className="text-2xl font-bold tracking-tight first-letter:capitalize">{title}</h1>
         {children}
         <div className="mt-3 flex w-full justify-between bg-inherit">
-          <LanguageToggle />
+          <LanguageToggle options={['en', 'fr']} />
           <ThemeToggle />
         </div>
       </div>
