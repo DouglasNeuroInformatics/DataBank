@@ -1,5 +1,5 @@
 version: '3'
-name: data-capture
+name: data-bank
 volumes:
   caddy_data:
   mongo_data:
@@ -8,7 +8,7 @@ services:
     image: caddy:2.7-alpine
     restart: unless-stopped
     ports:
-      - "6000:6000"
+      - "6000:80"
     environment:
       - SITE_ADDRESS
     volumes:
