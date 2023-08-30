@@ -1,5 +1,5 @@
 version: '3'
-name: data-bank
+name: databank
 volumes:
   caddy_data:
   mongo_data:
@@ -15,7 +15,7 @@ services:
       - $PWD/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
   api:
-    image: ghcr.io/douglasneuroinformatics/data-bank-api:latest
+    image: ghcr.io/douglasneuroinformatics/databank-api:latest
     build:
       context: .
       dockerfile: ./api/Dockerfile
@@ -34,7 +34,7 @@ services:
     expose:
       - 80
   web:
-    image: ghcr.io/douglasneuroinformatics/data-bank-web:latest
+    image: ghcr.io/douglasneuroinformatics/databank-web:latest
     build:
       context: .
       dockerfile: ./web/Dockerfile
