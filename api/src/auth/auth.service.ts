@@ -58,7 +58,7 @@ export class AuthService {
     // This should never happen when called from controller, but in case it is ever called elsewhere
     const user = await this.usersService.findByEmail(email);
     if (!user) {
-      throw new NotFoundException(this.i18n.translate(locale, 'errors.notFound.user'));
+      throw new NotFoundException('User Not Found');
     }
 
     // If there is an existing, non-expired code, use that since we record attempts for security
@@ -82,17 +82,17 @@ export class AuthService {
     return { attemptsMade: verificationCode.attemptsMade, expiry: verificationCode.expiry };
   }
 
-  async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser, locale?: Locale): Promise<AuthPayload> {
+  async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser): Promise<AuthPayload> {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
-      throw new NotFoundException(this.i18n.translate(locale, 'errors.notFound.user'));
+      throw new NotFoundException('User Not Found');
     } else if (!user.verificationCode) {
-      throw new ForbiddenException(this.i18n.translate(locale, 'errors.forbidden.undefinedCode'));
+      throw new ForbiddenException('Validation code is undefined. Please request a validation code.');
     }
 
     const isExpired = user.verificationCode.expiry < Date.now();
     if (isExpired) {
-      throw new ForbiddenException(this.i18n.translate(locale, 'errors.forbidden.expiredCode'));
+      throw new ForbiddenException('Validation code is expired. Please request a new validation code.');
     }
 
     const maxAttempts = parseInt(this.config.get('MAX_VALIDATION_ATTEMPTS')!);
@@ -105,13 +105,15 @@ export class AuthService {
     }
 
     if (user.verificationCode.attemptsMade > maxAttempts) {
-      throw new ForbiddenException(this.i18n.translate(locale, 'errors.forbidden.tooManyAttempts'));
+      throw new ForbiddenException(
+        'Too many attempts to validate this code. Please request a new validation code after the timeout.'
+      );
     }
 
     if (user.verificationCode.value !== code) {
       user.verificationCode.attemptsMade++;
       await user.save();
-      throw new ForbiddenException(this.i18n.translate(locale, 'errors.forbidden.incorrectCode'));
+      throw new ForbiddenException('Incorrect validation code. Please try again.');
     }
 
     user.verificationCode = undefined;

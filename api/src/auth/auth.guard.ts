@@ -34,9 +34,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       this.logger.verbose('Request header does not include auth token');
-      throw new UnauthorizedException(
-        this.i18n.translate(request.user?.locale ?? 'en', 'errors.unauthorized.invalidCredentials')
-      );
+      throw new UnauthorizedException('Invalid Credentials');
     }
 
     // Validate token and extract payload
@@ -47,9 +45,7 @@ export class AuthGuard implements CanActivate {
       });
     } catch (error) {
       this.logger.warn('Failed to parse JWT. Potential attacker.');
-      throw new UnauthorizedException(
-        this.i18n.translate(request.user?.locale, 'errors.unauthorized.invalidCredentials')
-      );
+      throw new UnauthorizedException('Invalid Credentials');
     }
 
     if (!routeAccess.allowUnverified && !payload.isVerified) {

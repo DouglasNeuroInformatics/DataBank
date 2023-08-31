@@ -41,6 +41,6 @@ export class AuthController {
   @Post('verify')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   verifyAccount(@Req() request: Request, @Body() verifyAccountDto: VerifyAccountDto) {
-    return this.authService.verifyAccount(verifyAccountDto, request.user!, request.user!.locale);
+    return this.authService.verifyAccount(verifyAccountDto, request.user!);
   }
 }
