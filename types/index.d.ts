@@ -98,3 +98,18 @@ export type UpdateDatasetActivity = {
 };
 
 export type Activity = CreateDatasetActivity | UpdateDatasetActivity;
+
+/** Setup */
+
+export type SetupState = {
+  isSetup: boolean | null;
+};
+
+export type SetupOptions = {
+  admin: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+  };
+};
