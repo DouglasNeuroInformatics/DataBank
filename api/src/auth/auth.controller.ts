@@ -19,8 +19,8 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @RouteAccess('public')
-  login(@Body() { email, password }: LoginRequestDto, @Req() request: Request) {
-    return this.authService.login(email, password, request.user!.locale);
+  login(@Body() { email, password }: LoginRequestDto) {
+    return this.authService.login(email, password);
   }
 
   @ApiOperation({ summary: 'Create Account', description: 'Create a new account as a standard user' })
@@ -41,6 +41,6 @@ export class AuthController {
   @Post('verify')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   verifyAccount(@Req() request: Request, @Body() verifyAccountDto: VerifyAccountDto) {
-    return this.authService.verifyAccount(verifyAccountDto, request.user!, request.user!.locale);
+    return this.authService.verifyAccount(verifyAccountDto, request.user!);
   }
 }

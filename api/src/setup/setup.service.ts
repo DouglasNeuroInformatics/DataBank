@@ -5,7 +5,7 @@ import url from 'node:url';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 
-import { TDataset } from '@databank/types';
+import { SetupState, TDataset } from '@databank/types';
 import mongoose from 'mongoose';
 
 import { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
@@ -25,7 +25,7 @@ export class SetupService {
   ) {}
 
   async initApp({ admin }: SetupDto) {
-    if (await this.isInitialized()) {
+    if (await this.isSetup()) {
       throw new ForbiddenException();
     }
     await this.connection.dropDatabase();
@@ -35,7 +35,11 @@ export class SetupService {
     await this.datasetsService.createDataset(iris, user.toObject());
   }
 
-  private async isInitialized() {
+  async getState(): Promise<SetupState> {
+    return { isSetup: await this.isSetup() };
+  }
+
+  private async isSetup() {
     const collections = await this.connection.db.listCollections().toArray();
     for (const collection of collections) {
       const count = await this.connection.collection(collection.name).countDocuments();

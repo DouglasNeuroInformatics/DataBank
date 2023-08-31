@@ -129,7 +129,5 @@ dist
 .pnp.*
 
 .env
-.env.dev
-.env.prod
 
 scripts/

@@ -13,6 +13,5 @@ const componentLibraryContent = path.join(
 module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', componentLibraryContent],
   presets: [baseConfig],
-  darkMode: 'class',
   plugins: [require('@headlessui/tailwindcss'), require('@tailwindcss/container-queries')]
 };
