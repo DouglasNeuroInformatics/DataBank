@@ -33,15 +33,15 @@ export class AuthService {
     private readonly usersService: UsersService
   ) {}
 
-  async login(email: string, password: string, locale?: Locale): Promise<AuthPayload> {
+  async login(email: string, password: string): Promise<AuthPayload> {
     const user = await this.usersService.findByEmail(email).select('+hashedPassword');
     if (!user) {
-      throw new UnauthorizedException(this.i18n.translate(locale, 'errors.unauthorized.invalidCredentials'));
+      throw new UnauthorizedException('Invalid Credentials');
     }
 
     const isCorrectPassword = await bcrypt.compare(password, user.hashedPassword);
     if (!isCorrectPassword) {
-      throw new UnauthorizedException(this.i18n.translate(locale, 'errors.unauthorized.invalidCredentials'));
+      throw new UnauthorizedException('Invalid Credentials');
     }
 
     const accessToken = await this.signToken(user);
