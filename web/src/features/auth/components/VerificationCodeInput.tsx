@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 const CODE_LENGTH = 6;
 
-type VerificationCodeInputProps = {
+type ConfirmEmailCodeInputProps = {
   className?: string;
   onComplete: (code: number) => Promise<void>;
 };
@@ -18,7 +18,7 @@ function getUpdatedDigits(digits: (number | null)[], index: number, value: numbe
   return updatedDigits;
 }
 
-export const VerificationCodeInput = ({ className, onComplete }: VerificationCodeInputProps) => {
+export const ConfirmEmailCodeInput = ({ className, onComplete }: ConfirmEmailCodeInputProps) => {
   const notifications = useNotificationsStore();
   const { t } = useTranslation();
   const [digits, setDigits] = useState<(number | null)[]>(range(CODE_LENGTH).map(() => null));

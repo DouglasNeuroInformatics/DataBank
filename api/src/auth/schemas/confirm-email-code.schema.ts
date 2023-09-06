@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { VerificationProcedureInfo } from '@databank/types';
+import { EmailConfirmationProcedureInfo } from '@databank/types';
 
 @Schema()
-export class VerificationCode implements VerificationProcedureInfo {
+export class ConfirmEmailCode implements EmailConfirmationProcedureInfo {
   /** The number of previous attempts to verify this code */
   @Prop({ required: true })
   attemptsMade: number;
@@ -17,4 +17,4 @@ export class VerificationCode implements VerificationProcedureInfo {
   value: number;
 }
 
-export const VerificationCodeSchema = SchemaFactory.createForClass(VerificationCode);
+export const ConfirmEmailCodeSchema = SchemaFactory.createForClass(ConfirmEmailCode);

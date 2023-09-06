@@ -11,7 +11,7 @@ export class UsersController {
 
   @ApiOperation({
     summary: 'Create User',
-    description: 'Create a user with any permission level without requiring verification'
+    description: 'Create a user with any permission level without requiring email confirmation'
   })
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {

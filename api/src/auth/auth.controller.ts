@@ -30,14 +30,14 @@ export class AuthController {
     return this.authService.createAccount(createAccountDto);
   }
 
-  @ApiOperation({ summary: 'Request Verification Code', description: 'Request a verification code' })
-  @Post('verification-code')
+  @ApiOperation({ summary: 'Request Confirm Cmail Code', description: 'Request a confirm email code' })
+  @Post('confirm-email-code')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
-  sendVerificationCode(@Req() request: Request) {
-    return this.authService.sendVerificationCode(request.user!, request.user!.locale);
+  sendConfirmEmailCode(@Req() request: Request) {
+    return this.authService.sendConfirmEmailCode(request.user!, request.user!.locale);
   }
 
-  @ApiOperation({ summary: 'Verify Account', description: 'Verify an account using a verification code' })
+  @ApiOperation({ summary: 'Verify Account', description: 'Verify an account using a confirm email code' })
   @Post('verify')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   verifyAccount(@Req() request: Request, @Body() verifyAccountDto: VerifyAccountDto) {

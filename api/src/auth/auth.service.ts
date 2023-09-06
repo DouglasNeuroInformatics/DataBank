@@ -10,14 +10,14 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { AuthPayload, CurrentUser, Locale, VerificationProcedureInfo } from '@databank/types';
+import { AuthPayload, CurrentUser, Locale, EmailConfirmationProcedureInfo } from '@databank/types';
 import bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service.js';
 
 import { CreateAccountDto } from './dto/create-account.dto.js';
 import { VerifyAccountDto } from './dto/verify-account.dto.js';
-import { VerificationCode } from './schemas/verification-code.schema.js';
+import { ConfirmEmailCode } from './schemas/confirm-email-code.schema.js';
 
 import { I18nService } from '@/i18n/i18n.service.js';
 import { MailService } from '@/mail/mail.service.js';
@@ -49,12 +49,12 @@ export class AuthService {
     return { accessToken };
   }
 
-  /** Create a new standard account with verification required */
+  /** Create a new standard account with email confirmation required */
   async createAccount(createAccountDto: CreateAccountDto): Promise<User> {
     return this.usersService.createUser({ ...createAccountDto, role: 'standard', isVerified: false });
   }
 
-  async sendVerificationCode({ email }: CurrentUser, locale?: Locale): Promise<VerificationProcedureInfo> {
+  async sendConfirmEmailCode({ email }: CurrentUser, locale?: Locale): Promise<EmailConfirmationProcedureInfo> {
     // This should never happen when called from controller, but in case it is ever called elsewhere
     const user = await this.usersService.findByEmail(email);
     if (!user) {
@@ -62,35 +62,35 @@ export class AuthService {
     }
 
     // If there is an existing, non-expired code, use that since we record attempts for security
-    let verificationCode: VerificationCode;
-    if (user.verificationCode && user.verificationCode.expiry > Date.now()) {
-      verificationCode = user.verificationCode;
+    let confirmEmailCode: ConfirmEmailCode;
+    if (user.confirmEmailCode && user.confirmEmailCode.expiry > Date.now()) {
+      confirmEmailCode = user.confirmEmailCode;
     } else {
-      verificationCode = {
+      confirmEmailCode = {
         attemptsMade: 0,
         expiry: Date.now() + parseInt(this.config.getOrThrow('VALIDATION_TIMEOUT')),
         value: randomInt(100000, 1000000)
       };
-      await user.updateOne({ verificationCode });
+      await user.updateOne({ confirmEmailCode });
     }
 
     await this.mailService.sendMail({
       to: user.email,
-      subject: this.i18n.translate(locale, 'verificationEmail.body'),
-      text: this.i18n.translate(locale, 'verificationEmail.body') + '\n\n' + `Code : ${verificationCode.value}`
+      subject: this.i18n.translate(locale, 'confirmationEmail.body'),
+      text: this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailCode.value}`
     });
-    return { attemptsMade: verificationCode.attemptsMade, expiry: verificationCode.expiry };
+    return { attemptsMade: confirmEmailCode.attemptsMade, expiry: confirmEmailCode.expiry };
   }
 
   async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser): Promise<AuthPayload> {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new NotFoundException('User Not Found');
-    } else if (!user.verificationCode) {
+    } else if (!user.confirmEmailCode) {
       throw new ForbiddenException('Validation code is undefined. Please request a validation code.');
     }
 
-    const isExpired = user.verificationCode.expiry < Date.now();
+    const isExpired = user.confirmEmailCode.expiry < Date.now();
     if (isExpired) {
       throw new ForbiddenException('Validation code is expired. Please request a new validation code.');
     }
@@ -104,19 +104,19 @@ export class AuthService {
       );
     }
 
-    if (user.verificationCode.attemptsMade > maxAttempts) {
+    if (user.confirmEmailCode.attemptsMade > maxAttempts) {
       throw new ForbiddenException(
         'Too many attempts to validate this code. Please request a new validation code after the timeout.'
       );
     }
 
-    if (user.verificationCode.value !== code) {
-      user.verificationCode.attemptsMade++;
+    if (user.confirmEmailCode.value !== code) {
+      user.confirmEmailCode.attemptsMade++;
       await user.save();
       throw new ForbiddenException('Incorrect validation code. Please try again.');
     }
 
-    user.verificationCode = undefined;
+    user.confirmEmailCode = undefined;
     user.verifiedAt = Date.now();
     user.isVerified = true;
 
