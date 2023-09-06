@@ -30,7 +30,7 @@ export type LoginCredentials = {
   password: string;
 };
 
-export type VerificationProcedureInfo = {
+export type EmailConfirmationProcedureInfo = {
   /** The number of previous attempts to verify this code */
   attemptsMade: number;
 

@@ -28,11 +28,11 @@ export class AuthController {
     return this.authService.login(email, password);
   }
 
-  @ApiOperation({ description: 'Request a verification code', summary: 'Request Verification Code' })
-  @Post('verification-code')
+  @ApiOperation({ summary: 'Request Confirm Email Code', description: 'Request a confirm email code' })
+  @Post('confirmation-code')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
-  sendVerificationCode(@Req() request: Request) {
-    return this.authService.sendVerificationCode(request.user!, request.user!.locale);
+  sendConfirmEmailCode(@Req() request: Request) {
+    return this.authService.sendConfirmEmailCode(request.user!, request.user!.locale);
   }
 
   @ApiOperation({ description: 'Verify an account using a verification code', summary: 'Verify Account' })

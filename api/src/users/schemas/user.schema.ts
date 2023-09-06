@@ -2,7 +2,7 @@ import type { TUser, UserRole } from '@databank/types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type HydratedDocument } from 'mongoose';
 
-import { VerificationCode, VerificationCodeSchema } from '@/auth/schemas/verification-code.schema';
+import { ConfirmEmailCode, ConfirmEmailCodeSchema } from '@/auth/schemas/confirm-email-code.schema';
 
 @Schema({
   toObject: {
@@ -37,6 +37,9 @@ export class User implements TUser {
   /** The timestamp when the user verified their email */
   @Prop({ required: false })
   verifiedAt?: number;
+
+  @Prop({ required: false, type: ConfirmEmailCodeSchema })
+  confirmEmailCode?: ConfirmEmailCode;
 }
 
 export type UserDocument = HydratedDocument<User>;
