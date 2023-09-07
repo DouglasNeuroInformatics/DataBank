@@ -2,15 +2,17 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import url from 'node:url';
 
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+
 import type { SetupState, TDataset } from '@databank/types';
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
 
-import { CreateAdminDto, SetupDto } from './dto/setup.dto';
+import { SetupConfig } from './schemas/setup-config.schema';
+import type { CreateAdminDto, SetupDto } from './dto/setup.dto';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,13 +20,32 @@ const __dirname = path.dirname(__filename);
 @Injectable()
 export class SetupService {
   constructor(
+    @InjectModel(SetupConfig.name) private readonly setupConfigModel: Model<SetupConfig>,
     @InjectConnection() private readonly connection: mongoose.Connection,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) {}
-
+  
   private async createAdmin(admin: CreateAdminDto) {
     return this.usersService.createUser({ ...admin, isVerified: true, role: 'admin' });
+  }
+
+  async initApp({ admin, setupConfig }: SetupDto) {
+    if (await this.isSetup()) {
+      throw new ForbiddenException();
+    }
+    await this.connection.dropDatabase();
+    const user = await this.createAdmin(admin);
+
+    const config = new this.setupConfigModel(setupConfig);
+    config.save();
+
+    const iris = await this.loadStarterDataset('iris.json');
+    await this.datasetsService.createDataset(iris, user.toObject());
+  }
+
+  async getState(): Promise<SetupState> {
+    return { isSetup: await this.isSetup() };
   }
 
   private async isSetup() {
@@ -43,18 +64,22 @@ export class SetupService {
     return JSON.parse(content) as TDataset;
   }
 
-  async getState(): Promise<SetupState> {
-    return { isSetup: await this.isSetup() };
+  async getSetupConfig() {
+    const setupConfig = await this.setupConfigModel.findOne();
+    if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
+    return setupConfig;
   }
 
-  async initApp({ admin }: SetupDto) {
-    if (await this.isSetup()) {
-      throw new ForbiddenException();
-    }
-    await this.connection.dropDatabase();
-    const user = await this.createAdmin(admin);
+  /** update the setup config stored in the database, problem: previously verified user will not be affected? 
+   * if there is a change in the verification method
+   */
+  // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
+  //   const setupConfig = await this.setupConfigModel.findOneAndUpdate();
+  //   if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
+  //   return setupConfig;
+  // }
 
-    const iris = await this.loadStarterDataset('iris.json');
-    await this.datasetsService.createDataset(iris, user.toObject());
+  async getVerificationInfo() {
+    return (await this.getSetupConfig()).verificationInfo;
   }
 }

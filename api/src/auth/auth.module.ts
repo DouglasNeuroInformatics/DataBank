@@ -6,10 +6,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { I18nModule } from '@/i18n/i18n.module';
 import { MailModule } from '@/mail/mail.module';
 
-import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { UsersModule } from '@/users/users.module';
+import { SetupModule } from '@/setup/setup.module';
 
 @Module({
   controllers: [AuthController],
@@ -23,7 +24,8 @@ import { AuthService } from './auth.service';
       })
     }),
     MailModule,
-    UsersModule
+    UsersModule,
+    SetupModule
   ],
   providers: [
     AuthService,

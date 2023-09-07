@@ -20,7 +20,8 @@ import { ConfirmEmailCode } from './schemas/confirm-email-code.schema';
 
 import { I18nService } from '@/i18n/i18n.service';
 import { MailService } from '@/mail/mail.service';
-import { User, UserDocument } from '@/users/schemas/user.schema';
+import { User, type UserDocument } from '@/users/schemas/user.schema';
+import { SetupService } from '@/setup/setup.service';
 
 @Injectable()
 export class AuthService {
@@ -123,9 +124,24 @@ export class AuthService {
     }
 
     user.confirmEmailCode = undefined;
-    user.verifiedAt = Date.now();
-    user.isVerified = true;
+    user.isConfirmed = true;
+    user.confirmedAt = Date.now();
 
+    /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
+    const verificationInfo = await this.setupService.getVerificationInfo();
+    if (!verificationInfo) { throw new NotFoundException('Cannot access verification info.')}
+    if (verificationInfo.kind === "VERIFICATION_UPON_CONFIRM_EMAIL") {
+      user.isVerified = true;
+      user.verifiedAt = Date.now();
+    } else if (verificationInfo.kind === "VERIFICATION_WITH_REGEX") {
+      const re = verificationInfo.regex;
+      const emailPatternMatch = re.test(user.email);
+      if (emailPatternMatch) {
+        user.isVerified = true;
+        user.verifiedAt = Date.now();
+      }
+    }
+    
     await user.save();
 
     const accessToken = await this.signToken(user);
