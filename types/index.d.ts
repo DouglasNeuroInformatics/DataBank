@@ -112,4 +112,27 @@ export type SetupOptions = {
     email: string;
     password: string;
   };
+
+  setupConfig: SetupConfig;
 };
+
+export type SetupConfig = {
+  verificationInfo: TVerificationInfo;
+}
+
+/** Verification */
+
+export type VerificationWithRegex = {
+  kind: "VERIFICATION_WITH_REGEX";
+  regex: RegExp;
+}
+
+export type VerificationUponConfirmEmail = {
+  kind: "VERIFICATION_UPON_CONFIRM_EMAIL";
+ }
+
+export type ManualVerification = {
+  kind: "MANUAL_VERIFICATION";
+}
+
+export type TVerificationInfo = VerificationWithRegex | VerificationUponConfirmEmail | ManualVerification;
