@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/swagger';
 
-import { SetupConfig, SetupOptions } from '@databank/types';
+import { TSetupConfig, SetupOptions } from '@databank/types';
 import { Type } from 'class-transformer';
 import { IsNotEmptyObject, ValidateNested } from 'class-validator';
 
@@ -14,5 +14,5 @@ export class SetupDto implements SetupOptions {
   @Type(() => CreateAdminDto)
   admin: CreateAdminDto;
 
-  setupConfig: SetupConfig;
+  setupConfig: TSetupConfig;
 }
