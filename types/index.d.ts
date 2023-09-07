@@ -113,26 +113,26 @@ export type SetupOptions = {
     password: string;
   };
 
-  setupConfig: SetupConfig;
+  setupConfig: TSetupConfig;
 };
 
-export type SetupConfig = {
+export type TSetupConfig = {
   verificationInfo: TVerificationInfo;
 }
 
 /** Verification */
 
-export type VerificationWithRegex = {
+export type TVerificationWithRegex = {
   kind: "VERIFICATION_WITH_REGEX";
   regex: RegExp;
 }
 
-export type VerificationUponConfirmEmail = {
+export type TVerificationUponConfirmEmail = {
   kind: "VERIFICATION_UPON_CONFIRM_EMAIL";
  }
 
-export type ManualVerification = {
+export type TManualVerification = {
   kind: "MANUAL_VERIFICATION";
 }
 
-export type TVerificationInfo = VerificationWithRegex | VerificationUponConfirmEmail | ManualVerification;
+export type TVerificationInfo = TVerificationWithRegex | TVerificationUponConfirmEmail | TManualVerification;
