@@ -2,16 +2,17 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import url from 'node:url';
 
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 
 import { SetupState, TDataset } from '@databank/types';
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 import { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import { UsersService } from '@/users/users.service.js';
+import { SetupConfig } from './schemas/setup-config.schema.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,17 +20,21 @@ const __dirname = path.dirname(__filename);
 @Injectable()
 export class SetupService {
   constructor(
+    @InjectModel(SetupConfig.name) private readonly setupConfigModel: Model<SetupConfig>,
     @InjectConnection() private readonly connection: mongoose.Connection,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) {}
 
-  async initApp({ admin }: SetupDto) {
+  async initApp({ admin, setupConfig }: SetupDto) {
     if (await this.isSetup()) {
       throw new ForbiddenException();
     }
     await this.connection.dropDatabase();
     const user = await this.createAdmin(admin);
+
+    const config = new this.setupConfigModel(setupConfig);
+    config.save();
 
     const iris = await this.loadStarterDataset('iris.json');
     await this.datasetsService.createDataset(iris, user.toObject());
@@ -57,5 +62,24 @@ export class SetupService {
   private async loadStarterDataset(filename: string) {
     const content = await fs.readFile(path.resolve(__dirname, 'resources', filename), 'utf-8');
     return JSON.parse(content) as TDataset;
+  }
+
+  async getSetupConfig() {
+    const setupConfig = await this.setupConfigModel.findOne();
+    if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
+    return setupConfig;
+  }
+
+  /** update the setup config stored in the database, problem: previously verified user will not be affected? 
+   * if there is a change in the verification method
+   */
+  // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
+  //   const setupConfig = await this.setupConfigModel.findOneAndUpdate();
+  //   if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
+  //   return setupConfig;
+  // }
+
+  async getVerificationInfo() {
+    return (await this.getSetupConfig()).verificationInfo;
   }
 }

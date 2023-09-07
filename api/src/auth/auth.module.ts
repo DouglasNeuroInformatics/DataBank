@@ -11,6 +11,7 @@ import { AuthService } from './auth.service.js';
 
 import { I18nModule } from '@/i18n/i18n.module.js';
 import { MailModule } from '@/mail/mail.module.js';
+import { SetupModule } from '@/setup/setup.module.js';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { MailModule } from '@/mail/mail.module.js';
       })
     }),
     MailModule,
-    UsersModule
+    UsersModule,
+    SetupModule
   ],
   controllers: [AuthController],
   providers: [
