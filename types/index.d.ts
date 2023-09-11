@@ -45,8 +45,8 @@ export type TUser = {
   lastName: string;
   email: string;
   role: UserRole;
-  isVerified: boolean;
   verifiedAt?: number;
+  confirmedAt?: number;
 };
 
 /** DATASETS */

@@ -31,12 +31,12 @@ export class User implements TUser {
   @Prop({ required: true, type: String })
   role: UserRole;
 
-  @Prop({ required: false, type: VerificationCodeSchema })
-  verificationCode?: VerificationCode;
-
   /** The timestamp when the user verified their email */
   @Prop({ required: false })
   verifiedAt?: number;
+
+  @Prop({ required: false })
+  confirmedAt?: number;
 
   @Prop({ required: false, type: ConfirmEmailCodeSchema })
   confirmEmailCode?: ConfirmEmailCode;

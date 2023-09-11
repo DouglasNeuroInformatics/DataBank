@@ -1,6 +1,6 @@
 import { randomInt } from 'crypto';
 
-import type { AuthPayload, CurrentUser, Locale } from '@databank/types';
+import type { AuthPayload, CurrentUser, EmailConfirmationProcedureInfo, Locale } from '@databank/types';
 import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 import {
   ForbiddenException,
@@ -21,7 +21,7 @@ import { ConfirmEmailCode } from './schemas/confirm-email-code.schema';
 import { I18nService } from '@/i18n/i18n.service';
 import { MailService } from '@/mail/mail.service';
 import { User, type UserDocument } from '@/users/schemas/user.schema';
-import { SetupService } from '@/setup/setup.service';
+import type { SetupService } from '@/setup/setup.service';
 
 @Injectable()
 export class AuthService {
@@ -31,14 +31,9 @@ export class AuthService {
     private readonly i18n: I18nService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly setupService: SetupService
   ) {}
-
-  private async signToken(user: UserDocument) {
-    const { email, firstName, isVerified, lastName, role } = user;
-    const payload: CurrentUser = { email, firstName, id: user.id as string, isVerified, lastName, role };
-    return this.jwtService.signAsync(payload);
-  }
 
   /** Create a new standard account with verification required */
   async createAccount(createAccountDto: CreateAccountDto): Promise<User> {
@@ -124,20 +119,17 @@ export class AuthService {
     }
 
     user.confirmEmailCode = undefined;
-    user.isConfirmed = true;
     user.confirmedAt = Date.now();
 
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
     const verificationInfo = await this.setupService.getVerificationInfo();
     if (!verificationInfo) { throw new NotFoundException('Cannot access verification info.')}
     if (verificationInfo.kind === "VERIFICATION_UPON_CONFIRM_EMAIL") {
-      user.isVerified = true;
       user.verifiedAt = Date.now();
     } else if (verificationInfo.kind === "VERIFICATION_WITH_REGEX") {
       const re = verificationInfo.regex;
       const emailPatternMatch = re.test(user.email);
       if (emailPatternMatch) {
-        user.isVerified = true;
         user.verifiedAt = Date.now();
       }
     }
@@ -147,5 +139,11 @@ export class AuthService {
     const accessToken = await this.signToken(user);
 
     return { accessToken };
+  }
+
+  private async signToken(user: UserDocument) {
+    const { email, firstName, lastName, role } = user;
+    const payload: CurrentUser = { id: user.id as string, firstName, lastName, email, role };
+    return this.jwtService.signAsync(payload);
   }
 }
