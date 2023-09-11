@@ -13,6 +13,7 @@ import { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import { UsersService } from '@/users/users.service.js';
 import { SetupConfig } from './schemas/setup-config.schema.js';
+import { SetupConfigDto } from './dto/setup-config.dto.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -73,11 +74,12 @@ export class SetupService {
   /** update the setup config stored in the database, problem: previously verified user will not be affected? 
    * if there is a change in the verification method
    */
-  // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
-  //   const setupConfig = await this.setupConfigModel.findOneAndUpdate();
-  //   if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
-  //   return setupConfig;
-  // }
+  private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
+    const setupConfig = await this.setupConfigModel.findOne();
+    if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
+    setupConfig.verificationInfo = setupConfigDto.verificationInfo;
+    setupConfig.save();
+  }
 
   async getVerificationInfo() {
     return (await this.getSetupConfig()).verificationInfo;

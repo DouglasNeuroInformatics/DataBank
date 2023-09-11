@@ -119,20 +119,17 @@ export class AuthService {
     }
 
     user.confirmEmailCode = undefined;
-    user.isConfirmed = true;
     user.confirmedAt = Date.now();
 
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
     const verificationInfo = await this.setupService.getVerificationInfo();
     if (!verificationInfo) { throw new NotFoundException('Cannot access verification info.')}
     if (verificationInfo.kind === "VERIFICATION_UPON_CONFIRM_EMAIL") {
-      user.isVerified = true;
       user.verifiedAt = Date.now();
     } else if (verificationInfo.kind === "VERIFICATION_WITH_REGEX") {
       const re = verificationInfo.regex;
       const emailPatternMatch = re.test(user.email);
       if (emailPatternMatch) {
-        user.isVerified = true;
         user.verifiedAt = Date.now();
       }
     }
@@ -145,8 +142,8 @@ export class AuthService {
   }
 
   private async signToken(user: UserDocument) {
-    const { email, firstName, lastName, role, isVerified } = user;
-    const payload: CurrentUser = { id: user.id as string, firstName, lastName, email, role, isVerified };
+    const { email, firstName, lastName, role } = user;
+    const payload: CurrentUser = { id: user.id as string, firstName, lastName, email, role };
     return this.jwtService.signAsync(payload);
   }
 }

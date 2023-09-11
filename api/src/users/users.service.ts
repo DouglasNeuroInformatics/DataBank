@@ -21,8 +21,8 @@ export class UsersService {
     return this.userModel.create({
       email,
       hashedPassword,
-      isVerified,
-      verifiedAt: isVerified ? Date.now() : undefined,
+      verifiedAt: undefined,
+      confirmedAt: undefined,
       ...rest
     });
   }
