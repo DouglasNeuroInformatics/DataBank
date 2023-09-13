@@ -30,7 +30,7 @@ export class AuthController {
     return this.authService.createAccount(createAccountDto);
   }
 
-  @ApiOperation({ summary: 'Request Confirm Cmail Code', description: 'Request a confirm email code' })
+  @ApiOperation({ summary: 'Request Confirm Email Code', description: 'Request a confirm email code' })
   @Post('confirm-email-code')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   sendConfirmEmailCode(@Req() request: Request) {
