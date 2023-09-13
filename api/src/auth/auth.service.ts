@@ -124,14 +124,10 @@ export class AuthService {
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
     const verificationInfo = await this.setupService.getVerificationInfo();
     if (!verificationInfo) { throw new NotFoundException('Cannot access verification info.')}
-    if (verificationInfo.kind === "VERIFICATION_UPON_CONFIRM_EMAIL") {
+    
+    const isVerified = verificationInfo.kind === "VERIFICATION_UPON_CONFIRM_EMAIL" || (verificationInfo.kind === "VERIFICATION_WITH_REGEX" && verificationInfo.regex.test(user.email))
+    if (isVerified) {
       user.verifiedAt = Date.now();
-    } else if (verificationInfo.kind === "VERIFICATION_WITH_REGEX") {
-      const re = verificationInfo.regex;
-      const emailPatternMatch = re.test(user.email);
-      if (emailPatternMatch) {
-        user.verifiedAt = Date.now();
-      }
     }
     
     await user.save();
