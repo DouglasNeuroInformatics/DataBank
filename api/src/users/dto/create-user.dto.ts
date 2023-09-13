@@ -17,6 +17,7 @@ export class CreateUserDto {
   @IsIn(['admin'] satisfies UserRole[])
   role: UserRole;
 
-  @IsBoolean()
-  isVerified: boolean;
+  verifiedAt: number;
+
+  confirmedAt: number;
 }
