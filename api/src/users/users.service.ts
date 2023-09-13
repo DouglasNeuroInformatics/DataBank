@@ -23,8 +23,6 @@ export class UsersService {
     return this.userModel.create({
       email,
       hashedPassword,
-      verifiedAt: undefined,
-      confirmedAt: undefined,
       ...rest
     });
   }
