@@ -8,7 +8,7 @@ export class VerificationInfo{
     required: true,
     enum: ["VERIFICATION_UPON_CONFIRM_EMAIL", "VERIFICATION_WITH_REGEX", "MANUAL_VERIFICATION"] satisfies TVerificationInfo["kind"][],
   })
-  kind: string;
+  kind: TVerificationInfo["kind"];
 }
 
 export const VerificationInfoSchema = SchemaFactory.createForClass(VerificationInfo);
