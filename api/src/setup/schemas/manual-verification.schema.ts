@@ -6,7 +6,7 @@ import { TManualVerification } from '@databank/types';
 export class ManualVerification implements TManualVerification {
   /** The kind of verification method: manual verification by admin */
   @Prop({ required: true })
-  kind: "MANUAL_VERIFICATION";
+  kind: TManualVerification['kind'];
 }
 
 export const ManualVerificationSchema = SchemaFactory.createForClass(ManualVerification);

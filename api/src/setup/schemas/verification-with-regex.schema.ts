@@ -6,7 +6,7 @@ import { TVerificationWithRegex } from '@databank/types';
 export class VerificationWithRegex implements TVerificationWithRegex {
   /** The kind of verification method: verify with regex */
   @Prop({ required: true })
-  kind: "VERIFICATION_WITH_REGEX";
+  kind: TVerificationWithRegex['kind'];
 
   /** The regex used to match with the user's email pattern */
   @Prop({ required: true })
