@@ -23,6 +23,7 @@ export class UsersService {
     return this.userModel.create({
       email,
       hashedPassword,
+      creationTime : Date.now(),
       ...rest
     });
   }

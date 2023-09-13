@@ -6,7 +6,7 @@ import { IsNotEmptyObject, ValidateNested } from 'class-validator';
 
 import { CreateUserDto } from '@/users/dto/create-user.dto';
 
-export class CreateAdminDto extends OmitType(CreateUserDto, ['role', 'isVerified'] as const) {}
+export class CreateAdminDto extends OmitType(CreateUserDto, ['role', 'verifiedAt'] as const) {}
 
 export class SetupDto implements SetupOptions {
   @IsNotEmptyObject()

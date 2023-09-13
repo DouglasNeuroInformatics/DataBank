@@ -31,15 +31,19 @@ export class User implements TUser {
   @Prop({ required: true, type: String })
   role: UserRole;
 
-  /** The timestamp when the user verified their email */
+  /** The timestamp when the user verified their account */
   @Prop({ required: false })
   verifiedAt?: number;
 
+  /** The timestamp when the user confirmed their email */
   @Prop({ required: false })
   confirmedAt?: number;
 
   @Prop({ required: false, type: ConfirmEmailCodeSchema })
   confirmEmailCode?: ConfirmEmailCode;
+
+  @Prop({ required: false })
+  creationTime?: number | undefined;
 }
 
 export type UserDocument = HydratedDocument<User>;
