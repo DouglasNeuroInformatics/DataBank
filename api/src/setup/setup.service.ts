@@ -71,9 +71,6 @@ export class SetupService {
     return setupConfig;
   }
 
-  /** update the setup config stored in the database, problem: previously verified user will not be affected? 
-   * if there is a change in the verification method
-   */
   private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
     const setupConfig = await this.setupConfigModel.findOne();
     if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
