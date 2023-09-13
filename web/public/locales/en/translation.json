@@ -74,7 +74,7 @@
   "unexpectedError": "An unexpected error occurred",
   "unexpectedValue": "Unexpected Value: {{value}}",
   "validEmail": "Please enter a valid email",
-  "confirmEmailCode": "Confirm Cmail Code",
+  "confirmEmailCode": "Confirm Email Code",
   "verifyAccount": "Check Your Email",
   "yes": "Yes"
 }
