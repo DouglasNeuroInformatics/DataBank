@@ -47,6 +47,7 @@ export type TUser = {
   role: UserRole;
   verifiedAt?: number;
   confirmedAt?: number;
+  creationTime?: number;
 };
 
 /** DATASETS */
