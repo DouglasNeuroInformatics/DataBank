@@ -79,6 +79,10 @@ export class SetupService {
   }
 
   async getVerificationInfo() {
-    return (await this.getSetupConfig()).verificationInfo;
+    const verificationInfo = (await this.getSetupConfig()).verificationInfo;
+    if (!verificationInfo) { 
+      throw new NotFoundException('Cannot access verification info.')
+    }
+    return verificationInfo;
   }
 }

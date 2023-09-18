@@ -12,16 +12,21 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   /** Insert a new user into the database */
-  async createUser({ email, password, ...rest }: CreateUserDto) {
+  async createUser({ email, password, isVerified, verifiedAt,...rest }: CreateUserDto) {
     const exists = await this.userModel.exists({ email });
     if (exists) {
       throw new ConflictException(`User with provided email already exists: ${email}`);
     }
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    if (isVerified) {
+      verifiedAt = Date.now()
+    }
+
     return this.userModel.create({
       email,
       hashedPassword,
-      creationTime : Date.now(),
+      verifiedAt,
       ...rest
     });
   }

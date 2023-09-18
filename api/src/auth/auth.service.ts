@@ -53,7 +53,7 @@ export class AuthService {
 
   /** Create a new standard account with email confirmation required */
   async createAccount(createAccountDto: CreateAccountDto): Promise<User> {
-    return this.usersService.createUser({ ...createAccountDto, role: 'standard', isVerified: false });
+    return this.usersService.createUser({ ...createAccountDto, role: 'standard', verifiedAt: undefined});
   }
 
   async sendConfirmEmailCode({ email }: CurrentUser, locale?: Locale): Promise<EmailConfirmationProcedureInfo> {
@@ -123,8 +123,6 @@ export class AuthService {
 
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
     const verificationInfo = await this.setupService.getVerificationInfo();
-    if (!verificationInfo) { throw new NotFoundException('Cannot access verification info.')}
-    
     const isVerified = verificationInfo.kind === "VERIFICATION_UPON_CONFIRM_EMAIL" || (verificationInfo.kind === "VERIFICATION_WITH_REGEX" && verificationInfo.regex.test(user.email))
     if (isVerified) {
       user.verifiedAt = Date.now();
@@ -138,8 +136,8 @@ export class AuthService {
   }
 
   private async signToken(user: UserDocument) {
-    const { email, firstName, lastName, role } = user;
-    const payload: CurrentUser = { id: user.id as string, firstName, lastName, email, role };
+    const { email, firstName, lastName, role, verifiedAt, confirmedAt } = user;
+    const payload: CurrentUser = { id: user.id as string, firstName, lastName, email, role, verifiedAt, confirmedAt };
     return this.jwtService.signAsync(payload);
   }
 }
