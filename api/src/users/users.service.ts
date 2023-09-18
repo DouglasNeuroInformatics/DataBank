@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
 
   /** Insert a new user into the database */
-  async createUser({ email, isVerified, password, ...rest }: CreateUserDto) {
+  async createUser({ email, password, isVerified, verifiedAt,...rest }: CreateUserDto) {
     const exists = await this.userModel.exists({ email });
     if (exists) {
       throw new ConflictException(`User with provided email already exists: ${email}`);
@@ -23,7 +23,7 @@ export class UsersService {
     return this.userModel.create({
       email,
       hashedPassword,
-      creationTime : Date.now(),
+      verifiedAt,
       ...rest
     });
   }

@@ -22,7 +22,8 @@ export type CurrentUser = {
   firstName: string;
   lastName: string;
   role: UserRole;
-  isVerified: boolean;
+  verifiedAt: number | undefined;
+  confirmedAt: number | undefined;
 };
 
 export type LoginCredentials = {

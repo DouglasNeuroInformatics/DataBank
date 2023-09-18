@@ -41,9 +41,6 @@ export class User implements TUser {
 
   @Prop({ required: false, type: ConfirmEmailCodeSchema })
   confirmEmailCode?: ConfirmEmailCode;
-
-  @Prop({ required: false })
-  creationTime?: number | undefined;
 }
 
 export type UserDocument = HydratedDocument<User>;
