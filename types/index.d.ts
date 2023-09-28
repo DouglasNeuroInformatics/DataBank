@@ -113,3 +113,36 @@ export type SetupOptions = {
     password: string;
   };
 };
+
+/** PROJECTS */
+
+export type ProjectColumnType = 'STRING' | 'FLOAT' | 'INTEGER';
+
+export type ProjectInfo = {
+  _id: string;
+  createdAt: number;
+  updatedAt: number;
+  name: string;
+  description: string;
+  externalId?: string;
+  expiry: number;
+  users: TUser[];
+};
+
+export type ProjectEntry = {
+  [key: string]: string | number;
+};
+
+export type TProjectColumn<T extends ProjectEntry = ProjectEntry> = {
+  name: Extract<keyof T, string>;
+  description: string;
+  nullable: boolean;
+  type: ProjectColumnType;
+};
+
+export type TProject<T extends ProjectEntry = ProjectEntry> = Simplify<
+  ProjectInfo & {
+    columns: TProjectColumn<T>[];
+    data: T[];
+  }
+>;
