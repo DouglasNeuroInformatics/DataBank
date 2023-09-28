@@ -9,6 +9,7 @@ import { AcceptLanguageMiddleware } from './core/middleware/accept-language.midd
 import { LoggerMiddleware } from './core/middleware/logger.middleware.js';
 import { DatasetsModule } from './datasets/datasets.module.js';
 import { I18nModule } from './i18n/i18n.module.js';
+import { ProjectsModule } from './projects/projects.module.js';
 import { SetupModule } from './setup/setup.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -36,7 +37,8 @@ import { UsersModule } from './users/users.module.js';
       ttl: 60,
       limit: 100
     }),
-    UsersModule
+    UsersModule,
+    ProjectsModule
   ],
   providers: [
     {
