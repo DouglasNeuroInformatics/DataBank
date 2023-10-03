@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import bcrypt from 'bcrypt';
+import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 import { Model } from 'mongoose';
 
 import { CreateUserDto } from './dto/create-user.dto.js';
@@ -9,7 +9,10 @@ import { User } from './schemas/user.schema.js';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly cryptoService: CryptoService
+  ) {}
 
   /** Insert a new user into the database */
   async createUser({ email, password, isVerified, ...rest }: CreateUserDto) {
@@ -17,7 +20,7 @@ export class UsersService {
     if (exists) {
       throw new ConflictException(`User with provided email already exists: ${email}`);
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = this.cryptoService.hash(password);
     return this.userModel.create({
       email,
       hashedPassword,

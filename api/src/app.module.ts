@@ -4,6 +4,8 @@ import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
+import { CryptoModule } from '@douglasneuroinformatics/nestjs/modules';
+
 import { AuthModule } from './auth/auth.module.js';
 import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware.js';
 import { LoggerMiddleware } from './core/middleware/logger.middleware.js';
@@ -17,6 +19,13 @@ import { UsersModule } from './users/users.module.js';
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true
+    }),
+    CryptoModule.registerAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secretKey: configService.getOrThrow('SECRET_KEY')
+      })
     }),
     DatasetsModule,
     I18nModule,

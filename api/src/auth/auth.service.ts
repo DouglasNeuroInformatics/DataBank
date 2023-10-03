@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { AuthPayload, CurrentUser, Locale, VerificationProcedureInfo } from '@databank/types';
-import bcrypt from 'bcrypt';
+import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 
 import { UsersService } from '../users/users.service.js';
 
@@ -27,6 +27,7 @@ import { User, UserDocument } from '@/users/schemas/user.schema.js';
 export class AuthService {
   constructor(
     private readonly config: ConfigService,
+    private readonly crypto: CryptoService,
     private readonly i18n: I18nService,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
@@ -39,7 +40,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Credentials');
     }
 
-    const isCorrectPassword = await bcrypt.compare(password, user.hashedPassword);
+    const isCorrectPassword = await this.crypto.comparePassword(password, user.hashedPassword);
     if (!isCorrectPassword) {
       throw new UnauthorizedException('Invalid Credentials');
     }
