@@ -16,17 +16,12 @@
     "lint": "turbo run lint",
     "test": "env-cmd turbo run test"
   },
-  "dependencies": {
-    "ts-pattern": "^5.0.5",
-    "type-fest": "^4.3.1",
-    "zod": "^3.22.2"
-  },
   "devDependencies": {
-    "@databank/types": "*",
+    "@databank/types": "workspace:*",
     "@douglasneuroinformatics/eslint-config": "^1.1.0",
-    "@types/node": "^20.5.7",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
+    "bun-types": "^1.0.4-canary.20231003T140149",
     "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
     "eslint": "^8.48.0",
@@ -37,10 +32,5 @@
     "prettier": "^3.0.3",
     "turbo": "^1.10.13",
     "typescript": "^5.2.2"
-  },
-  "packageManager": "npm@9.6.7",
-  "engines": {
-    "node": ">=20.0.0 <21.0.0",
-    "npm": ">=9.0.0 <10.0.0"
   }
 }
