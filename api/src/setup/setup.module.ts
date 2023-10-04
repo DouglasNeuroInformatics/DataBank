@@ -3,12 +3,21 @@ import { Module } from '@nestjs/common';
 import { DatasetsModule } from '@/datasets/datasets.module';
 import { UsersModule } from '@/users/users.module';
 
-import { SetupController } from './setup.controller';
-import { SetupService } from './setup.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { SetupConfig, SetupConfigSchema } from './schemas/setup-config.schema.js';
+import { SetupController } from './setup.controller.js';
+import { SetupService } from './setup.service.js';
 
 @Module({
+  imports: [DatasetsModule, UsersModule,
+  MongooseModule.forFeature([
+    {
+      name: SetupConfig.name,
+      schema: SetupConfigSchema
+    }
+  ])],
   controllers: [SetupController],
-  imports: [DatasetsModule, UsersModule],
-  providers: [SetupService]
+  providers: [SetupService],
+  exports: [SetupService]
 })
 export class SetupModule {}
