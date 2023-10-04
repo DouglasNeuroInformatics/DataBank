@@ -22,16 +22,14 @@ export const CreateAccountForm = ({ onSubmit }: CreateAccountFormProps) => {
         lastName: { kind: 'text', label: t('lastName'), variant: 'short' },
         password: { kind: 'text', label: t('password'), variant: 'password' }
       }}
+      errorMessages={{
+        email: t('validEmail'),
+        firstName: t('requiredField'),
+        lastName: t('requiredField'),
+        password: t('requiredField')
+      }}
       submitBtnLabel={t('submit')}
       validationSchema={{
-        errorMessage: {
-          properties: {
-            email: t('validEmail'),
-            firstName: t('requiredField'),
-            lastName: t('requiredField'),
-            password: t('requiredField')
-          }
-        },
         properties: {
           email: {
             pattern: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.source,

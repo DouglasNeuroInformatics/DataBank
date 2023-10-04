@@ -15,14 +15,9 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
         email: { kind: 'text', label: t('email'), variant: 'short' },
         password: { kind: 'text', label: t('password'), variant: 'password' }
       }}
+      errorMessages={t('requiredField')}
       submitBtnLabel={t('login')}
       validationSchema={{
-        errorMessage: {
-          properties: {
-            email: t('requiredField'),
-            password: t('requiredField')
-          }
-        },
         properties: {
           email: {
             minLength: 1,
