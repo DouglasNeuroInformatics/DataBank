@@ -9,7 +9,6 @@
   ],
   "scripts": {
     "build": "env-cmd turbo run build",
-    "check-types": "turbo run check-types",
     "clean": "fd -H -I --prune 'dist|node_modules' --exec rm -rf",
     "dev": "env-cmd turbo run dev",
     "format": "turbo run format",

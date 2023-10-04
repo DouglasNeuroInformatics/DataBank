@@ -4,7 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check-types": "tsc",
     "dev": "env-cmd -f ../.env cross-env NODE_ENV=development bun --watch src/main.ts",
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src"

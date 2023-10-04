@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "build": "tsc && cross-env NODE_ENV=production bunx vite build",
-    "check-types": "tsc",
     "dev": "bunx --bun vite",
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src",
