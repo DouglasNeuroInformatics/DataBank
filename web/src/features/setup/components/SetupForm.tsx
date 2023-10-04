@@ -18,6 +18,45 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
   const { t } = useTranslation();
   return (
     <Form<SetupData>
+      // content={{
+      //   firstName: {
+      //     kind: 'text',
+      //     label: t('firstName'),
+      //     variant: 'short'
+      //   },
+      //   lastName: {
+      //     kind: 'text',
+      //     label: t('lastName'),
+      //     variant: 'short'
+      //   },
+      //   email: {
+      //     kind: 'text',
+      //     label: t('email'),
+      //     variant: 'short'
+      //   },
+      //   password: {
+      //     kind: 'text',
+      //     label: t('password'),
+      //     variant: 'password'
+      //   },
+      //   verificationType: {
+      //     kind: 'options',
+      //     label: 'Verification Method',
+      //     options: {
+      //       'VERIFICATION_WITH_REGEX': 'Verify users by matching their emails with a predefined regex',
+      //       'VERIFICATION_UPON_CONFIRM_EMAIL': 'Automatically Verifiy users when they confirm their emails',
+      //       'MANUAL_VERIFICATION': 'Manually verify users by the admin'
+      //     }
+      //   },
+      //   verificationRegex: () => {
+      //     return {
+      //       kind: 'text',
+      //       label: 'Regex',
+      //       variant: 'short'
+      //     }
+      //   }
+      // }
+      // }
       content={[
         {
           description: t('setup.admin.description'),
@@ -44,6 +83,31 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
             }
           },
           title: t('setup.admin.title')
+        },
+        {
+          title: 'User Verification Options',
+          description: 'Admin selects the method for user verification',
+          fields: {
+            verificationType: {
+              kind: 'options',
+              label: 'Verification Method',
+              options: {
+                'VERIFICATION_WITH_REGEX': 'Verify users by matching their emails with a predefined regex',
+                'VERIFICATION_UPON_CONFIRM_EMAIL': 'Automatically Verifiy users when they confirm their emails',
+                'MANUAL_VERIFICATION': 'Manually verify users by the admin'
+              }
+            },
+            verificationRegex: (data) => {
+              if (data?.verificationType === 'VERIFICATION_WITH_REGEX') {
+                return {
+                  kind: 'text',
+                  label: 'Regular expression',
+                  variant: 'short'
+                }
+              }
+              return null;
+            }
+          }
         }
       ]}
       submitBtnLabel={t('submit')}
@@ -107,7 +171,6 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
             }
           });
         }
-        
       }}
     />
   );
