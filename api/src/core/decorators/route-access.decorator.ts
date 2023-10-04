@@ -1,4 +1,4 @@
-import { UserRole } from '@databank/types';
+import type { UserRole } from '@databank/types';
 import { SetMetadata } from '@nestjs/common';
 
 type PublicRouteAccess = 'public';

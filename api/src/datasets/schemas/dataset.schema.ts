@@ -1,6 +1,6 @@
 import type { DatasetEntry, DatasetLicense, TDataset } from '@databank/types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+import { type HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
 import { User } from '@/users/schemas/user.schema.js';
 

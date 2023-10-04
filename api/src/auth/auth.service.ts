@@ -1,6 +1,6 @@
 import { randomInt } from 'crypto';
 
-import { AuthPayload, CurrentUser, Locale, VerificationProcedureInfo } from '@databank/types';
+import type { AuthPayload, CurrentUser, Locale, VerificationProcedureInfo } from '@databank/types';
 import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 import {
   ForbiddenException,
@@ -14,7 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { I18nService } from '@/i18n/i18n.service.js';
 import { MailService } from '@/mail/mail.service.js';
-import { User, UserDocument } from '@/users/schemas/user.schema.js';
+import { User, type UserDocument } from '@/users/schemas/user.schema.js';
 
 import { UsersService } from '../users/users.service.js';
 import { CreateAccountDto } from './dto/create-account.dto.js';

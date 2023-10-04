@@ -1,11 +1,12 @@
-import { CurrentUser, UserRole } from '@databank/types';
-import { CanActivate, ExecutionContext, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import type { CurrentUser, UserRole } from '@databank/types';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
+import { type Request } from 'express';
 
-import { ProtectedRouteAccess, RouteAccessType } from '../core/decorators/route-access.decorator.js';
+import { type ProtectedRouteAccess, type RouteAccessType } from '../core/decorators/route-access.decorator.js';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

@@ -1,6 +1,6 @@
-import { TUser, type UserRole } from '@databank/types';
+import type { TUser, UserRole } from '@databank/types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { type HydratedDocument } from 'mongoose';
 
 import { VerificationCode, VerificationCodeSchema } from '@/auth/schemas/verification-code.schema.js';
 

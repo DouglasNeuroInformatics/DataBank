@@ -1,4 +1,4 @@
-import { VerificationProcedureInfo } from '@databank/types';
+import type { VerificationProcedureInfo } from '@databank/types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()

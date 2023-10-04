@@ -1,7 +1,7 @@
-import { DatasetColumnType, DatasetEntry, DatasetInfo } from '@databank/types';
+import type { DatasetColumnType, DatasetEntry, DatasetInfo } from '@databank/types';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { Model, type ObjectId } from 'mongoose';
 
 import { CreateDatasetDto } from './dto/create-dataset.dto.js';
 import { UpdateDatasetColumnDto } from './dto/dataset-column.dto.js';

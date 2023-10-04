@@ -1,4 +1,4 @@
-import { DatasetInfo } from '@databank/types';
+import type { DatasetInfo } from '@databank/types';
 import { ParseIdPipe } from '@douglasneuroinformatics/nestjs/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
