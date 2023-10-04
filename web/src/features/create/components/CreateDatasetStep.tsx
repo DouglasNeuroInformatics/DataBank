@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 export type CreateDatasetStepProps = {
   children: React.ReactNode;
-  step: 'upload' | 'form' | 'confirm';
+  step: 'confirm' | 'form' | 'upload';
 };
 
 export const CreateDatasetStep = ({ children, step }: CreateDatasetStepProps) => {

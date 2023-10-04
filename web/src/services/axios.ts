@@ -1,10 +1,10 @@
-import { ExceptionResponse } from '@databank/types';
+import { type ExceptionResponse } from '@databank/types';
 import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios, { isAxiosError } from 'axios';
 
-import i18n from './i18n';
-
 import { useAuthStore } from '@/stores/auth-store';
+
+import i18n from './i18n';
 
 axios.defaults.baseURL = '/api';
 
@@ -36,8 +36,8 @@ axios.interceptors.response.use(
     }
 
     notifications.addNotification({
-      type: 'error',
-      message
+      message,
+      type: 'error'
     });
 
     return Promise.reject(error);

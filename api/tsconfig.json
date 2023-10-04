@@ -1,17 +1,14 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "outDir": "dist",
-    "lib": ["ESNext"],
-    "moduleResolution": "node16",
-    "noEmit": true,
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["src/*"]
     },
     "strictPropertyInitialization": false,
-    "typeRoots": ["node_modules/@types", "src/typings"]
-  }
+    "types": ["bun-types"]
+  },
+  "include": ["src"]
 }

@@ -1,40 +1,40 @@
 import { useTranslation } from 'react-i18next';
 
-import { ActivityCard } from '../components/ActivityCard';
-
 import { Heading } from '@/components/Heading';
+
+import { ActivityCard } from '../components/ActivityCard';
 
 const ONE_DAY = 86400000;
 
 const items = [
   {
     activity: {
-      kind: 'UPDATED_DATASET',
-      datasetName: 'Iris'
+      datasetName: 'Iris',
+      kind: 'UPDATED_DATASET'
     },
     fullName: 'Jane Doe',
     timestamp: Date.now()
   },
   {
     activity: {
-      kind: 'UPDATED_DATASET',
-      datasetName: 'Iris'
+      datasetName: 'Iris',
+      kind: 'UPDATED_DATASET'
     },
     fullName: 'Jane Doe',
     timestamp: Date.now() - ONE_DAY
   },
   {
     activity: {
-      kind: 'UPDATED_DATASET',
-      datasetName: 'Iris'
+      datasetName: 'Iris',
+      kind: 'UPDATED_DATASET'
     },
     fullName: 'Jane Doe',
     timestamp: Date.now() - ONE_DAY * 2
   },
   {
     activity: {
-      kind: 'CREATED_DATASET',
-      datasetName: 'Iris'
+      datasetName: 'Iris',
+      kind: 'CREATED_DATASET'
     },
     fullName: 'Jane Doe',
     timestamp: Date.now() - ONE_DAY * 3

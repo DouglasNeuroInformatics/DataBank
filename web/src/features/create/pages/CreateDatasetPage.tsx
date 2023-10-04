@@ -6,20 +6,20 @@ import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { P, match } from 'ts-pattern';
 
-import { ConfirmDatasetStructure, CreateDatasetData } from '../components/ConfirmDatasetStructure';
-import { CreateDatasetStep } from '../components/CreateDatasetStep';
-import { DatasetDropzone, DropzoneResult } from '../components/DatasetDropzone';
-import { DatasetForm, DatasetFormData } from '../components/DatasetForm';
-
 import { Heading } from '@/components/Heading';
+
+import { ConfirmDatasetStructure, type CreateDatasetData } from '../components/ConfirmDatasetStructure';
+import { CreateDatasetStep } from '../components/CreateDatasetStep';
+import { DatasetDropzone, type DropzoneResult } from '../components/DatasetDropzone';
+import { DatasetForm, type DatasetFormData } from '../components/DatasetForm';
 
 export const CreateDatasetPage = () => {
   const notifications = useNotificationsStore();
   const { t } = useTranslation();
   const [state, setState] = useState<{
-    uploadData?: DropzoneResult;
     formData?: DatasetFormData;
-    status: 'UPLOAD' | 'FORM' | 'CONFIRM';
+    status: 'CONFIRM' | 'FORM' | 'UPLOAD';
+    uploadData?: DropzoneResult;
   }>({
     status: 'UPLOAD'
   });
@@ -38,7 +38,7 @@ export const CreateDatasetPage = () => {
             <CreateDatasetStep key="upload" step="upload">
               <DatasetDropzone
                 onSubmit={(uploadData) => {
-                  setState((prevState) => ({ ...prevState, uploadData, status: 'FORM' }));
+                  setState((prevState) => ({ ...prevState, status: 'FORM', uploadData }));
                 }}
               />
             </CreateDatasetStep>
@@ -54,8 +54,8 @@ export const CreateDatasetPage = () => {
             </CreateDatasetStep>
           ))
           .with(
-            { status: 'CONFIRM', uploadData: P.not(P.nullish), formData: P.not(P.nullish) },
-            ({ uploadData, formData }) => (
+            { formData: P.not(P.nullish), status: 'CONFIRM', uploadData: P.not(P.nullish) },
+            ({ formData, uploadData }) => (
               <CreateDatasetStep key="confirm" step="confirm">
                 <ConfirmDatasetStructure
                   dataset={{ ...uploadData, ...formData }}

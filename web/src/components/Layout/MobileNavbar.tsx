@@ -5,11 +5,10 @@ import { Bars3Icon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Slider } from '../Slider';
-
-import { type NavItem } from './types';
-
 import { Logo } from '@/components';
+
+import { Slider } from '../Slider';
+import { type NavItem } from './types';
 
 export type MobileNavbarProps = {
   navigation: NavItem[];

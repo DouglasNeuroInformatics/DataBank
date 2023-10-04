@@ -1,4 +1,4 @@
-import { LoginCredentials } from '@databank/types';
+import type { LoginCredentials } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -15,26 +15,21 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
         email: { kind: 'text', label: t('email'), variant: 'short' },
         password: { kind: 'text', label: t('password'), variant: 'password' }
       }}
+      errorMessages={t('requiredField')}
       submitBtnLabel={t('login')}
       validationSchema={{
-        type: 'object',
         properties: {
           email: {
-            type: 'string',
-            minLength: 1
+            minLength: 1,
+            type: 'string'
           },
           password: {
-            type: 'string',
-            minLength: 1
+            minLength: 1,
+            type: 'string'
           }
         },
         required: ['email', 'password'],
-        errorMessage: {
-          properties: {
-            email: t('requiredField'),
-            password: t('requiredField')
-          }
-        }
+        type: 'object'
       }}
       onSubmit={onSubmit}
     />

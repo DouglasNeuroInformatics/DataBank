@@ -1,12 +1,11 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 
-import { TDataset } from '@databank/types';
+import type { TDataset } from '@databank/types';
 import { Button, Modal, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
 import { Slider } from '../Slider';
-
 import { ColumnHeader } from './ColumnHeader';
 import { EditColumnForm } from './EditColumnForm';
 
@@ -14,8 +13,8 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
   const notifications = useNotificationsStore();
   const ref = useRef<HTMLDivElement>(null);
   const [columnWidth, setColumnWidth] = useState<number>();
-  const [columnToDelete, setColumnToDelete] = useState<string | null>(null);
-  const [columnToEdit, setColumnToEdit] = useState<string | null>(null);
+  const [columnToDelete, setColumnToDelete] = useState<null | string>(null);
+  const [columnToEdit, setColumnToEdit] = useState<null | string>(null);
   const { t } = useTranslation();
 
   const deleteColumn = (columnName: string) => {
@@ -30,7 +29,7 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
 
   const table = useMemo(
     () => ({
-      columns: dataset.columns.map((column) => ({ label: column.name, field: column.name })),
+      columns: dataset.columns.map((column) => ({ field: column.name, label: column.name })),
       data: dataset.data
     }),
     [dataset]

@@ -1,15 +1,14 @@
+import type { UserRole } from '@databank/types';
 import { SetMetadata } from '@nestjs/common';
-
-import { UserRole } from '@databank/types';
 
 type PublicRouteAccess = 'public';
 
 export type ProtectedRouteAccess = {
-  role: UserRole;
   allowUnverified?: boolean;
+  role: UserRole;
 };
 
-export type RouteAccessType = PublicRouteAccess | ProtectedRouteAccess;
+export type RouteAccessType = ProtectedRouteAccess | PublicRouteAccess;
 
 export function RouteAccess(value: RouteAccessType): MethodDecorator {
   return SetMetadata('RouteAccess', value);

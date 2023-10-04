@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { DatasetEntry, TDataset } from '@databank/types';
-import { TableColumn, useDownload } from '@douglasneuroinformatics/ui';
+import type { DatasetEntry, TDataset } from '@databank/types';
+import { type TableColumn, useDownload } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { unparse } from 'papaparse';
 
@@ -31,14 +31,14 @@ export function useDataset<
   }, [id]);
 
   const download = useCallback(
-    (format: 'CSV' | 'TSV' | 'DICT') => {
+    (format: 'CSV' | 'DICT' | 'TSV') => {
       if (!dataset) {
         throw new Error(`Expected dataset with ID '${id}' is undefined`);
       }
       const columnNames = dataset.columns.map(({ name }) => name);
-      const matrix: any[][] = [columnNames];
+      const matrix: unknown[][] = [columnNames];
       for (const item of dataset.data) {
-        const row: any[] = [];
+        const row: unknown[] = [];
         for (const col of columnNames) {
           row.push(item[col]);
         }
@@ -64,14 +64,14 @@ export function useDataset<
       return null;
     }
     return {
-      columns: dataset.columns.map((column) => ({ label: column.name, field: column.name })),
+      columns: dataset.columns.map((column) => ({ field: column.name, label: column.name })),
       data: dataset.data
     };
   }, [dataset]);
 
   if (!dataset || !table) {
-    return { dataset: null, download: null, table, revalidate };
+    return { dataset: null, download: null, revalidate, table };
   }
 
-  return { dataset, download, table, revalidate };
+  return { dataset, download, revalidate, table };
 }

@@ -1,6 +1,5 @@
-import { ExecutionContext, InternalServerErrorException, createParamDecorator } from '@nestjs/common';
-
-import { Request } from 'express';
+import { type ExecutionContext, InternalServerErrorException, createParamDecorator } from '@nestjs/common';
+import { type Request } from 'express';
 import { Types, isValidObjectId } from 'mongoose';
 
 export const UserId = createParamDecorator((_, context: ExecutionContext) => {

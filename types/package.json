@@ -1,5 +1,8 @@
 {
   "name": "@databank/types",
   "version": "0.0.0",
-  "types": "index.d.ts"
+  "types": "index.d.ts",
+  "dependencies": {
+    "type-fest": "^4.3.3"
+  }
 }

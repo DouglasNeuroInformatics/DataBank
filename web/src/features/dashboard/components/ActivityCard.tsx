@@ -1,22 +1,22 @@
 import { useCallback } from 'react';
 
-import { Activity } from '@databank/types';
+import type { Activity } from '@databank/types';
 import { useTranslation } from 'react-i18next';
 import { match } from 'ts-pattern';
 
 export type ActivityCardProps = {
+  /** The activity the user performed */
+  activity: Activity;
+
   /** The full name of the user who performed the activity */
   fullName: string;
 
   /** The exact timestamp of when the activity was performed */
   timestamp: number;
-
-  /** The activity the user performed */
-  activity: Activity;
 };
 
-export const ActivityCard = ({ fullName, timestamp, activity }: ActivityCardProps) => {
-  const { t, i18n } = useTranslation();
+export const ActivityCard = ({ activity, fullName, timestamp }: ActivityCardProps) => {
+  const { i18n, t } = useTranslation();
 
   /** Return a string representing the time passed since the timestamp */
   const formatTimestamp = useCallback(

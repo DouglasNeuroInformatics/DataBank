@@ -1,5 +1,6 @@
-import { DatasetColumnType } from '@databank/types';
-import { Form, FormValues } from '@douglasneuroinformatics/ui';
+import type { DatasetColumnType } from '@databank/types';
+import type { NullableFormInstrumentData } from '@douglasneuroinformatics/form-types';
+import { Form } from '@douglasneuroinformatics/ui'
 import { useTranslation } from 'react-i18next';
 
 export type EditColumnFormData = {
@@ -7,7 +8,7 @@ export type EditColumnFormData = {
 };
 
 export type EditColumnFormProps = {
-  initialValues?: FormValues<EditColumnFormData> | null;
+  initialValues?: NullableFormInstrumentData<EditColumnFormData> | null;
   onSubmit: (data: EditColumnFormData) => void;
 };
 
@@ -20,22 +21,22 @@ export const EditColumnForm = ({ initialValues, onSubmit }: EditColumnFormProps)
           kind: 'options',
           label: t('dataType'),
           options: {
-            STRING: t('string'),
+            FLOAT: t('float'),
             INTEGER: t('integer'),
-            FLOAT: t('float')
+            STRING: t('string')
           }
         }
       }}
       initialValues={initialValues}
       validationSchema={{
-        type: 'object',
         properties: {
           type: {
-            type: 'string',
-            enum: ['FLOAT', 'INTEGER', 'STRING']
+            enum: ['FLOAT', 'INTEGER', 'STRING'],
+            type: 'string'
           }
         },
-        required: ['type']
+        required: ['type'],
+        type: 'object'
       }}
       onSubmit={onSubmit}
     />

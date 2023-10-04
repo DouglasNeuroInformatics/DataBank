@@ -1,22 +1,22 @@
-import { CurrentUser } from '@databank/types';
+import type { CurrentUser } from '@databank/types';
 import jwtDecode from 'jwt-decode';
 import { create } from 'zustand';
 
 export type AuthStore = {
-  accessToken: string | null;
-  setAccessToken: (accessToken: string) => void;
+  accessToken: null | string;
   currentUser: CurrentUser | null;
   logout: () => void;
+  setAccessToken: (accessToken: string) => void;
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({
   accessToken: null,
-  setAccessToken: (accessToken) => {
-    const currentUser = jwtDecode<CurrentUser>(accessToken);
-    set({ accessToken, currentUser });
-  },
   currentUser: null,
   logout: () => {
     set({ accessToken: null, currentUser: null });
+  },
+  setAccessToken: (accessToken) => {
+    const currentUser = jwtDecode<CurrentUser>(accessToken);
+    set({ accessToken, currentUser });
   }
 }));

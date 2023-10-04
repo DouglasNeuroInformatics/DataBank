@@ -4,13 +4,13 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 export type SliderProps = {
-  title: React.ReactNode;
   children: React.ReactNode;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  title: React.ReactNode;
 };
 
-export const Slider = ({ title, children, isOpen, setIsOpen }: SliderProps) => {
+export const Slider = ({ children, isOpen, setIsOpen, title }: SliderProps) => {
   return (
     <Transition as={React.Fragment} show={isOpen}>
       <Dialog as="div" className="fixed inset-0 overflow-hidden" onClose={setIsOpen}>

@@ -6,32 +6,32 @@ import { Outlet } from 'react-router-dom';
 
 import { DesktopSidebar } from './DesktopSidebar';
 import { MobileNavbar } from './MobileNavbar';
-import { NavItem } from './types';
+import { type NavItem } from './types';
 
 export const Layout = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const navigation: NavItem[] = useMemo(
     () => [
       {
-        label: t('dashboard'),
         href: '/portal/dashboard',
-        icon: HomeIcon
+        icon: HomeIcon,
+        label: t('dashboard')
       },
       {
-        label: t('createDataset'),
         href: '/portal/create',
-        icon: FolderPlusIcon
+        icon: FolderPlusIcon,
+        label: t('createDataset')
       },
       {
-        label: t('manageDatasets'),
         href: '/portal/manage',
-        icon: FolderMinusIcon
+        icon: FolderMinusIcon,
+        label: t('manageDatasets')
       },
       {
-        label: t('sharedDatasets'),
         href: '/portal/shared',
-        icon: FolderArrowDownIcon
+        icon: FolderArrowDownIcon,
+        label: t('sharedDatasets')
       }
     ],
     [i18n.resolvedLanguage]

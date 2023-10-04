@@ -4,12 +4,11 @@ import url from 'node:url';
 import { VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
-
+import { type NestExpressApplication } from '@nestjs/platform-express';
 import { json } from 'express';
 
-import { AppModule } from './app.module.js';
-import { setupDocs } from './docs.js';
+import { AppModule } from './app.module';
+import { setupDocs } from './docs';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

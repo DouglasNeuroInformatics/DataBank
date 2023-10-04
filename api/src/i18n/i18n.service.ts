@@ -2,14 +2,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
 
-import { Injectable } from '@nestjs/common';
-
-import { Locale } from '@databank/types';
-import { Request } from 'express';
-import { MergeDeep } from 'type-fest';
-
 import type en from './translations/en.json';
 import type fr from './translations/fr.json';
+import type { Locale } from '@databank/types';
+import { Injectable } from '@nestjs/common';
+import type { Request } from 'express';
+import type { MergeDeep } from 'type-fest';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,14 +32,6 @@ export class I18nService {
     };
   }
 
-  translate(locale: Locale | undefined, path: Path<Translations>) {
-    let item: any = this.resources[locale ?? this.defaultLocale];
-    path.split('.').forEach((key) => {
-      item = (item as Record<string, string>)[key];
-    });
-    return item as string;
-  }
-
   /** Extract the user's preferred locale from the `Accept-Language` header */
   extractLocale(req: Request): Locale {
     if (req.acceptsLanguages()[0]?.toLowerCase().startsWith('fr')) {
@@ -53,5 +43,13 @@ export class I18nService {
   loadTranslations(locale: Locale) {
     const filepath = path.resolve(__dirname, 'translations', `${locale}.json`);
     return JSON.parse(fs.readFileSync(filepath, 'utf-8')) as Translations;
+  }
+
+  translate(locale: Locale | undefined, path: Path<Translations>) {
+    let item: unknown = this.resources[locale ?? this.defaultLocale];
+    path.split('.').forEach((key) => {
+      item = (item as Record<string, string>)[key];
+    });
+    return item as string;
   }
 }

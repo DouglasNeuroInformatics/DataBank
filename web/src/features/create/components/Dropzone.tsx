@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
-import { FileRejection, useDropzone } from 'react-dropzone';
+import { type FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 
 export type DropzoneProps = {
@@ -16,22 +16,22 @@ export const Dropzone = ({ file, setFile }: DropzoneProps) => {
 
   const handleDrop = useCallback(
     (acceptedFiles: File[], rejections: FileRejection[]) => {
-      for (const { file, errors } of rejections) {
-        notifications.addNotification({ type: 'error', message: t('invalidFileError', { filename: file.name }) });
+      for (const { errors, file } of rejections) {
+        notifications.addNotification({ message: t('invalidFileError', { filename: file.name }), type: 'error' });
         console.error(errors);
       }
-      setFile(acceptedFiles[0]);
+      setFile(acceptedFiles[0]!);
     },
     [notifications, setFile]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getInputProps, getRootProps, isDragActive } = useDropzone({
     accept: {
       'text/csv': ['.csv'],
       'text/plain': ['.csv', '.tsv']
     },
-    onDrop: handleDrop,
-    maxFiles: 1
+    maxFiles: 1,
+    onDrop: handleDrop
   });
 
   return (

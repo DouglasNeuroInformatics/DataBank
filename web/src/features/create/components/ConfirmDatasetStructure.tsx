@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { match } from 'ts-pattern';
 import { ZodError } from 'zod';
 
-import { DatasetFormData } from './DatasetForm';
-
 import { useValidationSchema } from '@/hooks/useValidationSchema';
+
+import { type DatasetFormData } from './DatasetForm';
 
 const DatasetStructureItem = (props: { label: string; value: string }) => {
   const { i18n } = useTranslation();
@@ -18,7 +18,7 @@ const DatasetStructureItem = (props: { label: string; value: string }) => {
 };
 
 export type CreateDatasetData = DatasetFormData & {
-  data: Record<string, string | number>[];
+  data: Record<string, number | string>[];
 };
 
 export type ConfirmDatasetStructureProps = {
@@ -37,7 +37,7 @@ export const ConfirmDatasetStructure = ({ dataset, onSubmit }: ConfirmDatasetStr
       validationSchema.parse(dataset.data);
       onSubmit(dataset);
     } catch (error) {
-      notifications.addNotification({ type: 'error', message: t('schemaValidationFailed') });
+      notifications.addNotification({ message: t('schemaValidationFailed'), type: 'error' });
       if (error instanceof ZodError) {
         console.error(error.format());
       } else {

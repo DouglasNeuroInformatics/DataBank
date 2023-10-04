@@ -1,4 +1,4 @@
-import { DatasetInfo } from '@databank/types';
+import type { DatasetInfo } from '@databank/types';
 import { CalendarIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
@@ -10,7 +10,7 @@ export type DatasetCardProps = {
 };
 
 export const DatasetCard = ({ className, dataset, onClick }: DatasetCardProps) => {
-  const { t, i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   return (
     <div
       className={twMerge(

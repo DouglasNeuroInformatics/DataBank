@@ -1,4 +1,4 @@
-import { Locale } from '@databank/types';
+import type { Locale } from '@databank/types';
 import { i18n as i18nLib } from '@douglasneuroinformatics/ui';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -10,8 +10,8 @@ void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    defaultNS: 'translation',
     debug: false,
+    defaultNS: 'translation',
     fallbackLng: 'en' satisfies Locale,
     interpolation: {
       escapeValue: false

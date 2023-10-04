@@ -1,16 +1,15 @@
+import type { DatasetInfo } from '@databank/types';
+import { ParseIdPipe } from '@douglasneuroinformatics/nestjs/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-
-import { DatasetInfo } from '@databank/types';
 import { type ObjectId } from 'mongoose';
 
-import { DatasetsService } from './datasets.service.js';
-import { CreateDatasetDto } from './dto/create-dataset.dto.js';
-import { UpdateDatasetColumnDto } from './dto/dataset-column.dto.js';
+import { RouteAccess } from '@/core/decorators/route-access.decorator';
+import { UserId } from '@/core/decorators/user-id.decorator';
 
-import { RouteAccess } from '@/core/decorators/route-access.decorator.js';
-import { UserId } from '@/core/decorators/user-id.decorator.js';
-import { ParseIdPipe } from '@/core/pipes/parse-id.pipe.js';
+import { DatasetsService } from './datasets.service';
+import { CreateDatasetDto } from './dto/create-dataset.dto';
+import { UpdateDatasetColumnDto } from './dto/dataset-column.dto';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })
@@ -22,6 +21,18 @@ export class DatasetsController {
   @RouteAccess({ role: 'standard' })
   createDataset(@Body() createDatasetDto: CreateDatasetDto, @UserId() ownerId: ObjectId) {
     return this.datasetsService.createDataset(createDatasetDto, ownerId);
+  }
+
+  @Delete(':id/:column')
+  @RouteAccess({ role: 'standard' })
+  deleteColumn(@Param('id', ParseIdPipe) id: ObjectId, @Param('column') column?: string) {
+    return this.datasetsService.deleteColumn(id, column);
+  }
+
+  @Delete(':id')
+  @RouteAccess({ role: 'standard' })
+  deleteDataset(@Param('id', ParseIdPipe) id: ObjectId) {
+    return this.datasetsService.deleteDataset(id);
   }
 
   @ApiOperation({ summary: 'Get All Datasets' })
@@ -38,12 +49,6 @@ export class DatasetsController {
     return this.datasetsService.getById(id);
   }
 
-  @Delete(':id')
-  @RouteAccess({ role: 'standard' })
-  deleteDataset(@Param('id', ParseIdPipe) id: ObjectId) {
-    return this.datasetsService.deleteDataset(id);
-  }
-
   @Patch(':id/:column')
   @RouteAccess({ role: 'standard' })
   updateColumn(
@@ -52,11 +57,5 @@ export class DatasetsController {
     @Param('column') column?: string
   ) {
     return this.datasetsService.updateColumn(dto, id, column);
-  }
-
-  @Delete(':id/:column')
-  @RouteAccess({ role: 'standard' })
-  deleteColumn(@Param('id', ParseIdPipe) id: ObjectId, @Param('column') column?: string) {
-    return this.datasetsService.deleteColumn(id, column);
   }
 }

@@ -1,17 +1,17 @@
 import { useCallback, useState } from 'react';
 
-import { DatasetColumnType } from '@databank/types';
+import { type DatasetColumnType } from '@databank/types';
 import { Button, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import Papa from 'papaparse';
 import { useTranslation } from 'react-i18next';
 import { P, match } from 'ts-pattern';
-import { Simplify } from 'type-fest';
+import { type Simplify } from 'type-fest';
 import { ZodError, z } from 'zod';
 
-import { Dropzone } from './Dropzone';
-
 import { AnimatedCheckIcon } from '@/components/AnimatedCheckIcon';
+
+import { Dropzone } from './Dropzone';
 
 /**
  * Format bytes as human-readable text.
@@ -44,15 +44,15 @@ function formatFileSize(bytes: number, si = false, dp = 1) {
 }
 
 const parsedDataSchema = z.object({
-  fields: z.string().array(),
-  data: z.record(z.union([z.coerce.number(), z.string()])).array()
+  data: z.record(z.union([z.coerce.number(), z.string()])).array(),
+  fields: z.string().array()
 });
 
 export type InferredColumn = { name: string; type: DatasetColumnType | null };
 
 export type DropzoneResult = Simplify<{
   columns: InferredColumn[];
-  data: Record<string, string | number>[];
+  data: Record<string, number | string>[];
 }>;
 
 export type DatasetDropzoneProps = {
@@ -72,7 +72,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
 
   /** Function to validate the structure of the parsed data and infer types */
   const validate = useCallback(async (parsedData: unknown) => {
-    const inferType = (currentType: DatasetColumnType | null, value: string | number): DatasetColumnType => {
+    const inferType = (currentType: DatasetColumnType | null, value: number | string): DatasetColumnType => {
       if (typeof value === 'string' || currentType === 'STRING') {
         return 'STRING';
       } else if (Number.isInteger(value)) {
@@ -83,12 +83,12 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
       throw new Error(t('unexpectedValue', { value }));
     };
 
-    const { fields, data } = await parsedDataSchema.parseAsync(parsedData);
+    const { data, fields } = await parsedDataSchema.parseAsync(parsedData);
     const columns: InferredColumn[] = fields.map((name) => ({ name, type: null }));
     for (const columnName of fields) {
       const column = columns.find(({ name }) => name === columnName)!;
       for (const item of data) {
-        const value = item[columnName];
+        const value = item[columnName]!;
         column.type = inferType(column.type, value);
         if (column.type === 'STRING') {
           break;
@@ -100,7 +100,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
 
   // If error, promise will reject with error containing internationalized message and details will be logged to stdout
   const parseCSV = useCallback(
-    (file?: File): Promise<{ fields: string[]; data: unknown[] }> =>
+    (file?: File): Promise<{ data: unknown[]; fields: string[] }> =>
       new Promise((resolve, reject) => {
         if (!file) {
           console.error('File object must be defined');
@@ -121,7 +121,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
               console.error('Fields is undefined');
               reject(new Error(t('unexpectedError')));
             } else {
-              resolve({ fields: results.meta.fields, data: results.data });
+              resolve({ data: results.data, fields: results.meta.fields });
             }
           },
           error: (error) => {
@@ -155,11 +155,11 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
       setResult(null);
       if (error instanceof ZodError) {
         console.error(error.format());
-        notifications.addNotification({ type: 'error', message: t('unexpectedError') });
+        notifications.addNotification({ message: t('unexpectedError'), type: 'error' });
       } else if (error instanceof Error) {
-        notifications.addNotification({ type: 'error', message: error.message });
+        notifications.addNotification({ message: error.message, type: 'error' });
       } else {
-        notifications.addNotification({ type: 'error', message: t('unexpectedError') });
+        notifications.addNotification({ message: t('unexpectedError'), type: 'error' });
       }
     }
   }, []);
