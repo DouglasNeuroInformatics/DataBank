@@ -19,7 +19,7 @@ export class UsersService {
     if (exists) {
       throw new ConflictException(`User with provided email already exists: ${email}`);
     }
-    const hashedPassword = this.cryptoService.hash(password);
+    const hashedPassword = await this.cryptoService.hashPassword(password);
     return this.userModel.create({
       email,
       hashedPassword,
