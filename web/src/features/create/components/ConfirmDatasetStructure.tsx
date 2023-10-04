@@ -5,7 +5,7 @@ import { ZodError } from 'zod';
 
 import { useValidationSchema } from '@/hooks/useValidationSchema';
 
-import { DatasetFormData } from './DatasetForm';
+import { type DatasetFormData } from './DatasetForm';
 
 const DatasetStructureItem = (props: { label: string; value: string }) => {
   const { i18n } = useTranslation();

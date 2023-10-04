@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { DatasetEntry, TDataset } from '@databank/types';
+import type { DatasetEntry, TDataset } from '@databank/types';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
 

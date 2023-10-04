@@ -1,5 +1,5 @@
-import { DatasetColumnType } from '@databank/types';
-import { NullableFormInstrumentData } from '@douglasneuroinformatics/form-types';
+import type { DatasetColumnType } from '@databank/types';
+import type { NullableFormInstrumentData } from '@douglasneuroinformatics/form-types';
 import { Form } from '@douglasneuroinformatics/ui'
 import { useTranslation } from 'react-i18next';
 

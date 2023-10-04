@@ -8,10 +8,10 @@ import { P, match } from 'ts-pattern';
 
 import { Heading } from '@/components/Heading';
 
-import { ConfirmDatasetStructure, CreateDatasetData } from '../components/ConfirmDatasetStructure';
+import { ConfirmDatasetStructure, type CreateDatasetData } from '../components/ConfirmDatasetStructure';
 import { CreateDatasetStep } from '../components/CreateDatasetStep';
-import { DatasetDropzone, DropzoneResult } from '../components/DatasetDropzone';
-import { DatasetForm, DatasetFormData } from '../components/DatasetForm';
+import { DatasetDropzone, type DropzoneResult } from '../components/DatasetDropzone';
+import { DatasetForm, type DatasetFormData } from '../components/DatasetForm';
 
 export const CreateDatasetPage = () => {
   const notifications = useNotificationsStore();

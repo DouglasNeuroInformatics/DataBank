@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
-import { DatasetEntry, TDataset } from '@databank/types';
-import { NullableFormInstrumentData } from '@douglasneuroinformatics/form-types';
+import type { DatasetEntry, TDataset } from '@databank/types';
+import type { NullableFormInstrumentData } from '@douglasneuroinformatics/form-types';
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 
-import { InferredColumn } from './DatasetDropzone';
+import { type InferredColumn } from './DatasetDropzone';
 
 export type DatasetFormData<T extends DatasetEntry = DatasetEntry> = Omit<
   TDataset<T>,

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { AuthPayload, LoginCredentials } from '@databank/types';
+import type { AuthPayload, LoginCredentials } from '@databank/types';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';

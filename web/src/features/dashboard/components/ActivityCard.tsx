@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { Activity } from '@databank/types';
+import type { Activity } from '@databank/types';
 import { useTranslation } from 'react-i18next';
 import { match } from 'ts-pattern';
 

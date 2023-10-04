@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { DatasetInfo } from '@databank/types';
+import type { DatasetInfo } from '@databank/types';
 import { SearchBar } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';

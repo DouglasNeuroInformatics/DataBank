@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 
 import { DesktopSidebar } from './DesktopSidebar';
 import { MobileNavbar } from './MobileNavbar';
-import { NavItem } from './types';
+import { type NavItem } from './types';
 
 export const Layout = () => {
   const { i18n, t } = useTranslation();

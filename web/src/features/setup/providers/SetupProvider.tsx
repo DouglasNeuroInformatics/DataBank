@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { SetupOptions, SetupState } from '@databank/types';
+import type { SetupOptions, SetupState } from '@databank/types';
 import { FormPageWrapper, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';

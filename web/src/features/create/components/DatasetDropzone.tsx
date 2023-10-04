@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react';
 
-import { DatasetColumnType } from '@databank/types';
+import { type DatasetColumnType } from '@databank/types';
 import { Button, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { AnimatePresence, motion } from 'framer-motion';
 import Papa from 'papaparse';
 import { useTranslation } from 'react-i18next';
 import { P, match } from 'ts-pattern';
-import { Simplify } from 'type-fest';
+import { type Simplify } from 'type-fest';
 import { ZodError, z } from 'zod';
 
 import { AnimatedCheckIcon } from '@/components/AnimatedCheckIcon';
@@ -88,7 +88,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
     for (const columnName of fields) {
       const column = columns.find(({ name }) => name === columnName)!;
       for (const item of data) {
-        const value = item[columnName];
+        const value = item[columnName]!;
         column.type = inferType(column.type, value);
         if (column.type === 'STRING') {
           break;

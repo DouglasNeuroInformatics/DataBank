@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
-import { FileRejection, useDropzone } from 'react-dropzone';
+import { type FileRejection, useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 
 export type DropzoneProps = {
@@ -20,7 +20,7 @@ export const Dropzone = ({ file, setFile }: DropzoneProps) => {
         notifications.addNotification({ message: t('invalidFileError', { filename: file.name }), type: 'error' });
         console.error(errors);
       }
-      setFile(acceptedFiles[0]);
+      setFile(acceptedFiles[0]!);
     },
     [notifications, setFile]
   );

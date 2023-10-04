@@ -1,4 +1,5 @@
-import { ChangeEvent, ClipboardEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
 
 import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { range } from '@douglasneuroinformatics/utils';
@@ -32,9 +33,9 @@ export const VerificationCodeInput = ({ className, onComplete }: VerificationCod
     }
   }, [digits]);
 
-  const focusNext = (index: number) => inputRefs[index + 1 === digits.length ? 0 : index + 1].current?.focus();
+  const focusNext = (index: number) => inputRefs[index + 1 === digits.length ? 0 : index + 1]?.current?.focus();
 
-  const focusPrev = (index: number) => inputRefs[index - 1 >= 0 ? index - 1 : digits.length - 1].current?.focus();
+  const focusPrev = (index: number) => inputRefs[index - 1 >= 0 ? index - 1 : digits.length - 1]?.current?.focus();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     let value: null | number;

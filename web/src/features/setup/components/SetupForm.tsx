@@ -1,4 +1,4 @@
-import { SetupOptions } from '@databank/types';
+import type { SetupOptions } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 

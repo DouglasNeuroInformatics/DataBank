@@ -1,4 +1,4 @@
-import { ExceptionResponse } from '@databank/types';
+import { type ExceptionResponse } from '@databank/types';
 import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios, { isAxiosError } from 'axios';
 

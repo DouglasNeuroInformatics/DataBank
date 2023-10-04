@@ -1,4 +1,4 @@
-import { Locale } from '@databank/types';
+import type { Locale } from '@databank/types';
 import { i18n as i18nLib } from '@douglasneuroinformatics/ui';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';

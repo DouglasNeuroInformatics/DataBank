@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { AuthPayload } from '@databank/types';
+import type { AuthPayload } from '@databank/types';
 import axios from 'axios';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { match } from 'ts-pattern';
