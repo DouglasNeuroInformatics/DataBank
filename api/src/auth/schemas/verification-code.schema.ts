@@ -1,6 +1,5 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
 import { VerificationProcedureInfo } from '@databank/types';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class VerificationCode implements VerificationProcedureInfo {

@@ -17,9 +17,13 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
     <Form<SetupData>
       content={[
         {
-          title: t('setup.admin.title'),
           description: t('setup.admin.description'),
           fields: {
+            email: {
+              kind: 'text',
+              label: t('email'),
+              variant: 'short'
+            },
             firstName: {
               kind: 'text',
               label: t('firstName'),
@@ -30,42 +34,38 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               label: t('lastName'),
               variant: 'short'
             },
-            email: {
-              kind: 'text',
-              label: t('email'),
-              variant: 'short'
-            },
             password: {
               kind: 'text',
               label: t('password'),
               variant: 'password'
             }
-          }
+          },
+          title: t('setup.admin.title')
         }
       ]}
       submitBtnLabel={t('submit')}
       validationSchema={{
-        type: 'object',
         properties: {
+          email: {
+            format: 'email',
+            minLength: 1,
+            type: 'string'
+          },
           firstName: {
-            type: 'string',
-            minLength: 1
+            minLength: 1,
+            type: 'string'
           },
           lastName: {
-            type: 'string',
-            minLength: 1
-          },
-          email: {
-            type: 'string',
             minLength: 1,
-            format: 'email'
+            type: 'string'
           },
           password: {
-            type: 'string',
-            pattern: isStrongPassword.source
+            pattern: isStrongPassword.source,
+            type: 'string'
           }
         },
-        required: ['firstName', 'lastName', 'email', 'password']
+        required: ['firstName', 'lastName', 'email', 'password'],
+        type: 'object'
       }}
       onSubmit={(data) => {
         onSubmit({ admin: data });

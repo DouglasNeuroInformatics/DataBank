@@ -6,6 +6,8 @@ import { DatasetsService } from './datasets.service.js';
 import { Dataset, DatasetSchema } from './schemas/dataset.schema.js';
 
 @Module({
+  controllers: [DatasetsController],
+  exports: [DatasetsService],
   imports: [
     MongooseModule.forFeature([
       {
@@ -14,8 +16,6 @@ import { Dataset, DatasetSchema } from './schemas/dataset.schema.js';
       }
     ])
   ],
-  controllers: [DatasetsController],
-  providers: [DatasetsService],
-  exports: [DatasetsService]
+  providers: [DatasetsService]
 })
 export class DatasetsModule {}

@@ -2,9 +2,9 @@ import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 
 export type CreateAccountData = {
+  email: string;
   firstName: string;
   lastName: string;
-  email: string;
   password: string;
 };
 
@@ -17,41 +17,41 @@ export const CreateAccountForm = ({ onSubmit }: CreateAccountFormProps) => {
   return (
     <Form<CreateAccountData>
       content={{
+        email: { kind: 'text', label: t('email'), variant: 'short' },
         firstName: { kind: 'text', label: t('firstName'), variant: 'short' },
         lastName: { kind: 'text', label: t('lastName'), variant: 'short' },
-        email: { kind: 'text', label: t('email'), variant: 'short' },
         password: { kind: 'text', label: t('password'), variant: 'password' }
       }}
       submitBtnLabel={t('submit')}
       validationSchema={{
-        type: 'object',
+        errorMessage: {
+          properties: {
+            email: t('validEmail'),
+            firstName: t('requiredField'),
+            lastName: t('requiredField'),
+            password: t('requiredField')
+          }
+        },
         properties: {
+          email: {
+            pattern: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.source,
+            type: 'string'
+          },
           firstName: {
-            type: 'string',
-            minLength: 1
+            minLength: 1,
+            type: 'string'
           },
           lastName: {
-            type: 'string',
-            minLength: 1
-          },
-          email: {
-            type: 'string',
-            pattern: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.source
+            minLength: 1,
+            type: 'string'
           },
           password: {
-            type: 'string',
-            minLength: 1
+            minLength: 1,
+            type: 'string'
           }
         },
         required: ['firstName', 'lastName', 'email', 'password'],
-        errorMessage: {
-          properties: {
-            firstName: t('requiredField'),
-            lastName: t('requiredField'),
-            email: t('validEmail'),
-            password: t('requiredField')
-          }
-        }
+        type: 'object'
       }}
       onSubmit={onSubmit}
     />

@@ -6,12 +6,12 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { SuspenseFallback } from '@/components';
+import { useAuthStore } from '@/stores/auth-store';
+
 import { AuthLayout } from '../components/AuthLayout';
 import { Countdown } from '../components/Countdown';
 import { VerificationCodeInput } from '../components/VerificationCodeInput';
-
-import { SuspenseFallback } from '@/components';
-import { useAuthStore } from '@/stores/auth-store';
 
 export const VerifyAccountPage = () => {
   const auth = useAuthStore();

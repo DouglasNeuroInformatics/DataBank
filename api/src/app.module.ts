@@ -1,10 +1,9 @@
+import { CryptoModule } from '@douglasneuroinformatics/nestjs/modules';
 import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-
-import { CryptoModule } from '@douglasneuroinformatics/nestjs/modules';
 
 import { AuthModule } from './auth/auth.module.js';
 import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware.js';
@@ -21,8 +20,8 @@ import { UsersModule } from './users/users.module.js';
       isGlobal: true
     }),
     CryptoModule.registerAsync({
-      isGlobal: true,
       inject: [ConfigService],
+      isGlobal: true,
       useFactory: (configService: ConfigService) => ({
         secretKey: configService.getOrThrow('SECRET_KEY')
       })
@@ -43,8 +42,8 @@ import { UsersModule } from './users/users.module.js';
     SetupModule,
     ThrottlerModule.forRoot([
       {
-        ttl: 60000,
-        limit: 100
+        limit: 100,
+        ttl: 60000
       }
     ]),
     UsersModule

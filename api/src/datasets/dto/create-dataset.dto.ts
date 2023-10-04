@@ -5,20 +5,8 @@ import { ArrayMinSize, IsArray, IsIn, IsNotEmpty, IsString, ValidateNested } fro
 import { DatasetColumnDto } from './dataset-column.dto.js';
 
 export class CreateDatasetDto<T extends DatasetEntry = DatasetEntry>
-  implements Omit<TDataset<T>, '_id' | 'createdAt' | 'updatedAt' | 'owner'>
+  implements Omit<TDataset<T>, '_id' | 'createdAt' | 'owner' | 'updatedAt'>
 {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
-  @IsString()
-  @IsNotEmpty()
-  description: string;
-
-  @IsString()
-  @IsIn(['PUBLIC_DOMAIN', 'OTHER'] satisfies DatasetLicense[])
-  license: DatasetLicense;
-
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
@@ -30,4 +18,16 @@ export class CreateDatasetDto<T extends DatasetEntry = DatasetEntry>
   @ValidateNested({ each: true })
   @Type(() => Object)
   data: T[];
+
+  @IsString()
+  @IsNotEmpty()
+  description: string;
+
+  @IsString()
+  @IsIn(['PUBLIC_DOMAIN', 'OTHER'] satisfies DatasetLicense[])
+  license: DatasetLicense;
+
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 }

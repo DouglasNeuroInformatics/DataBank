@@ -1,6 +1,5 @@
-import { OmitType } from '@nestjs/swagger';
-
 import { SetupOptions } from '@databank/types';
+import { OmitType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmptyObject, ValidateNested } from 'class-validator';
 

@@ -21,9 +21,9 @@ export const AnimatedCheckIcon = ({ className, onComplete }: AnimatedCheckIconPr
       strokeLinecap="round"
       strokeLinejoin="round"
       transition={{
-        type: 'tween',
         duration: 0.3,
-        ease: 'easeIn'
+        ease: 'easeIn',
+        type: 'tween'
       }}
       onAnimationComplete={onComplete}
     />

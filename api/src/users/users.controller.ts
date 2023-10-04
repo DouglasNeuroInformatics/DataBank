@@ -10,23 +10,23 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({
-    summary: 'Create User',
-    description: 'Create a user with any permission level without requiring verification'
+    description: 'Create a user with any permission level without requiring verification',
+    summary: 'Create User'
   })
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }
 
-  @ApiOperation({ summary: 'Get Users' })
-  @Get()
-  getAll() {
-    return this.usersService.getAll();
-  }
-
   @ApiOperation({ summary: 'Find User by Email' })
   @Get(':email')
   findByEmail(@Param('email') email: string) {
     return this.usersService.findByEmail(email);
+  }
+
+  @ApiOperation({ summary: 'Get Users' })
+  @Get()
+  getAll() {
+    return this.usersService.getAll();
   }
 }

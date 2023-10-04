@@ -5,11 +5,11 @@ import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/ui';
 import { Logo } from '@/components';
 
 export type AuthLayoutProps = {
-  title: string;
   children: React.ReactNode;
+  title: string;
 };
 
-export const AuthLayout = ({ title, children }: AuthLayoutProps) => {
+export const AuthLayout = ({ children, title }: AuthLayoutProps) => {
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       <div className="flex w-[22rem] flex-col items-center rounded-2xl bg-white p-8 shadow-xl ring-1 ring-slate-900/5 dark:bg-slate-800">

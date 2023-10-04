@@ -2,16 +2,15 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import url from 'node:url';
 
+import { SetupState, TDataset } from '@databank/types';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-
-import { SetupState, TDataset } from '@databank/types';
 import mongoose from 'mongoose';
-
-import { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import { UsersService } from '@/users/users.service.js';
+
+import { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,19 +23,8 @@ export class SetupService {
     private readonly usersService: UsersService
   ) {}
 
-  async initApp({ admin }: SetupDto) {
-    if (await this.isSetup()) {
-      throw new ForbiddenException();
-    }
-    await this.connection.dropDatabase();
-    const user = await this.createAdmin(admin);
-
-    const iris = await this.loadStarterDataset('iris.json');
-    await this.datasetsService.createDataset(iris, user.toObject());
-  }
-
-  async getState(): Promise<SetupState> {
-    return { isSetup: await this.isSetup() };
+  private async createAdmin(admin: CreateAdminDto) {
+    return this.usersService.createUser({ ...admin, isVerified: true, role: 'admin' });
   }
 
   private async isSetup() {
@@ -50,12 +38,23 @@ export class SetupService {
     return false;
   }
 
-  private async createAdmin(admin: CreateAdminDto) {
-    return this.usersService.createUser({ ...admin, isVerified: true, role: 'admin' });
-  }
-
   private async loadStarterDataset(filename: string) {
     const content = await fs.readFile(path.resolve(__dirname, 'resources', filename), 'utf-8');
     return JSON.parse(content) as TDataset;
+  }
+
+  async getState(): Promise<SetupState> {
+    return { isSetup: await this.isSetup() };
+  }
+
+  async initApp({ admin }: SetupDto) {
+    if (await this.isSetup()) {
+      throw new ForbiddenException();
+    }
+    await this.connection.dropDatabase();
+    const user = await this.createAdmin(admin);
+
+    const iris = await this.loadStarterDataset('iris.json');
+    await this.datasetsService.createDataset(iris, user.toObject());
   }
 }

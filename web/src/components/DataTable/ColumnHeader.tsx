@@ -5,11 +5,11 @@ import { ChevronDownIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/2
 import { useTranslation } from 'react-i18next';
 
 export type ColumnHeaderProps = {
-  label: string;
   field: string;
-  width: number;
-  setColumnToEdit: (column: string) => void;
+  label: string;
   setColumnToDelete: (column: string) => void;
+  setColumnToEdit: (column: string) => void;
+  width: number;
 };
 
 export const ColumnHeader = (props: ColumnHeaderProps) => {

@@ -10,8 +10,8 @@ void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    defaultNS: 'translation',
     debug: false,
+    defaultNS: 'translation',
     fallbackLng: 'en' satisfies Locale,
     interpolation: {
       escapeValue: false
