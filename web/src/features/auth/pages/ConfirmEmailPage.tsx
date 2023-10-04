@@ -25,7 +25,7 @@ export const VerifyAccountPage = () => {
   }, []);
 
   useEffect(() => {
-    if (auth.currentUser?.isVerified) {
+    if (auth.currentUser?.verifiedAt) {
       navigate('/portal/dashboard');
     }
   }, [auth.currentUser]);

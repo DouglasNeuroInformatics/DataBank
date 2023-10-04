@@ -1,8 +1,11 @@
 import { SetupOptions } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
+import { MergeDeep } from 'type-fest';
 
-type SetupData = SetupOptions['admin'];
+type SetupData = MergeDeep<SetupOptions['admin'], {
+  verificationType: SetupOptions['setupConfig']['verificationInfo']['kind'], verificationRegex?: string
+}>;
 
 type SetupFormProps = {
   onSubmit: (data: SetupOptions) => void;
@@ -63,12 +66,49 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
           password: {
             type: 'string',
             pattern: isStrongPassword.source
+          },
+          verificationType: {
+            type: 'string'
+          },
+          verificationRegex: {
+            type: 'string',
+            nullable: true
           }
         },
-        required: ['firstName', 'lastName', 'email', 'password']
+        required: ['firstName', 'lastName', 'email', 'password', 'verificationType']
       }}
       onSubmit={(data) => {
-        onSubmit({ admin: data });
+        if (data.verificationRegex){
+          onSubmit({
+            admin: {
+              firstName: data.firstName,
+              lastName: data.lastName,
+              email: data.email,
+              password: data.password
+            },
+            setupConfig: {
+              verificationInfo: {
+                kind: data.verificationType,
+                regex: new RegExp(data.verificationRegex)
+              }
+            }
+          });
+        } else if (data.verificationType === 'MANUAL_VERIFICATION' || data.verificationType === 'VERIFICATION_UPON_CONFIRM_EMAIL') {
+          onSubmit({
+            admin: {
+              firstName: data.firstName,
+              lastName: data.lastName,
+              email: data.email,
+              password: data.password
+            },
+            setupConfig: {
+              verificationInfo: {
+                kind: data.verificationType,
+              }
+            }
+          });
+        }
+        
       }}
     />
   );
