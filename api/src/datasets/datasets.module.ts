@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { DatasetsController } from './datasets.controller.js';
-import { DatasetsService } from './datasets.service.js';
-import { Dataset, DatasetSchema } from './schemas/dataset.schema.js';
+import { DatasetsController } from './datasets.controller';
+import { DatasetsService } from './datasets.service';
+import { Dataset, DatasetSchema } from './schemas/dataset.schema';
 
 @Module({
   controllers: [DatasetsController],

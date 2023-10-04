@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { DatasetsModule } from '@/datasets/datasets.module.js';
-import { UsersModule } from '@/users/users.module.js';
+import { DatasetsModule } from '@/datasets/datasets.module';
+import { UsersModule } from '@/users/users.module';
 
-import { SetupController } from './setup.controller.js';
-import { SetupService } from './setup.service.js';
+import { SetupController } from './setup.controller';
+import { SetupService } from './setup.service';
 
 @Module({
   controllers: [SetupController],

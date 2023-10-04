@@ -2,7 +2,7 @@ import type { TUser, UserRole } from '@databank/types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type HydratedDocument } from 'mongoose';
 
-import { VerificationCode, VerificationCodeSchema } from '@/auth/schemas/verification-code.schema.js';
+import { VerificationCode, VerificationCodeSchema } from '@/auth/schemas/verification-code.schema';
 
 @Schema({
   toObject: {

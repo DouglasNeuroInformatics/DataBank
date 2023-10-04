@@ -2,7 +2,7 @@ import type { DatasetEntry, DatasetLicense, TDataset } from '@databank/types';
 import { Type } from 'class-transformer';
 import { ArrayMinSize, IsArray, IsIn, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
-import { DatasetColumnDto } from './dataset-column.dto.js';
+import { DatasetColumnDto } from './dataset-column.dto';
 
 export class CreateDatasetDto<T extends DatasetEntry = DatasetEntry>
   implements Omit<TDataset<T>, '_id' | 'createdAt' | 'owner' | 'updatedAt'>

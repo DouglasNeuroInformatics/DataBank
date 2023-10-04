@@ -2,9 +2,9 @@ import type { DatasetEntry, DatasetLicense, TDataset } from '@databank/types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
-import { User } from '@/users/schemas/user.schema.js';
+import { User } from '@/users/schemas/user.schema';
 
-import { DatasetColumn, DatasetColumnSchema } from './dataset-column.schema.js';
+import { DatasetColumn, DatasetColumnSchema } from './dataset-column.schema';
 
 @Schema({
   strict: 'throw',

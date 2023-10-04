@@ -6,7 +6,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { type Request } from 'express';
 
-import { type ProtectedRouteAccess, type RouteAccessType } from '../core/decorators/route-access.decorator.js';
+import { type ProtectedRouteAccess, type RouteAccessType } from '../core/decorators/route-access.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

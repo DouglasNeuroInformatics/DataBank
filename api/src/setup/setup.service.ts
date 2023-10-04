@@ -7,10 +7,10 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
-import { DatasetsService } from '@/datasets/datasets.service.js';
-import { UsersService } from '@/users/users.service.js';
+import { DatasetsService } from '@/datasets/datasets.service';
+import { UsersService } from '@/users/users.service';
 
-import { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
+import { CreateAdminDto, SetupDto } from './dto/setup.dto';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

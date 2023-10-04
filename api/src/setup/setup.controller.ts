@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { RouteAccess } from '@/core/decorators/route-access.decorator.js';
+import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
-import { SetupDto } from './dto/setup.dto.js';
-import { SetupService } from './setup.service.js';
+import { SetupDto } from './dto/setup.dto';
+import { SetupService } from './setup.service';
 
 @ApiTags('Setup')
 @Controller({ path: 'setup' })

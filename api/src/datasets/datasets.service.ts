@@ -3,9 +3,9 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, type ObjectId } from 'mongoose';
 
-import { CreateDatasetDto } from './dto/create-dataset.dto.js';
-import { UpdateDatasetColumnDto } from './dto/dataset-column.dto.js';
-import { Dataset } from './schemas/dataset.schema.js';
+import { CreateDatasetDto } from './dto/create-dataset.dto';
+import { UpdateDatasetColumnDto } from './dto/dataset-column.dto';
+import { Dataset } from './schemas/dataset.schema';
 
 @Injectable()
 export class DatasetsService {

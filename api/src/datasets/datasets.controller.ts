@@ -4,12 +4,12 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestj
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { type ObjectId } from 'mongoose';
 
-import { RouteAccess } from '@/core/decorators/route-access.decorator.js';
-import { UserId } from '@/core/decorators/user-id.decorator.js';
+import { RouteAccess } from '@/core/decorators/route-access.decorator';
+import { UserId } from '@/core/decorators/user-id.decorator';
 
-import { DatasetsService } from './datasets.service.js';
-import { CreateDatasetDto } from './dto/create-dataset.dto.js';
-import { UpdateDatasetColumnDto } from './dto/dataset-column.dto.js';
+import { DatasetsService } from './datasets.service';
+import { CreateDatasetDto } from './dto/create-dataset.dto';
+import { UpdateDatasetColumnDto } from './dto/dataset-column.dto';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })

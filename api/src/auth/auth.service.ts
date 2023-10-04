@@ -12,14 +12,14 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { I18nService } from '@/i18n/i18n.service.js';
-import { MailService } from '@/mail/mail.service.js';
-import { User, type UserDocument } from '@/users/schemas/user.schema.js';
+import { I18nService } from '@/i18n/i18n.service';
+import { MailService } from '@/mail/mail.service';
+import { User, type UserDocument } from '@/users/schemas/user.schema';
 
-import { UsersService } from '../users/users.service.js';
-import { CreateAccountDto } from './dto/create-account.dto.js';
-import { VerifyAccountDto } from './dto/verify-account.dto.js';
-import { VerificationCode } from './schemas/verification-code.schema.js';
+import { UsersService } from '../users/users.service';
+import { CreateAccountDto } from './dto/create-account.dto';
+import { VerifyAccountDto } from './dto/verify-account.dto';
+import { VerificationCode } from './schemas/verification-code.schema';
 
 @Injectable()
 export class AuthService {
