@@ -1,6 +1,5 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
 import type { EmailConfirmationProcedureInfo } from '@databank/types';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema()
 export class ConfirmEmailCode implements EmailConfirmationProcedureInfo {

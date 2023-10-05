@@ -28,7 +28,7 @@ export class AuthController {
     return this.authService.login(email, password);
   }
 
-  @ApiOperation({ summary: 'Request Confirm Email Code', description: 'Request a confirm email code' })
+  @ApiOperation({ description: 'Request a confirm email code', summary: 'Request Confirm Email Code' })
   @Post('confirmation-code')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   sendConfirmEmailCode(@Req() request: Request) {

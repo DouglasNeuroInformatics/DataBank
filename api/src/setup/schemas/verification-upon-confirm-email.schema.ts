@@ -1,6 +1,5 @@
+import type { TVerificationUponConfirmEmail } from '@databank/types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
-import { TVerificationUponConfirmEmail } from '@databank/types';
 
 @Schema()
 export class VerificationUponConfirmEmail implements TVerificationUponConfirmEmail {

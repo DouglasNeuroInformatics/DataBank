@@ -10,8 +10,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({
-    summary: 'Create User',
-    description: 'Create a user with any permission level without requiring email confirmation, manually setting their verification status.'
+    description: 'Create a user with any permission level without requiring email confirmation, manually setting their verification status.',
+    summary: 'Create User'
   })
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {

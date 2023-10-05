@@ -1,6 +1,5 @@
+import type { TManualVerification } from '@databank/types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
-import { TManualVerification } from '@databank/types';
 
 @Schema()
 export class ManualVerification implements TManualVerification {

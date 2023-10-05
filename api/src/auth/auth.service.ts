@@ -12,16 +12,15 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { UsersService } from '../users/users.service';
+import { I18nService } from '@/i18n/i18n.service';
+import { MailService } from '@/mail/mail.service';
+import { SetupService } from '@/setup/setup.service';
+import { User, type UserDocument } from '@/users/schemas/user.schema';
 
+import { UsersService } from '../users/users.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
 import { ConfirmEmailCode } from './schemas/confirm-email-code.schema';
-
-import { I18nService } from '@/i18n/i18n.service';
-import { MailService } from '@/mail/mail.service';
-import { User, type UserDocument } from '@/users/schemas/user.schema';
-import type { SetupService } from '@/setup/setup.service';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +33,12 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly setupService: SetupService
   ) {}
+
+  private async signToken(user: UserDocument) {
+    const { confirmedAt, email, firstName, lastName, role, verifiedAt } = user;
+    const payload: CurrentUser = { confirmedAt, email, firstName, id: user.id as string, lastName, role, verifiedAt };
+    return this.jwtService.signAsync(payload);
+  }
 
   /** Create a new standard account with verification required */
   async createAccount(createAccountDto: CreateAccountDto): Promise<User> {
@@ -77,9 +82,9 @@ export class AuthService {
     }
 
     await this.mailService.sendMail({
-      to: user.email,
       subject: this.i18n.translate(locale, 'confirmationEmail.body'),
-      text: this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailCode.value}`
+      text: this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailCode.value}`,
+      to: user.email
     });
     return { attemptsMade: confirmEmailCode.attemptsMade, expiry: confirmEmailCode.expiry };
   }
@@ -133,11 +138,5 @@ export class AuthService {
     const accessToken = await this.signToken(user);
 
     return { accessToken };
-  }
-
-  private async signToken(user: UserDocument) {
-    const { email, firstName, lastName, role, verifiedAt, confirmedAt } = user;
-    const payload: CurrentUser = { id: user.id as string, firstName, lastName, email, role, verifiedAt, confirmedAt };
-    return this.jwtService.signAsync(payload);
   }
 }

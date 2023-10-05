@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
 
   /** Insert a new user into the database */
-  async createUser({ email, password, isVerified, verifiedAt,...rest }: CreateUserDto) {
+  async createUser({ email, password, verifiedAt,...rest }: CreateUserDto) {
     const exists = await this.userModel.exists({ email });
     if (exists) {
       throw new ConflictException(`User with provided email already exists: ${email}`);

@@ -1,6 +1,5 @@
+import type { TVerificationWithRegex } from '@databank/types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
-import { TVerificationWithRegex } from '@databank/types';
 
 @Schema()
 export class VerificationWithRegex implements TVerificationWithRegex {

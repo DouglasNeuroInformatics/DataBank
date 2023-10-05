@@ -13,6 +13,13 @@ import { ConfirmEmailCode, ConfirmEmailCodeSchema } from '@/auth/schemas/confirm
   }
 })
 export class User implements TUser {
+  @Prop({ required: false, type: ConfirmEmailCodeSchema })
+  confirmEmailCode?: ConfirmEmailCode;
+
+  /** The timestamp when the user confirmed their email */
+  @Prop({ required: false })
+  confirmedAt?: number;
+
   @Prop({ required: true, unique: true })
   email: string;
 
@@ -34,13 +41,6 @@ export class User implements TUser {
   /** The timestamp when the user verified their account */
   @Prop({ required: false })
   verifiedAt?: number;
-
-  /** The timestamp when the user confirmed their email */
-  @Prop({ required: false })
-  confirmedAt?: number;
-
-  @Prop({ required: false, type: ConfirmEmailCodeSchema })
-  confirmEmailCode?: ConfirmEmailCode;
 }
 
 export type UserDocument = HydratedDocument<User>;

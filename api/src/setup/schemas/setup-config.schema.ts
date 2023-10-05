@@ -5,8 +5,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 export class SetupConfig implements TSetupConfig{
   /** verification info stored in setup config, more setup config objects can be added later if needed */
   @Prop({
-    type: Object,
-    required: true
+    required: true,
+    type: Object
   })
   verificationInfo: TVerificationInfo;
 }

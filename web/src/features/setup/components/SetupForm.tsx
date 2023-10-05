@@ -1,10 +1,11 @@
+/* eslint-disable perfectionist/sort-objects */
 import type { SetupOptions } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
-import { MergeDeep } from 'type-fest';
+import type { MergeDeep } from 'type-fest';
 
 type SetupData = MergeDeep<SetupOptions['admin'], {
-  verificationType: SetupOptions['setupConfig']['verificationInfo']['kind'], verificationRegex?: string
+  verificationRegex?: string, verificationType: SetupOptions['setupConfig']['verificationInfo']['kind']
 }>;
 
 type SetupFormProps = {
@@ -46,16 +47,15 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
           title: t('setup.admin.title')
         },
         {
-          title: 'User Verification Options',
           description: 'Admin selects the method for user verification',
           fields: {
             verificationType: {
               kind: 'options',
               label: 'Verification Method',
               options: {
-                'VERIFICATION_WITH_REGEX': 'Verify users by matching their emails with a predefined regex',
+                'MANUAL_VERIFICATION': 'Manually verify users by the admin',
                 'VERIFICATION_UPON_CONFIRM_EMAIL': 'Automatically Verifiy users when they confirm their emails',
-                'MANUAL_VERIFICATION': 'Manually verify users by the admin'
+                'VERIFICATION_WITH_REGEX': 'Verify users by matching their emails with a predefined regex'
               }
             },
             verificationRegex: (data) => {
@@ -68,7 +68,8 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               }
               return null;
             }
-          }
+          },
+          title: 'User Verification Options'
         }
       ]}
       submitBtnLabel={t('submit')}
@@ -88,26 +89,27 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
             type: 'string'
           },
           password: {
-            type: 'string',
-            pattern: isStrongPassword.source
-          },
-          verificationType: {
+            pattern: isStrongPassword.source,
             type: 'string'
           },
           verificationRegex: {
-            type: 'string',
-            nullable: true
+            nullable: true,
+            type: 'string'
+          },
+          verificationType: {
+            type: 'string'
           }
         },
-        required: ['firstName', 'lastName', 'email', 'password', 'verificationType']
+        required: ['firstName', 'lastName', 'email', 'password', 'verificationType'],
+        type: 'object'
       }}
       onSubmit={(data) => {
         if (data.verificationRegex){
           onSubmit({
             admin: {
+              email: data.email,
               firstName: data.firstName,
               lastName: data.lastName,
-              email: data.email,
               password: data.password
             },
             setupConfig: {
@@ -120,9 +122,9 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
         } else if (data.verificationType === 'MANUAL_VERIFICATION' || data.verificationType === 'VERIFICATION_UPON_CONFIRM_EMAIL') {
           onSubmit({
             admin: {
+              email: data.email,
               firstName: data.firstName,
               lastName: data.lastName,
-              email: data.email,
               password: data.password
             },
             setupConfig: {

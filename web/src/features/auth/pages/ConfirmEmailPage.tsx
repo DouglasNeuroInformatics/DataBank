@@ -10,8 +10,8 @@ import { SuspenseFallback } from '@/components';
 import { useAuthStore } from '@/stores/auth-store';
 
 import { AuthLayout } from '../components/AuthLayout';
-import { Countdown } from '../components/Countdown';
 import { ConfirmEmailCodeInput } from '../components/ConfirmEmailCodeInput';
+import { Countdown } from '../components/Countdown';
 
 export const VerifyAccountPage = () => {
   const auth = useAuthStore();
