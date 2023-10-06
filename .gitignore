@@ -129,5 +129,3 @@ dist
 .pnp.*
 
 .env
-
-scripts/
