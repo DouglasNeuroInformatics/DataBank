@@ -11,6 +11,7 @@
     "build": "env-cmd turbo run build",
     "clean": "fd -H -I --prune 'dist|node_modules' --exec rm -rf",
     "dev": "env-cmd turbo run dev",
+    "force-reinstall": "bun pm cache rm && bun clean && bun install",
     "format": "turbo run format",
     "lint": "turbo run lint",
     "prepare": "husky install",
