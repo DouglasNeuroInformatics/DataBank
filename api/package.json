@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "env-cmd -f ../.env cross-env NODE_ENV=development bun --watch src/main.ts",
     "format": "prettier --write src",
-    "lint": "tsc && eslint --fix src"
+    "lint": "tsc && eslint --fix src",
+    "test:e2e": "bun test test/"
   },
   "dependencies": {
     "@douglasneuroinformatics/nestjs": "latest",
