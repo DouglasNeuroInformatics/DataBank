@@ -13,6 +13,7 @@
     "dev": "env-cmd turbo run dev",
     "format": "turbo run format",
     "lint": "turbo run lint",
+    "prepare": "husky install",
     "test": "env-cmd turbo run test"
   },
   "devDependencies": {
@@ -28,6 +29,7 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.33.2",
     "globals": "^13.22.0",
+    "husky": "^8.0.0",
     "prettier": "^3.0.3",
     "turbo": "^1.10.14",
     "typescript": "^5.2.2"
