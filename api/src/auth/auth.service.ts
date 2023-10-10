@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   /** Create a new standard account with verification required */
-  async createAccount(createAccountDto: CreateAccountDto): Promise<User> {
+  async createAccount(createAccountDto: CreateAccountDto): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({ ...createAccountDto, isVerified: false, role: 'standard' });
   }
 
@@ -128,11 +128,13 @@ export class AuthService {
 
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
     const verificationInfo = await this.setupService.getVerificationInfo();
-    const isVerified = verificationInfo.kind === "VERIFICATION_UPON_CONFIRM_EMAIL" || (verificationInfo.kind === "VERIFICATION_WITH_REGEX" && verificationInfo.regex.test(user.email))
+    const isVerified =
+      verificationInfo.kind === 'VERIFICATION_UPON_CONFIRM_EMAIL' ||
+      (verificationInfo.kind === 'VERIFICATION_WITH_REGEX' && verificationInfo.regex.test(user.email));
     if (isVerified) {
       user.verifiedAt = Date.now();
     }
-    
+
     await user.save();
 
     const accessToken = await this.signToken(user);

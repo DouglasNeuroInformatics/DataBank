@@ -12,7 +12,6 @@ export class DatasetsService {
   constructor(@InjectModel(Dataset.name) private datasetModel: Model<Dataset>) {}
 
   createDataset(createDatasetDto: CreateDatasetDto, ownerId: ObjectId) {
-    console.log(createDatasetDto, ownerId);
     return this.datasetModel.create({ ...createDatasetDto, owner: ownerId });
   }
 

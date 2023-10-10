@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import url from 'node:url';
 
 import type { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
 import type { SetupState, TDataset } from '@databank/types';
@@ -13,9 +12,6 @@ import { UsersService } from '@/users/users.service.js';
 
 import { SetupConfig } from './schemas/setup-config.schema.js';
 
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 @Injectable()
 export class SetupService {
   constructor(
@@ -24,7 +20,7 @@ export class SetupService {
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) {}
-  
+
   private async createAdmin(admin: CreateAdminDto) {
     return this.usersService.createUser({ ...admin, isVerified: true, role: 'admin' });
   }
@@ -41,13 +37,15 @@ export class SetupService {
   }
 
   private async loadStarterDataset(filename: string) {
-    const content = await fs.readFile(path.resolve(__dirname, 'resources', filename), 'utf-8');
+    const content = await fs.readFile(path.resolve(import.meta.dir, 'resources', filename), 'utf-8');
     return JSON.parse(content) as TDataset;
   }
 
   async getSetupConfig() {
     const setupConfig = await this.setupConfigModel.findOne();
-    if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
+    if (!setupConfig) {
+      throw new NotFoundException('Setup Config not found in the database.');
+    }
     return setupConfig;
   }
 
@@ -57,8 +55,8 @@ export class SetupService {
 
   async getVerificationInfo() {
     const verificationInfo = (await this.getSetupConfig()).verificationInfo;
-    if (!verificationInfo) { 
-      throw new NotFoundException('Cannot access verification info.')
+    if (!verificationInfo) {
+      throw new NotFoundException('Cannot access verification info.');
     }
     return verificationInfo;
   }
