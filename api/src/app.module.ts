@@ -1,3 +1,4 @@
+import { LoggerMiddleware } from '@douglasneuroinformatics/nestjs/core';
 import { CryptoModule, DatabaseModule } from '@douglasneuroinformatics/nestjs/modules';
 import { type MiddlewareConsumer, Module, type NestModule, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -6,7 +7,6 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthModule } from './auth/auth.module';
 import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware';
-import { LoggerMiddleware } from './core/middleware/logger.middleware';
 import { DatasetsModule } from './datasets/datasets.module';
 import { I18nModule } from './i18n/i18n.module';
 import { SetupModule } from './setup/setup.module';
