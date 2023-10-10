@@ -1,8 +1,7 @@
-import { CryptoModule } from '@douglasneuroinformatics/nestjs/modules';
+import { CryptoModule, DatabaseModule } from '@douglasneuroinformatics/nestjs/modules';
 import { type MiddlewareConsumer, Module, type NestModule, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthModule } from './auth/auth.module';
@@ -26,19 +25,18 @@ import { UsersModule } from './users/users.module';
         secretKey: configService.getOrThrow('SECRET_KEY')
       })
     }),
-    DatasetsModule,
-    I18nModule,
-    MongooseModule.forRootAsync({
+    DatabaseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const env = configService.getOrThrow<string>('NODE_ENV');
-        const mongoUri = configService.getOrThrow<string>('MONGO_URI');
         return {
-          ignoreUndefined: true,
-          uri: `${mongoUri}/databank-${env}`
+          dbName: `databank-${env}`,
+          mongoUri: configService.getOrThrow<string>('MONGO_URI')
         };
       }
     }),
+    DatasetsModule,
+    I18nModule,
     SetupModule,
     ThrottlerModule.forRoot([
       {
