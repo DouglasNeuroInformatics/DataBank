@@ -4,9 +4,13 @@ import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 import type { MergeDeep } from 'type-fest';
 
-type SetupData = MergeDeep<SetupOptions['admin'], {
-  verificationRegex?: string, verificationType: SetupOptions['setupConfig']['verificationInfo']['kind']
-}>;
+type SetupData = MergeDeep<
+  SetupOptions['admin'],
+  {
+    verificationRegex?: string;
+    verificationType: SetupOptions['setupConfig']['verificationInfo']['kind'];
+  }
+>;
 
 type SetupFormProps = {
   onSubmit: (data: SetupOptions) => void;
@@ -53,9 +57,9 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               kind: 'options',
               label: 'Verification Method',
               options: {
-                'MANUAL_VERIFICATION': 'Manually verify users by the admin',
-                'VERIFICATION_UPON_CONFIRM_EMAIL': 'Automatically Verifiy users when they confirm their emails',
-                'VERIFICATION_WITH_REGEX': 'Verify users by matching their emails with a predefined regex'
+                MANUAL_VERIFICATION: 'Manually verify users by the admin',
+                VERIFICATION_UPON_CONFIRM_EMAIL: 'Automatically Verifiy users when they confirm their emails',
+                VERIFICATION_WITH_REGEX: 'Verify users by matching their emails with a predefined regex'
               }
             },
             verificationRegex: (data) => {
@@ -64,7 +68,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
                   kind: 'text',
                   label: 'Regular expression',
                   variant: 'short'
-                }
+                };
               }
               return null;
             }
@@ -104,7 +108,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
         type: 'object'
       }}
       onSubmit={(data) => {
-        if (data.verificationRegex){
+        if (data.verificationRegex) {
           onSubmit({
             admin: {
               email: data.email,
@@ -119,7 +123,10 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               }
             }
           });
-        } else if (data.verificationType === 'MANUAL_VERIFICATION' || data.verificationType === 'VERIFICATION_UPON_CONFIRM_EMAIL') {
+        } else if (
+          data.verificationType === 'MANUAL_VERIFICATION' ||
+          data.verificationType === 'VERIFICATION_UPON_CONFIRM_EMAIL'
+        ) {
           onSubmit({
             admin: {
               email: data.email,
@@ -129,7 +136,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
             },
             setupConfig: {
               verificationInfo: {
-                kind: data.verificationType,
+                kind: data.verificationType
               }
             }
           });
@@ -138,4 +145,3 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
     />
   );
 };
-
