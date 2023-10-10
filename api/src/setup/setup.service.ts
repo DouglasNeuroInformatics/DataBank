@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import url from 'node:url';
 
 import type { SetupState, TDataset } from '@databank/types';
 import { ForbiddenException, Injectable } from '@nestjs/common';
@@ -11,9 +10,6 @@ import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
 
 import { CreateAdminDto, SetupDto } from './dto/setup.dto';
-
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 @Injectable()
 export class SetupService {
@@ -39,7 +35,7 @@ export class SetupService {
   }
 
   private async loadStarterDataset(filename: string) {
-    const content = await fs.readFile(path.resolve(__dirname, 'resources', filename), 'utf-8');
+    const content = await fs.readFile(path.resolve(import.meta.dir, 'resources', filename), 'utf-8');
     return JSON.parse(content) as TDataset;
   }
 
