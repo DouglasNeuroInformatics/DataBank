@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 
-import { HttpStatus } from '@nestjs/common';
+// import { HttpStatus } from '@nestjs/common';
 import { type NestExpressApplication } from '@nestjs/platform-express';
 import { Test } from '@nestjs/testing';
-import request from 'supertest';
+// import request from 'supertest';
 
 import { AppModule } from '@/app.module';
 import { AuthGuard } from '@/auth/auth.guard';
@@ -33,6 +30,7 @@ describe('/app', () => {
 
   it('should be defined', () => {
     expect(app).toBeDefined();
+    expect(server).toBeDefined();
   });
 
   // describe('/users', () => {
