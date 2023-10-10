@@ -39,7 +39,7 @@ export class AuthService {
   }
 
   /** Create a new standard account with verification required */
-  async createAccount(createAccountDto: CreateAccountDto): Promise<User> {
+  async createAccount(createAccountDto: CreateAccountDto): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({ ...createAccountDto, isVerified: false, role: 'standard' });
   }
 

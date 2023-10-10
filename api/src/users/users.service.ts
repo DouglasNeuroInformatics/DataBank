@@ -2,9 +2,10 @@ import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import type { SetOptional } from 'type-fest';
 
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './schemas/user.schema';
+import { User, type UserDocument } from './schemas/user.schema';
 
 @Injectable()
 export class UsersService {
@@ -14,19 +15,28 @@ export class UsersService {
   ) {}
 
   /** Insert a new user into the database */
-  async createUser({ email, isVerified, password, ...rest }: CreateUserDto) {
+  async createUser({
+    email,
+    isVerified,
+    password,
+    ...rest
+  }: CreateUserDto): Promise<Omit<UserDocument, 'hashedPassword'>> {
     const exists = await this.userModel.exists({ email });
     if (exists) {
       throw new ConflictException(`User with provided email already exists: ${email}`);
     }
     const hashedPassword = await this.cryptoService.hashPassword(password);
-    return this.userModel.create({
+    const createdUser = await this.userModel.create({
       email,
       hashedPassword,
       isVerified,
       verifiedAt: isVerified ? Date.now() : undefined,
       ...rest
     });
+
+    const returnedUser: SetOptional<UserDocument, 'hashedPassword'> = createdUser;
+    delete returnedUser.hashedPassword;
+    return returnedUser;
   }
 
   /** Return the user with the provided email, or null if no such user exists */
