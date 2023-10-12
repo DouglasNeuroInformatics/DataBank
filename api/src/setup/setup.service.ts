@@ -22,7 +22,7 @@ export class SetupService {
   ) {}
 
   private async createAdmin(admin: CreateAdminDto) {
-    return this.usersService.createUser({ ...admin, isVerified: true, role: 'admin' });
+    return this.usersService.createUser({ ...admin, isVerified: true, role: 'admin', verifiedAt: Date.now() });
   }
 
   private async isSetup() {
