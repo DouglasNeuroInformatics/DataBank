@@ -114,11 +114,10 @@ describe('SetupService', () => {
       connection.db.listCollections.mockImplementationOnce(() => ({
         toArray: () => [{ name: 'collection name' }]
       }));
-      connection.collection.mockImplementationOnce((name) => ({
+      connection.collection.mockImplementationOnce(() => ({
         countDocuments: () => {
           return 1;
-        },
-        len: name.length
+        }
       }));
       expect(setupService.getState()).resolves.toEqual({
         isSetup: true
