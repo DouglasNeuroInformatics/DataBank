@@ -52,4 +52,21 @@ describe('AuthService', () => {
     createAccountDto = createAccountDtoStubFactory();
     createUserDto = createUserDtoStubFactory();
   });
+
+  describe('createAccount', () => {
+    it('calls the usersService.createUser and returns the created account', async () => {
+      usersService.createUser.mockResolvedValue({
+        ...createAccountDto,
+        isVerified: false,
+        role: 'standard'
+      });
+
+      const result = await authService.createAccount(createAccountDto);
+      expect(result).toMatchObject({
+        ...createAccountDto,
+        isVerified: false,
+        role: 'standard'
+      });
+    });
+  });
   });
