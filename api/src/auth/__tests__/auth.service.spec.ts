@@ -1,3 +1,22 @@
+import { beforeEach, describe, expect, it, spyOn } from 'bun:test';
+
+import type { CreateAccountDto } from '../dto/create-account.dto';
+import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
+import { type MockedInstance, createMock } from '@douglasneuroinformatics/nestjs/testing';
+import { UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { Test } from '@nestjs/testing';
+
+import { I18nService } from '@/i18n/i18n.service';
+import { MailService } from '@/mail/mail.service';
+import { createUserDtoStubFactory } from '@/users/__tests__/stubs/create-user.dto.stub';
+import type { CreateUserDto } from '@/users/dto/create-user.dto';
+import { UsersService } from '@/users/users.service';
+
+import { AuthService } from '../auth.service';
+import { createAccountDtoStubFactory } from './stubs/create-account.dto.stub';
+
 describe('AuthService', () => {
   let authService: AuthService;
   let usersService: MockedInstance<UsersService>;
@@ -95,4 +114,4 @@ describe('AuthService', () => {
       expect(result.accessToken).toEqual('accessToken');
     });
   });
-  });
+});
