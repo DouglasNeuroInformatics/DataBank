@@ -44,4 +44,12 @@ describe('AuthService', () => {
   it('should be defined', () => {
     expect(authService).toBeDefined();
   });
+
+  let createAccountDto: CreateAccountDto;
+  let createUserDto: CreateUserDto;
+
+  beforeEach(() => {
+    createAccountDto = createAccountDtoStubFactory();
+    createUserDto = createUserDtoStubFactory();
+  });
   });
