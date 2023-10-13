@@ -40,4 +40,8 @@ describe('AuthService', () => {
     cryptoService = moduleRef.get(CryptoService);
     jwtService = moduleRef.get(JwtService);
   });
+
+  it('should be defined', () => {
+    expect(authService).toBeDefined();
+  });
   });
