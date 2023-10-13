@@ -69,4 +69,30 @@ describe('AuthService', () => {
       });
     });
   });
+
+  describe('login', () => {
+    beforeEach(() => {
+      spyOn(usersService, 'findByEmail').mockResolvedValue(createUserDto);
+      spyOn(cryptoService, 'comparePassword').mockResolvedValue(true);
+      spyOn(jwtService, 'signAsync').mockResolvedValue('accessToken');
+    });
+
+    it('should throw an UnauthorizedException when given an invalid email when calling usersService.findByEmail', () => {
+      const password = createUserDto.password;
+      usersService.findByEmail.mockResolvedValue(undefined);
+      expect(authService.login('invalid@example.com', password)).rejects.toBeInstanceOf(UnauthorizedException);
+    });
+
+    it('should throw an UnauthorizedException when given an invalid password when calling cryptoService.comparePassword', () => {
+      const email = createUserDto.email;
+      cryptoService.comparePassword.mockResolvedValue(false);
+      expect(authService.login(email, 'inalidPassword')).rejects.toBeInstanceOf(UnauthorizedException);
+    });
+
+    it('should return an access token when given valid credentials', async () => {
+      const { email, password } = createUserDto;
+      const result = await authService.login(email, password);
+      expect(result.accessToken).toEqual('accessToken');
+    });
+  });
   });
