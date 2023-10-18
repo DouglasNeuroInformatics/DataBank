@@ -21,6 +21,9 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
 import { VerificationCode } from './schemas/verification-code.schema';
 
+const VALIDATION_TIMEOUT = 360000;
+const MAX_VALIDATION_ATTEMPTS = 3;
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -73,7 +76,7 @@ export class AuthService {
     } else {
       verificationCode = {
         attemptsMade: 0,
-        expiry: Date.now() + parseInt(this.config.getOrThrow('VALIDATION_TIMEOUT')),
+        expiry: Date.now() + VALIDATION_TIMEOUT,
         value: randomInt(100000, 1000000)
       };
       await user.updateOne({ verificationCode });
@@ -100,7 +103,7 @@ export class AuthService {
       throw new ForbiddenException('Validation code is expired. Please request a new validation code.');
     }
 
-    const maxAttempts = parseInt(this.config.get('MAX_VALIDATION_ATTEMPTS')!);
+    const maxAttempts = MAX_VALIDATION_ATTEMPTS;
     if (!maxAttempts) {
       throw new InternalServerErrorException(
         `Environment variable 'MAX_VALIDATION_ATTEMPTS' must be set to a positive integer, not ${this.config.get(
@@ -109,7 +112,7 @@ export class AuthService {
       );
     }
 
-    if (user.verificationCode.attemptsMade > maxAttempts) {
+    if (user.verificationCode.attemptsMade >= maxAttempts) {
       throw new ForbiddenException(
         'Too many attempts to validate this code. Please request a new validation code after the timeout.'
       );
