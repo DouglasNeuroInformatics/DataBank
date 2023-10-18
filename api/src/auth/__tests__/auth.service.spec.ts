@@ -16,6 +16,8 @@ import { UsersService } from '@/users/users.service';
 
 import { AuthService } from '../auth.service';
 import { createAccountDtoStubFactory } from './stubs/create-account.dto.stub';
+import { currentUserStubFactory } from './stubs/current-user.stub';
+import { verifyAccountStubFactory } from './stubs/verify-account.dto.stub';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -66,10 +68,14 @@ describe('AuthService', () => {
 
   let createAccountDto: CreateAccountDto;
   let createUserDto: CreateUserDto;
+  let verifyAccountDto: VerifyAccountDto;
+  let currentUser: CurrentUser;
 
   beforeEach(() => {
     createAccountDto = createAccountDtoStubFactory();
     createUserDto = createUserDtoStubFactory();
+    verifyAccountDto = verifyAccountStubFactory();
+    currentUser = currentUserStubFactory();
   });
 
   describe('createAccount', () => {
