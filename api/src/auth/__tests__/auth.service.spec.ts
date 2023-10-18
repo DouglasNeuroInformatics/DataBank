@@ -19,6 +19,9 @@ import { createAccountDtoStubFactory } from './stubs/create-account.dto.stub';
 import { currentUserStubFactory } from './stubs/current-user.stub';
 import { verifyAccountStubFactory } from './stubs/verify-account.dto.stub';
 
+const validDate = Date.now() + 360000;
+const expiredDate = Date.now() - 10000;
+
 describe('AuthService', () => {
   let authService: AuthService;
   let usersService: MockedInstance<UsersService>;
