@@ -76,6 +76,7 @@ describe('AuthService', () => {
     createUserDto = createUserDtoStubFactory();
     verifyAccountDto = verifyAccountStubFactory();
     currentUser = currentUserStubFactory();
+    jwtService.signAsync.mockResolvedValue('accessToken');
   });
 
   describe('createAccount', () => {
@@ -97,9 +98,9 @@ describe('AuthService', () => {
 
   describe('login', () => {
     beforeEach(() => {
-      spyOn(usersService, 'findByEmail').mockResolvedValue(createUserDto);
-      spyOn(cryptoService, 'comparePassword').mockResolvedValue(true);
-      spyOn(jwtService, 'signAsync').mockResolvedValue('accessToken');
+      // can use spyOn insead: spyOn(usersService, 'findByEmail').mockResolvedValue(createUserDto);
+      usersService.findByEmail.mockResolvedValue(createUserDto);
+      cryptoService.comparePassword.mockResolvedValue(true);
     });
 
     it('should throw an UnauthorizedException when given an invalid email when calling usersService.findByEmail', () => {
