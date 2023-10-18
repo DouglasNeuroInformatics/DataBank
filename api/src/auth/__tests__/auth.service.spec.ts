@@ -100,15 +100,15 @@ describe('AuthService', () => {
     });
 
     it('should throw an UnauthorizedException when given an invalid email when calling usersService.findByEmail', () => {
-      const password = createUserDto.password;
+      const { password } = createUserDto;
       usersService.findByEmail.mockResolvedValue(undefined);
       expect(authService.login('invalid@example.com', password)).rejects.toBeInstanceOf(UnauthorizedException);
     });
 
     it('should throw an UnauthorizedException when given an invalid password when calling cryptoService.comparePassword', () => {
-      const email = createUserDto.email;
+      const { email } = createUserDto;
       cryptoService.comparePassword.mockResolvedValue(false);
-      expect(authService.login(email, 'inalidPassword')).rejects.toBeInstanceOf(UnauthorizedException);
+      expect(authService.login(email, 'invalidPassword')).rejects.toBeInstanceOf(UnauthorizedException);
     });
 
     it('should return an access token when given valid credentials', async () => {
