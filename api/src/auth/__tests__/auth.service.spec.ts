@@ -179,4 +179,120 @@ describe('AuthService', () => {
       expect(result.expiry).toBeGreaterThanOrEqual(Date.now());
     });
   });
+
+  describe('verifyAccount()', () => {
+    it('should throw NotFoundException if the user is not found when calling usersService.findByEmail', () => {
+      usersService.findByEmail.mockResolvedValue(undefined);
+      expect(authService.verifyAccount(verifyAccountDto, currentUser)).rejects.toBeInstanceOf(NotFoundException);
+    });
+
+    it('should throw ForbiddenException when a verification code is undefined', () => {
+      // Set the verificationCode object to be undefined
+      const user: User = {
+        email: 'test@example.com',
+        firstName: 'Test',
+        hashedPassword: 'hashedPassword',
+        isVerified: true,
+        lastName: 'User',
+        role: 'standard',
+        verificationCode: undefined
+      };
+      usersService.findByEmail.mockResolvedValue(user);
+      const result = authService.verifyAccount(verifyAccountDto, currentUser);
+      expect(result).rejects.toBeInstanceOf(ForbiddenException);
+    });
+
+    it('should throw ForbiddenException if the verificationCode.expiry < Date.now()', () => {
+      const user: User = {
+        email: 'test@example.com',
+        firstName: 'Test',
+        hashedPassword: 'hashedPassword',
+        isVerified: true,
+        lastName: 'User',
+        role: 'standard',
+        verificationCode: {
+          attemptsMade: 0,
+          expiry: expiredDate,
+          value: 456
+        }
+      };
+      usersService.findByEmail.mockResolvedValue(user);
+      const result = authService.verifyAccount(verifyAccountDto, currentUser);
+      expect(result).rejects.toBeInstanceOf(ForbiddenException);
+    });
+
+    it('should throw ForbiddenException if the maximum log in attempts is exceeded', () => {
+      //  Set the attemptsMade number to be larger than the maximum attempts
+      const exceededAttempts = 4;
+      const user: User = {
+        email: 'test@example.com',
+        firstName: 'Test',
+        hashedPassword: 'hashedPassword',
+        isVerified: true,
+        lastName: 'User',
+        role: 'standard',
+        verificationCode: {
+          attemptsMade: exceededAttempts,
+          expiry: validDate,
+          value: 456
+        }
+      };
+      usersService.findByEmail.mockResolvedValue(user);
+      const result = authService.verifyAccount(verifyAccountDto, currentUser);
+      expect(result).rejects.toBeInstanceOf(ForbiddenException);
+    });
+
+    it('should throw ForbiddenException if user.verficationCode.value does not equal VerifyAccountDto.code', () => {
+      //  Set the verificationCode.value to not be equal to the passed in user.
+      const wrongVerificationCodeValue = 456;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const user: User & Record<string, any> = {
+        email: 'test@example.com',
+        firstName: 'Test',
+        hashedPassword: 'hashedPassword',
+        isVerified: true,
+        lastName: 'User',
+        role: 'standard',
+        save: () => null,
+        verificationCode: {
+          attemptsMade: 1,
+          expiry: validDate,
+          value: wrongVerificationCodeValue
+        }
+      };
+      // mock the mongoose save() function
+      const mockSave = jest.fn(() => user.save());
+      mockSave.mockResolvedValue({});
+      usersService.findByEmail.mockResolvedValue(user);
+      const result = authService.verifyAccount(verifyAccountDto, currentUser);
+      expect(result).rejects.toBeInstanceOf(ForbiddenException);
+    });
+
+    it('should return the accessToken when the user is succesfully verified', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const user: User & Record<string, any> = {
+        email: 'test@example.com',
+        firstName: 'Test',
+        hashedPassword: 'hashedPassword',
+        isVerified: false,
+        lastName: 'User',
+        role: 'standard',
+        save: () => null,
+        verificationCode: {
+          attemptsMade: 1,
+          expiry: validDate,
+          value: 123
+        },
+        verifiedAt: 0
+      };
+      const mockSave = jest.fn(() => user.save());
+      mockSave.mockResolvedValue({});
+      usersService.findByEmail.mockResolvedValue(user);
+      const result = await authService.verifyAccount(verifyAccountDto, currentUser);
+      expect(user.verificationCode).toBeUndefined();
+      expect(user.verifiedAt).toBeWithin(Date.now(), validDate + 10000);
+      expect(user.isVerified).toBeTrue();
+      expect(result.accessToken).toEqual('accessToken');
+    });
+  });
 });
