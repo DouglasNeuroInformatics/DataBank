@@ -1,9 +1,11 @@
-import { beforeEach, describe, expect, it, spyOn } from 'bun:test';
+import { beforeEach, describe, expect, it, jest } from 'bun:test';
 
 import type { CreateAccountDto } from '../dto/create-account.dto';
+import type { VerifyAccountDto } from '../dto/verify-account.dto';
+import type { CurrentUser, Locale } from '@databank/types';
 import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 import { type MockedInstance, createMock } from '@douglasneuroinformatics/nestjs/testing';
-import { UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
@@ -12,6 +14,7 @@ import { I18nService } from '@/i18n/i18n.service';
 import { MailService } from '@/mail/mail.service';
 import { createUserDtoStubFactory } from '@/users/__tests__/stubs/create-user.dto.stub';
 import type { CreateUserDto } from '@/users/dto/create-user.dto';
+import type { User } from '@/users/schemas/user.schema';
 import { UsersService } from '@/users/users.service';
 
 import { AuthService } from '../auth.service';
