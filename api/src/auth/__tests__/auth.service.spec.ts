@@ -120,4 +120,63 @@ describe('AuthService', () => {
       expect(result.accessToken).toEqual('accessToken');
     });
   });
+
+  describe('sendVerificationCode', () => {
+    const locale: Locale = 'en';
+
+    it('should throw NotFoundException if the user is not found when calling usersService.findByEmail', () => {
+      usersService.findByEmail.mockResolvedValue(undefined);
+      expect(authService.sendVerificationCode(currentUser, locale)).rejects.toBeInstanceOf(NotFoundException);
+    });
+
+    it('should use an existing verification code if the date is not expired', async () => {
+      const user: User = {
+        email: 'test@example.com',
+        firstName: 'Test',
+        hashedPassword: 'hashedPassword',
+        isVerified: true,
+        lastName: 'User',
+        role: 'standard',
+        verificationCode: {
+          attemptsMade: 0,
+          expiry: validDate,
+          value: 456
+        }
+      };
+      usersService.findByEmail.mockResolvedValue(user);
+      const result = await authService.sendVerificationCode(currentUser, locale);
+      // check to see if the logic inside sendVerificationCode works with a valid date
+      expect(result.attemptsMade).toBe(0);
+      expect(result.expiry).toBe(validDate);
+    });
+
+    it('should update the user.verificationCode when the date is expired', async () => {
+      // Use Record<string, any> to have updateOne function within the User type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const user: User & Record<string, any> = {
+        email: 'test@example.com',
+        firstName: 'Test',
+        hashedPassword: 'hashedPassword',
+        isVerified: true,
+        lastName: 'User',
+        role: 'standard',
+        updateOne: () => null,
+        verificationCode: {
+          attemptsMade: 0,
+          expiry: expiredDate,
+          value: 456
+        }
+      };
+
+      // Mock the mongoose updateOne() function
+      const mockUpdateOne = jest.fn(() => user.updateOne());
+      // The resolved value can be anything
+      mockUpdateOne.mockResolvedValue({});
+      usersService.findByEmail.mockResolvedValue(user);
+      const result = await authService.sendVerificationCode(currentUser, locale);
+      // check to see if the logic inside sendVerificationCode works with an expired date
+      expect(result.attemptsMade).toBe(0);
+      expect(result.expiry).toBeGreaterThanOrEqual(Date.now());
+    });
+  });
 });
