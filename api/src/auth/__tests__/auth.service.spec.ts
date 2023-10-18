@@ -81,18 +81,14 @@ describe('AuthService', () => {
 
   describe('createAccount', () => {
     it('calls the usersService.createUser and returns the created account', async () => {
-      usersService.createUser.mockResolvedValue({
+      const mockUser = {
         ...createAccountDto,
         isVerified: false,
         role: 'standard'
-      });
-
+      };
+      usersService.createUser.mockResolvedValue(mockUser);
       const result = await authService.createAccount(createAccountDto);
-      expect(result).toMatchObject({
-        ...createAccountDto,
-        isVerified: false,
-        role: 'standard'
-      });
+      expect(result).toMatchObject(mockUser);
     });
   });
 
