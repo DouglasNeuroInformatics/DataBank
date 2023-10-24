@@ -6,7 +6,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { P, match } from 'ts-pattern';
 
 import { Layout } from './components';
-import { CreateAccountPage, LoginPage, VerifyAccountPage } from './features/auth';
+import { ConfirmEmailPage, CreateAccountPage, LoginPage } from './features/auth';
 import { CreateDatasetPage } from './features/create';
 import { DashboardPage } from './features/dashboard';
 import { LandingPage } from './features/landing';
@@ -32,16 +32,18 @@ const AppRoutes = () => {
     }
   }, []);
 
+  // console.log(currentUser)
+
   return (
     <Routes>
       <Route index element={<LandingPage />} />
       <Route path="auth">
         <Route element={<LoginPage />} path="login" />
         <Route element={<CreateAccountPage />} path="create-account" />
-        <Route element={<VerifyAccountPage />} path="verify-account" />
+        <Route element={<ConfirmEmailPage />} path="confirm-email" />
       </Route>
       {match(currentUser)
-        .with({ verifiedAt:  P.not(undefined)}, () => (
+        .with({ confirmedAt: P.number }, () => (
           <Route element={<Layout />} path="portal">
             <Route index element={<DashboardPage />} path="dashboard" />
             <Route path="create">
@@ -58,7 +60,7 @@ const AppRoutes = () => {
             <Route element={<UserPage />} path="user" />
           </Route>
         ))
-        .with({ verifiedAt: undefined }, () => <Route element={<Navigate to={'/auth/verify-account'} />} path="*" />)
+        .with({ confirmedAt: P.nullish }, () => <Route element={<Navigate to={'/auth/confirm-email'} />} path="*" />)
         .otherwise(() => (
           <Route element={<Navigate to="/" />} path="*" />
         ))}

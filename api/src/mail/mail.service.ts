@@ -21,7 +21,7 @@ export class MailService {
   async sendMail(options: Omit<SendMailOptions, 'from'>): Promise<void> {
     await this.transporter.sendMail(
       Object.assign(options, {
-        from: 'douglasneuroinformatics@zohomail.com'
+        from: 'douglasneuroinfomaticsplatform@zohomail.com'
       })
     );
   }

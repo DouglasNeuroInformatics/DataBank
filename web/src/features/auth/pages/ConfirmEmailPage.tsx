@@ -13,7 +13,7 @@ import { AuthLayout } from '../components/AuthLayout';
 import { ConfirmEmailCodeInput } from '../components/ConfirmEmailCodeInput';
 import { Countdown } from '../components/Countdown';
 
-export const VerifyAccountPage = () => {
+export const ConfirmEmailPage = () => {
   const auth = useAuthStore();
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export const VerifyAccountPage = () => {
   }, []);
 
   useEffect(() => {
-    if (auth.currentUser?.verifiedAt) {
+    if (auth.currentUser?.confirmedAt) {
       navigate('/portal/dashboard');
     }
   }, [auth.currentUser]);
@@ -37,7 +37,7 @@ export const VerifyAccountPage = () => {
   };
 
   const verifyCode = async (code: number) => {
-    const response = await axios.post<AuthPayload>('/v1/auth/verify', { code });
+    const response = await axios.post<AuthPayload>('/v1/auth/verify-account', { code });
     notifications.addNotification({ type: 'success' });
     auth.setAccessToken(response.data.accessToken);
   };

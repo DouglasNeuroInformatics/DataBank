@@ -29,14 +29,14 @@ export class AuthController {
   }
 
   @ApiOperation({ description: 'Request a confirm email code', summary: 'Request Confirm Email Code' })
-  @Post('confirmation-code')
+  @Post('confirm-email-code')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   sendConfirmEmailCode(@Req() request: Request) {
     return this.authService.sendConfirmEmailCode(request.user!, request.user!.locale);
   }
 
   @ApiOperation({ description: 'Verify an account using a verification code', summary: 'Verify Account' })
-  @Post('verify')
+  @Post('verify-account')
   @RouteAccess({ allowUnverified: true, role: 'standard' })
   verifyAccount(@Req() request: Request, @Body() verifyAccountDto: VerifyAccountDto) {
     return this.authService.verifyAccount(verifyAccountDto, request.user!);

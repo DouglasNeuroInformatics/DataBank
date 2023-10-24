@@ -22,8 +22,8 @@ export type CurrentUser = {
   firstName: string;
   lastName: string;
   role: UserRole;
-  verifiedAt: number | undefined;
-  confirmedAt: number | undefined;
+  verifiedAt: number | null | undefined;
+  confirmedAt: number | null | undefined;
 };
 
 export type LoginCredentials = {
@@ -46,8 +46,8 @@ export type TUser = {
   lastName: string;
   email: string;
   role: UserRole;
-  verifiedAt?: number;
-  confirmedAt?: number;
+  verifiedAt: number | null | undefined;
+  confirmedAt: number | null | undefined;
   creationTime?: number;
 };
 
@@ -120,21 +120,21 @@ export type SetupOptions = {
 
 export type TSetupConfig = {
   verificationInfo: TVerificationInfo;
-}
+};
 
 /** Verification */
 
 export type TVerificationWithRegex = {
-  kind: "VERIFICATION_WITH_REGEX";
+  kind: 'VERIFICATION_WITH_REGEX';
   regex: RegExp;
-}
+};
 
 export type TVerificationUponConfirmEmail = {
-  kind: "VERIFICATION_UPON_CONFIRM_EMAIL";
- }
+  kind: 'VERIFICATION_UPON_CONFIRM_EMAIL';
+};
 
 export type TManualVerification = {
-  kind: "MANUAL_VERIFICATION";
-}
+  kind: 'MANUAL_VERIFICATION';
+};
 
 export type TVerificationInfo = TVerificationWithRegex | TVerificationUponConfirmEmail | TManualVerification;

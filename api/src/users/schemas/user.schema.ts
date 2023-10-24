@@ -17,8 +17,8 @@ export class User implements TUser {
   confirmEmailCode?: ConfirmEmailCode;
 
   /** The timestamp when the user confirmed their email */
-  @Prop({ required: false })
-  confirmedAt?: number;
+  @Prop()
+  confirmedAt: null | number | undefined;
 
   @Prop({ required: true, unique: true })
   email: string;
@@ -39,8 +39,8 @@ export class User implements TUser {
   role: UserRole;
 
   /** The timestamp when the user verified their account */
-  @Prop({ required: false })
-  verifiedAt?: number;
+  @Prop()
+  verifiedAt: null | number | undefined;
 }
 
 export type UserDocument = HydratedDocument<User>;

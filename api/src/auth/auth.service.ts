@@ -42,7 +42,13 @@ export class AuthService {
 
   /** Create a new standard account with verification required */
   async createAccount(createAccountDto: CreateAccountDto): Promise<Omit<User, 'hashedPassword'>> {
-    return this.usersService.createUser({ ...createAccountDto, isVerified: false, role: 'standard' });
+    return this.usersService.createUser({
+      ...createAccountDto,
+      confirmedAt: null,
+      isVerified: false,
+      role: 'standard',
+      verifiedAt: null
+    });
   }
 
   async login(email: string, password: string): Promise<AuthPayload> {
@@ -86,6 +92,7 @@ export class AuthService {
       text: this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailCode.value}`,
       to: user.email
     });
+    console.log(confirmEmailCode);
     return { attemptsMade: confirmEmailCode.attemptsMade, expiry: confirmEmailCode.expiry };
   }
 

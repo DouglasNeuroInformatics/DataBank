@@ -3,7 +3,7 @@ import { IsBoolean, IsEmail, IsIn, IsNotEmpty, IsNumber } from 'class-validator'
 
 export class CreateUserDto {
   @IsNumber()
-  confirmedAt?: number;
+  confirmedAt: null | number;
 
   @IsEmail()
   email: string;
@@ -24,5 +24,5 @@ export class CreateUserDto {
   role: UserRole;
 
   @IsNumber()
-  verifiedAt?: number;
+  verifiedAt: null | number;
 }
