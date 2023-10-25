@@ -41,7 +41,7 @@ export const RegexSetupDtoFactory = (): SetupDto => ({
   setupConfig: {
     verificationInfo: {
       kind: 'VERIFICATION_WITH_REGEX',
-      regex: new RegExp('/*.gmail/')
+      regex: '/*.gmail/'
     }
   }
 });

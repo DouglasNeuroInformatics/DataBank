@@ -32,8 +32,6 @@ const AppRoutes = () => {
     }
   }, []);
 
-  // console.log(currentUser)
-
   return (
     <Routes>
       <Route index element={<LandingPage />} />

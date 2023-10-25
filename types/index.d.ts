@@ -126,7 +126,7 @@ export type TSetupConfig = {
 
 export type TVerificationWithRegex = {
   kind: 'VERIFICATION_WITH_REGEX';
-  regex: RegExp;
+  regex: string;
 };
 
 export type TVerificationUponConfirmEmail = {
