@@ -1,6 +1,6 @@
 import { SetupDto } from '@/setup/dto/setup.dto';
 
-export const ManualSetupDtoFactory = (): SetupDto => ({
+export const manualSetupDtoFactory = (): SetupDto => ({
   admin: {
     email: 'xyz@gmail.com',
     firstName: 'John',

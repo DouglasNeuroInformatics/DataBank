@@ -75,7 +75,7 @@ export class AuthGuard implements CanActivate {
     }
 
     if (!routeAccess.allowUnverified && !payload.verifiedAt) {
-      throw new UnauthorizedException('Email Confirmation required');
+      throw new UnauthorizedException('Email confirmation required');
     }
 
     // Attach user to request for route handlers
