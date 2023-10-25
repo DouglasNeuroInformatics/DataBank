@@ -66,6 +66,12 @@ describe('AuthService', () => {
     usersService = moduleRef.get(UsersService);
     cryptoService = moduleRef.get(CryptoService);
     jwtService = moduleRef.get(JwtService);
+
+    createAccountDto = createAccountDtoStubFactory();
+    createUserDto = createUserDtoStubFactory();
+    verifyAccountDto = verifyAccountStubFactory();
+    currentUser = currentUserStubFactory();
+    jwtService.signAsync.mockResolvedValue('accessToken');
   });
 
   it('should be defined', () => {
@@ -76,14 +82,6 @@ describe('AuthService', () => {
   let createUserDto: CreateUserDto;
   let verifyAccountDto: VerifyAccountDto;
   let currentUser: CurrentUser;
-
-  beforeEach(() => {
-    createAccountDto = createAccountDtoStubFactory();
-    createUserDto = createUserDtoStubFactory();
-    verifyAccountDto = verifyAccountStubFactory();
-    currentUser = currentUserStubFactory();
-    jwtService.signAsync.mockResolvedValue('accessToken');
-  });
 
   describe('createAccount', () => {
     it('calls the usersService.createUser and returns the created account', async () => {
