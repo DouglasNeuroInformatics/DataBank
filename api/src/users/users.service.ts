@@ -15,12 +15,7 @@ export class UsersService {
   ) {}
 
   /** Insert a new user into the database */
-  async createUser({
-    email,
-    isVerified,
-    password,
-    ...rest
-  }: CreateUserDto): Promise<Omit<UserDocument, 'hashedPassword'>> {
+  async createUser({ email, password, ...rest }: CreateUserDto): Promise<Omit<UserDocument, 'hashedPassword'>> {
     const exists = await this.userModel.exists({ email });
     if (exists) {
       throw new ConflictException(`User with provided email already exists: ${email}`);
@@ -29,8 +24,6 @@ export class UsersService {
     const createdUser = await this.userModel.create({
       email,
       hashedPassword,
-      isVerified,
-      verifiedAt: isVerified ? Date.now() : undefined,
       ...rest
     });
 

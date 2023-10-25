@@ -6,7 +6,7 @@ import { type SendMailOptions, type Transporter, createTransport } from 'nodemai
 export class MailService {
   private readonly transporter: Transporter;
 
-  constructor(configService: ConfigService) {
+  constructor(private configService: ConfigService) {
     this.transporter = createTransport({
       auth: {
         pass: configService.getOrThrow('SMTP_PASS'),
@@ -19,9 +19,10 @@ export class MailService {
   }
 
   async sendMail(options: Omit<SendMailOptions, 'from'>): Promise<void> {
+    const user_email: string = this.configService.getOrThrow('SMTP_USER');
     await this.transporter.sendMail(
       Object.assign(options, {
-        from: 'douglasneuroinformatics@zohomail.com'
+        from: user_email
       })
     );
   }

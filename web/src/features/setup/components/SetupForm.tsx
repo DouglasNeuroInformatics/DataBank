@@ -1,8 +1,16 @@
+/* eslint-disable perfectionist/sort-objects */
 import type { SetupOptions } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
+import type { MergeDeep } from 'type-fest';
 
-type SetupData = SetupOptions['admin'];
+type SetupData = MergeDeep<
+  SetupOptions['admin'],
+  {
+    verificationRegex?: string;
+    verificationType: SetupOptions['setupConfig']['verificationInfo']['kind'];
+  }
+>;
 
 type SetupFormProps = {
   onSubmit: (data: SetupOptions) => void;
@@ -41,6 +49,31 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
             }
           },
           title: t('setup.admin.title')
+        },
+        {
+          description: 'Admin selects the method for user verification',
+          fields: {
+            verificationType: {
+              kind: 'options',
+              label: 'Verification Method',
+              options: {
+                MANUAL_VERIFICATION: 'Manually verify users by the admin',
+                VERIFICATION_UPON_CONFIRM_EMAIL: 'Automatically Verifiy users when they confirm their emails',
+                VERIFICATION_WITH_REGEX: 'Verify users by matching their emails with a predefined regex'
+              }
+            },
+            verificationRegex: (data) => {
+              if (data?.verificationType === 'VERIFICATION_WITH_REGEX') {
+                return {
+                  kind: 'text',
+                  label: 'Regular expression',
+                  variant: 'short'
+                };
+              }
+              return null;
+            }
+          },
+          title: 'User Verification Options'
         }
       ]}
       submitBtnLabel={t('submit')}
@@ -62,15 +95,53 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
           password: {
             pattern: isStrongPassword.source,
             type: 'string'
+          },
+          verificationRegex: {
+            nullable: true,
+            type: 'string'
+          },
+          verificationType: {
+            type: 'string'
           }
         },
-        required: ['firstName', 'lastName', 'email', 'password'],
+        required: ['firstName', 'lastName', 'email', 'password', 'verificationType'],
         type: 'object'
       }}
       onSubmit={(data) => {
-        onSubmit({ admin: data });
+        if (data.verificationRegex) {
+          onSubmit({
+            admin: {
+              email: data.email,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              password: data.password
+            },
+            setupConfig: {
+              verificationInfo: {
+                kind: data.verificationType,
+                regex: new RegExp(data.verificationRegex)
+              }
+            }
+          });
+        } else if (
+          data.verificationType === 'MANUAL_VERIFICATION' ||
+          data.verificationType === 'VERIFICATION_UPON_CONFIRM_EMAIL'
+        ) {
+          onSubmit({
+            admin: {
+              email: data.email,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              password: data.password
+            },
+            setupConfig: {
+              verificationInfo: {
+                kind: data.verificationType
+              }
+            }
+          });
+        }
       }}
     />
   );
 };
-
