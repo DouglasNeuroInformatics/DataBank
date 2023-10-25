@@ -119,7 +119,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
             setupConfig: {
               verificationInfo: {
                 kind: data.verificationType,
-                regex: new RegExp(data.verificationRegex)
+                regex: data.verificationRegex
               }
             }
           });

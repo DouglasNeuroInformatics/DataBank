@@ -9,7 +9,7 @@ export class VerificationWithRegex implements TVerificationWithRegex {
 
   /** The regex used to match with the user's email pattern */
   @Prop({ required: true })
-  regex: RegExp;
+  regex: string;
 }
 
 export const VerificationWithRegexSchema = SchemaFactory.createForClass(VerificationWithRegex);

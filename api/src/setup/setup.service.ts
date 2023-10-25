@@ -75,6 +75,7 @@ export class SetupService {
   // }
 
   async initApp({ admin, setupConfig }: SetupDto) {
+    console.log(setupConfig);
     if (await this.isSetup()) {
       throw new ForbiddenException();
     }

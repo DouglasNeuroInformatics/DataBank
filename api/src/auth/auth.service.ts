@@ -137,7 +137,7 @@ export class AuthService {
     const verificationInfo = await this.setupService.getVerificationInfo();
     const isVerified =
       verificationInfo.kind === 'VERIFICATION_UPON_CONFIRM_EMAIL' ||
-      (verificationInfo.kind === 'VERIFICATION_WITH_REGEX' && verificationInfo.regex.test(user.email));
+      (verificationInfo.kind === 'VERIFICATION_WITH_REGEX' && new RegExp(verificationInfo.regex).test(user.email));
     if (isVerified) {
       user.verifiedAt = Date.now();
     }
