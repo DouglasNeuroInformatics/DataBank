@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, it, jest } from 'bun:test';
 
 import type { CreateAccountDto } from '../dto/create-account.dto';
 import type { VerifyAccountDto } from '../dto/verify-account.dto';
@@ -103,6 +103,11 @@ describe('AuthService', () => {
       cryptoService.comparePassword.mockResolvedValue(true);
     });
 
+    afterEach(() => {
+      usersService.findByEmail.mockClear();
+      cryptoService.comparePassword.mockClear();
+    });
+
     it('should throw an UnauthorizedException when given an invalid email when calling usersService.findByEmail', () => {
       const { password } = createUserDto;
       usersService.findByEmail.mockResolvedValue(undefined);
@@ -123,6 +128,10 @@ describe('AuthService', () => {
   });
 
   describe('sendVerificationCode', () => {
+    afterEach(() => {
+      usersService.findByEmail.mockClear();
+    });
+
     const locale: Locale = 'en';
 
     it('should throw NotFoundException if the user is not found when calling usersService.findByEmail', () => {
@@ -178,10 +187,15 @@ describe('AuthService', () => {
       // check to see if the logic inside sendVerificationCode works with an expired date
       expect(result.attemptsMade).toBe(0);
       expect(result.expiry).toBeGreaterThanOrEqual(Date.now());
+      mockUpdateOne.mockClear();
     });
   });
 
   describe('verifyAccount()', () => {
+    afterEach(() => {
+      usersService.findByEmail.mockClear();
+    });
+
     it('should throw NotFoundException if the user is not found when calling usersService.findByEmail', () => {
       usersService.findByEmail.mockResolvedValue(undefined);
       expect(authService.verifyAccount(verifyAccountDto, currentUser)).rejects.toBeInstanceOf(NotFoundException);
@@ -267,6 +281,7 @@ describe('AuthService', () => {
       usersService.findByEmail.mockResolvedValue(user);
       const result = authService.verifyAccount(verifyAccountDto, currentUser);
       expect(result).rejects.toBeInstanceOf(ForbiddenException);
+      mockSave.mockClear();
     });
 
     it('should return the accessToken when the user is succesfully verified', async () => {
@@ -294,6 +309,7 @@ describe('AuthService', () => {
       expect(user.verifiedAt).toBeWithin(Date.now(), validDate + 10000);
       expect(user.isVerified).toBeTrue();
       expect(result.accessToken).toEqual('accessToken');
+      mockSave.mockClear();
     });
   });
 });
