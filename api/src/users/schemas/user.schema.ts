@@ -30,9 +30,6 @@ export class User implements TUser {
   hashedPassword: string;
 
   @Prop({ required: true })
-  isVerified: boolean;
-
-  @Prop({ required: true })
   lastName: string;
 
   @Prop({ required: true, type: String })

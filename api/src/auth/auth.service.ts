@@ -45,7 +45,6 @@ export class AuthService {
     return this.usersService.createUser({
       ...createAccountDto,
       confirmedAt: null,
-      isVerified: false,
       role: 'standard',
       verifiedAt: null
     });

@@ -6,12 +6,7 @@ import { CreateUserDto } from '@/users/dto/create-user.dto.js';
 
 import { SetupConfigDto } from './setup-config.dto.js';
 
-export class CreateAdminDto extends OmitType(CreateUserDto, [
-  'role',
-  'verifiedAt',
-  'confirmedAt',
-  'isVerified'
-] as const) {}
+export class CreateAdminDto extends OmitType(CreateUserDto, ['role', 'verifiedAt', 'confirmedAt'] as const) {}
 
 export class SetupDto implements SetupOptions {
   @ValidateDto(CreateAdminDto)

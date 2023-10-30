@@ -25,7 +25,6 @@ export class SetupService {
     return this.usersService.createUser({
       ...admin,
       confirmedAt: Date.now(),
-      isVerified: true,
       role: 'admin',
       verifiedAt: Date.now()
     });
