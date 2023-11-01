@@ -1,10 +1,11 @@
 import type { CurrentUser } from '@databank/types';
 
 export const currentUserStubFactory = (): CurrentUser => ({
+  confirmedAt: Date.now(),
   email: 'test@example.com',
   firstName: 'Test',
   id: '123',
-  isVerified: true,
   lastName: 'User',
-  role: 'standard'
+  role: 'standard',
+  verifiedAt: Date.now()
 });
