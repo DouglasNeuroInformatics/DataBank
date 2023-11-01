@@ -1,26 +1,33 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import type { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
 import type { SetupState, TDataset } from '@databank/types';
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import mongoose, { Model } from 'mongoose';
 
-import { DatasetsService } from '@/datasets/datasets.service';
-import { UsersService } from '@/users/users.service';
+import { DatasetsService } from '@/datasets/datasets.service.js';
+import { UsersService } from '@/users/users.service.js';
 
-import { CreateAdminDto, SetupDto } from './dto/setup.dto';
+import { SetupConfig } from './schemas/setup-config.schema.js';
 
 @Injectable()
 export class SetupService {
   constructor(
+    @InjectModel(SetupConfig.name) private readonly setupConfigModel: Model<SetupConfig>,
     @InjectConnection() private readonly connection: mongoose.Connection,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) {}
 
   private async createAdmin(admin: CreateAdminDto) {
-    return this.usersService.createUser({ ...admin, isVerified: true, role: 'admin' });
+    return this.usersService.createUser({
+      ...admin,
+      confirmedAt: Date.now(),
+      role: 'admin',
+      verifiedAt: Date.now()
+    });
   }
 
   private async isSetup() {
@@ -39,16 +46,42 @@ export class SetupService {
     return JSON.parse(content) as TDataset;
   }
 
+  async getSetupConfig() {
+    const setupConfig = await this.setupConfigModel.findOne();
+    if (!setupConfig) {
+      throw new NotFoundException('Setup Config not found in the database.');
+    }
+    return setupConfig;
+  }
+
   async getState(): Promise<SetupState> {
     return { isSetup: await this.isSetup() };
   }
 
-  async initApp({ admin }: SetupDto) {
+  async getVerificationInfo() {
+    const verificationInfo = (await this.getSetupConfig()).verificationInfo;
+    if (!verificationInfo) {
+      throw new NotFoundException('Cannot access verification info.');
+    }
+    return verificationInfo;
+  }
+
+  // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
+  //   const setupConfig = await this.setupConfigModel.findOne();
+  //   if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
+  //   setupConfig.verificationInfo = setupConfigDto.verificationInfo;
+  //   setupConfig.save();
+  // }
+
+  async initApp({ admin, setupConfig }: SetupDto) {
+    console.log(setupConfig);
     if (await this.isSetup()) {
       throw new ForbiddenException();
     }
     await this.connection.dropDatabase();
     const user = await this.createAdmin(admin);
+
+    await this.setupConfigModel.create(setupConfig);
 
     const iris = await this.loadStarterDataset('iris.json');
     await this.datasetsService.createDataset(iris, user.toObject());

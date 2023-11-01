@@ -74,7 +74,7 @@
   "unexpectedError": "Une erreur inattendue s'est produite",
   "unexpectedValue": "Valeur inattendue : {{value}}",
   "validEmail": "Veuillez saisir un courriel valide",
-  "verificationCode": "Code de vérification",
+  "confirmEmailCode": "Code de vérification",
   "verifyAccount": "Vérifiez votre courriel",
   "yes": "Oui"
 }

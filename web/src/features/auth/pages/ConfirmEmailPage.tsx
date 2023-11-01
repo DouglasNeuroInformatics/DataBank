@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { AuthPayload, VerificationProcedureInfo } from '@databank/types';
+import type { AuthPayload, EmailConfirmationProcedureInfo } from '@databank/types';
 import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -10,10 +10,10 @@ import { SuspenseFallback } from '@/components';
 import { useAuthStore } from '@/stores/auth-store';
 
 import { AuthLayout } from '../components/AuthLayout';
+import { ConfirmEmailCodeInput } from '../components/ConfirmEmailCodeInput';
 import { Countdown } from '../components/Countdown';
-import { VerificationCodeInput } from '../components/VerificationCodeInput';
 
-export const VerifyAccountPage = () => {
+export const ConfirmEmailPage = () => {
   const auth = useAuthStore();
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
@@ -21,30 +21,30 @@ export const VerifyAccountPage = () => {
   const [seconds, setSeconds] = useState<number>();
 
   useEffect(() => {
-    void sendVerificationCode();
+    void sendConfirmEmailCode();
   }, []);
 
   useEffect(() => {
-    if (auth.currentUser?.isVerified) {
+    if (auth.currentUser?.confirmedAt) {
       navigate('/portal/dashboard');
     }
   }, [auth.currentUser]);
 
   /** Send code and then set seconds to milliseconds remaining in minutes, rounded down, converted to seconds */
-  const sendVerificationCode = async () => {
-    const response = await axios.post<VerificationProcedureInfo>('/v1/auth/verification-code');
+  const sendConfirmEmailCode = async () => {
+    const response = await axios.post<EmailConfirmationProcedureInfo>('/v1/auth/confirm-email-code');
     setSeconds(Math.floor((response.data.expiry - Date.now()) / 60000) * 60);
   };
 
   const verifyCode = async (code: number) => {
-    const response = await axios.post<AuthPayload>('/v1/auth/verify', { code });
+    const response = await axios.post<AuthPayload>('/v1/auth/verify-account', { code });
     notifications.addNotification({ type: 'success' });
     auth.setAccessToken(response.data.accessToken);
   };
 
   return seconds ? (
     <AuthLayout title={t('verifyAccount')}>
-      <VerificationCodeInput className="my-5" onComplete={verifyCode} />
+      <ConfirmEmailCodeInput className="my-5" onComplete={verifyCode} />
       <Countdown seconds={seconds} />
     </AuthLayout>
   ) : (

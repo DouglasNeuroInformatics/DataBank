@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,10 +10,12 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({
-    description: 'Create a user with any permission level without requiring verification',
+    description:
+      'Create a user with any permission level without requiring email confirmation, manually setting their verification status.',
     summary: 'Create User'
   })
   @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }

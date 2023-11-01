@@ -22,7 +22,8 @@ export type CurrentUser = {
   firstName: string;
   lastName: string;
   role: UserRole;
-  isVerified: boolean;
+  verifiedAt: number | null | undefined;
+  confirmedAt: number | null | undefined;
 };
 
 export type LoginCredentials = {
@@ -30,7 +31,7 @@ export type LoginCredentials = {
   password: string;
 };
 
-export type VerificationProcedureInfo = {
+export type EmailConfirmationProcedureInfo = {
   /** The number of previous attempts to verify this code */
   attemptsMade: number;
 
@@ -45,8 +46,9 @@ export type TUser = {
   lastName: string;
   email: string;
   role: UserRole;
-  isVerified: boolean;
-  verifiedAt?: number;
+  verifiedAt: number | null | undefined;
+  confirmedAt: number | null | undefined;
+  creationTime?: number;
 };
 
 /** DATASETS */
@@ -112,4 +114,27 @@ export type SetupOptions = {
     email: string;
     password: string;
   };
+
+  setupConfig: TSetupConfig;
 };
+
+export type TSetupConfig = {
+  verificationInfo: TVerificationInfo;
+};
+
+/** Verification */
+
+export type TVerificationWithRegex = {
+  kind: 'VERIFICATION_WITH_REGEX';
+  regex: string;
+};
+
+export type TVerificationUponConfirmEmail = {
+  kind: 'VERIFICATION_UPON_CONFIRM_EMAIL';
+};
+
+export type TManualVerification = {
+  kind: 'MANUAL_VERIFICATION';
+};
+
+export type TVerificationInfo = TVerificationWithRegex | TVerificationUponConfirmEmail | TManualVerification;

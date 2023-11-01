@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 import type { AuthPayload } from '@databank/types';
 import axios from 'axios';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { match } from 'ts-pattern';
+import { P, match } from 'ts-pattern';
 
 import { Layout } from './components';
-import { CreateAccountPage, LoginPage, VerifyAccountPage } from './features/auth';
+import { ConfirmEmailPage, CreateAccountPage, LoginPage } from './features/auth';
 import { CreateDatasetPage } from './features/create';
 import { DashboardPage } from './features/dashboard';
 import { LandingPage } from './features/landing';
@@ -38,10 +38,10 @@ const AppRoutes = () => {
       <Route path="auth">
         <Route element={<LoginPage />} path="login" />
         <Route element={<CreateAccountPage />} path="create-account" />
-        <Route element={<VerifyAccountPage />} path="verify-account" />
+        <Route element={<ConfirmEmailPage />} path="confirm-email" />
       </Route>
       {match(currentUser)
-        .with({ isVerified: true }, () => (
+        .with({ confirmedAt: P.number }, () => (
           <Route element={<Layout />} path="portal">
             <Route index element={<DashboardPage />} path="dashboard" />
             <Route path="create">
@@ -58,7 +58,7 @@ const AppRoutes = () => {
             <Route element={<UserPage />} path="user" />
           </Route>
         ))
-        .with({ isVerified: false }, () => <Route element={<Navigate to={'/auth/verify-account'} />} path="*" />)
+        .with({ confirmedAt: P.nullish }, () => <Route element={<Navigate to={'/auth/confirm-email'} />} path="*" />)
         .otherwise(() => (
           <Route element={<Navigate to="/" />} path="*" />
         ))}

@@ -27,7 +27,7 @@
   "float": "Real Number",
   "getStarted": "Get Started",
   "integer": "Integer",
-  "invalidCodeFormat": "Failed to paste verification code. Please ensure the format is correct.",
+  "invalidCodeFormat": "Failed to paste confirm email code. Please ensure the format is correct.",
   "invalidColumnNameError": "Invalid column name: '{{columnName}}' must contain only letters, numbers, or underscores",
   "invalidEmptyColumnError": "Invalid column name at index {{index}}: must not be empty string",
   "invalidFileError": "Invalid File: {{ filename }}",
@@ -74,7 +74,7 @@
   "unexpectedError": "An unexpected error occurred",
   "unexpectedValue": "Unexpected Value: {{value}}",
   "validEmail": "Please enter a valid email",
-  "verificationCode": "Verification Code",
+  "confirmEmailCode": "Confirm Email Code",
   "verifyAccount": "Check Your Email",
   "yes": "Yes"
 }

@@ -1,15 +1,17 @@
-import type { SetupOptions } from '@databank/types';
+import type { SetupOptions, TSetupConfig } from '@databank/types';
 import { OmitType } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsNotEmptyObject, ValidateNested } from 'class-validator';
 
-import { CreateUserDto } from '@/users/dto/create-user.dto';
+import { ValidateDto } from '@/core/decorators/validate-dto.decorator.js';
+import { CreateUserDto } from '@/users/dto/create-user.dto.js';
 
-export class CreateAdminDto extends OmitType(CreateUserDto, ['role', 'isVerified'] as const) {}
+import { SetupConfigDto } from './setup-config.dto.js';
+
+export class CreateAdminDto extends OmitType(CreateUserDto, ['role', 'verifiedAt', 'confirmedAt'] as const) {}
 
 export class SetupDto implements SetupOptions {
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => CreateAdminDto)
+  @ValidateDto(CreateAdminDto)
   admin: CreateAdminDto;
+
+  @ValidateDto(SetupConfigDto)
+  setupConfig: TSetupConfig;
 }

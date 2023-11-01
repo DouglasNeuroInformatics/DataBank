@@ -1,6 +1,6 @@
 {
-  "verificationEmail": {
-    "subject": "Douglas Data Bank: Verification Code",
-    "body": "Welcome to the Douglas Data Bank. You will find your verification code below."
+  "confirmationEmail": {
+    "subject": "Douglas Data Bank: Confirmation Code",
+    "body": "Welcome to the Douglas Data Bank. You will find your confirmation email code below."
   }
 }
