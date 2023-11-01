@@ -91,7 +91,6 @@ export class AuthService {
       text: this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailCode.value}`,
       to: user.email
     });
-    console.log(confirmEmailCode);
     return { attemptsMade: confirmEmailCode.attemptsMade, expiry: confirmEmailCode.expiry };
   }
 
