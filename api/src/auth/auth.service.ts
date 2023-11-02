@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<AuthPayload> {
-    const user = await this.usersService.findByEmail(email).select('+hashedPassword');
+    const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Invalid Credentials');
     }
@@ -91,7 +91,6 @@ export class AuthService {
       text: this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailCode.value}`,
       to: user.email
     });
-    console.log(confirmEmailCode);
     return { attemptsMade: confirmEmailCode.attemptsMade, expiry: confirmEmailCode.expiry };
   }
 
