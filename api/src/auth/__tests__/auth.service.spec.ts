@@ -111,7 +111,7 @@ describe('AuthService', () => {
   describe('login', () => {
     beforeEach(() => {
       // can use spyOn insead: spyOn(usersService, 'findByEmail').mockResolvedValue(createUserDto);
-      usersService.findByEmail.mockResolvedValue(createUserDto);
+      usersService.findByEmail.mockReturnValue({ select: () => Promise.resolve(createUserDto) });
       cryptoService.comparePassword.mockResolvedValue(true);
     });
 
@@ -122,7 +122,7 @@ describe('AuthService', () => {
 
     it('should throw an UnauthorizedException when given an invalid email when calling usersService.findByEmail', () => {
       const { password } = createUserDto;
-      usersService.findByEmail.mockResolvedValue(undefined);
+      usersService.findByEmail.mockReturnValue({ select: () => Promise.resolve(undefined) });
       const result = authService.login('invalid@example.com', password);
       expect(result).rejects.toBeInstanceOf(UnauthorizedException);
     });
