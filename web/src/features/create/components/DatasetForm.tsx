@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 
 import type { DatasetEntry, TDataset } from '@databank/types';
-import type { NullableFormInstrumentData } from '@douglasneuroinformatics/form-types';
+import type { NullableFormDataType } from '@douglasneuroinformatics/form-types';
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 import { type InferredColumn } from './DatasetDropzone';
 
@@ -20,7 +21,7 @@ export type DatasetFormProps = {
 export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => {
   const { t } = useTranslation();
 
-  const initialValues: NullableFormInstrumentData<DatasetFormData> = useMemo(() => {
+  const initialValues: NullableFormDataType<DatasetFormData> = useMemo(() => {
     return {
       columns: inferredColumns.map((col) => ({
         description: null,
@@ -90,50 +91,20 @@ export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => 
           variant: 'short'
         }
       }}
-      errorMessages={t('requiredField')}
       initialValues={initialValues}
-      validationSchema={{
-        properties: {
-          columns: {
-            items: {
-              properties: {
-                description: {
-                  minLength: 1,
-                  type: 'string'
-                },
-                name: {
-                  minLength: 1,
-                  type: 'string'
-                },
-                nullable: {
-                  type: 'boolean'
-                },
-                type: {
-                  enum: ['FLOAT', 'INTEGER', 'STRING'],
-                  type: 'string'
-                }
-              },
-              required: ['description', 'name', 'nullable', 'type'],
-              type: 'object'
-            },
-            type: 'array'
-          },
-          description: {
-            minLength: 1,
-            type: 'string'
-          },
-          license: {
-            minLength: 1,
-            type: 'string'
-          },
-          name: {
-            minLength: 1,
-            type: 'string'
-          }
-        },
-        required: ['name', 'description', 'license', 'columns'],
-        type: 'object'
-      }}
+      validationSchema={z.object({
+        columns: z.array(
+          z.object({
+            description: z.string().min(1),
+            name: z.string().min(1),
+            nullable: z.boolean(),
+            type: z.enum(['FLOAT', 'INTEGER', 'STRING'])
+          })
+        ),
+        description: z.string().min(1),
+        license: z.enum(['PUBLIC_DOMAIN', 'OTHER']),
+        name: z.string().min(1)
+      })}
       onSubmit={onSubmit}
     />
   );

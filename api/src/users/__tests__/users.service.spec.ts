@@ -1,7 +1,6 @@
 import type { AnyFunction } from 'bun';
 import { type Mock, beforeEach, describe, expect, it, jest } from 'bun:test';
 
-import type { CreateUserDto } from '../dto/create-user.dto';
 import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 import { createMock } from '@douglasneuroinformatics/nestjs/testing';
 import { ConflictException } from '@nestjs/common';
@@ -11,6 +10,8 @@ import { Test } from '@nestjs/testing';
 import { User } from '../schemas/user.schema';
 import { UsersService } from '../users.service';
 import { createUserDtoStubFactory } from './stubs/create-user.dto.stub';
+
+import type { CreateUserDto } from '../dto/create-user.dto';
 
 describe('UsersService', () => {
   let usersService: UsersService;

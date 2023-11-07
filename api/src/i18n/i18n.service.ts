@@ -2,12 +2,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
 
-import type en from './translations/en.json';
-import type fr from './translations/fr.json';
 import type { Locale } from '@databank/types';
 import { Injectable } from '@nestjs/common';
 import type { Request } from 'express';
 import type { MergeDeep } from 'type-fest';
+
+import type en from './translations/en.json';
+import type fr from './translations/fr.json';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

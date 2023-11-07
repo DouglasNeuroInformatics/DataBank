@@ -1,7 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import type { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
 import type { SetupState, TDataset } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
@@ -12,6 +11,8 @@ import { UsersService } from '@/users/users.service.js';
 
 import { SetupConfig } from './schemas/setup-config.schema.js';
 
+import type { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
+
 @Injectable()
 export class SetupService {
   constructor(
@@ -20,31 +21,6 @@ export class SetupService {
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) {}
-
-  private async createAdmin(admin: CreateAdminDto) {
-    return this.usersService.createUser({
-      ...admin,
-      confirmedAt: Date.now(),
-      role: 'admin',
-      verifiedAt: Date.now()
-    });
-  }
-
-  private async isSetup() {
-    const collections = await this.connection.db.listCollections().toArray();
-    for (const collection of collections) {
-      const count = await this.connection.collection(collection.name).countDocuments();
-      if (count > 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private async loadStarterDataset(filename: string) {
-    const content = await fs.readFile(path.resolve(import.meta.dir, 'resources', filename), 'utf-8');
-    return JSON.parse(content) as TDataset;
-  }
 
   async getSetupConfig() {
     const setupConfig = await this.setupConfigModel.findOne();
@@ -66,13 +42,6 @@ export class SetupService {
     return verificationInfo;
   }
 
-  // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
-  //   const setupConfig = await this.setupConfigModel.findOne();
-  //   if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
-  //   setupConfig.verificationInfo = setupConfigDto.verificationInfo;
-  //   setupConfig.save();
-  // }
-
   async initApp({ admin, setupConfig }: SetupDto) {
     console.log(setupConfig);
     if (await this.isSetup()) {
@@ -85,5 +54,37 @@ export class SetupService {
 
     const iris = await this.loadStarterDataset('iris.json');
     await this.datasetsService.createDataset(iris, user.toObject());
+  }
+
+  private async createAdmin(admin: CreateAdminDto) {
+    return this.usersService.createUser({
+      ...admin,
+      confirmedAt: Date.now(),
+      role: 'admin',
+      verifiedAt: Date.now()
+    });
+  }
+
+  private async isSetup() {
+    const collections = await this.connection.db.listCollections().toArray();
+    for (const collection of collections) {
+      const count = await this.connection.collection(collection.name).countDocuments();
+      if (count > 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
+  //   const setupConfig = await this.setupConfigModel.findOne();
+  //   if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
+  //   setupConfig.verificationInfo = setupConfigDto.verificationInfo;
+  //   setupConfig.save();
+  // }
+
+  private async loadStarterDataset(filename: string) {
+    const content = await fs.readFile(path.resolve(import.meta.dir, 'resources', filename), 'utf-8');
+    return JSON.parse(content) as TDataset;
   }
 }

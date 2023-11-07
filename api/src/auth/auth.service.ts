@@ -34,12 +34,6 @@ export class AuthService {
     private readonly setupService: SetupService
   ) {}
 
-  private async signToken(user: UserDocument) {
-    const { confirmedAt, email, firstName, lastName, role, verifiedAt } = user;
-    const payload: CurrentUser = { confirmedAt, email, firstName, id: user.id as string, lastName, role, verifiedAt };
-    return this.jwtService.signAsync(payload);
-  }
-
   /** Create a new standard account with verification required */
   async createAccount(createAccountDto: CreateAccountDto): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
@@ -145,5 +139,11 @@ export class AuthService {
     const accessToken = await this.signToken(user);
 
     return { accessToken };
+  }
+
+  private async signToken(user: UserDocument) {
+    const { confirmedAt, email, firstName, lastName, role, verifiedAt } = user;
+    const payload: CurrentUser = { confirmedAt, email, firstName, id: user.id as string, lastName, role, verifiedAt };
+    return this.jwtService.signAsync(payload);
   }
 }

@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, it } from 'bun:test';
 
-import type { CreateUserDto } from '../dto/create-user.dto';
 import { type MockedInstance, createMock } from '@douglasneuroinformatics/nestjs/testing';
 import { Test } from '@nestjs/testing';
 
 import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import { createUserDtoStubFactory } from './stubs/create-user.dto.stub';
+
+import type { CreateUserDto } from '../dto/create-user.dto';
 
 describe('UsersController', () => {
   let usersController: UsersController;

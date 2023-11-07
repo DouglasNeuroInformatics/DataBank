@@ -1,8 +1,10 @@
 /* eslint-disable perfectionist/sort-objects */
+
 import type { SetupOptions } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 import type { MergeDeep } from 'type-fest';
+import { z } from 'zod';
 
 type SetupData = MergeDeep<
   SetupOptions['admin'],
@@ -58,55 +60,37 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               label: 'Verification Method',
               options: {
                 MANUAL_VERIFICATION: 'Manually verify users by the admin',
-                VERIFICATION_UPON_CONFIRM_EMAIL: 'Automatically Verifiy users when they confirm their emails',
+                VERIFICATION_UPON_CONFIRM_EMAIL: 'Automatically verify users when they confirm their emails',
                 VERIFICATION_WITH_REGEX: 'Verify users by matching their emails with a predefined regex'
               }
             },
-            verificationRegex: (data) => {
-              if (data?.verificationType === 'VERIFICATION_WITH_REGEX') {
-                return {
-                  kind: 'text',
-                  label: 'Regular expression',
-                  variant: 'short'
-                };
+            verificationRegex: {
+              deps: ['verificationType'],
+              kind: 'dynamic',
+              render: (data) => {
+                if (data?.verificationType === 'VERIFICATION_WITH_REGEX') {
+                  return {
+                    kind: 'text',
+                    label: 'Regular expression',
+                    variant: 'short'
+                  };
+                }
+                return null;
               }
-              return null;
             }
           },
           title: 'User Verification Options'
         }
       ]}
       submitBtnLabel={t('submit')}
-      validationSchema={{
-        properties: {
-          email: {
-            format: 'email',
-            minLength: 1,
-            type: 'string'
-          },
-          firstName: {
-            minLength: 1,
-            type: 'string'
-          },
-          lastName: {
-            minLength: 1,
-            type: 'string'
-          },
-          password: {
-            pattern: isStrongPassword.source,
-            type: 'string'
-          },
-          verificationRegex: {
-            nullable: true,
-            type: 'string'
-          },
-          verificationType: {
-            type: 'string'
-          }
-        },
-        required: ['firstName', 'lastName', 'email', 'password', 'verificationType'],
-        type: 'object'
-      }}
+      validationSchema={z.object({
+        email: z.string().regex(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/),
+        firstName: z.string().min(1),
+        lastName: z.string().min(1),
+        password: z.string().regex(isStrongPassword),
+        verificationRegex: z.string().optional(),
+        verificationType: z.enum(['VERIFICATION_WITH_REGEX', 'VERIFICATION_UPON_CONFIRM_EMAIL', 'MANUAL_VERIFICATION'])
+      })}
       onSubmit={(data) => {
         if (data.verificationRegex) {
           onSubmit({
