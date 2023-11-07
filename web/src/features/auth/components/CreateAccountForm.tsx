@@ -1,5 +1,6 @@
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
 
 export type CreateAccountData = {
   email: string;
@@ -22,35 +23,13 @@ export const CreateAccountForm = ({ onSubmit }: CreateAccountFormProps) => {
         lastName: { kind: 'text', label: t('lastName'), variant: 'short' },
         password: { kind: 'text', label: t('password'), variant: 'password' }
       }}
-      errorMessages={{
-        email: t('validEmail'),
-        firstName: t('requiredField'),
-        lastName: t('requiredField'),
-        password: t('requiredField')
-      }}
       submitBtnLabel={t('submit')}
-      validationSchema={{
-        properties: {
-          email: {
-            pattern: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.source,
-            type: 'string'
-          },
-          firstName: {
-            minLength: 1,
-            type: 'string'
-          },
-          lastName: {
-            minLength: 1,
-            type: 'string'
-          },
-          password: {
-            minLength: 1,
-            type: 'string'
-          }
-        },
-        required: ['firstName', 'lastName', 'email', 'password'],
-        type: 'object'
-      }}
+      validationSchema={z.object({
+        email: z.string().regex(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/),
+        firstName: z.string().min(1),
+        lastName: z.string().min(1),
+        password: z.string().min(1)
+      })}
       onSubmit={onSubmit}
     />
   );

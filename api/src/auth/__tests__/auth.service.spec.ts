@@ -1,7 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from 'bun:test';
 
-import type { CreateAccountDto } from '../dto/create-account.dto';
-import type { VerifyAccountDto } from '../dto/verify-account.dto';
 import type { CurrentUser, Locale } from '@databank/types';
 import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 import { type MockedInstance, createMock } from '@douglasneuroinformatics/nestjs/testing';
@@ -23,6 +21,9 @@ import { AuthService } from '../auth.service';
 import { createAccountDtoStubFactory } from './stubs/create-account.dto.stub';
 import { currentUserStubFactory } from './stubs/current-user.stub';
 import { verifyAccountStubFactory } from './stubs/verify-account.dto.stub';
+
+import type { CreateAccountDto } from '../dto/create-account.dto';
+import type { VerifyAccountDto } from '../dto/verify-account.dto';
 
 const validDate = Date.now() + 360000;
 const expiredDate = Date.now() - 10000;
