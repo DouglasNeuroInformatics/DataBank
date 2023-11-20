@@ -11,8 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@douglasneuroinformatics/ui": "latest",
-    "@douglasneuroinformatics/utils": "latest",
+    "@douglasneuroinformatics/ui": "^4.1.1",
+    "@douglasneuroinformatics/utils": "^1.0.5",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "axios": "^1.5.1",
@@ -36,7 +36,7 @@
     "zustand": "^4.4.2"
   },
   "devDependencies": {
-    "@douglasneuroinformatics/form-types": "latest",
+    "@douglasneuroinformatics/form-types": "^4.0.2",
     "@headlessui/tailwindcss": "^0.2.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@types/papaparse": "^5.3.9",

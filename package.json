@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@databank/types": "workspace:*",
-    "@douglasneuroinformatics/eslint-config": "latest",
+    "@douglasneuroinformatics/eslint-config": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "bun-types": "^1.0.4",
