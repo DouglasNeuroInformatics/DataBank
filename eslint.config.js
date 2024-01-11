@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 const apiConfig = createConfig({
   base: {
     env: 'node',
-    filesRoot: 'api/src'
+    fileRoots: ['api/src']
   },
   ts: {
     project: path.resolve(__dirname, 'api', 'tsconfig.json')
@@ -21,7 +21,7 @@ const apiConfig = createConfig({
 const webConfig = createConfig({
   base: {
     env: 'browser',
-    filesRoot: 'web/src'
+    fileRoots: ['web/src']
   },
   jsx: true,
   ts: {
