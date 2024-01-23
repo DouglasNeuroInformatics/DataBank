@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware';
 import { DatasetsModule } from './datasets/datasets.module';
 import { I18nModule } from './i18n/i18n.module';
+import { PrismaModule } from './prisma/prisma.module';
 import { SetupModule } from './setup/setup.module';
 import { UsersModule } from './users/users.module';
 
@@ -34,7 +35,8 @@ import { UsersModule } from './users/users.module';
         ttl: 60000
       }
     ]),
-    UsersModule
+    UsersModule,
+    PrismaModule.forRoot()
   ],
   providers: [
     {
