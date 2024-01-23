@@ -133,6 +133,3 @@ dist
 
 # turbo
 .turbo
-
-# dev data db in the api
-./api/data
