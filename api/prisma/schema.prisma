@@ -10,7 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User
+// ---------------- Auth ----------------
+type ConfirmEmailInfo {
+  expiry           DateTime
+  attemptsMade     Int      @default(0)
+  confirmEmailCode Int
+}
+
+// ---------------- User ----------------
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
@@ -26,15 +33,120 @@ model User {
 
   createdAt DateTime @default(now()) @db.Date
 
-  // confirmEmailCode? ConfirmEmailCode;
+  confirmEmailInfo ConfirmEmailInfo?
 
   // /** The timestamp when the user confirmed their email */
   confirmedAt DateTime?
 
   verifiedAt DateTime?
+  Dataset    Dataset?  @relation(fields: [datasetId], references: [id])
+  datasetId  String?   @db.ObjectId
 }
 
 enum UserRole {
   ADMIN
   STANDARD
 }
+
+// ---------------- Dataset ----------------
+model Dataset {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  name        String          @unique
+  description String?
+  createdAt   DateTime        @default(now()) @db.Date
+  updatedAt   DateTime        @default(now()) @db.Date
+  managers    User[]
+  datasetType DatasetType
+  columns     DatasetColumn[]
+  dataEntry   Json
+}
+
+type DatasetColumn {
+  name           String
+  type           DatasetType
+  nullable       Boolean
+  summary        ColumnSummary
+  validation     ColumnValidation
+  dataPermission PermissionLevel
+}
+
+enum DatasetType {
+  BASE
+  TABULAR
+  BINARY
+}
+
+enum ColumnType {
+  STRING_COLUMN
+  INT_COLUMN
+  FLOAT_COLUMN
+  ENUM_COLUMN
+  DATETIME_COLUMN
+}
+
+enum PermissionLevel {
+  PUBLIC
+  LOGIN
+  VERIFIED
+  MANAGER
+}
+
+// column summary
+type ColumnSummary {
+  count      Int
+  intSummary IntColumnSummary?
+}
+
+type IntColumnSummary {
+  max    Int
+  min    Int
+  mean   Float
+  median Float
+  mode   Int
+  std    Float
+}
+
+type FloatColumnSummary {
+  max    Float
+  min    Float
+  mean   Float
+  median Float
+  std    Float
+}
+
+type EnumColumnSummary {
+  distribution Json
+}
+
+type DateTimeColumnSummary {
+  max DateTime
+  min DateTime
+}
+
+// column validation
+type ColumnValidation {
+  stringValidation StringColumnValidation?
+}
+
+type StringColumnValidation {
+  min   Int
+  max   Int?
+  regex String?
+}
+
+type NumericColumnValidation {
+  min Float
+  max Float
+}
+
+type EnumColumnValidation {
+  allowedValues String[]
+}
+
+type DatetimeColumnValidation {
+  min     DateTime
+  max     DateTime
+  passISO Boolean
+}
+
+// ---------------- Setup ----------------
