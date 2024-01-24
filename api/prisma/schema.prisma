@@ -29,7 +29,7 @@ model User {
 
   hashedPassword String
 
-  role UserRole
+  role UserRole @default(STANDARD)
 
   createdAt DateTime @default(now()) @db.Date
 
@@ -55,15 +55,28 @@ model Dataset {
   description String?
   createdAt   DateTime        @default(now()) @db.Date
   updatedAt   DateTime        @default(now()) @db.Date
+  license     DatasetLicense  @default(PUBLIC)
   managers    User[]
+  managerIds  String[]
   datasetType DatasetType
+  tabularData TabularDataset?
+}
+
+enum DatasetLicense {
+  PUBLIC
+  OTHER
+}
+
+// Tabular dataset
+type TabularDataset {
+  data        Json[]
+  primaryKeys String[]
   columns     DatasetColumn[]
-  dataEntry   Json
 }
 
 type DatasetColumn {
   name           String
-  type           DatasetType
+  type           ColumnType
   nullable       Boolean
   summary        ColumnSummary
   validation     ColumnValidation
@@ -93,8 +106,11 @@ enum PermissionLevel {
 
 // column summary
 type ColumnSummary {
-  count      Int
-  intSummary IntColumnSummary?
+  count           Int
+  intSummary      IntColumnSummary?
+  floatSummary    FloatColumnSummary?
+  enumSummary     EnumColumnSummary?
+  datetimeSummary DateTimeColumnSummary?
 }
 
 type IntColumnSummary {
