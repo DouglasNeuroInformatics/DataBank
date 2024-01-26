@@ -1,7 +1,7 @@
 import type { DatasetColumnType, DatasetEntry, DatasetInfo } from '@databank/types';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, type ObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 
 import { CreateDatasetDto } from './dto/create-dataset.dto';
 import { UpdateDatasetColumnDto } from './dto/dataset-column.dto';
@@ -9,13 +9,13 @@ import { Dataset } from './schemas/dataset.schema';
 
 @Injectable()
 export class DatasetsService {
-  constructor(@InjectModel(Dataset.name) private datasetModel: Model<Dataset>) {}
+  constructor(@InjectModel(Dataset.name) private datasetModel: Model<Dataset>) { }
 
-  createDataset(createDatasetDto: CreateDatasetDto, ownerId: ObjectId) {
+  createDataset(createDatasetDto: CreateDatasetDto, ownerId: string) {
     return this.datasetModel.create({ ...createDatasetDto, owner: ownerId });
   }
 
-  async deleteColumn(id: ObjectId, column?: string): Promise<Dataset> {
+  async deleteColumn(id: string, column?: string): Promise<Dataset> {
     const dataset = await this.datasetModel.findById(id);
     if (!dataset) {
       throw new NotFoundException();
@@ -34,15 +34,15 @@ export class DatasetsService {
     return dataset;
   }
 
-  async deleteDataset(id: ObjectId) {
+  async deleteDataset(id: string) {
     return this.datasetModel.findByIdAndDelete(id);
   }
 
-  getAvailable(ownerId?: ObjectId | string): Promise<DatasetInfo[]> {
+  getAvailable(ownerId?: string): Promise<DatasetInfo[]> {
     return this.datasetModel.find({ owner: ownerId }, '-data');
   }
 
-  async getById(id: ObjectId | string): Promise<Dataset> {
+  async getById(id: string): Promise<Dataset> {
     const dataset = await this.datasetModel.findById(id);
     if (!dataset) {
       throw new NotFoundException();
@@ -50,6 +50,10 @@ export class DatasetsService {
     await dataset.populate('owner');
     return dataset;
   }
+
+  // getAvailableMetadata() { }
+
+  // getMetadataById() { }
 
   mutateTypes(data: DatasetEntry[], column: string, type: DatasetColumnType): DatasetEntry[] {
     // eslint-disable-next-line @typescript-eslint/prefer-for-of
@@ -72,7 +76,7 @@ export class DatasetsService {
     return data;
   }
 
-  async updateColumn(dto: UpdateDatasetColumnDto, id: ObjectId, column?: string) {
+  async updateColumn(dto: UpdateDatasetColumnDto, id: string, column?: string) {
     const dataset = await this.datasetModel.findById(id);
     if (!dataset) {
       throw new NotFoundException();
@@ -91,4 +95,16 @@ export class DatasetsService {
     await dataset.save();
     return dataset;
   }
+
+  // validateDataset() {
+  //   return 'to-do'
+  // }
+
+  // updateSummary() {
+  //   return 'to-do'
+  // }
+
+  // removeManager() {}
+
+  // addManager() {}
 }

@@ -39,8 +39,8 @@ model User {
   confirmedAt DateTime?
 
   verifiedAt DateTime?
-  Dataset    Dataset?  @relation(fields: [datasetId], references: [id])
-  datasetId  String?   @db.ObjectId
+  Dataset    Dataset[] @relation(fields: [datasetId], references: [id])
+  datasetId  String[]  @db.ObjectId
 }
 
 enum UserRole {
@@ -56,8 +56,8 @@ model Dataset {
   createdAt   DateTime        @default(now()) @db.Date
   updatedAt   DateTime        @default(now()) @db.Date
   license     DatasetLicense  @default(PUBLIC)
-  managers    User[]
-  managerIds  String[]
+  managers    User[]          @relation(fields: [managerIds], references: [id])
+  managerIds  String[]        @db.ObjectId
   datasetType DatasetType
   tabularData TabularDataset?
 }
