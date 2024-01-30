@@ -1,10 +1,9 @@
 import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 import { ConflictException, Injectable } from '@nestjs/common';
-import type { PrismaClient } from '@prisma/client';
-import type { User } from '@prisma/client';
+import { type User } from '@prisma/client';
 import type { SetOptional } from 'type-fest';
 
-import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
+import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 
 import type { CreateUserDto } from './schemas/user';
@@ -12,7 +11,6 @@ import type { CreateUserDto } from './schemas/user';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectPrismaClient() private readonly prisma: PrismaClient,
     @InjectModel('User') private readonly userModel: Model<"User">,
     private readonly cryptoService: CryptoService
   ) { }
@@ -41,7 +39,7 @@ export class UsersService {
 
   /** Return the user with the provided email, or null if no such user exists */
   findByEmail(email: string) {
-    return this.prisma.user.findUnique({
+    return this.userModel.findUnique({
       where: {
         email: email
       }
@@ -50,6 +48,6 @@ export class UsersService {
 
   /** Get all users in the database */
   getAll(): Promise<User[]> {
-    return this.prisma.user.findMany();
+    return this.userModel.findMany();
   }
 }
