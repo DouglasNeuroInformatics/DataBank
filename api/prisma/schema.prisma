@@ -39,6 +39,7 @@ model User {
   confirmedAt DateTime?
 
   verifiedAt DateTime?
+  setup      Setup?
   Dataset    Dataset[] @relation(fields: [datasetId], references: [id])
   datasetId  String[]  @db.ObjectId
 }
@@ -170,6 +171,8 @@ model Setup {
   id               String           @id @default(auto()) @map("_id") @db.ObjectId
   createdAt        DateTime         @default(now()) @db.Date
   updatedAt        DateTime         @default(now()) @db.Date
+  admin            User             @relation(fields: [adminId], references: [id])
+  adminId          String           @unique @db.ObjectId
   userVerification UserVerification
 }
 

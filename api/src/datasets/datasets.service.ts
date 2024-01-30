@@ -1,6 +1,7 @@
-import type { DatasetColumnType, DatasetEntry, DatasetInfo } from '@databank/types';
+import type { DatasetEntry, DatasetInfo } from '@databank/types';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ColumnType } from '@prisma/client';
 import { Model } from 'mongoose';
 
 import { CreateDatasetDto } from './dto/create-dataset.dto';
@@ -11,8 +12,12 @@ import { Dataset } from './schemas/dataset.schema';
 export class DatasetsService {
   constructor(@InjectModel(Dataset.name) private datasetModel: Model<Dataset>) { }
 
-  createDataset(createDatasetDto: CreateDatasetDto, ownerId: string) {
+  create(createDatasetDto: CreateDatasetDto, ownerId: string) {
     return this.datasetModel.create({ ...createDatasetDto, owner: ownerId });
+  }
+
+  async deleteById(id: string) {
+    return this.datasetModel.findByIdAndDelete(id);
   }
 
   async deleteColumn(id: string, column?: string): Promise<Dataset> {
@@ -34,10 +39,6 @@ export class DatasetsService {
     return dataset;
   }
 
-  async deleteDataset(id: string) {
-    return this.datasetModel.findByIdAndDelete(id);
-  }
-
   getAvailable(ownerId?: string): Promise<DatasetInfo[]> {
     return this.datasetModel.find({ owner: ownerId }, '-data');
   }
@@ -55,21 +56,21 @@ export class DatasetsService {
 
   // getMetadataById() { }
 
-  mutateTypes(data: DatasetEntry[], column: string, type: DatasetColumnType): DatasetEntry[] {
+  mutateTypes(data: DatasetEntry[], column: string, type: ColumnType): DatasetEntry[] {
     // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < data.length; i++) {
       const initialValue = data[i]![column];
-      if (type === 'FLOAT' || type === 'INTEGER') {
+      if (type === ColumnType.FLOAT_COLUMN || type === ColumnType.INT_COLUMN) {
         const updatedValue = Number(initialValue);
         if (isNaN(updatedValue)) {
           throw new BadRequestException(`Cannot safely coerce '${initialValue}' to number`);
-        } else if (type === 'INTEGER' && !Number.isInteger(updatedValue)) {
+        } else if (type === ColumnType.INT_COLUMN && !Number.isInteger(updatedValue)) {
           throw new BadRequestException(`Value can be coerced to number, but it is not an integer: ${updatedValue}`);
         }
         data[i]![column] = updatedValue;
         // could add more in the future
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      } else if (type === 'STRING') {
+      } else if (ColumnType.STRING_COLUMN) {
         data[i]![column] = String(initialValue);
       }
     }
@@ -104,7 +105,7 @@ export class DatasetsService {
   //   return 'to-do'
   // }
 
-  // removeManager() {}
+  // removeManager(datasetId, managerId, managerIdToRemove) {}
 
-  // addManager() {}
+  // addManager(datasetId, managerId, managerIdToRemove) {}
 }

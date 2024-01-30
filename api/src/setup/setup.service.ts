@@ -1,36 +1,33 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import type { SetupState, TDataset } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { InjectConnection } from '@nestjs/mongoose';
+import type { Setup } from '@prisma/client';
 import mongoose, { Model } from 'mongoose';
 
+import { InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import { UsersService } from '@/users/users.service.js';
-
-import { SetupConfig } from './schemas/setup-config.schema.js';
-
-import type { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
 
 @Injectable()
 export class SetupService {
   constructor(
-    @InjectModel(SetupConfig.name) private readonly setupConfigModel: Model<SetupConfig>,
+    @InjectPrismaClient() private readonly setupModel: Model<Setup>,
     @InjectConnection() private readonly connection: mongoose.Connection,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
-  ) {}
+  ) { }
 
   async getSetupConfig() {
-    const setupConfig = await this.setupConfigModel.findOne();
+    const setupConfig = await this.setupModel.findOne();
     if (!setupConfig) {
       throw new NotFoundException('Setup Config not found in the database.');
     }
     return setupConfig;
   }
 
-  async getState(): Promise<SetupState> {
+  async getState() {
     return { isSetup: await this.isSetup() };
   }
 
@@ -42,7 +39,7 @@ export class SetupService {
     return verificationInfo;
   }
 
-  async initApp({ admin, setupConfig }: SetupDto) {
+  async initApp({ admin, setupConfig }) {
     console.log(setupConfig);
     if (await this.isSetup()) {
       throw new ForbiddenException();
