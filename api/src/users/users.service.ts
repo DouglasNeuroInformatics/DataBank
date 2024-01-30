@@ -4,7 +4,8 @@ import type { PrismaClient } from '@prisma/client';
 import type { User } from '@prisma/client';
 import type { SetOptional } from 'type-fest';
 
-import { InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
+import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
+import type { Model } from '@/prisma/prisma.types';
 
 import type { CreateUserDto } from './schemas/user';
 
@@ -12,6 +13,7 @@ import type { CreateUserDto } from './schemas/user';
 export class UsersService {
   constructor(
     @InjectPrismaClient() private readonly prisma: PrismaClient,
+    @InjectModel('User') private readonly userModel: Model<"User">,
     private readonly cryptoService: CryptoService
   ) { }
 
@@ -22,7 +24,7 @@ export class UsersService {
       throw new ConflictException(`User with the provided email already exists: ${email}`);
     }
     const hashedPassword = await this.cryptoService.hashPassword(password);
-    const createdUser = await this.prisma.user.create({
+    const createdUser = await this.userModel.create({
       data: {
         email,
         firstName,

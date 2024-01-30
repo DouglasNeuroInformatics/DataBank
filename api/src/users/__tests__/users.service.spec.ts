@@ -1,43 +1,55 @@
-import type { AnyFunction } from 'bun';
+import { type AnyFunction } from 'bun';
 import { type Mock, beforeEach, describe, expect, it, jest } from 'bun:test';
 
 import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
-import { createMock } from '@douglasneuroinformatics/nestjs/testing';
 import { ConflictException } from '@nestjs/common';
-import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 
-import { User } from '../schemas/user.schema';
 import { UsersService } from '../users.service';
 import { createUserDtoStubFactory } from './stubs/create-user.dto.stub';
 
-import type { CreateUserDto } from '../dto/create-user.dto';
+import type { CreateUserDto } from '../schemas/user';
 
 describe('UsersService', () => {
   let usersService: UsersService;
-  let userModel: {
-    create: Mock<AnyFunction>;
-    exists: Mock<AnyFunction>;
+  let prisma: {
+    user: {
+      create: Mock<AnyFunction>,
+      findMany: Mock<AnyFunction>,
+      findUnique: Mock<AnyFunction>
+    }
   };
+  const mockCrypto = {
+    comparePassword: jest.fn().mockResolvedValue(true),
+    hash: jest.fn().mockResolvedValue('hello'),
+    hashPassword: jest.fn().mockResolvedValue('hello')
+  }
+
+  // let cryptoService: CryptoService;
 
   beforeEach(async () => {
+    console.log(CryptoService.name)
     const moduleRef = await Test.createTestingModule({
       providers: [
         UsersService,
         {
-          provide: getModelToken(User.name),
+          provide: 'prisma',
           useValue: {
-            create: jest.fn(),
-            exists: jest.fn()
+            user: {
+              create: jest.fn(),
+              findMany: jest.fn(),
+              findUnique: jest.fn()
+            }
           }
         },
         {
           provide: CryptoService,
-          useValue: createMock(CryptoService)
+          useValue: mockCrypto
         }
       ]
     }).compile();
-    userModel = moduleRef.get(getModelToken(User.name));
+    prisma = moduleRef.get('prisma');
+    // cryptoService = moduleRef.get<CryptoService>(CryptoService);
     usersService = moduleRef.get(UsersService);
   });
 
@@ -53,12 +65,12 @@ describe('UsersService', () => {
     });
 
     it('should throw a conflict exception if the user already exists', () => {
-      userModel.exists.mockResolvedValueOnce(true);
+      prisma.user.findUnique.mockResolvedValueOnce(createUserDto);
       expect(usersService.createUser(createUserDto)).rejects.toBeInstanceOf(ConflictException);
     });
 
     it('should return an object that containers neither a password or hashedPassword', async () => {
-      userModel.create.mockImplementationOnce((args) => args as unknown);
+      prisma.user.create.mockImplementationOnce((args) => args as unknown);
       const createdUser = await usersService.createUser(createUserDto);
       expect(Object.keys(createdUser)).not.toContain('password');
       expect(Object.keys(createdUser)).not.toContain('hashedPassword');
