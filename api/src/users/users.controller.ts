@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
@@ -16,7 +16,6 @@ export class UsersController {
     summary: 'Create User'
   })
   @Post()
-  @UsePipes(new ValidationPipe({ transform: true }))
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }
