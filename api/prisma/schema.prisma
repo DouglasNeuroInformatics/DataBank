@@ -59,7 +59,7 @@ model Dataset {
   license     DatasetLicense  @default(PUBLIC)
   managers    User[]          @relation(fields: [managerIds], references: [id])
   managerIds  String[]        @db.ObjectId
-  datasetType DatasetType
+  datasetType DatasetType     @default(BASE)
   tabularData TabularDataset?
 }
 

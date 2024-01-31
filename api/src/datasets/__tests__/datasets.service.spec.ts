@@ -4,9 +4,13 @@ import { createMock } from "@douglasneuroinformatics/nestjs/testing";
 import { Test } from "@nestjs/testing";
 
 import { DatasetsService } from "../datasets.service";
+import { CreateDatasetDtoStubFactory } from "./stubs/create-datasets.dto.stub";
+
+import type { CreateDatasetDto } from "../schemas/dataset";
 
 describe('DatasetsService', () => {
     let datasetsService: DatasetsService;
+    let createDatasetDto: CreateDatasetDto;
 
     beforeEach(async () => {
         const moduleRef = await Test.createTestingModule({
@@ -18,6 +22,7 @@ describe('DatasetsService', () => {
             ]
         }).compile();
         datasetsService = moduleRef.get(DatasetsService);
+        createDatasetDto = CreateDatasetDtoStubFactory();
     });
 
     it('should be defined', () => {
@@ -26,8 +31,8 @@ describe('DatasetsService', () => {
 
     describe('create', () => {
         // TO_DO
-        it('should create a new dataset', () => {
-            // TO_DO
+        it('should create a new dataset', async () => {
+            await datasetsService.create(createDatasetDto, 'user1')
         });
     });
 
@@ -72,7 +77,7 @@ describe('DatasetsService', () => {
             // TO_DO
         });
 
-        it('should reject to mutate the type of a column if the validation fails', () {
+        it('should reject to mutate the type of a column if the validation fails', () => {
             // TO_DO
         });
     });
@@ -82,6 +87,16 @@ describe('DatasetsService', () => {
             // To_DO
         });
     });
+
+    describe('addManager', () => {
+        it('should add a Manager to the manager array for this dataset', () => {
+            // TO_DO
+        })
+
+        it('should not allow non manager to add manager to the dataset', () => {
+            // TO_DO
+        })
+    })
 
 
 

@@ -52,13 +52,8 @@ export type TUser = {
 };
 
 /** DATASETS */
-
-export type DatasetLicense = 'PUBLIC_DOMAIN' | 'OTHER';
-
-export type DatasetColumnType = 'STRING' | 'FLOAT' | 'INTEGER';
-
 export type DatasetInfo = {
-  _id: string;
+  id: string;
   createdAt: number;
   updatedAt: number;
   owner: TUser;

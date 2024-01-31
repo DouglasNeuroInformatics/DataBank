@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ColumnType, type Dataset } from '@prisma/client';
 import { Model } from 'mongoose';
 
@@ -94,15 +94,23 @@ export class DatasetsService {
     return dataset;
   }
 
-  // validateDataset() {
+  // private validateDataset() {
   //   return 'to-do'
   // }
 
-  // updateSummary() {
+  // private updateSummary() {
   //   return 'to-do'
   // }
 
-  // removeManager(datasetId, managerId, managerIdToRemove) {}
+  // removeManager(datasetId, managerId, managerIdToRemove) {
+      //   if (user is not in manager[]) {
+  //     throw new ForbiddenException();
+  //   }
+  // }
 
-  // addManager(datasetId, managerId, managerIdToRemove) {}
+  // addManager(datasetId, managerId, managerIdToRemove) {
+  //   if (user is not in manager[]) {
+  //     throw new ForbiddenException();
+  //   }
+  // }
 }
