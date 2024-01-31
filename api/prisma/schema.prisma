@@ -59,7 +59,7 @@ model Dataset {
   license     DatasetLicense  @default(PUBLIC)
   managers    User[]          @relation(fields: [managerIds], references: [id])
   managerIds  String[]        @db.ObjectId
-  datasetType DatasetType     @default(BASE)
+  datasetType DatasetType
   tabularData TabularDataset?
 }
 
@@ -68,28 +68,30 @@ enum DatasetLicense {
   OTHER
 }
 
+enum DatasetType {
+  BASE
+  TABULAR
+  BINARY
+}
+
 // Tabular dataset
 type TabularDataset {
   // string : string | number
   data        Json[]
   // should be keys in the data object
   primaryKeys String[]
-  columns     DatasetColumn[]
+  columns     TabularColumn[]
 }
 
-type DatasetColumn {
-  name           String
-  type           ColumnType
-  nullable       Boolean
-  summary        ColumnSummary
-  validation     ColumnValidation
-  dataPermission PermissionLevel
-}
-
-enum DatasetType {
-  BASE
-  TABULAR
-  BINARY
+type TabularColumn {
+  name               String
+  description        String?
+  type               ColumnType
+  nullable           Boolean
+  metaDataPermission PermissionLevel
+  summary            ColumnSummary
+  validation         ColumnValidation
+  dataPermission     PermissionLevel
 }
 
 enum ColumnType {
