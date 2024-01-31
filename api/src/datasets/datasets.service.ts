@@ -1,16 +1,13 @@
-import type { DatasetEntry, DatasetInfo } from '@databank/types';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { ColumnType } from '@prisma/client';
+import { ColumnType, type Dataset } from '@prisma/client';
 import { Model } from 'mongoose';
 
-import { CreateDatasetDto } from './dto/create-dataset.dto';
-import { UpdateDatasetColumnDto } from './dto/dataset-column.dto';
-import { Dataset } from './schemas/dataset.schema';
+import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
+
 
 @Injectable()
 export class DatasetsService {
-  constructor(@InjectModel(Dataset.name) private datasetModel: Model<Dataset>) { }
+  constructor(@InjectModel('Dataset') private datasetModel: Model<Dataset>) { }
 
   create(createDatasetDto: CreateDatasetDto, ownerId: string) {
     return this.datasetModel.create({ ...createDatasetDto, owner: ownerId });

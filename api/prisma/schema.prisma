@@ -70,7 +70,9 @@ enum DatasetLicense {
 
 // Tabular dataset
 type TabularDataset {
+  // string : string | number
   data        Json[]
+  // should be keys in the data object
   primaryKeys String[]
   columns     DatasetColumn[]
 }

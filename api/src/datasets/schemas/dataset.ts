@@ -10,7 +10,6 @@ const $TabularData = z.object({
 export type TabularData = z.infer<typeof $TabularData>;
 
 const $Dataset = z.object({
-    createdAt: z.string().datetime(),
     // managerIds  String[]        @db.ObjectId
     datasetType: z.nativeEnum(DatasetType),
     description: z.string().optional(),
