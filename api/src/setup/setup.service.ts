@@ -2,19 +2,20 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
 import type { Setup } from '@prisma/client';
-import mongoose, { Model } from 'mongoose';
+import type { Model } from 'mongoose';
 
-import { InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
+import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import { UsersService } from '@/users/users.service.js';
+
+import type { CreateAdminDto, SetupDto } from './dto/setup';
+import type { TDataset } from '@databank/types';
 
 @Injectable()
 export class SetupService {
   constructor(
-    @InjectPrismaClient() private readonly setupModel: Model<Setup>,
-    @InjectConnection() private readonly connection: mongoose.Connection,
+    @InjectModel('Setup') private readonly setupModel: Model<Setup>,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) { }
@@ -32,45 +33,40 @@ export class SetupService {
   }
 
   async getVerificationInfo() {
-    const verificationInfo = (await this.getSetupConfig()).verificationInfo;
+    const verificationInfo = await this.setupModel.findOne();
     if (!verificationInfo) {
       throw new NotFoundException('Cannot access verification info.');
     }
     return verificationInfo;
   }
 
-  async initApp({ admin, setupConfig }) {
-    console.log(setupConfig);
+  async initApp({ admin, setupConfig }: SetupDto) {
     if (await this.isSetup()) {
       throw new ForbiddenException();
     }
-    await this.connection.dropDatabase();
     const user = await this.createAdmin(admin);
 
     await this.setupConfigModel.create(setupConfig);
 
     const iris = await this.loadStarterDataset('iris.json');
-    await this.datasetsService.createDataset(iris, user.toObject());
+    await this.datasetsService.create(iris, user.id);
   }
 
   private async createAdmin(admin: CreateAdminDto) {
     return this.usersService.createUser({
       ...admin,
-      confirmedAt: Date.now(),
-      role: 'admin',
-      verifiedAt: Date.now()
+      confirmedAt: new Date(Date.now()),
+      role: 'ADMIN',
+      verifiedAt: new Date(Date.now())
     });
   }
 
   private async isSetup() {
-    const collections = await this.connection.db.listCollections().toArray();
-    for (const collection of collections) {
-      const count = await this.connection.collection(collection.name).countDocuments();
-      if (count > 0) {
-        return true;
-      }
+    const setup = await this.setupModel.findOne();
+    if (!setup) {
+      return false;
     }
-    return false;
+    return true;
   }
 
   // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {

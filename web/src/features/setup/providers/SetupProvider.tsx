@@ -15,7 +15,7 @@ export const SetupProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, setState] = useState<SetupState>(() => {
     const savedSetup = window.localStorage.getItem('databankSetup');
     if (!savedSetup) {
-      return { isSetup: null };
+      return { isSetup: false };
     }
     return JSON.parse(savedSetup) as SetupState;
   });

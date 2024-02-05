@@ -1,6 +1,6 @@
 import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
 import { ConflictException, Injectable } from '@nestjs/common';
-import { type User } from '@prisma/client';
+import { type ConfirmEmailInfo, type User } from '@prisma/client';
 import type { SetOptional } from 'type-fest';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
@@ -49,5 +49,27 @@ export class UsersService {
   /** Get all users in the database */
   getAll(): Promise<User[]> {
     return this.userModel.findMany();
+  }
+
+  async setVerified(email: string) {
+    return await this.userModel.update({
+      data: {
+        verifiedAt: new Date(Date.now())
+      },
+      where: {
+        email: email
+      }
+    })
+  }
+
+  async updateConfirmEmailInfo(email: string, confirmEmailInfo: ConfirmEmailInfo | null) {
+    return await this.userModel.update({
+      data: {
+        confirmEmailInfo: confirmEmailInfo
+      },
+      where: {
+        email: email
+      }
+    })
   }
 }

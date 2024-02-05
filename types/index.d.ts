@@ -14,7 +14,7 @@ export type AuthPayload = {
   accessToken: string;
 };
 
-export type UserRole = 'admin' | 'standard';
+export type UserRole = 'ADMIN' | 'STANDARD';
 
 export type CurrentUser = {
   id: string;
@@ -22,8 +22,8 @@ export type CurrentUser = {
   firstName: string;
   lastName: string;
   role: UserRole;
-  verifiedAt: number | null | undefined;
-  confirmedAt: number | null | undefined;
+  verifiedAt: Date | null | undefined;
+  confirmedAt: Date | null | undefined;
 };
 
 export type LoginCredentials = {
@@ -36,7 +36,7 @@ export type EmailConfirmationProcedureInfo = {
   attemptsMade: number;
 
   /** The unix timestamp after which the code will be invalidated */
-  expiry: number;
+  expiry: Date;
 };
 
 /** USER */
