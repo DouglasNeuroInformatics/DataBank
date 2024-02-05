@@ -1,9 +1,9 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ColumnType, type Dataset } from '@prisma/client';
 import { Model } from 'mongoose';
+import { pl } from 'nodejs-polars';
 
-import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
-
+import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator'; S
 
 
 @Injectable()
@@ -37,7 +37,7 @@ export class DatasetsService {
     return dataset;
   }
 
-  getAvailable(ownerId?: string): Promise<DatasetInfo[]> {
+  getAvailable(ownerId?: string) {
     return this.datasetModel.find({ owner: ownerId }, '-data');
   }
 
@@ -104,7 +104,7 @@ export class DatasetsService {
   // }
 
   // removeManager(datasetId, managerId, managerIdToRemove) {
-      //   if (user is not in manager[]) {
+  //   if (user is not in manager[]) {
   //     throw new ForbiddenException();
   //   }
   // }

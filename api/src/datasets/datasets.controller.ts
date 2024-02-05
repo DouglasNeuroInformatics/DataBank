@@ -1,26 +1,27 @@
 import type { DatasetInfo } from '@databank/types';
 import { ParseIdPipe } from '@douglasneuroinformatics/nestjs/core';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { type ObjectId } from 'mongoose';
+import 'multer';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 import { UserId } from '@/core/decorators/user-id.decorator';
 
 import { DatasetsService } from './datasets.service';
-import { CreateDatasetDto } from './dto/create-dataset.dto';
-import { UpdateDatasetColumnDto } from './dto/dataset-column.dto';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })
 export class DatasetsController {
-  constructor(private readonly datasetsService: DatasetsService) {}
+  constructor(private readonly datasetsService: DatasetsService) { }
 
   @ApiOperation({ summary: 'Create Dataset' })
   @Post()
   @RouteAccess({ role: 'standard' })
-  createDataset(@Body() createDatasetDto: CreateDatasetDto, @UserId() ownerId: ObjectId) {
-    return this.datasetsService.createDataset(createDatasetDto, ownerId);
+  @UseInterceptors(FileInterceptor('file'))
+  createDataset(@Body() createDatasetDto: CreateDatasetDto, @UploadedFile() file: Express.Multer.File, @UserId() managerId: string) {
+    return this.datasetsService.createDataset(createDatasetDto, managerId);
   }
 
   @Delete(':id/:column')

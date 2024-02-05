@@ -70,9 +70,9 @@ export type DatasetEntry = {
 /** Metadata for a column in the dataset */
 export type TDatasetColumn<T extends DatasetEntry = DatasetEntry> = {
   name: Extract<keyof T, string>;
-  description: string;
+  description?: string;
   nullable: boolean;
-  type: DatasetColumnType;
+  type: ColumnType;
 };
 
 export type TDataset<T extends DatasetEntry = DatasetEntry> = Simplify<

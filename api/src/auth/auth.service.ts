@@ -38,9 +38,7 @@ export class AuthService {
   async createAccount(createAccountDto: CreateAccountDto): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
       ...createAccountDto,
-      confirmedAt: null,
-      role: 'standard',
-      verifiedAt: null
+      role: 'STANDARD',
     });
   }
 

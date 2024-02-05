@@ -1,4 +1,4 @@
-import { ColumnType, DatasetLicense, DatasetType, PermissionLevel } from '@prisma/client';
+import { ColumnType, DatasetLicense, DatasetType, PermissionLevel, type ColumnSummary } from '@prisma/client';
 import { z } from 'zod'
 
 
@@ -9,9 +9,24 @@ const $TabularColumn = z.object({
     metaDataPermission: z.nativeEnum(PermissionLevel),
     name: z.string(),
     nullable: z.boolean(),
-    // summary: z.union([]),
+    summary: z.object({
+        count: z.number().int()
+    }),
     type: z.nativeEnum(ColumnType)
-})
+}) as z.ZodType<TableColumn<TableEntry>>;
+
+
+type TableColumn<T extends TableEntry> = {
+    name: Extract<keyof T, string>
+}
+
+z.object({
+    name: z.string(),
+    nullable: z.boolean(),
+}) as z.ZodType<TableColumn
+
+const $TableEntry = z.record(z.string(), z.string().or(z.number()).or(z.boolean()));
+type TableEntry = z.infer<typeof $TableEntry>;
 
 const $TabularData = z.object({
     columns: z.array($TabularColumn),
