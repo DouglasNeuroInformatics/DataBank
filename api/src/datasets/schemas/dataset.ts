@@ -1,89 +1,138 @@
-import { ColumnType, DatasetLicense, DatasetType, PermissionLevel, type ColumnSummary } from '@prisma/client';
-import { z } from 'zod'
+import { DatasetLicense, PermissionLevel } from '@prisma/client';
+import { z } from 'zod';
 
-
-
-const $TabularColumn = z.object({
-    // validation: z.union([]),
-    dataPermission: z.nativeEnum(PermissionLevel),
-    metaDataPermission: z.nativeEnum(PermissionLevel),
-    name: z.string(),
-    nullable: z.boolean(),
-    summary: z.object({
-        count: z.number().int()
-    }),
-    type: z.nativeEnum(ColumnType)
-}) as z.ZodType<TableColumn<TableEntry>>;
-
-
-type TableColumn<T extends TableEntry> = {
-    name: Extract<keyof T, string>
-}
-
-z.object({
-    name: z.string(),
-    nullable: z.boolean(),
-}) as z.ZodType<TableColumn
-
-const $TableEntry = z.record(z.string(), z.string().or(z.number()).or(z.boolean()));
-type TableEntry = z.infer<typeof $TableEntry>;
-
-const $TabularData = z.object({
-    columns: z.array($TabularColumn),
-    data: z.record(z.string(), z.string().or(z.number()).or(z.boolean())),
-    primaryKeys: z.array(z.string()).nonempty()
+// ---------------------- Column Summaries ---------------------
+export const $BaseSummary = z.object({
+    count: z.number().int()
 })
 
-export type TabularData = z.infer<typeof $TabularData>;
+export const $IntSummary = $BaseSummary.extend({
+    max: z.number().int(),
+    mean: z.number(),
+    median: z.number(),
+    min: z.number().int(),
+    mode: z.number().int(),
+    std: z.number()
+})
 
-const $Dataset = z.object({
-    datasetType: z.nativeEnum(DatasetType),
+export const $FloatSummary = $BaseSummary.extend({
+    max: z.number(),
+    mean: z.number(),
+    median: z.number(),
+    min: z.number(),
+    std: z.number()
+})
+
+export const $EnumSummary = $BaseSummary.extend({
+    distribution: z.record(z.number().int())
+})
+
+export const $DatetimeSummary = $BaseSummary.extend({
+    max: z.date(),
+    min: z.date(),
+})
+
+// ----------------------- Column Validation -----------------------
+export const $StringColumnValidation = z.object({
+    max: z.number().int(),
+    mean: z.number(),
+    median: z.number(),
+    min: z.number().int(),
+    mode: z.number().int(),
+    std: z.number()
+})
+
+export const $NumericColumnValidation = z.object({
+    max: z.number().int(),
+    min: z.number().int(),
+})
+
+export const $EnumColumnValidation = z.object({
+    allowedValues: z.string().array()
+})
+
+export const $DatetimeValidation = z.object({
+    max: z.date(),
+    min: z.date(),
+    // pass ISO
+})
+
+// ---------------------------------------------------
+export const $TabularColumnInfo = z.object({
+    dataPermission: z.nativeEnum(PermissionLevel),
+    description: z.string().optional(),
+    id: z.string(),
+    name: z.string(),
+    nullable: z.boolean(),
+    summaryPermission: z.nativeEnum(PermissionLevel),
+    tabularDataId: z.string()
+});
+
+export const $StringColumn = $TabularColumnInfo.extend({
+    columnType: z.literal("STRING_COLUMN"),
+    stringData: z.string().array(),
+    summary: $BaseSummary
+})
+
+export type StringColumn = z.infer<typeof $StringColumn>;
+
+export const $IntColumn = $TabularColumnInfo.extend({
+    columnType: z.literal("INT_COLUMN"),
+    stringData: z.string().array(),
+    summary: $IntSummary
+})
+export type IntColumn = z.infer<typeof $IntColumn>;
+
+export const $FloatColumn = $TabularColumnInfo.extend({
+    columnType: z.literal("FLOAT_COLUMN"),
+    stringData: z.string().array(),
+    summary: $FloatSummary
+})
+export type FloatColumn = z.infer<typeof $FloatColumn>;
+
+export const $EnumColumn = $TabularColumnInfo.extend({
+    columnType: z.literal("ENUM_COLUMN"),
+    enumData: z.string().array(),
+    summary: $EnumSummary
+})
+export type EnumColumn = z.infer<typeof $EnumColumn>;
+
+export const $DatetimeColumn = $TabularColumnInfo.extend({
+    columnType: z.literal("DATETIME_COLUMN"),
+    datetimeData: z.date().array(),
+    summary: $DatetimeSummary
+})
+export type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
+
+export const $TabularColumn = z.discriminatedUnion('columnType', [$StringColumn, $IntColumn, $FloatColumn, $EnumColumn, $DatetimeColumn])
+export type TabularColumn = z.infer<typeof $TabularColumn>;
+
+// ------------------ Dataset ----------------------
+export const $DatasetInfo = z.object({
+    createdAt: z.coerce.date(),
     description: z.string().optional(),
     id: z.string(),
     license: z.nativeEnum(DatasetLicense),
-    managerIds: z.array(z.string()).min(1),
+    managerIDs: z.string().array(),
     name: z.string(),
-    updatedAt: z.string().datetime()
+    updatedAt: z.coerce.date()
 })
 
-const $TabularDataset = $Dataset.and(z.object({
-    tabularData: $TabularData,
-}))
+export const $BaseDatasetModel = $DatasetInfo.extend({
+    datasetType: z.literal("BASE")
+})
 
-export type TabularDataset = z.infer<typeof $TabularDataset>;
-
-let myTabularDS: TabularDataset = {
-    datasetType: 'TABULAR',
-    description: 'hahahaha',
-    id: 'wowowo',
-    license: 'PUBLIC',
-    managerIds: ['wowowo'],
-    name: 'test',
-    tabularData: {
-        columns: [
-            {
-                dataPermission: 'VERIFIED',
-                metaDataPermission: 'VERIFIED',
-                name: 'height',
-                nullable: false,
-                type: 'FLOAT_COLUMN'
-            }
-        ],
-        data: { name: 'hello' },
-        primaryKeys: ['height']
-    },
-    updatedAt: '2023-09-06'
+export const $TabularDataModel = {
+    columns: z.array($TabularColumn),
+    datasetId: z.string(),
+    id: z.string(),
+    primaryKeys: z.string().array()
 }
 
-console.log(myTabularDS)
-
-const $CreateDataSetDto = z.object({
-    datasetType: z.nativeEnum(DatasetType),
-    description: z.optional(z.string()),
-    licence: z.nativeEnum(DatasetLicense),
-    managerId: z.string(),
-    name: z.string(),
-    tabularData: z.optional($TabularData)
+export const $TabularDatasetModel = $DatasetInfo.extend({
+    datasetType: z.literal("TABULAR"),
+    tabularData: z.object({}).extend($TabularDataModel)
 });
 
-export type CreateDatasetDto = z.infer<typeof $CreateDataSetDto>;
+export const $DatasetModel = z.discriminatedUnion('datasetType', [$BaseDatasetModel, $TabularDatasetModel])
+export type DatasetModel = z.infer<typeof $DatasetModel>

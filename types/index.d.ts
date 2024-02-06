@@ -52,38 +52,23 @@ export type TUser = {
 };
 
 /** DATASETS */
-export type DatasetInfo = {
-  id: string;
-  createdAt: number;
-  updatedAt: number;
-  owner: TUser;
-  name: string;
-  description: string;
-  license: DatasetLicense;
-};
+export type DatasetInfo = Omit<Dataset, 'tabularData'>
 
-/** Corresponds to a row in the dataset */
-export type DatasetEntry = {
-  [key: string]: string | number;
-};
+// {
+//   id: string;
+//   createdAt: number;
+//   updatedAt: number;
+//   owner: TUser;
+//   name: string;
+//   description: string;
+//   license: DatasetLicense;
+// };
 
 /** Metadata for a column in the dataset */
-export type TDatasetColumn<T extends DatasetEntry = DatasetEntry> = {
-  name: Extract<keyof T, string>;
-  description?: string;
-  nullable: boolean;
-  type: ColumnType;
-};
-
-export type TDataset<T extends DatasetEntry = DatasetEntry> = Simplify<
-  DatasetInfo & {
-    columns: TDatasetColumn<T>[];
-    data: T[];
-  }
->;
+export type DatasetColumnInfo = {}
 
 export type TabularDataset = {
-  
+
 }
 
 /** Activity */
