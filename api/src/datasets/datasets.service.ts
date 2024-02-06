@@ -3,7 +3,10 @@ import { ColumnType, type Dataset } from '@prisma/client';
 import { Model } from 'mongoose';
 import { pl } from 'nodejs-polars';
 
-import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator'; S
+import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
+
+import type { CreateDatasetDto } from './schemas/dataset';
+
 
 
 @Injectable()

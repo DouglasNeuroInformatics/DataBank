@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import type { TDataset } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { Setup } from '@prisma/client';
 import type { Model } from 'mongoose';
@@ -10,7 +11,6 @@ import { DatasetsService } from '@/datasets/datasets.service.js';
 import { UsersService } from '@/users/users.service.js';
 
 import type { CreateAdminDto, SetupDto } from './dto/setup';
-import type { TDataset } from '@databank/types';
 
 @Injectable()
 export class SetupService {
@@ -46,7 +46,10 @@ export class SetupService {
     }
     const user = await this.createAdmin(admin);
 
-    await this.setupConfigModel.create(setupConfig);
+    await this.setupModel.create({
+      adminId: user.id,
+      userVerification: setupConfig
+    });
 
     const iris = await this.loadStarterDataset('iris.json');
     await this.datasetsService.create(iris, user.id);
