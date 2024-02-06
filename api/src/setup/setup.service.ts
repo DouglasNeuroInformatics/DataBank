@@ -1,7 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import type { TDataset } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { Setup } from '@prisma/client';
 import type { Model } from 'mongoose';
@@ -10,7 +9,7 @@ import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import { UsersService } from '@/users/users.service.js';
 
-import type { CreateAdminDto, SetupDto } from './dto/setup';
+import type { CreateAdminDto, SetupDto } from './zod/setup';
 
 @Injectable()
 export class SetupService {
@@ -80,6 +79,7 @@ export class SetupService {
   // }
 
   private async loadStarterDataset(filename: string) {
+    // NEED TO REWRITE
     const content = await fs.readFile(path.resolve(import.meta.dir, 'resources', filename), 'utf-8');
     return JSON.parse(content) as TDataset;
   }

@@ -1,4 +1,4 @@
-import type { CreateDatasetDto } from "@/datasets/schemas/dataset"
+import type { CreateDatasetDto } from "@/datasets/zod/dataset"
 export const CreateDatasetDtoStubFactory = (): CreateDatasetDto => {
     return {
         datasetType: 'TABULAR',

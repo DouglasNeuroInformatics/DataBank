@@ -5,12 +5,12 @@ import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
 import { SetupService } from './setup.service';
 
-import type { SetupDto } from './dto/setup';
+import type { SetupDto } from './zod/setup';
 
 @ApiTags('Setup')
 @Controller({ path: 'setup' })
 export class SetupController {
-  constructor(private readonly setupService: SetupService) {}
+  constructor(private readonly setupService: SetupService) { }
 
   @ApiOperation({
     description: 'Return the current setup state',

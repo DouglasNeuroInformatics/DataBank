@@ -6,7 +6,7 @@ import { Test } from "@nestjs/testing";
 import { DatasetsService } from "../datasets.service";
 import { CreateDatasetDtoStubFactory } from "./stubs/create-datasets.dto.stub";
 
-import type { CreateDatasetDto } from "../schemas/dataset";
+import type { CreateDatasetDto } from "../zod/dataset";
 
 describe('DatasetsService', () => {
     let datasetsService: DatasetsService;

@@ -6,7 +6,7 @@ import type { SetOptional } from 'type-fest';
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 
-import type { CreateUserDto } from './schemas/user';
+import type { CreateUserDto } from './zod/user';
 
 @Injectable()
 export class UsersService {

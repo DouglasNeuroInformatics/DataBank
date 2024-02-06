@@ -51,26 +51,6 @@ export type TUser = {
   creationTime?: number;
 };
 
-/** DATASETS */
-export type DatasetInfo = Omit<Dataset, 'tabularData'>
-
-// {
-//   id: string;
-//   createdAt: number;
-//   updatedAt: number;
-//   owner: TUser;
-//   name: string;
-//   description: string;
-//   license: DatasetLicense;
-// };
-
-/** Metadata for a column in the dataset */
-export type DatasetColumnInfo = {}
-
-export type TabularDataset = {
-
-}
-
 /** Activity */
 
 export type CreateDatasetActivity = {

@@ -136,3 +136,6 @@ export const $TabularDatasetModel = $DatasetInfo.extend({
 
 export const $DatasetModel = z.discriminatedUnion('datasetType', [$BaseDatasetModel, $TabularDatasetModel])
 export type DatasetModel = z.infer<typeof $DatasetModel>
+
+// --------------- DTO --------------------------
+export type CreateDatasetDto = z.infer<typeof $DatasetInfo>;

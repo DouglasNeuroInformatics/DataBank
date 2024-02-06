@@ -9,7 +9,7 @@ import { type Prisma, type User } from '@prisma/client';
 import { UsersService } from '../users.service';
 import { createUserDtoStubFactory } from './stubs/create-user.dto.stub';
 
-import type { CreateUserDto } from '../schemas/user';
+import type { CreateUserDto } from '../zod/user';
 
 describe('UsersService', () => {
   let usersService: UsersService;

@@ -1,4 +1,4 @@
-import type { CreateUserDto } from "@/users/schemas/user";
+import type { CreateUserDto } from "@/users/zod/user";
 
 export const createUserDtoStubFactory = (): CreateUserDto => ({
   email: 'johnsmith@gmail.com',

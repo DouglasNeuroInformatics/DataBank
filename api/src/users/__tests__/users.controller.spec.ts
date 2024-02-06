@@ -7,7 +7,7 @@ import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import { createUserDtoStubFactory } from './stubs/create-user.dto.stub';
 
-import type { CreateUserDto } from '../schemas/user';
+import type { CreateUserDto } from '../zod/user';
 
 describe('UsersController', () => {
     let usersController: UsersController;

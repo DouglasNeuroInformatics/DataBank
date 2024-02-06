@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
 
-import type { CreateUserDto } from './schemas/user';
+import type { CreateUserDto } from './zod/user';
 
 @ApiTags('Users')
 @Controller({ path: 'users' })
