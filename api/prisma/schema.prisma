@@ -51,16 +51,17 @@ enum UserRole {
 
 // ---------------- Dataset ----------------
 model Dataset {
-  id          String          @id @default(auto()) @map("_id") @db.ObjectId
-  name        String          @unique
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  name        String         @unique
   description String?
-  createdAt   DateTime        @default(now()) @db.Date
-  updatedAt   DateTime        @default(now()) @db.Date
-  license     DatasetLicense  @default(PUBLIC)
-  managers    User[]          @relation(fields: [managerIds], references: [id])
-  managerIds  String[]        @db.ObjectId
+  createdAt   DateTime       @default(now()) @db.Date
+  updatedAt   DateTime       @default(now()) @db.Date
+  license     DatasetLicense @default(PUBLIC)
+  managers    User[]         @relation(fields: [managerIds], references: [id])
+  managerIds  String[]       @db.ObjectId
   datasetType DatasetType
-  tabularData TabularDataset?
+  tabularData TabularData?
+  // binaryData       BinaryData?
 }
 
 enum DatasetLicense {
@@ -74,24 +75,38 @@ enum DatasetType {
   BINARY
 }
 
+// type BinaryData {
+//   // to-do
+// }
+
 // Tabular dataset
-type TabularDataset {
-  // string : string | number
-  data        Json[]
+model TabularData {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
   // should be keys in the data object
   primaryKeys String[]
   columns     TabularColumn[]
+  dataset     Dataset         @relation(fields: [datasetId], references: [id])
+  datasetId   String          @unique @db.ObjectId
 }
 
-type TabularColumn {
-  name               String
-  description        String?
-  type               ColumnType
-  nullable           Boolean
-  metaDataPermission PermissionLevel
-  summary            ColumnSummary
-  validation         ColumnValidation
-  dataPermission     PermissionLevel
+model TabularColumn {
+  id                String           @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  description       String?
+  type              ColumnType
+  nullable          Boolean
+  summaryPermission PermissionLevel
+  summary           ColumnSummary
+  validation        ColumnValidation
+  dataPermission    PermissionLevel
+  TabularData       TabularData      @relation(fields: [tabularDataId], references: [id])
+  tabularDataId     String           @unique @db.ObjectId()
+  // store the actual data in a pl.series(array) depending on the type of the column
+  stringData        String[]
+  intData           Int[]
+  floatData         Float[]
+  enumData          String[]
+  datatimeData      DateTime[]
 }
 
 enum ColumnType {

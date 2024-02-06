@@ -82,6 +82,10 @@ export type TDataset<T extends DatasetEntry = DatasetEntry> = Simplify<
   }
 >;
 
+export type TabularDataset = {
+  
+}
+
 /** Activity */
 
 export type CreateDatasetActivity = {
