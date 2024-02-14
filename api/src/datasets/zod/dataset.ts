@@ -117,25 +117,31 @@ export const $DatasetInfo = z.object({
     name: z.string(),
     updatedAt: z.coerce.date()
 })
+export type DatasetInfo = z.infer<typeof $DatasetInfo>;
 
 export const $BaseDatasetModel = $DatasetInfo.extend({
     datasetType: z.literal("BASE")
 })
 
-export const $TabularDataModel = {
+export const $TabularData = z.object({
     columns: z.array($TabularColumn),
     datasetId: z.string(),
     id: z.string(),
     primaryKeys: z.string().array()
-}
+});
 
 export const $TabularDatasetModel = $DatasetInfo.extend({
     datasetType: z.literal("TABULAR"),
-    tabularData: z.object({}).extend($TabularDataModel)
+    tabularData: $TabularData
 });
 
 export const $DatasetModel = z.discriminatedUnion('datasetType', [$BaseDatasetModel, $TabularDatasetModel])
-export type DatasetModel = z.infer<typeof $DatasetModel>
-
+export type DatasetModel = z.infer<typeof $DatasetModel>;
 // --------------- DTO --------------------------
-export type CreateDatasetDto = z.infer<typeof $DatasetInfo>;
+export const $CreateDatasetDto = $DatasetInfo.omit({
+    createdAt: true,
+    id: true,
+    updatedAt: true
+});
+
+export type CreateDatasetDto = z.infer<typeof $CreateDatasetDto>;

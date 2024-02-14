@@ -1,55 +1,110 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { ColumnType, type Dataset } from '@prisma/client';
-import { Model } from 'mongoose';
+import { ColumnType, type Dataset, PrismaClient, type TabularData } from '@prisma/client';
 import { pl } from 'nodejs-polars';
+import { inferSchema, initParser } from 'udsv';
 
-import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
+import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
+import type { Model } from '@/prisma/prisma.types';
 
-import type { CreateDatasetDto } from './zod/dataset';
+import type { CreateDatasetDto, TabularColumn } from './zod/dataset';
 
 
 
 @Injectable()
 export class DatasetsService {
-  constructor(@InjectModel('Dataset') private datasetModel: Model<Dataset>) { }
+  constructor(@InjectModel('Dataset') private datasetModel: Model<"Dataset">,
+    @InjectModel('TabularColumn') private columnModel: Model<'TabularColumn'>,
+    @InjectModel('TabularData') private tabularDataModel: Model<'TabularData'>,
+    @InjectPrismaClient() private prisma: PrismaClient) { }
 
-  create(createDatasetDto: CreateDatasetDto, ownerId: string) {
-    return this.datasetModel.create({ ...createDatasetDto, owner: ownerId });
+  async createDataset(createDatasetDto: CreateDatasetDto, file: Express.Multer.File, managerId: string) {
+    // file received through the network is stored in memory buffer which can be converted to string without any problem
+    const csvString = file.buffer.toString();
+
+    // udsv provided methods to infer the schema from the csv string
+    let schema = inferSchema(csvString);
+    // construct the parser according to the schema
+    let parser = initParser(schema);
+    // the parser takes the string and return the desire type of processed object
+    let typedObjs = parser.typedObjs(csvString);
+
+    // the above code return an object of records so that nodejs polars can use as an input and construct the dataframe
+    // choosing polars because we want fast computation of column summaries
+    const df = pl.readRecords(typedObjs);
+    // TO DO: make the real data structure for storage in the database
+
+    const dataset = await this.datasetModel.create({
+      data: {
+        name: createDatasetDto.name,
+        managerIds: createDatasetDto.managerIDs,
+        description: createDatasetDto.description,
+
+      }
+    })
+
+    const tabularData = await this.tabularDataModel.create({
+    });
+
+    await this.columnModel.create({
+      columnType: 'STRING_COLUMN',
+      dataPermission: 'MANAGER',
+      name: 'from df',
+      nullable: false,
+      stringData: ["lslslslsls"],
+      summaryPermission: "MANAGER",
+      tabularDataId: 'from previously created tabulardata return'
+    })
+
+
+
   }
 
-  async deleteById(id: string) {
-    return this.datasetModel.findByIdAndDelete(id);
-  }
-
-  async deleteColumn(id: string, column?: string): Promise<Dataset> {
-    const dataset = await this.datasetModel.findById(id);
+  async deleteColumn(columnId: string, currentUserId: string): Promise<Dataset> {
+    const column = await this.columnModel.findById(columnId);
+    if (!column) {
+      throw new NotFoundException();
+    }
+    const tabularData = await this.tabularDataModel.findById(column.tabularDataId)
+    if (!tabularData) {
+      throw new NotFoundException();
+    }
+    const dataset = await this.datasetModel.findById(tabularData.datasetId)
     if (!dataset) {
       throw new NotFoundException();
     }
-    // Replace this crap and do it properly after first demo
-    const toRemove = dataset.columns.find(({ name }) => name === column);
-    if (!toRemove) {
-      throw new NotFoundException(`Cannot find column: ${column!}`);
+    if (!(currentUserId in dataset.managerIds)) {
+      throw new ForbiddenException('Only managers can modify this dataset!');
     }
-    dataset.columns = dataset.columns.filter(({ name }) => name !== column);
-    for (const entry of dataset.data) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete entry[column!];
-    }
-    await dataset.save();
+    await column.deleteOne();
     return dataset;
+  }
+
+  async deleteDataset(datasetId: string, currentUserId: string) {
+    const dataset = await this.datasetModel.findById(datasetId);
+    if (!dataset) {
+      throw new NotFoundException('The dataset to be deleted is not found!');
+    }
+
+    if (!(currentUserId in dataset.managerIds)) {
+      throw new ForbiddenException('Only managers can modify this dataset!');
+    }
+
+    return await dataset.deleteOne();
   }
 
   getAvailable(ownerId?: string) {
     return this.datasetModel.find({ owner: ownerId }, '-data');
   }
 
-  async getById(id: string): Promise<Dataset> {
-    const dataset = await this.datasetModel.findById(id);
+  async getById(datasetId: string, currentUserIduserId: string): Promise<Dataset> {
+    const dataset = await this.datasetModel.findById(datasetId);
     if (!dataset) {
       throw new NotFoundException();
     }
-    await dataset.populate('owner');
+    if (dataset.datasetType == "TABULAR") {
+      const tabularData: TabularData = dataset.tabularData;
+      console.log(tabularData)
+    }
     return dataset;
   }
 

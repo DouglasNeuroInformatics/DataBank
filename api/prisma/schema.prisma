@@ -52,7 +52,7 @@ enum UserRole {
 // ---------------- Dataset ----------------
 model Dataset {
   id          String         @id @default(auto()) @map("_id") @db.ObjectId
-  name        String         @unique
+  name        String
   description String?
   createdAt   DateTime       @default(now()) @db.Date
   updatedAt   DateTime       @default(now()) @db.Date
@@ -85,7 +85,7 @@ model TabularData {
   // should be keys in the data object
   primaryKeys String[]
   columns     TabularColumn[]
-  dataset     Dataset         @relation(fields: [datasetId], references: [id])
+  dataset     Dataset         @relation(fields: [datasetId], references: [id], onDelete: Cascade)
   datasetId   String          @unique @db.ObjectId
 }
 
@@ -99,7 +99,7 @@ model TabularColumn {
   summary           ColumnSummary
   validation        ColumnValidation
   dataPermission    PermissionLevel
-  TabularData       TabularData      @relation(fields: [tabularDataId], references: [id])
+  TabularData       TabularData      @relation(fields: [tabularDataId], references: [id], onDelete: Cascade)
   tabularDataId     String           @unique @db.ObjectId()
   // store the actual data in a pl.series(array) depending on the type of the column
   stringData        String[]

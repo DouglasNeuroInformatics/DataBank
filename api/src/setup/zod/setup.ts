@@ -1,4 +1,3 @@
-import { UserRole, VerificationMethod } from '@prisma/client'
 import { z } from 'zod'
 
 const $CreateAdminDto = z.object({
@@ -10,19 +9,36 @@ const $CreateAdminDto = z.object({
 
     password: z.string(),
 
-    role: z.nativeEnum(UserRole),
+    role: z.literal("ADMIN"),
 })
 
 export type CreateAdminDto = z.infer<typeof $CreateAdminDto>;
 
-const $SetupConfig = z.object({
-    emailRegex: z.optional(z.string()),
-    method: z.nativeEnum(VerificationMethod)
+
+export const $ManualVerification = z.object({
+    method: z.literal('MANUAL')
 })
 
-const $Setup = z.object({
+export const $RegexEmailVerification = z.object({
+    method: z.literal('REGEX_EMAIL'),
+    regex: z.string()
+})
+
+export const $ConfirmEmailVerification = z.object({
+    method: z.literal('CONFIRM_EMAIL')
+})
+
+export const $UserVerification = z.discriminatedUnion('method', [$ManualVerification, $RegexEmailVerification, $ConfirmEmailVerification,]);
+export type UserVerification = z.infer<typeof $UserVerification>;
+
+export const $SetupConfig = z.object({
+    userVerification: $UserVerification,
+})
+export type SetupConfig = z.infer<typeof $SetupConfig>;
+
+
+export const $SetupDto = z.object({
     admin: $CreateAdminDto,
     setupConfig: $SetupConfig
 })
-
-export type SetupDto = z.infer<typeof $Setup>;
+export type SetupDto = z.infer<typeof $SetupDto>;

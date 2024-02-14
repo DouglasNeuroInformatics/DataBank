@@ -58,7 +58,6 @@ export class SetupService {
     return this.usersService.createUser({
       ...admin,
       confirmedAt: new Date(Date.now()),
-      role: 'ADMIN',
       verifiedAt: new Date(Date.now())
     });
   }
