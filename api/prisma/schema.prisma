@@ -107,9 +107,11 @@ model TabularColumn {
   floatData         Float[]
   enumData          String[]
   datatimeData      DateTime[]
+  booleanData       Boolean[]
 }
 
 enum ColumnType {
+  BOOLEAN_COLUMN
   STRING_COLUMN
   INT_COLUMN
   FLOAT_COLUMN
@@ -127,6 +129,7 @@ enum PermissionLevel {
 // column summary
 type ColumnSummary {
   count           Int
+  notNullCount    Int
   intSummary      IntColumnSummary?
   floatSummary    FloatColumnSummary?
   enumSummary     EnumColumnSummary?
@@ -161,7 +164,10 @@ type DateTimeColumnSummary {
 
 // column validation
 type ColumnValidation {
-  stringValidation StringColumnValidation?
+  stringColumnValidation   StringColumnValidation?
+  numericColumnValidation  NumericColumnValidation?
+  enumColumnValidation     EnumColumnValidation?
+  datetimeColumnValidation DatetimeColumnValidation?
 }
 
 type StringColumnValidation {

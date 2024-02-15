@@ -138,10 +138,14 @@ export const $TabularDatasetModel = $DatasetInfo.extend({
 export const $DatasetModel = z.discriminatedUnion('datasetType', [$BaseDatasetModel, $TabularDatasetModel])
 export type DatasetModel = z.infer<typeof $DatasetModel>;
 // --------------- DTO --------------------------
-export const $CreateDatasetDto = $DatasetInfo.omit({
+export const $CreateTabularDatasetDto = $DatasetInfo.omit({
     createdAt: true,
     id: true,
+    managerIDs: true,
     updatedAt: true
+}).extend({
+    datasetType: z.literal("TABULAR"),
+    primaryKeys: z.string().array()
 });
 
-export type CreateDatasetDto = z.infer<typeof $CreateDatasetDto>;
+export type CreateTabularDatasetDto = z.infer<typeof $CreateTabularDatasetDto>;
