@@ -90,24 +90,28 @@ model TabularData {
 }
 
 model TabularColumn {
-  id                String           @id @default(auto()) @map("_id") @db.ObjectId
-  name              String
-  description       String?
-  type              ColumnType
-  nullable          Boolean
-  summaryPermission PermissionLevel
-  summary           ColumnSummary
-  validation        ColumnValidation
-  dataPermission    PermissionLevel
-  TabularData       TabularData      @relation(fields: [tabularDataId], references: [id], onDelete: Cascade)
-  tabularDataId     String           @unique @db.ObjectId()
+  id                       String                    @id @default(auto()) @map("_id") @db.ObjectId
+  name                     String
+  description              String?
+  type                     ColumnType
+  nullable                 Boolean
+  summaryPermission        PermissionLevel
+  summary                  ColumnSummary
+  dataPermission           PermissionLevel
+  TabularData              TabularData               @relation(fields: [tabularDataId], references: [id], onDelete: Cascade)
+  tabularDataId            String                    @unique @db.ObjectId()
   // store the actual data in a pl.series(array) depending on the type of the column
-  stringData        String[]
-  intData           Int[]
-  floatData         Float[]
-  enumData          String[]
-  datatimeData      DateTime[]
-  booleanData       Boolean[]
+  stringData               String[]
+  intData                  Int[]
+  floatData                Float[]
+  enumData                 String[]
+  datetimeData             DateTime[]
+  booleanData              Boolean[]
+  // column validation
+  stringColumnValidation   StringColumnValidation?
+  numericColumnValidation  NumericColumnValidation?
+  enumColumnValidation     EnumColumnValidation?
+  datetimeColumnValidation DatetimeColumnValidation?
 }
 
 enum ColumnType {
@@ -163,13 +167,6 @@ type DateTimeColumnSummary {
 }
 
 // column validation
-type ColumnValidation {
-  stringColumnValidation   StringColumnValidation?
-  numericColumnValidation  NumericColumnValidation?
-  enumColumnValidation     EnumColumnValidation?
-  datetimeColumnValidation DatetimeColumnValidation?
-}
-
 type StringColumnValidation {
   min   Int
   max   Int?

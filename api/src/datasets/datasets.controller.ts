@@ -10,7 +10,7 @@ import { UserId } from '@/core/decorators/user-id.decorator';
 
 import { DatasetsService } from './datasets.service';
 
-import type { DatasetInfo } from './zod/dataset';
+import type { CreateTabularDatasetDto, DatasetInfo } from './zod/dataset';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })
@@ -21,14 +21,14 @@ export class DatasetsController {
   @Post()
   @RouteAccess({ role: 'STANDARD' })
   @UseInterceptors(FileInterceptor('file'))
-  createDataset(@Body() createDatasetDto: CreateDatasetDto, @UploadedFile() file: Express.Multer.File, @UserId() managerId: string) {
-    return this.datasetsService.createDataset(createDatasetDto, file, managerId);
+  createDataset(@Body() createTabularDatasetDto: CreateTabularDatasetDto, @UploadedFile() file: Express.Multer.File, @UserId() managerId: string) {
+    return this.datasetsService.createDataset(createTabularDatasetDto, file, managerId);
   }
 
   @Delete(':id/:column')
   @RouteAccess({ role: 'STANDARD' })
-  deleteColumn(@Param('id', ParseIdPipe) id: string, @Param('column') columnId?: string, @UserId() currentUserId: string) {
-    return this.datasetsService.deleteColumn(id, columnId, currentUserId);
+  deleteColumn(@Param('column') columnId: string, @UserId() currentUserId: string) {
+    return this.datasetsService.deleteColumn(columnId, currentUserId);
   }
 
   @Delete(':id')
