@@ -699,7 +699,60 @@ export class DatasetsService {
     return await this.prisma.$transaction([updateDataset])
   }
 
-  // TO-DO: impelment method to toggle column nullable
+  async toggleColumnNullable(columnId: string, currentUserId: string) {
+    const col = await this.columnModel.findUnique({
+      where: {
+        id: columnId
+      }
+    })
+    if (!col) {
+      throw new NotFoundException();
+    }
+
+    const tabularData = await this.tabularDataModel.findUnique({
+      where: {
+        id: col.tabularDataId
+      }
+    });
+    if (!tabularData) {
+      throw new NotFoundException();
+    }
+
+    const dataset = await this.datasetModel.findUnique({
+      where: {
+        id: tabularData.datasetId
+      }
+    });
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+    if (!(currentUserId in dataset.managerIds)) {
+      throw new ForbiddenException('Only managers can modify this dataset!');
+    }
+
+    if (col.nullable && col.summary.notNullCount !== col.summary.count) {
+      throw new ForbiddenException("Cannot set this column to not nullable as it contains null values already!")
+    }
+
+    const updateColumnNullable = this.columnModel.update({
+      data: {
+        nullable: !col.nullable
+      },
+      where: {
+        id: columnId
+      }
+    });
+
+    return await this.prisma.$transaction([updateColumnNullable]);
+  }
+
+  // async changeColumnDataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) { }
+
+  // async changeColumnMetadataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) { }
+
+  // async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) { }
+
+  // async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) { }
 
   private primaryKeyCheck(primaryKeys: string[], df: pl.DataFrame): boolean {
     for (let key of primaryKeys) {
