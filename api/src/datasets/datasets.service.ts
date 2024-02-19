@@ -341,13 +341,20 @@ export class DatasetsService {
     return await this.prisma.$transaction([deleteTabularData, deleteColumns, ...updateManagers, deleteTargetDataset]);
   }
 
-  async getAvailable() {
-    // TO-DO: also return datasets that has the current user as a manager
-    return await this.datasetModel.findMany({
+  async getAvailable(currentUserId: string) {
+    const availableDatasets = await this.datasetModel.findMany({
       where: {
-        isReadyToShare: true
+        OR: [
+          { isReadyToShare: true },
+          {
+            managerIds: {
+              has: currentUserId
+            }
+          }
+        ]
       }
     });
+    return availableDatasets;
   }
 
   async getById(datasetId: string, currentUserIduserId: string) {
@@ -397,7 +404,52 @@ export class DatasetsService {
   }
 
   removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
-    return;
+    const dataset = await this.datasetModel.findUnique({
+      where: {
+        id: datasetId
+      }
+    });
+    if (!dataset) {
+      throw new NotFoundException("Dataset not found!")
+    }
+
+    if (!(managerId in dataset.managerIds)) {
+      throw new ForbiddenException("Only managers of the dataset can remove other managers!")
+    }
+
+    const managerToRemove = await this.userModel.findUnique({
+      where: {
+        id: managerIdToRemove
+      }
+    });
+
+    if (!managerToRemove) {
+      throw new NotFoundException("Manager with id " + managerIdToRemove + " is not found!")
+    }
+
+    const newManagerIds = dataset.managerIds.filter((val) => val != managerIdToRemove);
+
+    const updateDatasetManagerIds = this.datasetModel.update({
+      where: {
+        id: datasetId
+      },
+      data: {
+        managerIds: newManagerIds
+      }
+    })
+
+    const newDatasetIds = managerToRemove.datasetId.filter((val) => val != datasetId);
+
+    const updateManagerToRemoveDatasetIds = this.userModel.update({
+      where: {
+        id: managerIdToRemove
+      },
+      data: {
+        datasetId: newDatasetIds
+      }
+    })
+
+    return this.prisma.$transaction([updateDatasetManagerIds, updateManagerToRemoveDatasetIds]);
   }
 
   async setReadyToShare(datasetId: string, currentUserId: string) {

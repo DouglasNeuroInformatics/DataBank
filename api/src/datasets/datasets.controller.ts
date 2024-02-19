@@ -49,8 +49,8 @@ export class DatasetsController {
   @ApiOperation({ summary: 'Get All Datasets' })
   @Get('available')
   @RouteAccess({ role: 'STANDARD' })
-  getAvailable() {
-    return this.datasetsService.getAvailable();
+  getAvailable(@UserId() currentUserId: string) {
+    return this.datasetsService.getAvailable(currentUserId);
   }
 
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
