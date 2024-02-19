@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
@@ -71,15 +71,15 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass()
     ]);
-    return routeAccess ?? { role: 'admin' };
+    return routeAccess ?? { role: 'ADMIN' };
   }
 
   private isAuthorized(role?: UserRole, routeAccess?: ProtectedRouteAccess) {
     switch (role) {
-      case 'admin':
+      case 'ADMIN':
         return true;
-      case 'standard':
-        return routeAccess?.role === 'standard';
+      case 'STANDARD':
+        return routeAccess?.role === 'STANDARD';
       default:
         return false;
     }
