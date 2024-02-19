@@ -11,7 +11,7 @@ import { VerifyAccountDto } from './dto/verify-account.dto';
 @ApiTags('Auth')
 @Controller({ path: 'auth' })
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @ApiOperation({ description: 'Create a new account as a standard user', summary: 'Create Account' })
   @Post('account')
@@ -30,14 +30,14 @@ export class AuthController {
 
   @ApiOperation({ description: 'Request a confirm email code', summary: 'Request Confirm Email Code' })
   @Post('confirm-email-code')
-  @RouteAccess({ allowUnverified: true, role: 'standard' })
+  @RouteAccess({ allowUnverified: true, role: 'STANDARD' })
   sendConfirmEmailCode(@Req() request: Request) {
     return this.authService.sendConfirmEmailCode(request.user!, request.user!.locale);
   }
 
   @ApiOperation({ description: 'Verify an account using a verification code', summary: 'Verify Account' })
   @Post('verify-account')
-  @RouteAccess({ allowUnverified: true, role: 'standard' })
+  @RouteAccess({ allowUnverified: true, role: 'STANDARD' })
   verifyAccount(@Req() request: Request, @Body() verifyAccountDto: VerifyAccountDto) {
     return this.authService.verifyAccount(verifyAccountDto, request.user!);
   }

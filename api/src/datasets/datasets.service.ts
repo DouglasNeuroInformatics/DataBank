@@ -1,5 +1,5 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { ColumnType, type Dataset, PrismaClient, type TabularData } from '@prisma/client';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ColumnType, PrismaClient } from '@prisma/client';
 import { pl } from 'nodejs-polars';
 
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
@@ -15,20 +15,75 @@ export class DatasetsService {
     @InjectModel('Dataset') private datasetModel: Model<"Dataset">,
     @InjectModel('TabularColumn') private columnModel: Model<'TabularColumn'>,
     @InjectModel('TabularData') private tabularDataModel: Model<'TabularData'>,
-    // the below line will be use for transactions later
-    // @InjectPrismaClient() private prisma: PrismaClient
+    @InjectModel('User') private userModel: Model<"User">,
+    @InjectPrismaClient() private prisma: PrismaClient
   ) { }
+
+  async addManager(datasetId: string, managerId: string, managerIdToAdd: string) {
+    const dataset = await this.datasetModel.findUnique({
+      where: {
+        id: datasetId
+      }
+    });
+    if (!dataset) {
+      throw new NotFoundException("Dataset not found!")
+    }
+
+    if (!(managerId in dataset.managerIds)) {
+      throw new ForbiddenException("Only managers of the dataset can add other managers!")
+    }
+
+    const managerToAdd = await this.userModel.findUnique({
+      where: {
+        id: managerIdToAdd
+      }
+    });
+
+    if (!managerToAdd) {
+      throw new NotFoundException("Manager with id " + managerIdToAdd + " is not found!")
+    }
+
+    const newDatasetIds = managerToAdd.datasetId;
+    newDatasetIds.push(datasetId);
+
+    const updateNewManagerDatasetsIds = this.userModel.update({
+      where: {
+        id: managerIdToAdd
+      },
+      data: {
+        datasetId: newDatasetIds
+      }
+    })
+
+    const newManagerIds = dataset.managerIds;
+    newManagerIds.push(managerIdToAdd);
+
+    const updateManager = this.datasetModel.update({
+      data: {
+        managerIds: newManagerIds
+      },
+      where: {
+        id: dataset.id
+      }
+    })
+
+    return await this.prisma.$transaction([updateNewManagerDatasetsIds, updateManager]);
+  }
 
   async createDataset(createTabularDatasetDto: CreateTabularDatasetDto, file: Express.Multer.File, managerId: string) {
     // file received through the network is stored in memory buffer which is converted to a string
     const csvString = file.buffer.toString().replaceAll('\t', ',');  // polars has a bug parsing tsv, this is a hack for it to work
     const df = pl.readCSV(csvString, { tryParseDates: true });
-    // TO DO: make the real data structure for storage in the database
+
+    if (!this.primaryKeyCheck(createTabularDatasetDto.primaryKeys, df)) {
+      throw new ForbiddenException("Dataset failed primary keys check!");
+    }
 
     const dataset = await this.datasetModel.create({
       data: {
         datasetType: 'TABULAR',
         description: createTabularDatasetDto.description,
+        isReadyToShare: false,
         managerIds: [managerId],
         name: createTabularDatasetDto.name
       }
@@ -140,13 +195,13 @@ export class DatasetsService {
           data: {
             dataPermission: "MANAGER",
             // date is represented as time difference from 1970-Jan-01
-            // datetime is represented as milliseconds from 1970-Jan-01 00:00:00
-            datatimeData: col.toArray(),
             datetimeColumnValidation: {
               max: new Date(),
               min: "1970-01-01",
               passISO: true
             },
+            // datetime is represented as milliseconds from 1970-Jan-01 00:00:00
+            datetimeData: col.toArray(),
             name: col.name,
             nullable: col.nullCount() != 0,
             summary: {
@@ -189,7 +244,7 @@ export class DatasetsService {
     return dataset;
   }
 
-  async deleteColumn(columnId: string, currentUserId: string): Promise<Dataset> {
+  async deleteColumn(columnId: string, currentUserId: string) {
     const column = await this.columnModel.findUnique({
       where: {
         id: columnId
@@ -223,13 +278,17 @@ export class DatasetsService {
       where: {
         id: columnId
       }
-    })
+    });
 
     return dataset;
   }
 
   async deleteDataset(datasetId: string, currentUserId: string) {
-    const dataset = await this.datasetModel.findById(datasetId);
+    const dataset = await this.datasetModel.findUnique({
+      where: {
+        id: datasetId
+      }
+    });
     if (!dataset) {
       throw new NotFoundException('The dataset to be deleted is not found!');
     }
@@ -238,98 +297,142 @@ export class DatasetsService {
       throw new ForbiddenException('Only managers can modify this dataset!');
     }
 
-    return await dataset.deleteOne();
+    const deleteTabularData = this.tabularDataModel.delete({
+      where: {
+        datasetId: dataset.id
+      }
+    })
+
+    const deleteColumns = this.columnModel.deleteMany({
+      where: {
+        tabularDataId: (await deleteTabularData).id
+      }
+    })
+
+    const deleteTargetDataset = this.datasetModel.delete({
+      where: {
+        id: dataset.id
+      }
+    })
+
+    // need to update all users that are managers of this dataset
+    const managersToUpdate = await this.userModel.findMany({
+      where: {
+        datasetId: {
+          has: dataset.id
+        }
+      }
+    })
+
+    const updateManagers = []
+
+    for (let manager of managersToUpdate) {
+      let newDatasetId = manager.datasetId.filter((val) => val !== dataset.id)
+      updateManagers.push(this.userModel.update({
+        data: {
+          datasetId: newDatasetId
+        },
+        where: {
+          id: manager.id
+        }
+      }))
+    }
+
+    return await this.prisma.$transaction([deleteTabularData, deleteColumns, ...updateManagers, deleteTargetDataset]);
   }
 
-  getAvailable() {
+  async getAvailable() {
+    // TO-DO: also return datasets that has the current user as a manager
+    return await this.datasetModel.findMany({
+      where: {
+        isReadyToShare: true
+      }
+    });
+  }
+
+  async getById(datasetId: string, currentUserIduserId: string) {
+    const dataset = await this.datasetModel.findUnique({
+      where: {
+        id: datasetId
+      }
+    });
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+    if (!dataset.isReadyToShare && !(currentUserIduserId in dataset.managerIds)) {
+      throw new ForbiddenException("The dataset is not ready for share!");
+    }
+
+    return dataset;
+  }
+
+  async mutateColumnType(columnId: string, colType: ColumnType) {
+    const col = await this.columnModel.findUnique({
+      where: {
+        id: columnId
+      }
+    })
+    if (!col) {
+      throw new NotFoundException();
+    }
+
+    let updateColumnQuery;
+    switch (colType) {
+      case "BOOLEAN_COLUMN":
+        updateColumnQuery = this.columnModel.update({
+          where: {
+            id: col.id
+          },
+          data: 
+          
+        })
+        break;
+      case "STRING_COLUMN":
+      case "INT_COLUMN":
+      case "FLOAT_COLUMN":
+      case "ENUM_COLUMN":
+      case "DATETIME_COLUMN":
+    }
+    return this.prisma.$transaction([updateColumnQuery]);
+  }
+
+  removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
     return;
   }
 
-  async getById(datasetId: string, currentUserIduserId: string): Promise<Dataset> {
-    const dataset = await this.datasetModel.findById(datasetId);
-    if (!dataset) {
-      throw new NotFoundException();
+  async setReadyToShare(datasetId: string, currentUserId: string) {
+    const dataset = await this.datasetModel.findUnique({
+      where: {
+        id: datasetId
+      }
+    });
+    if (!dataset || dataset.isReadyToShare) {
+      throw new ForbiddenException("This dataset is not found or is already set to ready to share!");
     }
-    if (dataset.datasetType == "TABULAR") {
-      const tabularData: TabularData = dataset.tabularData;
-      console.log(tabularData)
+
+    if (!(currentUserId in dataset.managerIds)) {
+      throw new ForbiddenException('Only managers can modify this dataset!');
     }
-    return dataset;
+
+    const updateDataset = this.datasetModel.update({
+      data: {
+        isReadyToShare: true
+      }, where: {
+        id: datasetId
+      }
+    })
+    return await this.prisma.$transaction([updateDataset])
   }
 
-  // getAvailableMetadata() { }
-
-  // getMetadataById() { }
-
-  mutateTypes(data: DatasetEntry[], column: string, type: ColumnType): DatasetEntry[] {
-    // eslint-disable-next-line @typescript-eslint/prefer-for-of
-    for (let i = 0; i < data.length; i++) {
-      const initialValue = data[i]![column];
-      if (type === ColumnType.FLOAT_COLUMN || type === ColumnType.INT_COLUMN) {
-        const updatedValue = Number(initialValue);
-        if (isNaN(updatedValue)) {
-          throw new BadRequestException(`Cannot safely coerce '${initialValue}' to number`);
-        } else if (type === ColumnType.INT_COLUMN && !Number.isInteger(updatedValue)) {
-          throw new BadRequestException(`Value can be coerced to number, but it is not an integer: ${updatedValue}`);
-        }
-        data[i]![column] = updatedValue;
-        // could add more in the future
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      } else if (ColumnType.STRING_COLUMN) {
-        data[i]![column] = String(initialValue);
+  private primaryKeyCheck(primaryKeys: string[], df: pl.DataFrame): boolean {
+    for (let key of primaryKeys) {
+      const col = df.getColumn(key);
+      if (col.nullCount() > 0) {
+        return false
       }
     }
-    return data;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const checkPrimaryKeysArray: boolean[] = df.select(...primaryKeys).isUnique().toArray();
+    return checkPrimaryKeysArray.reduce((prev, curr) => prev && curr);
   }
-
-  async updateColumn(dto: UpdateDatasetColumnDto, id: string, column?: string) {
-    const dataset = await this.datasetModel.findById(id);
-    if (!dataset) {
-      throw new NotFoundException();
-    }
-    // Replace this crap and do it properly after first demo
-    const index = dataset.columns.findIndex(({ name }) => name === column);
-    if (index === -1) {
-      throw new NotFoundException(`Cannot find column: ${column!}`);
-    }
-
-    if (dto.type) {
-      dataset.data = this.mutateTypes(dataset.data, column!, dto.type);
-    }
-
-    dataset.columns[index] = Object.assign(dataset.columns[index]!, dto);
-    await dataset.save();
-    return dataset;
-  }
-
-  // private validateDataset() {
-  //   return 'to-do'
-  // }
-
-  // private updateSummary() {
-  //   return 'to-do'
-  // }
-
-  // removeManager(datasetId, managerId, managerIdToRemove) {
-  //   if (user is not in manager[]) {
-  //     throw new ForbiddenException();
-  //   }
-  // }
-
-  // addManager(datasetId, managerId, managerIdToRemove) {
-  //   if (user is not in manager[]) {
-  //     throw new ForbiddenException();
-  //   }
-  // }
-
-  // private primaryKeyCheck(primaryKeys: string[], df: pl.DataFrame) {
-  //   for (let key of primaryKeys) {
-  //     if (df[key].nullCount() > 0) {
-  //       console.log(df[key].nullCount())
-  //       return false
-  //     }
-  //   }
-  //   const checkPrimaryKeysArray = df.select(...primaryKeys).isUnique().toArray();
-  //   return checkPrimaryKeysArray.reduce((prev, curr) => prev && curr);
-  // }
 }
