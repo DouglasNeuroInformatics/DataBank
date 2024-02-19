@@ -7,6 +7,7 @@ import type { Model } from 'mongoose';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
+import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
 import { UsersService } from '@/users/users.service.js';
 
 import type { CreateAdminDto, SetupDto } from './zod/setup';
@@ -50,8 +51,17 @@ export class SetupService {
       userVerification: setupConfig
     });
 
-    const iris = await this.loadStarterDataset('iris.json');
-    await this.datasetsService.create(iris, user.id);
+    const createStarterDatasetDto: CreateTabularDatasetDto = {
+      datasetType: 'TABULAR',
+      description: 'a sample dataset containing data about iris',
+      license: 'PUBLIC',
+      name: 'iris',
+      primaryKeys: []
+    }
+    await this.datasetsService.createDataset(
+      createStarterDatasetDto,
+      await fs.readFile(path.resolve(import.meta.dir, 'resources', 'iris.json'), 'utf-8'),
+      user.id);
   }
 
   private async createAdmin(admin: CreateAdminDto) {
@@ -76,10 +86,4 @@ export class SetupService {
   //   setupConfig.verificationInfo = setupConfigDto.verificationInfo;
   //   setupConfig.save();
   // }
-
-  private async loadStarterDataset(filename: string) {
-    // NEED TO REWRITE
-    const content = await fs.readFile(path.resolve(import.meta.dir, 'resources', filename), 'utf-8');
-    return JSON.parse(content) as TDataset;
-  }
 }

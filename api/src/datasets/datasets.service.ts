@@ -115,10 +115,16 @@ export class DatasetsService {
     return updateColumns;
   }
 
-  async createDataset(createTabularDatasetDto: CreateTabularDatasetDto, file: Express.Multer.File, managerId: string) {
-    // file received through the network is stored in memory buffer which is converted to a string
-    const csvString = file.buffer.toString().replaceAll('\t', ',');  // polars has a bug parsing tsv, this is a hack for it to work
-    const df = pl.readCSV(csvString, { tryParseDates: true });
+  async createDataset(createTabularDatasetDto: CreateTabularDatasetDto, file: Express.Multer.File | string, managerId: string) {
+    let csvString: string;
+    let df: pl.DataFrame;
+    if (typeof (file) === "string") {
+      csvString = file
+    } else {
+      // file received through the network is stored in memory buffer which is converted to a string
+      csvString = file.buffer.toString().replaceAll('\t', ',');  // polars has a bug parsing tsv, this is a hack for it to work
+    }
+    df = pl.readCSV(csvString, { tryParseDates: true });
 
     if (!this.primaryKeyCheck(createTabularDatasetDto.primaryKeys, df)) {
       throw new ForbiddenException("Dataset failed primary keys check!");
