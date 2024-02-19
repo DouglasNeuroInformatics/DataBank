@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ColumnType, PrismaClient } from '@prisma/client';
 import { pl } from 'nodejs-polars';
 
@@ -47,11 +47,11 @@ export class DatasetsService {
     newDatasetIds.push(datasetId);
 
     const updateNewManagerDatasetsIds = this.userModel.update({
-      where: {
-        id: managerIdToAdd
-      },
       data: {
         datasetId: newDatasetIds
+      },
+      where: {
+        id: managerIdToAdd
       }
     })
 
@@ -176,9 +176,9 @@ export class DatasetsService {
               count: col.len(),
               // valueCounts() function always return null.
               // issue opened on nodejs-polars github
-              // enumSummary: {
-              //   distribution: col.valueCounts().toJSON()
-              // },
+              enumSummary: {
+                distribution: col.valueCounts().toJSON()
+              },
               notNullCount: col.len() - col.nullCount()
             },
             summaryPermission: "MANAGER",
@@ -382,28 +382,251 @@ export class DatasetsService {
     if (!col) {
       throw new NotFoundException();
     }
-
-    let updateColumnQuery;
-    switch (colType) {
+    if (col.type === colType) {
+      throw new ConflictException("Cannot change column type! Input column type is the same as the current column type!")
+    }
+    // we need to know current column datatype
+    // get the corresponding data value array and store it as a polars series
+    let data;
+    let removeFromCol;
+    switch (col.type) {
       case "BOOLEAN_COLUMN":
-        updateColumnQuery = this.columnModel.update({
+        data = pl.Series(col.booleanData);
+        removeFromCol = this.columnModel.update({
+          data: {
+            booleanData: undefined,
+            enumColumnValidation: undefined,
+            summary: {
+              enumSummary: undefined
+            }
+          },
           where: {
             id: col.id
+          }
+        });
+        break;
+      case "STRING_COLUMN":
+        data = pl.Series(col.stringData);
+        removeFromCol = this.columnModel.update({
+          data: {
+            stringColumnValidation: undefined,
+            stringData: undefined
           },
-          data: 
-          
+          where: {
+            id: col.id
+          }
+        })
+        break;
+      case "INT_COLUMN":
+        data = pl.Series(col.intData);
+        removeFromCol = this.columnModel.update({
+          data: {
+            intData: undefined,
+            numericColumnValidation: undefined,
+            summary: {
+              intSummary: undefined
+            }
+          },
+          where: {
+            id: col.id
+          }
+        })
+        break;
+      case "FLOAT_COLUMN":
+        data = pl.Series(col.floatData);
+        removeFromCol = this.columnModel.update({
+          data: {
+            floatData: undefined,
+            numericColumnValidation: undefined,
+            summary: {
+              floatSummary: undefined
+            }
+          },
+          where: {
+            id: col.id
+          }
+        })
+        break;
+      case "ENUM_COLUMN":
+        data = pl.Series(col.enumData);
+        removeFromCol = this.columnModel.update({
+          data: {
+            enumColumnValidation: undefined,
+            enumData: undefined,
+            summary: {
+              enumSummary: undefined
+            }
+          },
+          where: {
+            id: col.id
+          }
+        })
+        break;
+      case "DATETIME_COLUMN":
+        data = pl.Series(col.datetimeData);
+        removeFromCol = this.columnModel.update({
+          data: {
+            datetimeColumnValidation: undefined,
+            datetimeData: undefined,
+            summary: {
+              datetimeSummary: undefined
+            }
+          },
+          where: {
+            id: col.id
+          }
+        })
+        break;
+    }
+
+    // one more switch to do pl.series type casting .cast(type, strict = true)
+    // if the cast is passed, add new data, summary, and validation to the column
+    let addToCol
+    switch (colType) {
+      case "BOOLEAN_COLUMN":
+        data = data.cast(pl.Bool, true);
+        addToCol = this.columnModel.update({
+          data: {
+            booleanData: data.toArray(),
+            enumColumnValidation: {},
+            summary: {
+              count: data.len(),
+              // valueCounts() function always return null.
+              // issue opened on nodejs-polars github
+              // enumSummary: {
+              //   distribution: data.valueCounts().toJSON()
+              // },
+              notNullCount: data.len() - data.nullCount()
+            }
+          },
+          where: {
+            id: col.id
+          }
         })
         break;
       case "STRING_COLUMN":
+        data = data.cast(pl.Utf8, true);
+        addToCol = this.columnModel.update({
+          data: {
+            stringColumnValidation: {
+              min: 0
+            },
+            stringData: data.toArray(),
+            summary: {
+              count: data.len(),
+              notNullCount: data.len() - data.nullCount()
+            }
+          },
+          where: {
+            id: col.id
+          }
+        })
+        break;
       case "INT_COLUMN":
+        data = data.cast(pl.Int64, true);
+        addToCol = this.columnModel.update({
+          data: {
+            intData: data.toArray(),
+            numericColumnValidation: {
+              max: data.max(),
+              min: data.min()
+            },
+            summary: {
+              count: data.len(),
+              intSummary: {
+                max: data.max(),
+                mean: data.mean(),
+                median: data.median(),
+                min: data.min(),
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                mode: data.mode()[0],
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                std: data.rollingStd(data.len())[-1]
+              },
+              notNullCount: data.len() - data.nullCount()
+            }
+          },
+          where: {
+            id: col.id
+          }
+        })
+        break;
       case "FLOAT_COLUMN":
+        data = data.cast(pl.Float64, true);
+        addToCol = this.columnModel.update({
+          data: {
+            floatData: data.toArray(),
+            numericColumnValidation: {
+              max: data.max(),
+              min: data.min()
+            },
+            summary: {
+              count: data.len(), floatSummary: {
+                max: data.max(),
+                mean: data.mean(),
+                median: data.median(),
+                min: data.min(),
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                std: data.rollingStd(data.len())[-1]
+              },
+              notNullCount: data.len() - data.nullCount()
+            }
+          },
+          where: {
+            id: col.id
+          }
+        })
+        break;
       case "ENUM_COLUMN":
+        data = data.cast(pl.Utf8, true);
+        addToCol = this.columnModel.update({
+          data: {
+            enumData: data.toArray(),
+            summary: {
+              count: data.len(),
+              // valueCounts() function always return null.
+              // issue opened on nodejs-polars github
+              // enumSummary: {
+              //   distribution: data.valueCounts().toJSON()
+              // },
+              notNullCount: data.len() - data.nullCount()
+            }
+          },
+          where: {
+            id: col.id
+          }
+        })
+        break;
       case "DATETIME_COLUMN":
+        data = data.cast(pl.Date, true);
+        addToCol = this.columnModel.update({
+          data: {
+            datetimeColumnValidation: {
+              max: new Date(),
+              min: "1970-01-01",
+              passISO: true
+            },
+            datetimeData: data.toArray(),
+            summary: {
+              count: data.len(),
+              datetimeSummary: {
+                max: new Date(),
+                min: "1970-01-01"
+              },
+              notNullCount: data.len() - data.nullCount()
+            },
+          },
+          where: {
+            id: col.id
+          }
+        })
+        break;
     }
-    return this.prisma.$transaction([updateColumnQuery]);
+
+    return await this.prisma.$transaction([removeFromCol, addToCol]);
   }
 
-  removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
+  async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
     const dataset = await this.datasetModel.findUnique({
       where: {
         id: datasetId
@@ -430,26 +653,26 @@ export class DatasetsService {
     const newManagerIds = dataset.managerIds.filter((val) => val != managerIdToRemove);
 
     const updateDatasetManagerIds = this.datasetModel.update({
-      where: {
-        id: datasetId
-      },
       data: {
         managerIds: newManagerIds
+      },
+      where: {
+        id: datasetId
       }
     })
 
     const newDatasetIds = managerToRemove.datasetId.filter((val) => val != datasetId);
 
     const updateManagerToRemoveDatasetIds = this.userModel.update({
-      where: {
-        id: managerIdToRemove
-      },
       data: {
         datasetId: newDatasetIds
+      },
+      where: {
+        id: managerIdToRemove
       }
     })
 
-    return this.prisma.$transaction([updateDatasetManagerIds, updateManagerToRemoveDatasetIds]);
+    return await this.prisma.$transaction([updateDatasetManagerIds, updateManagerToRemoveDatasetIds]);
   }
 
   async setReadyToShare(datasetId: string, currentUserId: string) {
@@ -475,6 +698,8 @@ export class DatasetsService {
     })
     return await this.prisma.$transaction([updateDataset])
   }
+
+  // TO-DO: impelment method to toggle column nullable
 
   private primaryKeyCheck(primaryKeys: string[], df: pl.DataFrame): boolean {
     for (let key of primaryKeys) {
