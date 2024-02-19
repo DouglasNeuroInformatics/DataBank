@@ -1,13 +1,11 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { ColumnType, PrismaClient } from '@prisma/client';
+import { ColumnType, PermissionLevel, PrismaClient } from '@prisma/client';
 import { pl } from 'nodejs-polars';
 
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 
 import type { CreateTabularDatasetDto } from './zod/dataset';
-
-
 
 @Injectable()
 export class DatasetsService {
@@ -20,18 +18,7 @@ export class DatasetsService {
   ) { }
 
   async addManager(datasetId: string, managerId: string, managerIdToAdd: string) {
-    const dataset = await this.datasetModel.findUnique({
-      where: {
-        id: datasetId
-      }
-    });
-    if (!dataset) {
-      throw new NotFoundException("Dataset not found!")
-    }
-
-    if (!(managerId in dataset.managerIds)) {
-      throw new ForbiddenException("Only managers of the dataset can add other managers!")
-    }
+    const dataset = await this.canModifyDataset(datasetId, managerId);
 
     const managerToAdd = await this.userModel.findUnique({
       where: {
@@ -68,6 +55,64 @@ export class DatasetsService {
     })
 
     return await this.prisma.$transaction([updateNewManagerDatasetsIds, updateManager]);
+  }
+
+  async changeColumnDataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) {
+    await this.canModifyColumn(columnId, currentUserId);
+    return await this.columnModel.update({
+      data: {
+        dataPermission: permissionLevel
+      },
+      where: {
+        id: columnId
+      }
+    })
+  }
+
+  async changeColumnMetadataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) {
+    await this.canModifyColumn(columnId, currentUserId);
+    return await this.columnModel.update({
+      data: {
+        summaryPermission: permissionLevel
+      },
+      where: {
+        id: columnId
+      }
+    })
+  }
+
+  async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
+    const dataset = await this.canModifyDataset(datasetId, currentUserId);
+    const tabularData = await this.tabularDataModel.findUniqueOrThrow({
+      where: {
+        datasetId: dataset.id
+      }
+    });
+    const updateColumns = await this.columnModel.updateMany({
+      data: {
+        dataPermission: permissionLevel
+      }, where: {
+        tabularDataId: tabularData.id
+      }
+    });
+    return updateColumns;
+  }
+
+  async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
+    const dataset = await this.canModifyDataset(datasetId, currentUserId);
+    const tabularData = await this.tabularDataModel.findUniqueOrThrow({
+      where: {
+        datasetId: dataset.id
+      }
+    });
+    const updateColumns = await this.columnModel.updateMany({
+      data: {
+        summaryPermission: permissionLevel
+      }, where: {
+        tabularDataId: tabularData.id
+      }
+    });
+    return updateColumns;
   }
 
   async createDataset(createTabularDatasetDto: CreateTabularDatasetDto, file: Express.Multer.File, managerId: string) {
@@ -245,57 +290,16 @@ export class DatasetsService {
   }
 
   async deleteColumn(columnId: string, currentUserId: string) {
-    const column = await this.columnModel.findUnique({
+    const column = await this.canModifyColumn(columnId, currentUserId);
+    return await this.columnModel.delete({
       where: {
-        id: columnId
-      }
-    })
-    if (!column) {
-      throw new NotFoundException();
-    }
-
-    const tabularData = await this.tabularDataModel.findUnique({
-      where: {
-        id: column.tabularDataId
+        id: column.id
       }
     });
-    if (!tabularData) {
-      throw new NotFoundException();
-    }
-
-    const dataset = await this.datasetModel.findUnique({
-      where: {
-        id: tabularData.datasetId
-      }
-    });
-    if (!dataset) {
-      throw new NotFoundException();
-    }
-    if (!(currentUserId in dataset.managerIds)) {
-      throw new ForbiddenException('Only managers can modify this dataset!');
-    }
-    await this.columnModel.delete({
-      where: {
-        id: columnId
-      }
-    });
-
-    return dataset;
   }
 
   async deleteDataset(datasetId: string, currentUserId: string) {
-    const dataset = await this.datasetModel.findUnique({
-      where: {
-        id: datasetId
-      }
-    });
-    if (!dataset) {
-      throw new NotFoundException('The dataset to be deleted is not found!');
-    }
-
-    if (!(currentUserId in dataset.managerIds)) {
-      throw new ForbiddenException('Only managers can modify this dataset!');
-    }
+    const dataset = await this.canModifyDataset(datasetId, currentUserId)
 
     const deleteTabularData = this.tabularDataModel.delete({
       where: {
@@ -373,15 +377,8 @@ export class DatasetsService {
     return dataset;
   }
 
-  async mutateColumnType(columnId: string, colType: ColumnType) {
-    const col = await this.columnModel.findUnique({
-      where: {
-        id: columnId
-      }
-    })
-    if (!col) {
-      throw new NotFoundException();
-    }
+  async mutateColumnType(columnId: string, currentUserId: string, colType: ColumnType) {
+    const col = await this.canModifyColumn(columnId, currentUserId);
     if (col.type === colType) {
       throw new ConflictException("Cannot change column type! Input column type is the same as the current column type!")
     }
@@ -627,18 +624,7 @@ export class DatasetsService {
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
-    const dataset = await this.datasetModel.findUnique({
-      where: {
-        id: datasetId
-      }
-    });
-    if (!dataset) {
-      throw new NotFoundException("Dataset not found!")
-    }
-
-    if (!(managerId in dataset.managerIds)) {
-      throw new ForbiddenException("Only managers of the dataset can remove other managers!")
-    }
+    const dataset = await this.canModifyDataset(datasetId, managerId);
 
     const managerToRemove = await this.userModel.findUnique({
       where: {
@@ -647,7 +633,7 @@ export class DatasetsService {
     });
 
     if (!managerToRemove) {
-      throw new NotFoundException("Manager with id " + managerIdToRemove + " is not found!")
+      throw new NotFoundException(`Manager with id ${managerIdToRemove} is not found!`)
     }
 
     const newManagerIds = dataset.managerIds.filter((val) => val != managerIdToRemove);
@@ -676,17 +662,9 @@ export class DatasetsService {
   }
 
   async setReadyToShare(datasetId: string, currentUserId: string) {
-    const dataset = await this.datasetModel.findUnique({
-      where: {
-        id: datasetId
-      }
-    });
-    if (!dataset || dataset.isReadyToShare) {
+    const dataset = await this.canModifyDataset(datasetId, currentUserId);
+    if (dataset.isReadyToShare) {
       throw new ForbiddenException("This dataset is not found or is already set to ready to share!");
-    }
-
-    if (!(currentUserId in dataset.managerIds)) {
-      throw new ForbiddenException('Only managers can modify this dataset!');
     }
 
     const updateDataset = this.datasetModel.update({
@@ -700,6 +678,25 @@ export class DatasetsService {
   }
 
   async toggleColumnNullable(columnId: string, currentUserId: string) {
+    const col = await this.canModifyColumn(columnId, currentUserId);
+
+    if (col.nullable && col.summary.notNullCount !== col.summary.count) {
+      throw new ForbiddenException("Cannot set this column to not nullable as it contains null values already!")
+    }
+
+    const updateColumnNullable = this.columnModel.update({
+      data: {
+        nullable: !col.nullable
+      },
+      where: {
+        id: columnId
+      }
+    });
+
+    return await this.prisma.$transaction([updateColumnNullable]);
+  }
+
+  private async canModifyColumn(columnId: string, currentUserId: string) {
     const col = await this.columnModel.findUnique({
       where: {
         id: columnId
@@ -718,9 +715,16 @@ export class DatasetsService {
       throw new NotFoundException();
     }
 
+    if (!(await this.canModifyDataset(tabularData.datasetId, currentUserId))) {
+      throw new ForbiddenException('Only managers can modify this dataset!');
+    }
+    return col;
+  }
+
+  private async canModifyDataset(datasetId: string, currentUserId: string) {
     const dataset = await this.datasetModel.findUnique({
       where: {
-        id: tabularData.datasetId
+        id: datasetId
       }
     });
     if (!dataset) {
@@ -729,30 +733,8 @@ export class DatasetsService {
     if (!(currentUserId in dataset.managerIds)) {
       throw new ForbiddenException('Only managers can modify this dataset!');
     }
-
-    if (col.nullable && col.summary.notNullCount !== col.summary.count) {
-      throw new ForbiddenException("Cannot set this column to not nullable as it contains null values already!")
-    }
-
-    const updateColumnNullable = this.columnModel.update({
-      data: {
-        nullable: !col.nullable
-      },
-      where: {
-        id: columnId
-      }
-    });
-
-    return await this.prisma.$transaction([updateColumnNullable]);
+    return dataset
   }
-
-  // async changeColumnDataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) { }
-
-  // async changeColumnMetadataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) { }
-
-  // async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) { }
-
-  // async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) { }
 
   private primaryKeyCheck(primaryKeys: string[], df: pl.DataFrame): boolean {
     for (let key of primaryKeys) {
