@@ -2,7 +2,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { Setup } from '@prisma/client';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
@@ -15,13 +14,13 @@ import type { CreateAdminDto, SetupDto } from './zod/setup.js';
 @Injectable()
 export class SetupService {
   constructor(
-    @InjectModel('Setup') private readonly setupModel: Model<Setup>,
+    @InjectModel('Setup') private readonly setupModel: Model<'Setup'>,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) {}
 
   async getSetupConfig() {
-    const setupConfig = await this.setupModel.findOne();
+    const setupConfig = await this.setupModel.findMany();
     if (!setupConfig) {
       throw new NotFoundException('Setup Config not found in the database.');
     }
@@ -33,11 +32,11 @@ export class SetupService {
   }
 
   async getVerificationInfo() {
-    const verificationInfo = await this.setupModel.findOne();
-    if (!verificationInfo) {
+    const setupConfig = await this.getSetupConfig();
+    if (!setupConfig[0]?.userVerification) {
       throw new NotFoundException('Cannot access verification info.');
     }
-    return verificationInfo;
+    return setupConfig[0]?.userVerification;
   }
 
   async initApp({ admin, setupConfig }: SetupDto) {
@@ -47,8 +46,10 @@ export class SetupService {
     const user = await this.createAdmin(admin);
 
     await this.setupModel.create({
-      adminId: user.id,
-      userVerification: setupConfig
+      data: {
+        adminId: user.id,
+        userVerification: setupConfig.userVerification
+      }
     });
 
     const createStarterDatasetDto: CreateTabularDatasetDto = {
@@ -74,11 +75,8 @@ export class SetupService {
   }
 
   private async isSetup() {
-    const setup = await this.setupModel.findOne();
-    if (!setup) {
-      return false;
-    }
-    return true;
+    const setupConfig = await this.setupModel.findMany();
+    return setupConfig.length == 0 ? false : true;
   }
 
   // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {

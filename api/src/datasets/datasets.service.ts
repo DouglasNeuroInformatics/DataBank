@@ -636,7 +636,7 @@ export class DatasetsService {
         break;
     }
 
-    return await this.prisma.$transaction([removeFromCol, addToCol]);
+    return (await this.prisma.$transaction([removeFromCol, addToCol])) as unknown[];
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
