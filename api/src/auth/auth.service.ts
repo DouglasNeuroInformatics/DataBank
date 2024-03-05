@@ -31,13 +31,13 @@ export class AuthService {
     private readonly mailService: MailService,
     private readonly usersService: UsersService,
     private readonly setupService: SetupService
-  ) { }
+  ) {}
 
   /** Create a new standard account with verification required */
   async createAccount(createAccountDto: CreateAccountDto): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
       ...createAccountDto,
-      role: 'STANDARD',
+      role: 'STANDARD'
     });
   }
 
@@ -79,7 +79,8 @@ export class AuthService {
 
     await this.mailService.sendMail({
       subject: this.i18n.translate(locale, 'confirmationEmail.body'),
-      text: this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailInfo.confirmEmailCode}`,
+      text:
+        this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailInfo.confirmEmailCode}`,
       to: user.email
     });
     return { attemptsMade: confirmEmailInfo.attemptsMade, expiry: confirmEmailInfo.expiry };
@@ -114,11 +115,10 @@ export class AuthService {
     }
 
     if (user.confirmEmailInfo?.confirmEmailCode !== code) {
-      await this.usersService.updateConfirmEmailInfo(user.email,
-        {
-          ...user.confirmEmailInfo,
-          attemptsMade: ++user.confirmEmailInfo.attemptsMade
-        });
+      await this.usersService.updateConfirmEmailInfo(user.email, {
+        ...user.confirmEmailInfo,
+        attemptsMade: ++user.confirmEmailInfo.attemptsMade
+      });
       throw new ForbiddenException('Incorrect validation code. Please try again.');
     }
 
@@ -128,10 +128,10 @@ export class AuthService {
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
     const verificationInfo = await this.setupService.getVerificationInfo();
     const isVerified =
-      verificationInfo.userVerification.method === 'CONFIRM_EMAIL' ||
-      (verificationInfo.userVerification.method === 'REGEX_EMAIL' &&
-        verificationInfo.userVerification.emailRegex &&
-        new RegExp(verificationInfo.userVerification.emailRegex).test(user.email));
+      verificationInfo.method === 'CONFIRM_EMAIL' ||
+      (verificationInfo.method === 'REGEX_EMAIL' &&
+        verificationInfo.emailRegex &&
+        new RegExp(verificationInfo.emailRegex).test(user.email));
     if (isVerified) {
       await this.usersService.setVerified(user.email);
     }
