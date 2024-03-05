@@ -12,7 +12,7 @@
 //                 metaDataPermission: 'PUBLIC',
 //                 name: 'height',
 //                 nullable: false,
-//                 type: 'FLOAT_COLUMN',
+//                 type: 'FLOAT',
 //             }],
 //             data: { "height": 164 },
 //             primaryKeys: ['height']

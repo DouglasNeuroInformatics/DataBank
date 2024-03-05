@@ -196,7 +196,6 @@
 
 //       // Mock the 'VALIDATION_TIMEOUT' that is in .env file
 //       configService.getOrThrow.mockReturnValueOnce(36000);
-//       // Mock the mongoose updateOne() function
 //       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
 //       const mockUpdateOne = jest.fn(() => user.updateOne());
 //       // The resolved value can be anything
@@ -304,7 +303,6 @@
 
 //       // Mock the MAX_VALIDATION_ATTEMPTS that is in the .env file
 //       configService.get.mockReturnValueOnce(3);
-//       // mock the mongoose save() function
 //       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
 //       const mockSave = jest.fn(() => user.save());
 //       mockSave.mockResolvedValue({});

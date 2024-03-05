@@ -40,7 +40,7 @@ model User {
 
   verifiedAt DateTime?
   setup      Setup?
-  Dataset    Dataset[] @relation(fields: [datasetId], references: [id])
+  dataset    Dataset[] @relation(fields: [datasetId], references: [id])
   datasetId  String[]  @db.ObjectId
 }
 
@@ -101,7 +101,7 @@ model TabularColumn {
   summaryPermission        PermissionLevel
   summary                  ColumnSummary
   dataPermission           PermissionLevel
-  TabularData              TabularData               @relation(fields: [tabularDataId], references: [id], onDelete: Cascade)
+  tabularData              TabularData               @relation(fields: [tabularDataId], references: [id], onDelete: Cascade)
   tabularDataId            String                    @unique @db.ObjectId()
   // store the actual data in a pl.series(array) depending on the type of the column
   stringData               String[]
@@ -118,12 +118,12 @@ model TabularColumn {
 }
 
 enum ColumnType {
-  BOOLEAN_COLUMN
-  STRING_COLUMN
-  INT_COLUMN
-  FLOAT_COLUMN
-  ENUM_COLUMN
-  DATETIME_COLUMN
+  BOOLEAN
+  STRING
+  INT
+  FLOAT
+  ENUM
+  DATETIME
 }
 
 enum PermissionLevel {

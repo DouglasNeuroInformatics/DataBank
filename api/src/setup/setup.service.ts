@@ -3,11 +3,11 @@ import path from 'node:path';
 
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { Setup } from '@prisma/client';
-import type { Model } from 'mongoose';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
+import type { Model } from '@/prisma/prisma.types.js';
 import { UsersService } from '@/users/users.service.js';
 
 import type { CreateAdminDto, SetupDto } from './zod/setup.js';
@@ -18,7 +18,7 @@ export class SetupService {
     @InjectModel('Setup') private readonly setupModel: Model<Setup>,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
-  ) { }
+  ) {}
 
   async getSetupConfig() {
     const setupConfig = await this.setupModel.findOne();
@@ -57,11 +57,12 @@ export class SetupService {
       license: 'PUBLIC',
       name: 'iris',
       primaryKeys: []
-    }
+    };
     await this.datasetsService.createDataset(
       createStarterDatasetDto,
       await fs.readFile(path.resolve(import.meta.dir, 'resources', 'iris.json'), 'utf-8'),
-      user.id);
+      user.id
+    );
   }
 
   private async createAdmin(admin: CreateAdminDto) {
