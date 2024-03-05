@@ -7,8 +7,8 @@ import { NestFactory } from '@nestjs/core';
 import { type NestExpressApplication } from '@nestjs/platform-express';
 import { json } from 'express';
 
-import { AppModule } from './app.module';
-import { setupDocs } from './docs';
+import { AppModule } from './app.module.js';
+import { setupDocs } from './docs.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

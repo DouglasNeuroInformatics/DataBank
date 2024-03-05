@@ -5,7 +5,7 @@ import { pl } from 'nodejs-polars';
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 
-import type { CreateTabularDatasetDto } from './zod/dataset';
+import type { CreateTabularDatasetDto } from './zod/dataset.js';
 
 @Injectable()
 export class DatasetsService {

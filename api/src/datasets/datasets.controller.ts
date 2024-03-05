@@ -7,9 +7,9 @@ import 'multer';
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 import { UserId } from '@/core/decorators/user-id.decorator';
 
-import { DatasetsService } from './datasets.service';
+import { DatasetsService } from './datasets.service.js';
 
-import type { CreateTabularDatasetDto } from './zod/dataset';
+import type { CreateTabularDatasetDto } from './zod/dataset.js';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })

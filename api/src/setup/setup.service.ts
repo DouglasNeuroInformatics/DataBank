@@ -10,7 +10,7 @@ import { DatasetsService } from '@/datasets/datasets.service.js';
 import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
 import { UsersService } from '@/users/users.service.js';
 
-import type { CreateAdminDto, SetupDto } from './zod/setup';
+import type { CreateAdminDto, SetupDto } from './zod/setup.js';
 
 @Injectable()
 export class SetupService {

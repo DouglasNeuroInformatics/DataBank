@@ -6,10 +6,10 @@ import { ConflictException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { type Prisma, type User } from '@prisma/client';
 
-import { UsersService } from '../users.service';
-import { createUserDtoStubFactory } from './stubs/create-user.dto.stub';
+import { UsersService } from '../users.service.js';
+import { createUserDtoStubFactory } from './stubs/create-user.dto.stub.js';
 
-import type { CreateUserDto } from '../zod/user';
+import type { CreateUserDto } from '../zod/user.js';
 
 describe('UsersService', () => {
   let usersService: UsersService;

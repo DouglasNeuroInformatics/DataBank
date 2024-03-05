@@ -17,9 +17,9 @@ import { I18nService } from '@/i18n/i18n.service';
 import { MailService } from '@/mail/mail.service';
 import { SetupService } from '@/setup/setup.service';
 
-import { UsersService } from '../users/users.service';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { VerifyAccountDto } from './dto/verify-account.dto';
+import { UsersService } from '../users/users.service.js';
+import { CreateAccountDto } from './dto/create-account.dto.js';
+import { VerifyAccountDto } from './dto/verify-account.dto.js';
 
 @Injectable()
 export class AuthService {

@@ -5,13 +5,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import { AuthModule } from './auth/auth.module';
-import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware';
-import { DatasetsModule } from './datasets/datasets.module';
-import { I18nModule } from './i18n/i18n.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { SetupModule } from './setup/setup.module';
-import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module.js';
+import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware.js';
+import { DatasetsModule } from './datasets/datasets.module.js';
+import { I18nModule } from './i18n/i18n.module.js';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { SetupModule } from './setup/setup.module.js';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [

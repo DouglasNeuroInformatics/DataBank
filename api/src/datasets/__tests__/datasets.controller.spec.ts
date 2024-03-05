@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it } from 'bun:test';
 import { type MockedInstance, createMock } from '@douglasneuroinformatics/nestjs/testing';
 import { Test } from '@nestjs/testing';
 
-import { DatasetsController } from '../datasets.controller';
-import { DatasetsService } from '../datasets.service';
+import { DatasetsController } from '../datasets.controller.js';
+import { DatasetsService } from '../datasets.service.js';
 
 describe('DatasetsController', () => {
   let datasetsController: DatasetsController;

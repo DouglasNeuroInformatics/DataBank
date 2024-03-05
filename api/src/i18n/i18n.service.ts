@@ -15,8 +15,8 @@ const __dirname = path.dirname(__filename);
 
 type Path<T extends object, K extends string = Extract<keyof T, string>> = K extends keyof T
   ? T[K] extends object
-    ? `${K}.${Path<T[K]>}`
-    : K
+  ? `${K}.${Path<T[K]>}`
+  : K
   : never;
 
 type Translations = MergeDeep<typeof en, typeof fr>;

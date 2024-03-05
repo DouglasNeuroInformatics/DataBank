@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { UsersService } from './users.service';
+import { UsersService } from './users.service.js';
 
-import type { CreateUserDto } from './zod/user';
+import type { CreateUserDto } from './zod/user.js';
 
 @ApiTags('Users')
 @Controller({ path: 'users' })

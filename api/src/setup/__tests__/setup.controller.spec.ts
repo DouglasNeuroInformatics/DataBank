@@ -4,8 +4,8 @@ import { createMock } from '@douglasneuroinformatics/nestjs/testing';
 import { Test } from '@nestjs/testing';
 // import { Types } from 'mongoose';
 
-import { SetupController } from '../setup.controller';
-import { SetupService } from '../setup.service';
+import { SetupController } from '../setup.controller.js';
+import { SetupService } from '../setup.service.js';
 
 describe('SetupController', () => {
   let setupController: SetupController;
