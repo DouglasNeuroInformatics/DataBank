@@ -66,13 +66,13 @@ export class AuthService {
 
     // If there is an existing, non-expired code, use that since we record attempts for security
     let confirmEmailInfo: ConfirmEmailInfo;
-    if (user.confirmEmailInfo && user.confirmEmailInfo.expiry.getTime() > Date.now()) {
+    if (user.confirmEmailInfo && user.confirmEmailInfo.expiryAt > new Date(Date.now())) {
       confirmEmailInfo = user.confirmEmailInfo;
     } else {
       confirmEmailInfo = {
         attemptsMade: 0,
         confirmEmailCode: randomInt(100000, 1000000),
-        expiry: new Date(Date.now() + parseInt(this.config.getOrThrow('VALIDATION_TIMEOUT')))
+        expiryAt: new Date(Date.now() + parseInt(this.config.getOrThrow('VALIDATION_TIMEOUT')))
       };
       await this.usersService.updateConfirmEmailInfo(user.email, confirmEmailInfo);
     }
@@ -83,7 +83,7 @@ export class AuthService {
         this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailInfo.confirmEmailCode}`,
       to: user.email
     });
-    return { attemptsMade: confirmEmailInfo.attemptsMade, expiry: confirmEmailInfo.expiry };
+    return { attemptsMade: confirmEmailInfo.attemptsMade, expiry: confirmEmailInfo.expiryAt as Date };
   }
 
   async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser): Promise<AuthPayload> {
@@ -94,7 +94,7 @@ export class AuthService {
       throw new ForbiddenException('Validation code is undefined. Please request a validation code.');
     }
 
-    const isExpired = user.confirmEmailInfo.expiry.getTime() < Date.now();
+    const isExpired = user.confirmEmailInfo.expiryAt < new Date(Date.now());
     if (isExpired) {
       throw new ForbiddenException('Validation code is expired. Please request a new validation code.');
     }

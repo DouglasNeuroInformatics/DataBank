@@ -12,7 +12,7 @@ datasource db {
 
 // ---------------- Auth ----------------
 type ConfirmEmailInfo {
-  expiry           DateTime
+  expiryAt         DateTime
   attemptsMade     Int      @default(0)
   confirmEmailCode Int
 }
