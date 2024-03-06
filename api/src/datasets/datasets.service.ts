@@ -254,7 +254,7 @@ export class DatasetsService {
             datetimeColumnValidation: {
               max: new Date(),
               min: '1970-01-01',
-              passISO: true
+              mustInISOFormat: true
             },
             // datetime is represented as milliseconds from 1970-Jan-01 00:00:00
             datetimeData: col.toArray(),
@@ -283,7 +283,7 @@ export class DatasetsService {
           name: col.name,
           nullable: col.nullCount() != 0,
           stringColumnValidation: {
-            min: 0
+            minLength: 0
           },
           stringData: col.toArray(),
           summary: {
@@ -521,7 +521,7 @@ export class DatasetsService {
         addToCol = this.columnModel.update({
           data: {
             stringColumnValidation: {
-              min: 0
+              minLength: 0
             },
             stringData: data.toArray(),
             summary: {
@@ -617,7 +617,7 @@ export class DatasetsService {
             datetimeColumnValidation: {
               max: new Date(),
               min: '1970-01-01',
-              passISO: true
+              mustInISOFormat: true
             },
             datetimeData: data.toArray(),
             summary: {

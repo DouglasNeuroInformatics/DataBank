@@ -38,10 +38,10 @@ model User {
   // /** The timestamp when the user confirmed their email */
   confirmedAt DateTime?
 
-  verifiedAt DateTime?
-  setup      Setup?
-  dataset    Dataset[] @relation(fields: [datasetId], references: [id])
-  datasetId  String[]  @db.ObjectId
+  verifiedAt         DateTime?
+  setupConfiguration Setup?
+  dataset            Dataset[] @relation(fields: [datasetId], references: [id])
+  datasetId          String[]  @db.ObjectId
 }
 
 enum UserRole {
@@ -171,14 +171,14 @@ type DateTimeColumnSummary {
 
 // column validation
 type StringColumnValidation {
-  min   Int
-  max   Int?
-  regex String?
+  minLength Int?
+  maxLength Int?
+  regex     String?
 }
 
 type NumericColumnValidation {
-  min Float
-  max Float
+  min Float?
+  max Float?
 }
 
 type EnumColumnValidation {
@@ -186,9 +186,9 @@ type EnumColumnValidation {
 }
 
 type DatetimeColumnValidation {
-  min     DateTime
-  max     DateTime
-  passISO Boolean
+  min             DateTime
+  max             DateTime
+  mustInISOFormat Boolean
 }
 
 // ---------------- Setup ----------------

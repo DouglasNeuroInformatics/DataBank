@@ -83,7 +83,7 @@ export class AuthService {
         this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailInfo.confirmEmailCode}`,
       to: user.email
     });
-    return { attemptsMade: confirmEmailInfo.attemptsMade, expiry: confirmEmailInfo.expiryAt as Date };
+    return { attemptsMade: confirmEmailInfo.attemptsMade, expiry: confirmEmailInfo.expiryAt };
   }
 
   async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser): Promise<AuthPayload> {
