@@ -11,14 +11,20 @@ import type { CreateUserDto } from './zod/user.js';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<"User">,
+    @InjectModel('User') private readonly userModel: Model<'User'>,
     private readonly cryptoService: CryptoService
-  ) { }
+  ) {}
 
   /** Insert a new user into the database */
-  async createUser({ email, firstName, lastName, password, ...rest }: CreateUserDto): Promise<Omit<User, 'hashedPassword'>> {
-    const user_exists = await this.findByEmail(email);
-    if (user_exists) {
+  async createUser({
+    email,
+    firstName,
+    lastName,
+    password,
+    ...rest
+  }: CreateUserDto): Promise<Omit<User, 'hashedPassword'>> {
+    const userExists = await this.findByEmail(email);
+    if (userExists) {
       throw new ConflictException(`User with the provided email already exists: ${email}`);
     }
     const hashedPassword = await this.cryptoService.hashPassword(password);
@@ -41,7 +47,7 @@ export class UsersService {
   findByEmail(email: string) {
     return this.userModel.findUnique({
       where: {
-        email: email
+        email
       }
     });
   }
@@ -54,22 +60,22 @@ export class UsersService {
   async setVerified(email: string) {
     return await this.userModel.update({
       data: {
-        verifiedAt: new Date(Date.now())
+        verifiedAt: new Date()
       },
       where: {
-        email: email
+        email
       }
-    })
+    });
   }
 
   async updateConfirmEmailInfo(email: string, confirmEmailInfo: ConfirmEmailInfo | null) {
     return await this.userModel.update({
       data: {
-        confirmEmailInfo: confirmEmailInfo
+        confirmEmailInfo
       },
       where: {
-        email: email
+        email
       }
-    })
+    });
   }
 }
