@@ -47,7 +47,6 @@ export class SetupService {
 
     await this.setupModel.create({
       data: {
-        adminId: user.id,
         userVerification: setupConfig.userVerification
       }
     });

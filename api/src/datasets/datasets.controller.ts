@@ -2,7 +2,6 @@ import { CurrentUser, ParseIdPipe } from '@douglasneuroinformatics/nestjs/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import 'multer';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 

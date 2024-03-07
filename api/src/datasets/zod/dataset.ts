@@ -113,12 +113,14 @@ export const $TabularColumn = z.discriminatedUnion('columnType', [
 ]);
 // export type TabularColumn = z.infer<typeof $TabularColumn>;
 
+const $License: Zod.ZodType<DatasetLicense> = z.enum(['PUBLIC', 'OTHER']);
+
 // ------------------ Dataset ----------------------
 const $DatasetInfo = z.object({
   createdAt: z.coerce.date(),
   description: z.string().optional(),
   id: z.string(),
-  license: z.nativeEnum(DatasetLicense),
+  license: $License,
   managerIDs: z.string().array(),
   name: z.string(),
   updatedAt: z.coerce.date()

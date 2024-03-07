@@ -38,10 +38,9 @@ model User {
   // /** The timestamp when the user confirmed their email */
   confirmedAt DateTime?
 
-  verifiedAt         DateTime?
-  setupConfiguration Setup?
-  dataset            Dataset[] @relation(fields: [datasetId], references: [id])
-  datasetId          String[]  @db.ObjectId
+  verifiedAt DateTime?
+  dataset    Dataset[] @relation(fields: [datasetId], references: [id])
+  datasetId  String[]  @db.ObjectId
 }
 
 enum UserRole {
@@ -196,8 +195,6 @@ model Setup {
   id               String           @id @default(auto()) @map("_id") @db.ObjectId
   createdAt        DateTime         @default(now()) @db.Date
   updatedAt        DateTime         @default(now()) @db.Date
-  admin            User             @relation(fields: [adminId], references: [id])
-  adminId          String           @unique @db.ObjectId
   userVerification UserVerification
 }
 
