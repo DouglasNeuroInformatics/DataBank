@@ -127,10 +127,14 @@ export class AuthService {
 
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
     const verificationInfo = await this.setupService.getVerificationInfo();
-    let isVerified = true;
+    let isVerified: boolean;
 
-    if (verificationInfo.method === 'REGEX_EMAIL' && verificationInfo.emailRegex) {
+    if (verificationInfo.method === 'CONFIRM_EMAIL') {
+      isVerified = true;
+    } else if (verificationInfo.method === 'REGEX_EMAIL' && verificationInfo.emailRegex) {
       isVerified = new RegExp(verificationInfo.emailRegex).test(user.email) ? true : false;
+    } else {
+      throw new Error(`Unexpected verification method: ${verificationInfo.method}`);
     }
 
     if (isVerified) {
