@@ -1,13 +1,14 @@
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UsersService } from './users.service';
+import { UsersService } from './users.service.js';
+
+import type { CreateUserDto } from './zod/user.js';
 
 @ApiTags('Users')
 @Controller({ path: 'users' })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @ApiOperation({
     description:
@@ -15,7 +16,6 @@ export class UsersController {
     summary: 'Create User'
   })
   @Post()
-  @UsePipes(new ValidationPipe({ transform: true }))
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }

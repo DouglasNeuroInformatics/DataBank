@@ -1,79 +1,82 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import type { SetupState, TDataset } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
 
+import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
+import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
+import type { Model } from '@/prisma/prisma.types.js';
 import { UsersService } from '@/users/users.service.js';
 
-import { SetupConfig } from './schemas/setup-config.schema.js';
-
-import type { CreateAdminDto, SetupDto } from './dto/setup.dto.js';
+import type { CreateAdminDto, SetupDto } from './zod/setup.js';
 
 @Injectable()
 export class SetupService {
   constructor(
-    @InjectModel(SetupConfig.name) private readonly setupConfigModel: Model<SetupConfig>,
-    @InjectConnection() private readonly connection: mongoose.Connection,
+    @InjectModel('Setup') private readonly setupModel: Model<'Setup'>,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) {}
 
   async getSetupConfig() {
-    const setupConfig = await this.setupConfigModel.findOne();
+    const setupConfig = await this.setupModel.findMany();
     if (!setupConfig) {
       throw new NotFoundException('Setup Config not found in the database.');
     }
     return setupConfig;
   }
 
-  async getState(): Promise<SetupState> {
+  async getState() {
     return { isSetup: await this.isSetup() };
   }
 
   async getVerificationInfo() {
-    const verificationInfo = (await this.getSetupConfig()).verificationInfo;
-    if (!verificationInfo) {
+    const setupConfig = await this.getSetupConfig();
+    if (!setupConfig[0]?.userVerification) {
       throw new NotFoundException('Cannot access verification info.');
     }
-    return verificationInfo;
+    return setupConfig[0]?.userVerification;
   }
 
   async initApp({ admin, setupConfig }: SetupDto) {
-    console.log(setupConfig);
     if (await this.isSetup()) {
       throw new ForbiddenException();
     }
-    await this.connection.dropDatabase();
     const user = await this.createAdmin(admin);
 
-    await this.setupConfigModel.create(setupConfig);
+    await this.setupModel.create({
+      data: {
+        userVerification: setupConfig.userVerification
+      }
+    });
 
-    const iris = await this.loadStarterDataset('iris.json');
-    await this.datasetsService.createDataset(iris, user.toObject());
+    const createStarterDatasetDto: CreateTabularDatasetDto = {
+      datasetType: 'TABULAR',
+      description: 'a sample dataset containing data about iris',
+      license: 'PUBLIC',
+      managerIds: [user.id],
+      name: 'iris',
+      primaryKeys: []
+    };
+    await this.datasetsService.createDataset(
+      createStarterDatasetDto,
+      await fs.readFile(path.resolve(import.meta.dir, 'resources', 'iris.json'), 'utf-8'),
+      user.id
+    );
   }
 
   private async createAdmin(admin: CreateAdminDto) {
     return this.usersService.createUser({
       ...admin,
-      confirmedAt: Date.now(),
-      role: 'admin',
-      verifiedAt: Date.now()
+      confirmedAt: new Date(Date.now()),
+      verifiedAt: new Date(Date.now())
     });
   }
 
   private async isSetup() {
-    const collections = await this.connection.db.listCollections().toArray();
-    for (const collection of collections) {
-      const count = await this.connection.collection(collection.name).countDocuments();
-      if (count > 0) {
-        return true;
-      }
-    }
-    return false;
+    const setupConfig = await this.setupModel.findMany();
+    return setupConfig.length == 0 ? false : true;
   }
 
   // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
@@ -82,9 +85,4 @@ export class SetupService {
   //   setupConfig.verificationInfo = setupConfigDto.verificationInfo;
   //   setupConfig.save();
   // }
-
-  private async loadStarterDataset(filename: string) {
-    const content = await fs.readFile(path.resolve(import.meta.dir, 'resources', filename), 'utf-8');
-    return JSON.parse(content) as TDataset;
-  }
 }

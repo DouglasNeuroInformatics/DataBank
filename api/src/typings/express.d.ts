@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { CurrentUser, Locale } from '@databank/types';
+import 'multer';
 import { Simplify } from 'type-fest';
 
 declare global {

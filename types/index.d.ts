@@ -14,7 +14,7 @@ export type AuthPayload = {
   accessToken: string;
 };
 
-export type UserRole = 'admin' | 'standard';
+export type UserRole = 'ADMIN' | 'STANDARD';
 
 export type CurrentUser = {
   id: string;
@@ -22,8 +22,8 @@ export type CurrentUser = {
   firstName: string;
   lastName: string;
   role: UserRole;
-  verifiedAt: number | null | undefined;
-  confirmedAt: number | null | undefined;
+  verifiedAt: Date | null | undefined;
+  confirmedAt: Date | null | undefined;
 };
 
 export type LoginCredentials = {
@@ -36,7 +36,7 @@ export type EmailConfirmationProcedureInfo = {
   attemptsMade: number;
 
   /** The unix timestamp after which the code will be invalidated */
-  expiry: number;
+  expiry: Date;
 };
 
 /** USER */
@@ -50,42 +50,6 @@ export type TUser = {
   confirmedAt: number | null | undefined;
   creationTime?: number;
 };
-
-/** DATASETS */
-
-export type DatasetLicense = 'PUBLIC_DOMAIN' | 'OTHER';
-
-export type DatasetColumnType = 'STRING' | 'FLOAT' | 'INTEGER';
-
-export type DatasetInfo = {
-  _id: string;
-  createdAt: number;
-  updatedAt: number;
-  owner: TUser;
-  name: string;
-  description: string;
-  license: DatasetLicense;
-};
-
-/** Corresponds to a row in the dataset */
-export type DatasetEntry = {
-  [key: string]: string | number;
-};
-
-/** Metadata for a column in the dataset */
-export type TDatasetColumn<T extends DatasetEntry = DatasetEntry> = {
-  name: Extract<keyof T, string>;
-  description: string;
-  nullable: boolean;
-  type: DatasetColumnType;
-};
-
-export type TDataset<T extends DatasetEntry = DatasetEntry> = Simplify<
-  DatasetInfo & {
-    columns: TDatasetColumn<T>[];
-    data: T[];
-  }
->;
 
 /** Activity */
 

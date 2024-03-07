@@ -1,11 +1,9 @@
-import type { CreateUserDto } from '@/users/dto/create-user.dto';
+import type { CreateUserDto } from "@/users/zod/user";
 
 export const createUserDtoStubFactory = (): CreateUserDto => ({
-  confirmedAt: Date.now(),
   email: 'johnsmith@gmail.com',
   firstName: 'John',
   lastName: 'Smith',
   password: 'Password123',
-  role: 'admin',
-  verifiedAt: Date.now()
+  role: 'ADMIN',
 });

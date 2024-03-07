@@ -1,16 +1,17 @@
-import { SetupDto } from '@/setup/dto/setup.dto';
+import type { SetupDto } from "@/setup/zod/setup";
 
 export const manualSetupDtoFactory = (): SetupDto => ({
   admin: {
     email: 'xyz@gmail.com',
     firstName: 'John',
     lastName: 'Doe',
-    password: 'Password123'
+    password: 'Password123',
+    role: "ADMIN"
   },
 
   setupConfig: {
-    verificationInfo: {
-      kind: 'MANUAL_VERIFICATION'
+    userVerification: {
+      method: 'MANUAL'
     }
   }
 });
@@ -20,12 +21,13 @@ export const EmailSetupDtoFactory = (): SetupDto => ({
     email: 'xyz@gmail.com',
     firstName: 'John',
     lastName: 'Doe',
-    password: 'Password123'
+    password: 'Password123',
+    role: "ADMIN"
   },
 
   setupConfig: {
-    verificationInfo: {
-      kind: 'VERIFICATION_UPON_CONFIRM_EMAIL'
+    userVerification: {
+      method: 'CONFIRM_EMAIL'
     }
   }
 });
@@ -35,13 +37,14 @@ export const RegexSetupDtoFactory = (): SetupDto => ({
     email: 'xyz@gmail.com',
     firstName: 'John',
     lastName: 'Doe',
-    password: 'Password123'
+    password: 'Password123',
+    role: "ADMIN"
   },
 
   setupConfig: {
-    verificationInfo: {
-      kind: 'VERIFICATION_WITH_REGEX',
-      regex: '/*.gmail/'
+    userVerification: {
+      method: 'REGEX_EMAIL',
+      regex: "some_regex"
     }
   }
 });
