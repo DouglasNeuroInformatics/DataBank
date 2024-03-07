@@ -123,7 +123,7 @@ const $DatasetInfo = z.object({
   description: z.string().optional(),
   id: z.string(),
   license: $License,
-  managerIDs: z.string().array(),
+  managerIds: z.string().array().min(1),
   name: z.string(),
   updatedAt: z.coerce.date()
 });
