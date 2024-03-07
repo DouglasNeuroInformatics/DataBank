@@ -5,6 +5,7 @@ import { z } from 'zod';
 const $BaseSummary = z.object({
   count: z.number().int()
 });
+type BaseSummary = z.infer<typeof $BaseSummary>;
 
 const $IntSummary = $BaseSummary.extend({
   max: z.number().int(),
@@ -14,6 +15,7 @@ const $IntSummary = $BaseSummary.extend({
   mode: z.number().int(),
   std: z.number()
 });
+type IntSummary = z.infer<typeof $IntSummary>;
 
 const $FloatSummary = $BaseSummary.extend({
   max: z.number(),
@@ -22,16 +24,27 @@ const $FloatSummary = $BaseSummary.extend({
   min: z.number(),
   std: z.number()
 });
+type FloatSummary = z.infer<typeof $FloatSummary>;
 
 const $EnumSummary = $BaseSummary.extend({
   distribution: z.record(z.number().int())
 });
+type EnumSummary = z.infer<typeof $EnumSummary>;
 
 const $DatetimeSummary = $BaseSummary.extend({
   max: z.date(),
   min: z.date()
 });
+type DatetimeSummary = z.infer<typeof $DatetimeSummary>;
 
+export const $ColumnSummary = z.union([
+  $BaseSummary,
+  $IntSummary,
+  $FloatSummary,
+  $EnumSummary,
+  $DatetimeSummary
+]) satisfies z.ZodType<ColumnSummary>;
+export type ColumnSummary = BaseSummary | DatetimeSummary | EnumSummary | FloatSummary | IntSummary;
 // ----------------------- Column Validation -----------------------
 // const $StringColumnValidation = z.object({
 //   max: z.number().int(),
@@ -76,44 +89,44 @@ const $StringColumn = $TabularColumnInfo.extend({
   summary: $BaseSummary
 });
 
-// type StringColumn = z.infer<typeof $StringColumn>;
+type StringColumn = z.infer<typeof $StringColumn>;
 
 const $IntColumn = $TabularColumnInfo.extend({
   columnType: z.literal('INT'),
   stringData: z.string().array(),
   summary: $IntSummary
 });
-// export type IntColumn = z.infer<typeof $IntColumn>;
+export type IntColumn = z.infer<typeof $IntColumn>;
 
 const $FloatColumn = $TabularColumnInfo.extend({
   columnType: z.literal('FLOAT'),
   stringData: z.string().array(),
   summary: $FloatSummary
 });
-// export type FloatColumn = z.infer<typeof $FloatColumn>;
+export type FloatColumn = z.infer<typeof $FloatColumn>;
 
 const $EnumColumn = $TabularColumnInfo.extend({
   columnType: z.literal('ENUM'),
   enumData: z.string().array(),
   summary: $EnumSummary
 });
-// export type EnumColumn = z.infer<typeof $EnumColumn>;
+type EnumColumn = z.infer<typeof $EnumColumn>;
 
-export const $DatetimeColumn = $TabularColumnInfo.extend({
+const $DatetimeColumn = $TabularColumnInfo.extend({
   columnType: z.literal('DATETIME'),
   datetimeData: z.date().array(),
   summary: $DatetimeSummary
 });
-// export type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
+type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
 
-export const $TabularColumn = z.discriminatedUnion('columnType', [
+export const $TabularColumn = z.union([
   $StringColumn,
   $IntColumn,
   $FloatColumn,
   $EnumColumn,
   $DatetimeColumn
-]);
-// export type TabularColumn = z.infer<typeof $TabularColumn>;
+]) satisfies z.ZodType<TabularColumn>;
+export type TabularColumn = DatetimeColumn | EnumColumn | FloatColumn | IntColumn | StringColumn;
 
 const $License: Zod.ZodType<DatasetLicense> = z.enum(['PUBLIC', 'OTHER']);
 
@@ -132,6 +145,7 @@ const $DatasetInfo = z.object({
 const $BaseDatasetModel = $DatasetInfo.extend({
   datasetType: z.literal('BASE')
 });
+type BaseDatasetModel = z.infer<typeof $BaseDatasetModel>;
 
 const $TabularData = z.object({
   columns: z.array($TabularColumn),
@@ -144,9 +158,11 @@ const $TabularDatasetModel = $DatasetInfo.extend({
   datasetType: z.literal('TABULAR'),
   tabularData: $TabularData
 });
+type TabularDatasetModel = z.infer<typeof $TabularDatasetModel>;
 
-const $DatasetModel = z.discriminatedUnion('datasetType', [$BaseDatasetModel, $TabularDatasetModel]);
-export type DatasetModel = z.infer<typeof $DatasetModel>;
+export const $DatasetModel = z.union([$BaseDatasetModel, $TabularDatasetModel]) satisfies z.ZodType<DatasetModel>;
+export type DatasetModel = BaseDatasetModel | TabularDatasetModel;
+
 // --------------- DTO --------------------------
 const $CreateTabularDatasetDto = $DatasetInfo
   .omit({
