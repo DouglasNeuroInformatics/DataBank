@@ -58,13 +58,15 @@ const $DatetimeSummary = $BaseSummary.extend({
 // });
 
 // ---------------------------------------------------
+const $PermissionLevel: Zod.ZodType<PermissionLevel> = z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']);
+
 const $TabularColumnInfo = z.object({
-  dataPermission: z.nativeEnum(PermissionLevel),
+  dataPermission: $PermissionLevel,
   description: z.string().optional(),
   id: z.string(),
   name: z.string(),
   nullable: z.boolean(),
-  summaryPermission: z.nativeEnum(PermissionLevel),
+  summaryPermission: $PermissionLevel,
   tabularDataId: z.string()
 });
 
