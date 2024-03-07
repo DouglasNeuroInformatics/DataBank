@@ -127,11 +127,12 @@ export class AuthService {
 
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
     const verificationInfo = await this.setupService.getVerificationInfo();
-    const isVerified =
-      verificationInfo.method === 'CONFIRM_EMAIL' ||
-      (verificationInfo.method === 'REGEX_EMAIL' &&
-        verificationInfo.emailRegex &&
-        new RegExp(verificationInfo.emailRegex).test(user.email));
+    let isVerified = true;
+
+    if (verificationInfo.method === 'REGEX_EMAIL' && verificationInfo.emailRegex) {
+      isVerified = new RegExp(verificationInfo.emailRegex).test(user.email) ? true : false;
+    }
+
     if (isVerified) {
       await this.usersService.setVerified(user.email);
     }
