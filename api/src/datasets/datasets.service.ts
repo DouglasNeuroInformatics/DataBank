@@ -132,6 +132,17 @@ export class DatasetsService {
     }
     df = pl.readCSV(csvString, { tryParseDates: true });
 
+    // for datasets without primary keys, generate a sequential id column
+    if (createTabularDatasetDto.primaryKeys.length == 0) {
+      const indexArray = [];
+      for (let i = 0; i < df.shape.height; i++) {
+        indexArray.push(i);
+      }
+      const indexSeries = pl.Series('id', indexArray);
+      df.insertAtIdx(0, indexSeries);
+      createTabularDatasetDto.primaryKeys.push('id');
+    }
+
     if (!this.primaryKeyCheck(createTabularDatasetDto.primaryKeys, df)) {
       throw new ForbiddenException('Dataset failed primary keys check!');
     }
@@ -245,7 +256,7 @@ export class DatasetsService {
         continue;
       }
 
-      // create a boolean column
+      // create a datetime column
       if (col.isDateTime()) {
         await this.columnModel.create({
           data: {
