@@ -264,8 +264,7 @@ export class DatasetsService {
             // date is represented as time difference from 1970-Jan-01
             datetimeColumnValidation: {
               max: new Date(),
-              min: '1970-01-01',
-              mustInISOFormat: true
+              min: '1970-01-01'
             },
             // datetime is represented as milliseconds from 1970-Jan-01 00:00:00
             datetimeData: col.toArray(),
@@ -627,8 +626,7 @@ export class DatasetsService {
           data: {
             datetimeColumnValidation: {
               max: new Date(),
-              min: '1970-01-01',
-              mustInISOFormat: true
+              min: '1970-01-01'
             },
             datetimeData: data.toArray(),
             summary: {

@@ -185,9 +185,8 @@ type EnumColumnValidation {
 }
 
 type DatetimeColumnValidation {
-  min             DateTime
-  max             DateTime
-  mustInISOFormat Boolean
+  min DateTime?
+  max DateTime?
 }
 
 // ---------------- Setup ----------------

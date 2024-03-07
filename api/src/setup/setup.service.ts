@@ -55,6 +55,7 @@ export class SetupService {
       datasetType: 'TABULAR',
       description: 'a sample dataset containing data about iris',
       license: 'PUBLIC',
+      managerIds: [user.id],
       name: 'iris',
       primaryKeys: []
     };
