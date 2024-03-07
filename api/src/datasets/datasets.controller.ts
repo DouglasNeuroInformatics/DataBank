@@ -1,11 +1,10 @@
-import { ParseIdPipe } from '@douglasneuroinformatics/nestjs/core';
+import { CurrentUser, ParseIdPipe } from '@douglasneuroinformatics/nestjs/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import 'multer';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
-import { UserId } from '@/core/decorators/user-id.decorator';
 
 import { DatasetsService } from './datasets.service.js';
 
@@ -14,14 +13,14 @@ import type { CreateTabularDatasetDto } from './zod/dataset.js';
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })
 export class DatasetsController {
-  constructor(private readonly datasetsService: DatasetsService) { }
+  constructor(private readonly datasetsService: DatasetsService) {}
 
   @Patch('managers/:id/:managerIdToAdd')
   @RouteAccess({ role: 'STANDARD' })
   addManager(
     @Param('id') datasetId: string,
-    @UserId() managerId: string,
-    @Param('managerIdToAdd', ParseIdPipe) managerIdToAdd: string,
+    @CurrentUser('id') managerId: string,
+    @Param('managerIdToAdd', ParseIdPipe) managerIdToAdd: string
   ) {
     return this.datasetsService.addManager(datasetId, managerId, managerIdToAdd);
   }
@@ -30,33 +29,37 @@ export class DatasetsController {
   @Post()
   @RouteAccess({ role: 'STANDARD' })
   @UseInterceptors(FileInterceptor('file'))
-  createDataset(@Body() createTabularDatasetDto: CreateTabularDatasetDto, @UploadedFile() file: Express.Multer.File, @UserId() managerId: string) {
+  createDataset(
+    @Body() createTabularDatasetDto: CreateTabularDatasetDto,
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser('id') managerId: string
+  ) {
     return this.datasetsService.createDataset(createTabularDatasetDto, file, managerId);
   }
 
   @Delete(':id/:column')
   @RouteAccess({ role: 'STANDARD' })
-  deleteColumn(@Param('column') columnId: string, @UserId() currentUserId: string) {
+  deleteColumn(@Param('column') columnId: string, @CurrentUser('id') currentUserId: string) {
     return this.datasetsService.deleteColumn(columnId, currentUserId);
   }
 
   @Delete(':id')
   @RouteAccess({ role: 'STANDARD' })
-  deleteDataset(@Param('id', ParseIdPipe) datasetId: string, @UserId() currentUserId: string) {
+  deleteDataset(@Param('id', ParseIdPipe) datasetId: string, @CurrentUser('id') currentUserId: string) {
     return this.datasetsService.deleteDataset(datasetId, currentUserId);
   }
 
   @ApiOperation({ summary: 'Get All Datasets' })
   @Get('available')
   @RouteAccess({ role: 'STANDARD' })
-  getAvailable(@UserId() currentUserId: string) {
+  getAvailable(@CurrentUser('id') currentUserId: string) {
     return this.datasetsService.getAvailable(currentUserId);
   }
 
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
   @Get(':id')
   @RouteAccess({ role: 'STANDARD' })
-  getById(@Param('id') datasetId: string, @UserId() currentUserId: string) {
+  getById(@Param('id') datasetId: string, @CurrentUser('id') currentUserId: string) {
     return this.datasetsService.getById(datasetId, currentUserId);
   }
 
@@ -64,8 +67,8 @@ export class DatasetsController {
   @RouteAccess({ role: 'STANDARD' })
   removeManager(
     @Param('id') datasetId: string,
-    @UserId() managerId: string,
-    @Param('managerIdToAdd') managerIdToRemove: string,
+    @CurrentUser('id') managerId: string,
+    @Param('managerIdToAdd') managerIdToRemove: string
   ) {
     return this.datasetsService.removeManager(datasetId, managerId, managerIdToRemove);
   }
@@ -82,10 +85,7 @@ export class DatasetsController {
 
   @Patch('manageDataset/share')
   @RouteAccess({ role: 'STANDARD' })
-  setReadyToShare(
-    @Param('id') datasetId: string,
-    @UserId() managerId: string,
-  ) {
+  setReadyToShare(@Param('id') datasetId: string, @CurrentUser('id') managerId: string) {
     return this.datasetsService.setReadyToShare(datasetId, managerId);
   }
 }
