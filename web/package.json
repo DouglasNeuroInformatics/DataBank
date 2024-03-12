@@ -5,8 +5,8 @@
   "license": "AGPL-3.0",
   "type": "module",
   "scripts": {
-    "build": "tsc && cross-env NODE_ENV=production bunx vite build",
-    "dev": "bunx --bun vite",
+    "build": "tsc && cross-env NODE_ENV=production pnpm exec vite build",
+    "dev": "pnpm vite",
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src",
     "preview": "vite preview"
