@@ -61,7 +61,7 @@ export class SetupService {
     };
     await this.datasetsService.createDataset(
       createStarterDatasetDto,
-      await fs.readFile(path.resolve(import.meta.dir, 'resources', 'iris.json'), 'utf-8'),
+      await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'iris.json'), 'utf-8'),
       user.id
     );
   }

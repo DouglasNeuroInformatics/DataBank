@@ -19,16 +19,10 @@ Researchers at institutions like the Douglas Research Centre often work with sen
 
 ## Getting Started (Development Setup)
 
-### Install Bun
-
-```shell
-curl -fsSL https://bun.sh/install | bash
-```
-
 ### Install Dependencies
 
 ```shell
-bun install
+pnpm install
 ```
 
 ### Setup Config
@@ -40,7 +34,7 @@ awk -v secret_key="$(openssl rand -hex 16)" '/^SECRET_KEY=/{print $0 secret_key;
 ### Launch Dev Server
 
 ```shell
-bun dev
+pnpm dev
 ```
 
 ## Getting Started (Production Deployment)

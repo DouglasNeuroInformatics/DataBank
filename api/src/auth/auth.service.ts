@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 
 import type { AuthPayload, CurrentUser, EmailConfirmationProcedureInfo, Locale } from '@databank/types';
-import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
+import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
 import {
   ForbiddenException,
   Injectable,

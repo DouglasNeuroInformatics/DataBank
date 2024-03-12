@@ -1,7 +1,7 @@
 // import type { AnyFunction } from 'bun';
 // import { type Mock, beforeEach, describe, expect, it, jest } from 'bun:test';
 
-// import { createMock } from '@douglasneuroinformatics/nestjs/testing';
+// import { createMock } from '@douglasneuroinformatics/libnest/testing';
 // import { NotFoundException } from '@nestjs/common';
 // import { Test } from '@nestjs/testing';
 

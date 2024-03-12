@@ -1,5 +1,4 @@
-import { LoggerMiddleware } from '@douglasneuroinformatics/nestjs/core';
-import { CryptoModule } from '@douglasneuroinformatics/nestjs/modules';
+import { CryptoModule, LoggingModule } from '@douglasneuroinformatics/libnest/modules';
 import { type MiddlewareConsumer, Module, type NestModule, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
@@ -28,6 +27,9 @@ import { UsersModule } from './users/users.module.js';
     }),
     DatasetsModule,
     I18nModule,
+    LoggingModule.forRoot({
+      debug: true
+    }),
     SetupModule,
     ThrottlerModule.forRoot([
       {
@@ -51,6 +53,6 @@ import { UsersModule } from './users/users.module.js';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AcceptLanguageMiddleware, LoggerMiddleware).forRoutes('*');
+    consumer.apply(AcceptLanguageMiddleware).forRoutes('*');
   }
 }

@@ -1,4 +1,4 @@
-import { CurrentUser, ParseIdPipe } from '@douglasneuroinformatics/nestjs/core';
+import { CurrentUser, ParseObjectIdPipe } from '@douglasneuroinformatics/libnest/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -19,7 +19,7 @@ export class DatasetsController {
   addManager(
     @Param('id') datasetId: string,
     @CurrentUser('id') managerId: string,
-    @Param('managerIdToAdd', ParseIdPipe) managerIdToAdd: string
+    @Param('managerIdToAdd', ParseObjectIdPipe) managerIdToAdd: string
   ) {
     return this.datasetsService.addManager(datasetId, managerId, managerIdToAdd);
   }
@@ -44,7 +44,7 @@ export class DatasetsController {
 
   @Delete(':id')
   @RouteAccess({ role: 'STANDARD' })
-  deleteDataset(@Param('id', ParseIdPipe) datasetId: string, @CurrentUser('id') currentUserId: string) {
+  deleteDataset(@Param('id', ParseObjectIdPipe) datasetId: string, @CurrentUser('id') currentUserId: string) {
     return this.datasetsService.deleteDataset(datasetId, currentUserId);
   }
 

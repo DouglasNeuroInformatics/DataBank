@@ -1,14 +1,16 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../jsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "esModuleInterop": false,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "paths": {
       "@/*": ["src/*"]
     },
-    "strictPropertyInitialization": false,
-    "types": ["bun-types"]
+    "strictPropertyInitialization": false
   },
   "include": ["src", "test", "scripts"]
 }

@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../jsconfig.json",
   "include": ["index.d.ts"],
   "compilerOptions": {
     "skipLibCheck": false
