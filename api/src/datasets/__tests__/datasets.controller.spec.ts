@@ -1,7 +1,6 @@
-import { beforeEach, describe, expect, it } from 'bun:test';
-
-import { type MockedInstance, createMock } from '@douglasneuroinformatics/nestjs/testing';
+import { MockFactory, type MockedInstance } from '@douglasneuroinformatics/libnest/testing';
 import { Test } from '@nestjs/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { DatasetsController } from '../datasets.controller.js';
 import { DatasetsService } from '../datasets.service.js';
@@ -13,12 +12,7 @@ describe('DatasetsController', () => {
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [DatasetsController],
-      providers: [
-        {
-          provide: DatasetsService,
-          useValue: createMock(DatasetsService)
-        }
-      ]
+      providers: [MockFactory.createForService(DatasetsService)]
     }).compile();
     datasetsController = moduleRef.get(DatasetsController);
     datasetsService = moduleRef.get(DatasetsService);

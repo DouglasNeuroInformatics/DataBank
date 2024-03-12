@@ -1,11 +1,17 @@
+import module from 'node:module';
+
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ColumnType, PermissionLevel, PrismaClient } from '@prisma/client';
-import { pl } from 'nodejs-polars';
+import type { DataFrame } from 'nodejs-polars';
 
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 
 import type { CreateTabularDatasetDto } from './zod/dataset.js';
+
+const require = module.createRequire(import.meta.url);
+
+const pl: typeof import('nodejs-polars').default = require('nodejs-polars');
 
 @Injectable()
 export class DatasetsService {
@@ -123,7 +129,7 @@ export class DatasetsService {
     managerId: string
   ) {
     let csvString: string;
-    let df: pl.DataFrame;
+    let df: DataFrame;
     if (typeof file === 'string') {
       csvString = file;
     } else {
@@ -762,7 +768,7 @@ export class DatasetsService {
     return dataset;
   }
 
-  private primaryKeyCheck(primaryKeys: string[], df: pl.DataFrame): boolean {
+  private primaryKeyCheck(primaryKeys: string[], df: DataFrame): boolean {
     for (let key of primaryKeys) {
       const col = df.getColumn(key);
       if (col.nullCount() > 0) {

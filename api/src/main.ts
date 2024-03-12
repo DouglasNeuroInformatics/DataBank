@@ -1,5 +1,4 @@
 import path from 'node:path';
-import url from 'node:url';
 
 import { VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -9,9 +8,6 @@ import { json } from 'express';
 
 import { AppModule } from './app.module.js';
 import { setupDocs } from './docs.js';
-
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -25,7 +21,7 @@ async function bootstrap() {
   });
   app.use(json({ limit: '50MB' }));
 
-  app.useStaticAssets(path.resolve(__dirname, '..', 'public'));
+  app.useStaticAssets(path.resolve(import.meta.dirname, '..', 'public'));
   setupDocs(app);
 
   const configService = app.get(ConfigService);

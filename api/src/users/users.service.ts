@@ -1,4 +1,4 @@
-import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
+import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { type ConfirmEmailInfo, type User } from '@prisma/client';
 import type { SetOptional } from 'type-fest';

@@ -1,8 +1,8 @@
 // import { afterEach, beforeEach, describe, expect, it, jest } from 'bun:test';
 
 // import type { CurrentUser, Locale } from '@databank/types';
-// import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
-// import { type MockedInstance, createMock } from '@douglasneuroinformatics/nestjs/testing';
+// import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
+// import { type MockedInstance, createMock } from '@douglasneuroinformatics/libnest/testing';
 // import { ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 // import { ConfigService } from '@nestjs/config';
 // import { JwtService } from '@nestjs/jwt';
