@@ -5,13 +5,14 @@ import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthModule } from './auth/auth.module.js';
+import { ColumnsModule } from './columns/columns.module.js';
 import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware.js';
 import { DatasetsModule } from './datasets/datasets.module.js';
 import { I18nModule } from './i18n/i18n.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { ProjectsModule } from './projects/projects.module';
 import { SetupModule } from './setup/setup.module.js';
 import { UsersModule } from './users/users.module.js';
-import { ProjectsModule } from './projects/projects.module';
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { ProjectsModule } from './projects/projects.module';
     ]),
     UsersModule,
     PrismaModule.forRoot(),
-    ProjectsModule
+    ProjectsModule,
+    ColumnsModule
   ],
   providers: [
     {
