@@ -1,10 +1,15 @@
 import { CurrentUser } from '@douglasneuroinformatics/libnest/core';
 import { Injectable } from '@nestjs/common';
 
+import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
+import type { Model } from '@/prisma/prisma.types';
+
 import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
 
 @Injectable()
 export class ProjectsService {
+  constructor(@InjectModel('Project') private readonly projectModel: Model<'Project'>) {}
+
   addDatasetToProject(@CurrentUser('id') currentUserId: string, datasetId: string) {
     return [currentUserId, datasetId];
   }

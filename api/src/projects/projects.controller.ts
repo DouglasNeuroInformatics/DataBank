@@ -8,6 +8,7 @@ import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
+
   addDatasetToProject(@CurrentUser('id') currentUserId: string, datasetId: string) {
     return this.projectsService.addDatasetToProject(currentUserId, datasetId);
   }

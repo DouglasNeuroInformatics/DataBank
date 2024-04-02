@@ -25,6 +25,8 @@ const $ProjectDataset = z.object({
   useColumnFilter: z.boolean()
 });
 
+export type ProjectDataset = z.infer<typeof $ProjectDataset>;
+
 const $CreateProjectDto = z.object({
   datasets: $ProjectDataset.array(),
   description: z.string().optional(),
