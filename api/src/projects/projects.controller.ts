@@ -1,12 +1,36 @@
-import { Controller, Get } from '@nestjs/common';
+import { CurrentUser } from '@douglasneuroinformatics/libnest/core';
+import { Controller } from '@nestjs/common';
 
 import { ProjectsService } from './projects.service';
 
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
-  @Get()
-  hello() {
-    return this.projectsService.hello();
+  addDatasetToProject(@CurrentUser('id') currentUserId: string, datasetId: string) {
+    return this.projectsService.addDatasetToProject(currentUserId, datasetId);
+  }
+
+  addUserToProject(@CurrentUser('id') currentUserId: string, newUserId: string) {
+    return this.projectsService.addUserToProject(currentUserId, newUserId);
+  }
+
+  createProject(@CurrentUser('id') currentUserId: string, createProjectDto: CreateProjectDto) {
+    return this.projectsService.createProject(currentUserId, createProjectDto);
+  }
+
+  deleteProject(@CurrentUser('id') currentUserId: string, projectID: string) {
+    return this.projectsService.deleteProject(currentUserId, projectID);
+  }
+
+  getAllProjects(@CurrentUser('id') currentUserId: string) {
+    return this.projectsService.getAllProjects(currentUserId);
+  }
+
+  getProjectById(@CurrentUser('id') currentUserId: string, projectID: string) {
+    return this.projectsService.getProjectById(currentUserId, projectID);
+  }
+
+  updateProject(@CurrentUser('id') currentUserId: string, updateProjectDto: UpdateProjectDto) {
+    return this.projectsService.updateProject(currentUserId, updateProjectDto);
   }
 }

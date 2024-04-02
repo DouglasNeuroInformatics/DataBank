@@ -6,6 +6,7 @@ import type { DataFrame } from 'nodejs-polars';
 
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
+import { UsersService } from '@/users/users.service.js';
 
 import type { CreateTabularDatasetDto } from './zod/dataset.js';
 
@@ -19,22 +20,14 @@ export class DatasetsService {
     @InjectModel('Dataset') private datasetModel: Model<'Dataset'>,
     @InjectModel('TabularColumn') private columnModel: Model<'TabularColumn'>,
     @InjectModel('TabularData') private tabularDataModel: Model<'TabularData'>,
-    @InjectModel('User') private userModel: Model<'User'>,
-    @InjectPrismaClient() private prisma: PrismaClient
+    @InjectPrismaClient() private prisma: PrismaClient,
+    private readonly usersService: UsersService
   ) {}
 
   async addManager(datasetId: string, managerId: string, managerIdToAdd: string) {
     const dataset = await this.canModifyDataset(datasetId, managerId);
 
-    const managerToAdd = await this.userModel.findUnique({
-      where: {
-        id: managerIdToAdd
-      }
-    });
-
-    if (!managerToAdd) {
-      throw new NotFoundException('Manager with id ' + managerIdToAdd + ' is not found!');
-    }
+    const managerToAdd = await this.usersService.findById(managerId);
 
     const newDatasetIds = managerToAdd.datasetId;
     newDatasetIds.push(datasetId);
@@ -347,13 +340,7 @@ export class DatasetsService {
     });
 
     // need to update all users that are managers of this dataset
-    const managersToUpdate = await this.userModel.findMany({
-      where: {
-        datasetId: {
-          has: dataset.id
-        }
-      }
-    });
+    const managersToUpdate = await this.usersService.findManyByDatasetId(dataset.id);
 
     const updateManagers = [];
 

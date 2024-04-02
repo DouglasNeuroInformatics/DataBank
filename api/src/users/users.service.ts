@@ -1,5 +1,5 @@
 import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { type ConfirmEmailInfo, type User } from '@prisma/client';
 import type { SetOptional } from 'type-fest';
 
@@ -24,7 +24,7 @@ export class UsersService {
     ...rest
   }: CreateUserDto): Promise<Omit<User, 'hashedPassword'>> {
     const userExists = await this.findByEmail(email);
-    if (userExists) {
+    if (userExists!) {
       throw new ConflictException(`User with the provided email already exists: ${email}`);
     }
     const hashedPassword = await this.cryptoService.hashPassword(password);
@@ -44,12 +44,38 @@ export class UsersService {
   }
 
   /** Return the user with the provided email, or null if no such user exists */
-  findByEmail(email: string) {
-    return this.userModel.findUnique({
+  async findByEmail(email: string) {
+    const user = await this.userModel.findUnique({
       where: {
-        email
+        id: email
       }
     });
+    if (!user) {
+      throw new NotFoundException('User with email ' + email + ' is not found!');
+    }
+  }
+
+  async findById(userId: string) {
+    const user = await this.userModel.findUnique({
+      where: {
+        id: userId
+      }
+    });
+    if (!user) {
+      throw new NotFoundException('User with id ' + userId + ' is not found!');
+    }
+    return user;
+  }
+
+  async findManyByDatasetId(datasetId: string) {
+    const users = await this.userModel.findMany({
+      where: {
+        datasetId: {
+          has: datasetId
+        }
+      }
+    });
+    return users;
   }
 
   /** Get all users in the database */
