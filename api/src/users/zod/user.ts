@@ -6,6 +6,8 @@ const $UserRole: Zod.ZodType<UserRole> = z.enum(['ADMIN', 'STANDARD']);
 export const $CreateUserDto = z.object({
   confirmedAt: z.coerce.date().optional(),
 
+  datasetId: z.string().array(),
+
   email: z.string().email(),
 
   firstName: z.string().min(1),
@@ -20,3 +22,7 @@ export const $CreateUserDto = z.object({
 });
 
 export type CreateUserDto = z.infer<typeof $CreateUserDto>;
+
+const $UpdateUserDto = $CreateUserDto.partial();
+
+export type UpdateUserDto = z.infer<typeof $UpdateUserDto>;

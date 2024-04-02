@@ -6,7 +6,7 @@ import type { SetOptional } from 'type-fest';
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 
-import type { CreateUserDto } from './zod/user.js';
+import type { CreateUserDto, UpdateUserDto } from './zod/user.js';
 
 @Injectable()
 export class UsersService {
@@ -101,6 +101,15 @@ export class UsersService {
       },
       where: {
         email
+      }
+    });
+  }
+
+  updateUser(userId: string, updateUserDto: UpdateUserDto) {
+    return this.userModel.update({
+      data: updateUserDto,
+      where: {
+        id: userId
       }
     });
   }

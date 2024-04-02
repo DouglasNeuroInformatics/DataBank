@@ -32,13 +32,8 @@ export class DatasetsService {
     const newDatasetIds = managerToAdd.datasetId;
     newDatasetIds.push(datasetId);
 
-    const updateNewManagerDatasetsIds = this.userModel.update({
-      data: {
-        datasetId: newDatasetIds
-      },
-      where: {
-        id: managerIdToAdd
-      }
+    const updateNewManagerDatasetsIds = this.usersService.updateUser(managerIdToAdd, {
+      datasetId: newDatasetIds
     });
 
     const newManagerIds = dataset.managerIds;
@@ -347,13 +342,8 @@ export class DatasetsService {
     for (let manager of managersToUpdate) {
       let newDatasetId = manager.datasetId.filter((val) => val !== dataset.id);
       updateManagers.push(
-        this.userModel.update({
-          data: {
-            datasetId: newDatasetId
-          },
-          where: {
-            id: manager.id
-          }
+        this.usersService.updateUser(manager.id, {
+          datasetId: newDatasetId
         })
       );
     }
@@ -644,11 +634,7 @@ export class DatasetsService {
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
     const dataset = await this.canModifyDataset(datasetId, managerId);
 
-    const managerToRemove = await this.userModel.findUnique({
-      where: {
-        id: managerIdToRemove
-      }
-    });
+    const managerToRemove = await this.usersService.findById(managerIdToRemove);
 
     if (!managerToRemove) {
       throw new NotFoundException(`Manager with id ${managerIdToRemove} is not found!`);
@@ -667,13 +653,8 @@ export class DatasetsService {
 
     const newDatasetIds = managerToRemove.datasetId.filter((val) => val != datasetId);
 
-    const updateManagerToRemoveDatasetIds = this.userModel.update({
-      data: {
-        datasetId: newDatasetIds
-      },
-      where: {
-        id: managerIdToRemove
-      }
+    const updateManagerToRemoveDatasetIds = this.usersService.updateUser(managerIdToRemove, {
+      datasetId: newDatasetIds
     });
 
     return await this.prisma.$transaction([updateDatasetManagerIds, updateManagerToRemoveDatasetIds]);
