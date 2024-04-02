@@ -3,6 +3,8 @@ import { Controller } from '@nestjs/common';
 
 import { ProjectsService } from './projects.service';
 
+import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
+
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}

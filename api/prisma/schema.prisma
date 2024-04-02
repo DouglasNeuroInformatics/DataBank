@@ -207,3 +207,42 @@ enum VerificationMethod {
   CONFIRM_EMAIL
   REGEX_EMAIL
 }
+
+// ---------------- Project ----------------
+model Project {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  externalId  String?
+  name        String
+  description String?
+  userIds     String[]
+  createdAt   DateTime         @default(now()) @db.Date
+  updatedAt   DateTime         @default(now()) @db.Date
+  expiry      DateTime
+  // Each project dataset should contain filters on columns 
+  datasets    ProjectDataset[]
+}
+
+type ProjectDataset {
+  // datatypeFilters DatatypeFilters[]
+  datasetId       String
+  useColumnFilter Boolean
+  columns         ProjectColumn[]
+}
+
+type ProjectColumn {
+  columnId String
+  rowMin   Int?
+  rowMax   Int?
+  hash     ProjectColumnHash?
+  trim     ProjectColumnTrim?
+}
+
+type ProjectColumnHash {
+  salt   String
+  length Int?
+}
+
+type ProjectColumnTrim {
+  start Int?
+  end   Int?
+}
