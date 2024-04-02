@@ -53,6 +53,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User with email ' + email + ' is not found!');
     }
+    return user;
   }
 
   async findById(userId: string) {

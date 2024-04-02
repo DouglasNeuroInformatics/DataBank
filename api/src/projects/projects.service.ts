@@ -18,8 +18,12 @@ export class ProjectsService {
     return [currentUserId, newUserId];
   }
 
-  createProject(@CurrentUser('id') currentUserId: string, createProjectDto: CreateProjectDto) {
-    return [currentUserId, createProjectDto];
+  async createProject(createProjectDto: CreateProjectDto) {
+    // must add the current user id to the users array
+    // only certain users can create a project
+    return await this.projectModel.create({
+      data: createProjectDto
+    });
   }
 
   deleteProject(@CurrentUser('id') currentUserId: string, projectID: string) {

@@ -13,8 +13,8 @@ const $ProjectColumnTrim = z.object({
 const $ProjectColumn = z.object({
   columnId: z.string(),
   hash: $ProjectColumnHash.optional(),
-  rowMax: z.string(),
-  rowMin: z.string(),
+  rowMax: z.number().int().optional(),
+  rowMin: z.number().int().optional(),
   trim: $ProjectColumnTrim.optional()
 });
 
@@ -35,6 +35,7 @@ const $CreateProjectDto = z.object({
   name: z.string(),
   userIds: z.string().array()
 });
+
 export type CreateProjectDto = z.infer<typeof $CreateProjectDto>;
 
 const $UpdateProjectDto = $CreateProjectDto.partial();
