@@ -21,19 +21,19 @@ export class ProjectsController {
     return this.projectsService.createProject(createProjectDto);
   }
 
-  deleteProject(@CurrentUser('id') currentUserId: string, projectID: string) {
-    return this.projectsService.deleteProject(currentUserId, projectID);
+  deleteProject(@CurrentUser('id') currentUserId: string, projectId: string) {
+    return this.projectsService.deleteProject(currentUserId, projectId);
   }
 
   getAllProjects(@CurrentUser('id') currentUserId: string) {
     return this.projectsService.getAllProjects(currentUserId);
   }
 
-  getProjectById(@CurrentUser('id') currentUserId: string, projectID: string) {
-    return this.projectsService.getProjectById(currentUserId, projectID);
+  getProjectById(@CurrentUser('id') currentUserId: string, projectId: string) {
+    return this.projectsService.getProjectById(currentUserId, projectId);
   }
 
-  updateProject(@CurrentUser('id') currentUserId: string, updateProjectDto: UpdateProjectDto) {
-    return this.projectsService.updateProject(currentUserId, updateProjectDto);
+  updateProject(@CurrentUser('id') currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {
+    return this.projectsService.updateProject(currentUserId, projectId, updateProjectDto);
   }
 }

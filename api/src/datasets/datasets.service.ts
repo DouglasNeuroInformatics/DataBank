@@ -51,6 +51,21 @@ export class DatasetsService {
     return await this.prisma.$transaction([updateNewManagerDatasetsIds, updateManager]);
   }
 
+  async canModifyDataset(datasetId: string, currentUserId: string) {
+    const dataset = await this.datasetModel.findUnique({
+      where: {
+        id: datasetId
+      }
+    });
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+    if (!(currentUserId in dataset.managerIds)) {
+      throw new ForbiddenException('Only managers can modify this dataset!');
+    }
+    return dataset;
+  }
+
   async changeColumnDataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) {
     await this.canModifyColumn(columnId, currentUserId);
     return await this.columnModel.update({
@@ -719,21 +734,6 @@ export class DatasetsService {
       throw new ForbiddenException('Only managers can modify this dataset!');
     }
     return col;
-  }
-
-  private async canModifyDataset(datasetId: string, currentUserId: string) {
-    const dataset = await this.datasetModel.findUnique({
-      where: {
-        id: datasetId
-      }
-    });
-    if (!dataset) {
-      throw new NotFoundException();
-    }
-    if (!(currentUserId in dataset.managerIds)) {
-      throw new ForbiddenException('Only managers can modify this dataset!');
-    }
-    return dataset;
   }
 
   private primaryKeyCheck(primaryKeys: string[], df: DataFrame): boolean {
