@@ -33,7 +33,7 @@ const $CreateProjectDto = z.object({
   expiry: z.date(),
   externalId: z.string().optional(),
   name: z.string(),
-  userIds: z.string().array()
+  userIds: z.string().array().min(1)
 });
 
 export type CreateProjectDto = z.infer<typeof $CreateProjectDto>;
