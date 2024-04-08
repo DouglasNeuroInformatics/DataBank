@@ -17,8 +17,8 @@ export class ProjectsController {
     return this.projectsService.addUserToProject(currentUserId, newUserId);
   }
 
-  createProject(createProjectDto: CreateProjectDto) {
-    return this.projectsService.createProject(createProjectDto);
+  createProject(@CurrentUser('id') currentUserId: string, createProjectDto: CreateProjectDto) {
+    return this.projectsService.createProject(currentUserId, createProjectDto);
   }
 
   deleteProject(@CurrentUser('id') currentUserId: string, projectId: string) {
