@@ -23,9 +23,15 @@ export class ProjectsService {
     return [currentUserId, newUserId];
   }
 
-  async createProject(createProjectDto: CreateProjectDto) {
-    // must add the current user id to the users array
-    // only certain users can create a project
+  async createProject(currentUserId: string, createProjectDto: CreateProjectDto) {
+    if (!this.usersService.isOwnerOfDatasets(currentUserId)) {
+      throw new ForbiddenException('Only dataset owners can create project!');
+    }
+
+    if (!(currentUserId in createProjectDto.userIds)) {
+      throw new ForbiddenException('Creator of the project must be a user of the project!');
+    }
+
     return await this.projectModel.create({
       data: createProjectDto
     });

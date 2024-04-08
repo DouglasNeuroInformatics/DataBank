@@ -80,8 +80,13 @@ export class UsersService {
   }
 
   /** Get all users in the database */
-  getAll(): Promise<User[]> {
-    return this.userModel.findMany();
+  async getAll(): Promise<User[]> {
+    return await this.userModel.findMany();
+  }
+
+  async isOwnerOfDatasets(userId: string) {
+    const user = await this.findById(userId);
+    return user.datasetId.length > 0 ? true : false;
   }
 
   async setVerified(email: string) {
