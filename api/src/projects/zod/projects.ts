@@ -1,21 +1,21 @@
 import { z } from 'zod';
 
 const $ProjectColumnHash = z.object({
-  length: z.number().int().optional(),
+  length: z.number().int().nullable(),
   salt: z.string()
 });
 
 const $ProjectColumnTrim = z.object({
-  end: z.number().int().optional(),
-  start: z.number().int().optional()
+  end: z.number().int().nullable(),
+  start: z.number().int().nullable()
 });
 
 const $ProjectColumn = z.object({
   columnId: z.string(),
-  hash: $ProjectColumnHash.optional(),
-  rowMax: z.number().int().optional(),
-  rowMin: z.number().int().optional(),
-  trim: $ProjectColumnTrim.optional()
+  hash: $ProjectColumnHash.nullable(),
+  rowMax: z.number().int().nullable(),
+  rowMin: z.number().int().nullable(),
+  trim: $ProjectColumnTrim.nullable()
 });
 
 const $ProjectDataset = z.object({
@@ -25,13 +25,15 @@ const $ProjectDataset = z.object({
   useColumnFilter: z.boolean()
 });
 
+export type ProjectDatasetDto = z.infer<typeof $ProjectDataset>;
+
 export type ProjectDataset = z.infer<typeof $ProjectDataset>;
 
 const $CreateProjectDto = z.object({
   datasets: $ProjectDataset.array(),
-  description: z.string().optional(),
+  description: z.string().nullable(),
   expiry: z.date(),
-  externalId: z.string().optional(),
+  externalId: z.string().nullable(),
   name: z.string(),
   userIds: z.string().array().min(1)
 });

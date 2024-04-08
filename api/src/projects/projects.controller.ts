@@ -3,18 +3,22 @@ import { Controller } from '@nestjs/common';
 
 import { ProjectsService } from './projects.service';
 
-import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
+import type { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './zod/projects';
 
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
-  addDatasetToProject(@CurrentUser('id') currentUserId: string, datasetId: string) {
-    return this.projectsService.addDatasetToProject(currentUserId, datasetId);
+  addDatasetToProject(
+    @CurrentUser('id') currentUserId: string,
+    projectId: string,
+    projectDatasetDto: ProjectDatasetDto
+  ) {
+    return this.projectsService.addDatasetToProject(currentUserId, projectId, projectDatasetDto);
   }
 
-  addUserToProject(@CurrentUser('id') currentUserId: string, newUserId: string) {
-    return this.projectsService.addUserToProject(currentUserId, newUserId);
+  addUserToProject(@CurrentUser('id') currentUserId: string, projectId: string, newUserId: string) {
+    return this.projectsService.addUserToProject(currentUserId, projectId, newUserId);
   }
 
   createProject(@CurrentUser('id') currentUserId: string, createProjectDto: CreateProjectDto) {

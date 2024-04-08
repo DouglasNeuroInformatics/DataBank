@@ -5,7 +5,7 @@ import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma
 import type { Model } from '@/prisma/prisma.types';
 import type { UsersService } from '@/users/users.service';
 
-import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
+import type { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './zod/projects';
 
 @Injectable()
 export class ProjectsService {
@@ -15,12 +15,39 @@ export class ProjectsService {
     @InjectPrismaClient() private prisma: PrismaClient
   ) {}
 
-  addDatasetToProject(currentUserId: string, datasetId: string) {
-    return [currentUserId, datasetId];
+  async addDatasetToProject(currentUserId: string, projectId: string, projectDatasetDto: ProjectDatasetDto) {
+    if (!this.isProjectManager(currentUserId, projectId)) {
+      throw new ForbiddenException('Only project managers can add new dataset!');
+    }
+
+    const project = await this.getProjectById(currentUserId, projectId);
+
+    if (!project) {
+      throw new NotFoundException('Project Not Found!');
+    }
+
+    const projectDatasets = project.datasets;
+    projectDatasets.push(projectDatasetDto);
+    return await this.updateProject(currentUserId, projectId, {});
   }
 
-  addUserToProject(currentUserId: string, newUserId: string) {
-    return [currentUserId, newUserId];
+  async addUserToProject(currentUserId: string, projectId: string, newUserId: string) {
+    if (!this.isProjectManager(currentUserId, projectId)) {
+      throw new ForbiddenException('Only project managers can add new users!');
+    }
+
+    const project = await this.getProjectById(currentUserId, projectId);
+
+    if (!project) {
+      throw new NotFoundException('Project Not Found!');
+    }
+
+    const userIdsArray = project.userIds;
+    userIdsArray.push(newUserId);
+
+    return await this.updateProject(currentUserId, projectId, {
+      userIds: userIdsArray
+    });
   }
 
   async createProject(currentUserId: string, createProjectDto: CreateProjectDto) {
@@ -39,7 +66,7 @@ export class ProjectsService {
 
   async deleteProject(currentUserId: string, projectId: string) {
     if (!this.isProjectManager(currentUserId, projectId)) {
-      throw new ForbiddenException('The current user has no right to manipulate this project!');
+      throw new ForbiddenException('The current user has no right to delete this project!');
     }
 
     const deletaProject = this.projectModel.delete({
@@ -102,8 +129,8 @@ export class ProjectsService {
       datasetIdSet.add(curr_datasetId);
     }
 
-    for (let dataset in project.datasets) {
-      if (datasetIdSet.has(dataset)) {
+    for (let i = 0; i < project.datasets.length; i++) {
+      if (datasetIdSet.has(project.datasets[i]?.datasetId)) {
         return true;
       }
     }
