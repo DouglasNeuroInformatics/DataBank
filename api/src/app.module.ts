@@ -13,6 +13,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { ProjectsModule } from './projects/projects.module';
 import { SetupModule } from './setup/setup.module.js';
 import { UsersModule } from './users/users.module.js';
+import { TabularDataModule } from './tabular-data/tabular-data.module';
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { UsersModule } from './users/users.module.js';
     UsersModule,
     PrismaModule.forRoot(),
     ProjectsModule,
-    ColumnsModule
+    ColumnsModule,
+    TabularDataModule
   ],
   providers: [
     {

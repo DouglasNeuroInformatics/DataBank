@@ -1,9 +1,10 @@
 import module from 'node:module';
 
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { ColumnType, PermissionLevel, PrismaClient } from '@prisma/client';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { PermissionLevel, PrismaClient } from '@prisma/client';
 import type { DataFrame } from 'nodejs-polars';
 
+import type { ColumnsService } from '@/columns/columns.service.js';
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 import { UsersService } from '@/users/users.service.js';
@@ -18,10 +19,10 @@ const pl: typeof import('nodejs-polars').default = require('nodejs-polars');
 export class DatasetsService {
   constructor(
     @InjectModel('Dataset') private datasetModel: Model<'Dataset'>,
-    @InjectModel('TabularColumn') private columnModel: Model<'TabularColumn'>,
     @InjectModel('TabularData') private tabularDataModel: Model<'TabularData'>,
     @InjectPrismaClient() private prisma: PrismaClient,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly columnService: ColumnsService
   ) {}
 
   async addManager(datasetId: string, managerId: string, managerIdToAdd: string) {
@@ -64,30 +65,6 @@ export class DatasetsService {
       throw new ForbiddenException('Only managers can modify this dataset!');
     }
     return dataset;
-  }
-
-  async changeColumnDataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-    await this.canModifyColumn(columnId, currentUserId);
-    return await this.columnModel.update({
-      data: {
-        dataPermission: permissionLevel
-      },
-      where: {
-        id: columnId
-      }
-    });
-  }
-
-  async changeColumnMetadataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-    await this.canModifyColumn(columnId, currentUserId);
-    return await this.columnModel.update({
-      data: {
-        summaryPermission: permissionLevel
-      },
-      where: {
-        id: columnId
-      }
-    });
   }
 
   async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
@@ -176,156 +153,129 @@ export class DatasetsService {
     for (let col of df.getColumns()) {
       // create a float column
       if (col.isFloat()) {
-        await this.columnModel.create({
-          data: {
-            dataPermission: 'MANAGER',
-            floatData: col.toArray(),
-            name: col.name,
-            nullable: col.nullCount() != 0,
-            numericColumnValidation: {
-              max: col.max(),
-              min: col.min()
-            },
-            summary: {
-              count: col.len(),
-              floatSummary: {
-                max: col.max(),
-                mean: col.mean(),
-                median: col.median(),
-                min: col.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                std: col.rollingStd(col.len())[-1]
-              },
-              notNullCount: col.len() - col.nullCount()
-            },
-            summaryPermission: 'MANAGER',
-            tabularDataId: tabularData.id,
-            type: 'FLOAT'
-          }
+        this.columnService.createColumn({
+          dataPermission: 'MANAGER',
+          floatData: col.toArray(),
+          kind: 'FLOAT',
+          name: col.name,
+          nullable: col.nullCount() != 0,
+          // numericColumnValidation: {
+          //   max: col.max(),
+          //   min: col.min()
+          // },
+          summary: {
+            count: col.len(),
+            max: col.max(),
+            mean: col.mean(),
+            median: col.median(),
+            min: col.min(),
+            notNullCount: col.len() - col.nullCount(),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            std: col.rollingStd(col.len())[-1]
+          },
+          summaryPermission: 'MANAGER',
+          tabularDataId: tabularData.id
         });
         continue;
       }
 
       // create an int column
       if (col.isNumeric()) {
-        await this.columnModel.create({
-          data: {
-            dataPermission: 'MANAGER',
-            intData: col.toArray(),
-            name: col.name,
-            nullable: col.nullCount() != 0,
-            numericColumnValidation: {
-              max: col.max(),
-              min: col.min()
-            },
-            summary: {
-              count: col.len(),
-              intSummary: {
-                max: col.max(),
-                mean: col.mean(),
-                median: col.median(),
-                min: col.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                mode: col.mode()[0],
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                std: col.rollingStd(col.len())[-1]
-              },
-              notNullCount: col.len() - col.nullCount()
-            },
-            summaryPermission: 'MANAGER',
-            tabularDataId: tabularData.id,
-            type: 'INT'
-          }
+        this.columnService.createColumn({
+          dataPermission: 'MANAGER',
+          intData: col.toArray(),
+          kind: 'INT',
+          name: col.name,
+          // numericColumnValidation: {
+          //   max: col.max(),
+          //   min: col.min()
+          nullable: col.nullCount() != 0,
+          // },
+          summary: {
+            count: col.len(),
+            max: col.max(),
+            mean: col.mean(),
+            median: col.median(),
+            min: col.min(),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            mode: col.mode()[0],
+            notNullCount: col.len() - col.nullCount(),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            std: col.rollingStd(col.len())[-1]
+          },
+          summaryPermission: 'MANAGER',
+          tabularDataId: tabularData.id
         });
         continue;
       }
 
       // create a boolean column
       if (col.isBoolean()) {
-        await this.columnModel.create({
-          data: {
-            booleanData: col.toArray(),
-            dataPermission: 'MANAGER',
-            name: col.name,
-            nullable: col.nullCount() != 0,
-            summary: {
-              count: col.len(),
-              // valueCounts() function always return null.
-              // issue opened on nodejs-polars github
-              enumSummary: {
-                distribution: col.valueCounts().toJSON()
-              },
-              notNullCount: col.len() - col.nullCount()
-            },
-            summaryPermission: 'MANAGER',
-            tabularDataId: tabularData.id,
-            type: 'BOOLEAN'
-          }
+        this.columnService.createColumn({
+          dataPermission: 'MANAGER',
+          enumData: col.toArray(),
+          kind: 'ENUM',
+          name: col.name,
+          nullable: col.nullCount() != 0,
+          summary: {
+            count: col.len(),
+            // distribute needs to be a record of string: number
+            distribution: {},
+            // col.valueCounts() returns a dataframe,
+            notNullCount: col.len() - col.nullCount()
+          },
+          summaryPermission: 'MANAGER',
+          tabularDataId: tabularData.id
         });
         continue;
       }
 
       // create a datetime column
       if (col.isDateTime()) {
-        await this.columnModel.create({
-          data: {
-            dataPermission: 'MANAGER',
-            // date is represented as time difference from 1970-Jan-01
-            datetimeColumnValidation: {
-              max: new Date(),
-              min: '1970-01-01'
-            },
-            // datetime is represented as milliseconds from 1970-Jan-01 00:00:00
-            datetimeData: col.toArray(),
-            name: col.name,
-            nullable: col.nullCount() != 0,
-            summary: {
-              count: col.len(),
-              datetimeSummary: {
-                max: new Date(),
-                min: '1970-01-01'
-              },
-              notNullCount: col.len() - col.nullCount()
-            },
-            summaryPermission: 'MANAGER',
-            tabularDataId: tabularData.id,
-            type: 'DATETIME'
-          }
+        this.columnService.createColumn({
+          dataPermission: 'MANAGER',
+          // date is represented as time difference from 1970-Jan-01
+          // datetimeColumnValidation: {
+          //   max: new Date(),
+          //   min: '1970-01-01'
+          // },
+          // datetime is represented as milliseconds from 1970-Jan-01 00:00:00
+          datetimeData: col.toArray(),
+          kind: 'DATETIME',
+          name: col.name,
+          nullable: col.nullCount() != 0,
+          summary: {
+            count: col.len(),
+            max: new Date(),
+            min: new Date('1970-01-01'),
+            notNullCount: col.len() - col.nullCount()
+          },
+          summaryPermission: 'MANAGER',
+          tabularDataId: tabularData.id
         });
         continue;
       }
 
       // create a string column
-      await this.columnModel.create({
-        data: {
-          dataPermission: 'MANAGER',
-          name: col.name,
-          nullable: col.nullCount() != 0,
-          stringColumnValidation: {
-            minLength: 0
-          },
-          stringData: col.toArray(),
-          summary: {
-            count: col.len(),
-            notNullCount: col.len() - col.nullCount()
-          },
-          summaryPermission: 'MANAGER',
-          tabularDataId: tabularData.id,
-          type: 'STRING'
-        }
+      this.columnService.createColumn({
+        dataPermission: 'MANAGER',
+        kind: 'STRING',
+        name: col.name,
+        // stringColumnValidation: {
+        //   minLength: 0
+        nullable: col.nullCount() != 0,
+        // },
+        stringData: col.toArray(),
+        summary: {
+          count: col.len(),
+          notNullCount: col.len() - col.nullCount()
+        },
+        summaryPermission: 'MANAGER',
+        tabularDataId: tabularData.id
       });
     }
 
     return dataset;
-  }
-
-  async deleteColumn(columnId: string, currentUserId: string) {
-    const column = await this.canModifyColumn(columnId, currentUserId);
-    return await this.columnModel.delete({
-      where: {
-        id: column.id
-      }
-    });
   }
 
   async deleteDataset(datasetId: string, currentUserId: string) {
@@ -398,252 +348,11 @@ export class DatasetsService {
     return dataset;
   }
 
-  async mutateColumnType(columnId: string, currentUserId: string, colType: ColumnType) {
-    const col = await this.canModifyColumn(columnId, currentUserId);
-    if (col.type === colType) {
-      throw new ConflictException(
-        'Cannot change column type! Input column type is the same as the current column type!'
-      );
-    }
-    // we need to know current column datatype
-    // get the corresponding data value array and store it as a polars series
-    let data;
-    let removeFromCol;
-    switch (col.type) {
-      case 'BOOLEAN':
-        data = pl.Series(col.booleanData);
-        removeFromCol = this.columnModel.update({
-          data: {
-            booleanData: undefined,
-            enumColumnValidation: undefined,
-            summary: {
-              enumSummary: undefined
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'STRING':
-        data = pl.Series(col.stringData);
-        removeFromCol = this.columnModel.update({
-          data: {
-            stringColumnValidation: undefined,
-            stringData: undefined
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'INT':
-        data = pl.Series(col.intData);
-        removeFromCol = this.columnModel.update({
-          data: {
-            intData: undefined,
-            numericColumnValidation: undefined,
-            summary: {
-              intSummary: undefined
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'FLOAT':
-        data = pl.Series(col.floatData);
-        removeFromCol = this.columnModel.update({
-          data: {
-            floatData: undefined,
-            numericColumnValidation: undefined,
-            summary: {
-              floatSummary: undefined
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'ENUM':
-        data = pl.Series(col.enumData);
-        removeFromCol = this.columnModel.update({
-          data: {
-            enumColumnValidation: undefined,
-            enumData: undefined,
-            summary: {
-              enumSummary: undefined
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'DATETIME':
-        data = pl.Series(col.datetimeData);
-        removeFromCol = this.columnModel.update({
-          data: {
-            datetimeColumnValidation: undefined,
-            datetimeData: undefined,
-            summary: {
-              datetimeSummary: undefined
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-    }
-
-    // one more switch to do pl.series type casting .cast(type, strict = true)
-    // if the cast is passed, add new data, summary, and validation to the column
-    let addToCol;
-    switch (colType) {
-      case 'BOOLEAN':
-        data = data.cast(pl.Bool, true);
-        addToCol = this.columnModel.update({
-          data: {
-            booleanData: data.toArray(),
-            enumColumnValidation: {},
-            summary: {
-              count: data.len(),
-              // valueCounts() function always return null.
-              // issue opened on nodejs-polars github
-              // enumSummary: {
-              //   distribution: data.valueCounts().toJSON()
-              // },
-              notNullCount: data.len() - data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'STRING':
-        data = data.cast(pl.Utf8, true);
-        addToCol = this.columnModel.update({
-          data: {
-            stringColumnValidation: {
-              minLength: 0
-            },
-            stringData: data.toArray(),
-            summary: {
-              count: data.len(),
-              notNullCount: data.len() - data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'INT':
-        data = data.cast(pl.Int64, true);
-        addToCol = this.columnModel.update({
-          data: {
-            intData: data.toArray(),
-            numericColumnValidation: {
-              max: data.max(),
-              min: data.min()
-            },
-            summary: {
-              count: data.len(),
-              intSummary: {
-                max: data.max(),
-                mean: data.mean(),
-                median: data.median(),
-                min: data.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                mode: data.mode()[0],
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                std: data.rollingStd(data.len())[-1]
-              },
-              notNullCount: data.len() - data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'FLOAT':
-        data = data.cast(pl.Float64, true);
-        addToCol = this.columnModel.update({
-          data: {
-            floatData: data.toArray(),
-            numericColumnValidation: {
-              max: data.max(),
-              min: data.min()
-            },
-            summary: {
-              count: data.len(),
-              floatSummary: {
-                max: data.max(),
-                mean: data.mean(),
-                median: data.median(),
-                min: data.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                std: data.rollingStd(data.len())[-1]
-              },
-              notNullCount: data.len() - data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'ENUM':
-        data = data.cast(pl.Utf8, true);
-        addToCol = this.columnModel.update({
-          data: {
-            enumData: data.toArray(),
-            summary: {
-              count: data.len(),
-              // valueCounts() function always return null.
-              // issue opened on nodejs-polars github
-              // enumSummary: {
-              //   distribution: data.valueCounts().toJSON()
-              // },
-              notNullCount: data.len() - data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'DATETIME':
-        data = data.cast(pl.Date, true);
-        addToCol = this.columnModel.update({
-          data: {
-            datetimeColumnValidation: {
-              max: new Date(),
-              min: '1970-01-01'
-            },
-            datetimeData: data.toArray(),
-            summary: {
-              count: data.len(),
-              datetimeSummary: {
-                max: new Date(),
-                min: '1970-01-01'
-              },
-              notNullCount: data.len() - data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-    }
-
-    return (await this.prisma.$transaction([removeFromCol, addToCol])) as unknown[];
+  getDatasetView() {
+    // get the dataset including the tabular data
+    // get a set of columns based on the tabular data id and column names
+    // call the getColumnView function for each column?
+    // return the view of the dataset
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
@@ -690,50 +399,6 @@ export class DatasetsService {
       }
     });
     return await this.prisma.$transaction([updateDataset]);
-  }
-
-  async toggleColumnNullable(columnId: string, currentUserId: string) {
-    const col = await this.canModifyColumn(columnId, currentUserId);
-
-    if (col.nullable && col.summary.notNullCount !== col.summary.count) {
-      throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
-    }
-
-    const updateColumnNullable = this.columnModel.update({
-      data: {
-        nullable: !col.nullable
-      },
-      where: {
-        id: columnId
-      }
-    });
-
-    return await this.prisma.$transaction([updateColumnNullable]);
-  }
-
-  private async canModifyColumn(columnId: string, currentUserId: string) {
-    const col = await this.columnModel.findUnique({
-      where: {
-        id: columnId
-      }
-    });
-    if (!col) {
-      throw new NotFoundException();
-    }
-
-    const tabularData = await this.tabularDataModel.findUnique({
-      where: {
-        id: col.tabularDataId
-      }
-    });
-    if (!tabularData) {
-      throw new NotFoundException();
-    }
-
-    if (!(await this.canModifyDataset(tabularData.datasetId, currentUserId))) {
-      throw new ForbiddenException('Only managers can modify this dataset!');
-    }
-    return col;
   }
 
   private primaryKeyCheck(primaryKeys: string[], df: DataFrame): boolean {

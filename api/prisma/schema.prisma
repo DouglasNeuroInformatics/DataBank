@@ -95,7 +95,7 @@ model TabularColumn {
   id                       String                    @id @default(auto()) @map("_id") @db.ObjectId
   name                     String
   description              String?
-  type                     ColumnType
+  kind                     ColumnType
   nullable                 Boolean
   summaryPermission        PermissionLevel
   summary                  ColumnSummary

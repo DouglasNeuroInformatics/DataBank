@@ -15,7 +15,7 @@ export class ProjectsService {
     @InjectPrismaClient() private prisma: PrismaClient
   ) {}
 
-  async addDatasetToProject(currentUserId: string, projectId: string, projectDatasetDto: ProjectDatasetDto) {
+  async addDataset(currentUserId: string, projectId: string, projectDatasetDto: ProjectDatasetDto) {
     if (!this.isProjectManager(currentUserId, projectId)) {
       throw new ForbiddenException('Only project managers can add new dataset!');
     }
@@ -28,10 +28,12 @@ export class ProjectsService {
 
     const projectDatasets = project.datasets;
     projectDatasets.push(projectDatasetDto);
-    return await this.updateProject(currentUserId, projectId, {});
+    return await this.updateProject(currentUserId, projectId, {
+      datasets: projectDatasets
+    });
   }
 
-  async addUserToProject(currentUserId: string, projectId: string, newUserId: string) {
+  async addUser(currentUserId: string, projectId: string, newUserId: string) {
     if (!this.isProjectManager(currentUserId, projectId)) {
       throw new ForbiddenException('Only project managers can add new users!');
     }
@@ -49,6 +51,10 @@ export class ProjectsService {
       userIds: userIdsArray
     });
   }
+
+  // quitProject(currentUserId: string, projectId: string) {
+  //   // cannot quit project if there is no other managers for some remaining dataset in the project
+  // }
 
   async createProject(currentUserId: string, createProjectDto: CreateProjectDto) {
     if (!this.usersService.isOwnerOfDatasets(currentUserId)) {
@@ -103,6 +109,25 @@ export class ProjectsService {
     }
 
     return project;
+  }
+
+  async removeUser(currentUserId: string, projectId: string, userIdToRemove: string) {
+    if (!this.isProjectManager(currentUserId, projectId)) {
+      throw new ForbiddenException('Only project managers can remove users!');
+    }
+
+    const project = await this.getProjectById(currentUserId, projectId);
+
+    if (!project) {
+      throw new NotFoundException('Project Not Found!');
+    }
+
+    const userIdsArray = project.userIds;
+    const newUserIdsArray = userIdsArray.filter((x) => x !== userIdToRemove);
+
+    return await this.updateProject(currentUserId, projectId, {
+      userIds: newUserIdsArray
+    });
   }
 
   async updateProject(currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {

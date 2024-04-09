@@ -14,11 +14,11 @@ export class ProjectsController {
     projectId: string,
     projectDatasetDto: ProjectDatasetDto
   ) {
-    return this.projectsService.addDatasetToProject(currentUserId, projectId, projectDatasetDto);
+    return this.projectsService.addDataset(currentUserId, projectId, projectDatasetDto);
   }
 
   addUserToProject(@CurrentUser('id') currentUserId: string, projectId: string, newUserId: string) {
-    return this.projectsService.addUserToProject(currentUserId, projectId, newUserId);
+    return this.projectsService.addUser(currentUserId, projectId, newUserId);
   }
 
   createProject(@CurrentUser('id') currentUserId: string, createProjectDto: CreateProjectDto) {
