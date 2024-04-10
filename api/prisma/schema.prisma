@@ -223,7 +223,8 @@ model Project {
 }
 
 type ProjectDataset {
-  // datatypeFilters DatatypeFilters[]
+  // useDataTypeFilter Boolean
+  // dataTypeFilters ColumnType[]
   datasetId       String
   useColumnFilter Boolean
   columns         ProjectColumn[]

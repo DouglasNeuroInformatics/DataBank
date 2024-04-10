@@ -72,7 +72,11 @@ export class ColumnsService {
     // check if the current user is the manager of this dataset
     const tabularData = await this.tabularDataModel.findUnique({
       include: {
-        columns: true
+        columns: {
+          where: {
+            id: { in: ['a', 'b'] }
+          }
+        }
       },
       where: {
         id: tabularDataId

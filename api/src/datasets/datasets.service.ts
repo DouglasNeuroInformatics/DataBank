@@ -119,7 +119,7 @@ export class DatasetsService {
     df = pl.readCSV(csvString, { tryParseDates: true });
 
     // for datasets without primary keys, generate a sequential id column
-    if (createTabularDatasetDto.primaryKeys.length == 0) {
+    if (createTabularDatasetDto.primaryKeys.length === 0) {
       const indexArray = [];
       for (let i = 0; i < df.shape.height; i++) {
         indexArray.push(i);
