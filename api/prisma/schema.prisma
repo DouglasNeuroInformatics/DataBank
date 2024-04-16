@@ -223,17 +223,22 @@ model Project {
 }
 
 type ProjectDataset {
-  // useDataTypeFilter Boolean
-  // dataTypeFilters ColumnType[]
-  datasetId       String
-  useColumnFilter Boolean
-  columns         ProjectColumn[]
+  useRowFilter      Boolean
+  useDataTypeFilter Boolean
+  rowFilter         ProjectRowFilter?
+  dataTypeFilters   ColumnType[]
+  datasetId         String
+  useColumnFilter   Boolean
+  columns           ProjectColumn[]
+}
+
+type ProjectRowFilter {
+  rowMin Int
+  rowMax Int?
 }
 
 type ProjectColumn {
   columnId String
-  rowMin   Int?
-  rowMax   Int?
   hash     ProjectColumnHash?
   trim     ProjectColumnTrim?
 }

@@ -52,3 +52,8 @@ const $CreateTabularDatasetDto = $DatasetInfo
   });
 
 export type CreateTabularDatasetDto = z.infer<typeof $CreateTabularDatasetDto>;
+
+const $GetDataViewDto = z.object({
+  datasetId: z.string()
+});
+export type GetDataViewDto = z.infer<typeof $GetDataViewDto>;

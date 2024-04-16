@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
+import type { DatasetsService } from '@/datasets/datasets.service';
 import type { Model } from '@/prisma/prisma.types';
 import type { UsersService } from '@/users/users.service';
 
@@ -10,7 +11,8 @@ import type { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './zo
 export class ProjectsService {
   constructor(
     @InjectModel('Project') private readonly projectModel: Model<'Project'>,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly datasetService: DatasetsService
   ) {}
 
   async addDataset(currentUserId: string, projectId: string, projectDatasetDto: ProjectDatasetDto) {
@@ -103,6 +105,10 @@ export class ProjectsService {
     }
 
     return project;
+  }
+
+  async getProjectDataset(currentUserId: string, projectDatasetDto: ProjectDatasetDto) {
+    return await this.datasetService.getDatasetView(currentUserId, projectDatasetDto);
   }
 
   async removeDataset(currentUserId: string, projectId: string, datasetId: string) {

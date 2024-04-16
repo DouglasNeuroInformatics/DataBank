@@ -13,18 +13,8 @@ export class TabularDataService {
   create(createTabularDataDto: string) {}
 
   // delete tabular dataset
-  async deleteById(tabularDataId: string) {
-    const tabularData = await this.tabularDataModel.findUnique({
-      where: {
-        id: tabularDataId
-      }
-    });
-
-    if (!tabularData) {
-      throw new NotFoundException('Cannot find tabular data!');
-    }
-
-    return await this.tabularDataModel.delete({
+  deleteById(tabularDataId: string) {
+    return this.tabularDataModel.delete({
       where: {
         id: tabularDataId
       }

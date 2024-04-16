@@ -13,16 +13,22 @@ const $ProjectColumnTrim = z.object({
 const $ProjectColumn = z.object({
   columnId: z.string(),
   hash: $ProjectColumnHash.nullable(),
-  rowMax: z.number().int().nullable(),
-  rowMin: z.number().int().nullable(),
   trim: $ProjectColumnTrim.nullable()
+});
+
+const $ProjectRowFilter = z.object({
+  rowMax: z.number().int().nullable(),
+  rowMin: z.number().int().gte(0)
 });
 
 const $ProjectDataset = z.object({
   columns: $ProjectColumn.array(),
-  // datatypeFilters DatatypeFilters[]
+  dataTypeFilters: z.enum(['INT', 'FLOAT', 'STRING', 'ENUM', 'DATETIME', 'BOOLEAN']).array(),
   datasetId: z.string(),
-  useColumnFilter: z.boolean()
+  rowFilter: $ProjectRowFilter.nullable(),
+  useColumnFilter: z.boolean(),
+  useDataTypeFilter: z.boolean(),
+  useRowFilter: z.boolean()
 });
 
 export type ProjectDatasetDto = z.infer<typeof $ProjectDataset>;

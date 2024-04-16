@@ -7,6 +7,8 @@ import type { DataFrame } from 'nodejs-polars';
 import type { ColumnsService } from '@/columns/columns.service.js';
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
+import type { ProjectDatasetDto } from '@/projects/zod/projects.js';
+import type { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 
 import type { CreateTabularDatasetDto } from './zod/dataset.js';
@@ -19,10 +21,10 @@ const pl: typeof import('nodejs-polars').default = require('nodejs-polars');
 export class DatasetsService {
   constructor(
     @InjectModel('Dataset') private datasetModel: Model<'Dataset'>,
-    @InjectModel('TabularData') private tabularDataModel: Model<'TabularData'>,
     @InjectPrismaClient() private prisma: PrismaClient,
     private readonly usersService: UsersService,
-    private readonly columnService: ColumnsService
+    private readonly columnService: ColumnsService,
+    private readonly tabularDataService: TabularDataService
   ) {}
 
   async addManager(datasetId: string, managerId: string, managerIdToAdd: string) {
@@ -54,6 +56,9 @@ export class DatasetsService {
 
   async canModifyDataset(datasetId: string, currentUserId: string) {
     const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: true
+      },
       where: {
         id: datasetId
       }
@@ -69,20 +74,14 @@ export class DatasetsService {
 
   async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
     const dataset = await this.canModifyDataset(datasetId, currentUserId);
-    const tabularData = await this.tabularDataModel.findUniqueOrThrow({
-      where: {
-        datasetId: dataset.id
-      }
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return await this.columnService.updateMany(dataset.tabularData.id, {
+      dataPermission: permissionLevel
     });
-    const updateColumns = await this.columnModel.updateMany({
-      data: {
-        dataPermission: permissionLevel
-      },
-      where: {
-        tabularDataId: tabularData.id
-      }
-    });
-    return updateColumns;
   }
 
   async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
@@ -281,17 +280,13 @@ export class DatasetsService {
   async deleteDataset(datasetId: string, currentUserId: string) {
     const dataset = await this.canModifyDataset(datasetId, currentUserId);
 
-    const deleteTabularData = this.tabularDataModel.delete({
-      where: {
-        datasetId: dataset.id
-      }
-    });
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
 
-    const deleteColumns = this.columnModel.deleteMany({
-      where: {
-        tabularDataId: (await deleteTabularData).id
-      }
-    });
+    const deleteTabularData = this.tabularDataService.deleteById(dataset.tabularData.id);
+
+    const deleteColumns = this.columnService.deleteByTabularDataId(dataset.tabularData.id);
 
     const deleteTargetDataset = this.datasetModel.delete({
       where: {
@@ -313,7 +308,7 @@ export class DatasetsService {
       );
     }
 
-    return await this.prisma.$transaction([deleteTabularData, deleteColumns, ...updateManagers, deleteTargetDataset]);
+    return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
   }
 
   async getAvailable(currentUserId: string) {
@@ -348,7 +343,36 @@ export class DatasetsService {
     return dataset;
   }
 
-  getDatasetView() {
+  async getDatasetView(currentUserId: string, projectDatasetDto: ProjectDatasetDto) {
+    // if currentUser cannot modify dataset, return dataset view
+    const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: {
+          include: {
+            columns: true
+          }
+        }
+      },
+      where: {
+        id: projectDatasetDto.datasetId
+      }
+    });
+
+    if (!dataset) {
+      throw new NotFoundException(`Cannot find dataset with id ${projectDatasetDto.datasetId}`);
+    }
+
+    if (!(currentUserId in dataset.managerIds)) {
+      // replace the tabular data section according to the rule
+      // row range should be handled in the tabular data level
+      // data type filter should be handled in the tabular data level
+      // intra-column data hashing and trimming should be handled by the column service
+      const tabularDataView = await this.tabularDataService;
+      return 'THE DATASET VIEW';
+    }
+
+    return dataset;
+    // if currentUser can modify dataset, return ???
     // get the dataset including the tabular data
     // get a set of columns based on the tabular data id and column names
     // call the getColumnView function for each column?

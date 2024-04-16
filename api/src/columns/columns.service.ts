@@ -57,35 +57,24 @@ export class ColumnsService {
     });
   }
 
-  async deleteByTabularDataId(tabularDataId: string, currentUserId: string) {
-    // check to see if can modify dataset
-    const columnsToDelete = await this.columnModel.findMany({
-      where: {
-        tabularDataId
-      }
-    });
-
-    if (columnsToDelete.length === 0) {
-      throw new NotFoundException('Columns Not Found!');
-    }
-
+  deleteByTabularDataId(tabularDataId: string) {
     // check if the current user is the manager of this dataset
-    const tabularData = await this.tabularDataModel.findUnique({
-      include: {
-        columns: {
-          where: {
-            id: { in: ['a', 'b'] }
-          }
-        }
-      },
-      where: {
-        id: tabularDataId
-      }
-    });
+    // const tabularData = await this.tabularDataModel.findUnique({
+    //   include: {
+    //     columns: {
+    //       where: {
+    //         id: { in: ['a', 'b'] }
+    //       }
+    //     }
+    //   },
+    //   where: {
+    //     id: tabularDataId
+    //   }
+    // });
 
-    tabularData?.columns;
+    // tabularData?.columns;
 
-    return await this.columnModel.delete({
+    return this.columnModel.delete({
       where: {
         tabularDataId: tabularDataId
       }
