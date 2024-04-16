@@ -1,7 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { PrismaClient } from '@prisma/client';
 
-import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
+import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 import type { UsersService } from '@/users/users.service';
 
@@ -11,8 +10,7 @@ import type { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './zo
 export class ProjectsService {
   constructor(
     @InjectModel('Project') private readonly projectModel: Model<'Project'>,
-    private readonly usersService: UsersService,
-    @InjectPrismaClient() private prisma: PrismaClient
+    private readonly usersService: UsersService
   ) {}
 
   async addDataset(currentUserId: string, projectId: string, projectDatasetDto: ProjectDatasetDto) {
@@ -52,10 +50,6 @@ export class ProjectsService {
     });
   }
 
-  // quitProject(currentUserId: string, projectId: string) {
-  //   // cannot quit project if there is no other managers for some remaining dataset in the project
-  // }
-
   async createProject(currentUserId: string, createProjectDto: CreateProjectDto) {
     if (!this.usersService.isOwnerOfDatasets(currentUserId)) {
       throw new ForbiddenException('Only dataset owners can create project!');
@@ -75,13 +69,13 @@ export class ProjectsService {
       throw new ForbiddenException('The current user has no right to delete this project!');
     }
 
-    const deletaProject = this.projectModel.delete({
+    const deletedProject = await this.projectModel.delete({
       where: {
         id: projectId
       }
     });
 
-    return await this.prisma.$transaction([deletaProject]);
+    return deletedProject;
   }
 
   async getAllProjects(currentUserId: string) {
@@ -104,11 +98,23 @@ export class ProjectsService {
       }
     });
 
-    if (!project) {
+    if (!project || !(currentUserId in project.userIds)) {
       throw new NotFoundException(`Cannot find project with id ${projectId}`);
     }
 
     return project;
+  }
+
+  async removeDataset(currentUserId: string, projectId: string, datasetId: string) {
+    if (!this.isProjectManager(currentUserId, projectId)) {
+      throw new ForbiddenException('Only project managers can remove dataset!');
+    }
+
+    const project = await this.getProjectById(currentUserId, projectId);
+
+    const newProjectDatasets = project.datasets.filter((x) => x.datasetId !== datasetId);
+
+    return await this.updateProject(currentUserId, projectId, { datasets: newProjectDatasets });
   }
 
   async removeUser(currentUserId: string, projectId: string, userIdToRemove: string) {
@@ -136,13 +142,13 @@ export class ProjectsService {
       throw new ForbiddenException('The current user has no right to manipulate this project!');
     }
 
-    const updateProject = this.projectModel.update({
+    const updateProject = await this.projectModel.update({
       data: updateProjectDto,
       where: {
         id: projectId
       }
     });
-    return await this.prisma.$transaction([updateProject]);
+    return updateProject;
   }
 
   private async isProjectManager(currentUserId: string, projectId: string) {
