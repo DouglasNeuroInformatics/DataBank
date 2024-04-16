@@ -36,12 +36,6 @@ export class DatasetsController {
     return this.datasetsService.createDataset(createTabularDatasetDto, file, managerId);
   }
 
-  @Delete(':id/:column')
-  @RouteAccess({ role: 'STANDARD' })
-  deleteColumn(@Param('column') columnId: string, @CurrentUser('id') currentUserId: string) {
-    return this.datasetsService.deleteColumn(columnId, currentUserId);
-  }
-
   @Delete(':id')
   @RouteAccess({ role: 'STANDARD' })
   deleteDataset(@Param('id', ParseObjectIdPipe) datasetId: string, @CurrentUser('id') currentUserId: string) {
@@ -72,19 +66,19 @@ export class DatasetsController {
     return this.datasetsService.removeManager(datasetId, managerId, managerIdToRemove);
   }
 
-  // @Patch(':id/:column')
-  // @RouteAccess({ role: 'STANDARD' })
-  // updateColumn(
-  //   @Body() dto: UpdateDatasetColumnDto,
-  //   @Param('id', ParseIdPipe) id: ObjectId,
-  //   @Param('column') column?: string
-  // ) {
-  //   return this.datasetsService.updateColumn(dto, id, column);
-  // }
-
   @Patch('manageDataset/share')
   @RouteAccess({ role: 'STANDARD' })
   setReadyToShare(@Param('id') datasetId: string, @CurrentUser('id') managerId: string) {
     return this.datasetsService.setReadyToShare(datasetId, managerId);
+  }
+
+  @Patch(':id/:column')
+  @RouteAccess({ role: 'STANDARD' })
+  updateColumn(
+    @Body() dto: UpdateDatasetColumnDto,
+    @Param('id', ParseIdPipe) id: ObjectId,
+    @Param('column') column?: string
+  ) {
+    return this.datasetsService.updateColumn(dto, id, column);
   }
 }
