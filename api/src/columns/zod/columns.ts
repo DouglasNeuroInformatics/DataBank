@@ -149,6 +149,13 @@ const $DatetimeColumn = $TabularColumnInfo.extend({
 });
 type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
 
+const $BooleanColumn = $TabularColumnInfo.extend({
+  booleanData: z.boolean().array(),
+  kind: z.literal('BOOLEAN'),
+  summary: $DatetimeSummary
+});
+type BooleanColumn = z.infer<typeof $BooleanColumn>;
+
 const $CreateDatetimeColumnDto = $DatetimeColumn.omit({
   id: true
 });
@@ -161,9 +168,10 @@ export const $TabularColumn = z.union([
   $IntColumn,
   $FloatColumn,
   $EnumColumn,
-  $DatetimeColumn
+  $DatetimeColumn,
+  $BooleanColumn
 ]) satisfies z.ZodType<TabularColumn>;
-export type TabularColumn = DatetimeColumn | EnumColumn | FloatColumn | IntColumn | StringColumn;
+export type TabularColumn = BooleanColumn | DatetimeColumn | EnumColumn | FloatColumn | IntColumn | StringColumn;
 
 export const $CreateTabularColumnDto = z.union([
   $CreateStringColumnDto,

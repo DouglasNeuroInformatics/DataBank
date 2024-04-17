@@ -42,7 +42,7 @@ export class ColumnsService {
     });
   }
 
-  async createColumn(tabularColumn: CreateTabularColumnDto) {
+  async create(tabularColumn: CreateTabularColumnDto) {
     return await this.columnModel.create({
       data: tabularColumn
     });
@@ -83,7 +83,7 @@ export class ColumnsService {
 
   async mutateColumnType(columnId: string, currentUserId: string, colType: ColumnType) {
     const col = await this.canModifyColumn(columnId, currentUserId);
-    if (col.type === colType) {
+    if (col.kind === colType) {
       throw new ConflictException(
         'Cannot change column type! Input column type is the same as the current column type!'
       );
@@ -92,7 +92,7 @@ export class ColumnsService {
     // get the corresponding data value array and store it as a polars series
     let data;
     let removeFromCol;
-    switch (col.type) {
+    switch (col.kind) {
       case 'BOOLEAN':
         data = pl.Series(col.booleanData);
         removeFromCol = this.columnModel.update({
