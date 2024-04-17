@@ -86,20 +86,14 @@ export class DatasetsService {
 
   async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
     const dataset = await this.canModifyDataset(datasetId, currentUserId);
-    const tabularData = await this.tabularDataModel.findUniqueOrThrow({
-      where: {
-        datasetId: dataset.id
-      }
-    });
-    const updateColumns = await this.columnModel.updateMany({
-      data: {
-        summaryPermission: permissionLevel
-      },
-      where: {
-        tabularDataId: tabularData.id
-      }
-    });
-    return updateColumns;
+    if (!dataset) {
+      throw new ForbiddenException(`The current user is not allowed to modify the dataset with id ${datasetId}`);
+    }
+    return await this.tabularDataService.changeTabularColumnsMetadataPermission(
+      datasetId,
+      currentUserId,
+      permissionLevel
+    );
   }
 
   async createDataset(
@@ -127,14 +121,9 @@ export class DatasetsService {
       }
     });
 
-    const tabularData = await this.tabularDataService.create(df, dataset.id, createTabularDatasetDto.primaryKeys);
+    await this.tabularDataService.create(df, dataset.id, createTabularDatasetDto.primaryKeys);
 
-    return await this.datasetModel.update({
-      data: {},
-      where: {
-        id: dataset.id
-      }
-    });
+    return dataset;
   }
 
   async deleteDataset(datasetId: string, currentUserId: string) {

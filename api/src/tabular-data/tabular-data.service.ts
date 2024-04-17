@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import type { PermissionLevel } from '@prisma/client';
 import { type DataFrame, pl } from 'nodejs-polars';
 
 import type { ColumnsService } from '@/columns/columns.service';
@@ -13,6 +14,30 @@ export class TabularDataService {
     @InjectModel('TabularData') private readonly tabularDataModel: Model<'TabularData'>,
     private readonly columnsService: ColumnsService
   ) {}
+
+  async changeTabularColumnsMetadataPermission(
+    datasetId: string,
+    currentUserId: string,
+    permissionLevel: PermissionLevel
+  ) {
+    const tabularData = await this.tabularDataModel.findUnique({
+      include: {
+        columns: true
+      },
+      where: {
+        datasetId
+      }
+    });
+    if (!tabularData) {
+      throw new NotFoundException(`Cannot find tabular with dataset id ${datasetId}`);
+    }
+
+    for (let col of tabularData.columns) {
+      await this.columnsService.changeColumnMetadataPermission(col.id, currentUserId, permissionLevel);
+    }
+
+    return tabularData;
+  }
 
   // create tabular dataset
   async create(df: DataFrame, datasetId: string, primaryKeys: string[]) {
@@ -165,7 +190,6 @@ export class TabularDataService {
 
     return tabularData;
   }
-
   // delete tabular dataset
   deleteById(tabularDataId: string) {
     return this.tabularDataModel.delete({
@@ -207,6 +231,7 @@ export class TabularDataService {
       throw new NotFoundException(`Cannot find tabular data with id ${getTabularDataViewDto.tabularDataId}`);
     }
   }
+
   // update Primary keys for a tabular column
   async updatePrimaryKeys(tabularDataId: string, updatePrimaryKeysDto: UpdatePrimaryKeysDto) {
     return await this.tabularDataModel.update({

@@ -12,8 +12,8 @@ import { I18nModule } from './i18n/i18n.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { ProjectsModule } from './projects/projects.module';
 import { SetupModule } from './setup/setup.module.js';
-import { UsersModule } from './users/users.module.js';
 import { TabularDataModule } from './tabular-data/tabular-data.module';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [

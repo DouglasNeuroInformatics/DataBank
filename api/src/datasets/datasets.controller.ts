@@ -72,13 +72,13 @@ export class DatasetsController {
     return this.datasetsService.setReadyToShare(datasetId, managerId);
   }
 
-  @Patch(':id/:column')
-  @RouteAccess({ role: 'STANDARD' })
-  updateColumn(
-    @Body() dto: UpdateDatasetColumnDto,
-    @Param('id', ParseIdPipe) id: ObjectId,
-    @Param('column') column?: string
-  ) {
-    return this.datasetsService.updateColumn(dto, id, column);
-  }
+  // @Patch(':id/:column')
+  // @RouteAccess({ role: 'STANDARD' })
+  // updateColumn(
+  //   @Body() dto: UpdateDatasetColumnDto,
+  //   @Param('id', ParseIdPipe) id: ObjectId,
+  //   @Param('column') column?: string
+  // ) {
+  //   return this.datasetsService.updateColumn(dto, id, column);
+  // }
 }
