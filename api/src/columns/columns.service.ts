@@ -1,11 +1,12 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { ColumnType, PermissionLevel } from '@prisma/client';
 import type { PrismaClient } from '@prisma/client/extension';
-import pl from 'nodejs-polars';
+import pl, { Series } from 'nodejs-polars';
 
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { DatasetsService } from '@/datasets/datasets.service';
 import type { Model } from '@/prisma/prisma.types';
+import type { GetColumnViewDto } from '@/projects/zod/projects';
 
 import type { CreateTabularColumnDto, UpdateTabularColumnDto } from './zod/columns';
 
@@ -58,27 +59,159 @@ export class ColumnsService {
   }
 
   deleteByTabularDataId(tabularDataId: string) {
-    // check if the current user is the manager of this dataset
-    // const tabularData = await this.tabularDataModel.findUnique({
-    //   include: {
-    //     columns: {
-    //       where: {
-    //         id: { in: ['a', 'b'] }
-    //       }
-    //     }
-    //   },
-    //   where: {
-    //     id: tabularDataId
-    //   }
-    // });
-
-    // tabularData?.columns;
-
     return this.columnModel.delete({
       where: {
         tabularDataId: tabularDataId
       }
     });
+  }
+
+  async getById(columnId: string) {
+    const column = await this.columnModel.findUnique({
+      where: {
+        id: columnId
+      }
+    });
+
+    if (!column) {
+      throw new NotFoundException();
+    }
+    return column;
+  }
+
+  async getColumnView(getColumnViewDto: GetColumnViewDto) {
+    const columnView = await this.getById(getColumnViewDto.columnId);
+
+    // store column data in a polars series according to the type
+    let currSeries: Series;
+    switch (columnView.kind) {
+      case 'BOOLEAN':
+        currSeries = pl.Series(columnView.booleanData);
+        break;
+      case 'STRING':
+        currSeries = pl.Series(columnView.stringData);
+        break;
+      case 'INT':
+        currSeries = pl.Series(columnView.intData);
+        break;
+      case 'FLOAT':
+        currSeries = pl.Series(columnView.floatData);
+        break;
+      case 'ENUM':
+        currSeries = pl.Series(columnView.enumData);
+        break;
+      case 'DATETIME':
+        currSeries = pl.Series(columnView.datetimeData);
+        break;
+    }
+
+    // check if there is a row max bound
+    if (getColumnViewDto.rowMax) {
+      currSeries.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax - getColumnViewDto.rowMin);
+    } else {
+      currSeries.slice(getColumnViewDto.rowMin);
+    }
+
+    // check for hash, do the hashing
+    if (getColumnViewDto.hash) {
+      // do the hashing, will result in a UInt64 series
+      currSeries.hash();
+      // cast into a string series
+      currSeries.cast(pl.String);
+      // if(getColumnViewDto.hash.length) {series.str.slice(0, length)}
+    } else if (getColumnViewDto.trim && columnView.kind === 'STRING') {
+      // trim the string in each cell of a string column (should trim columns of other data types)
+      // the slice function takes two parameters: offset and length (optional)
+      currSeries.str.slice(
+        getColumnViewDto.trim.start ?? 0,
+        getColumnViewDto.trim.end ? getColumnViewDto.trim.end - (getColumnViewDto.trim.start ?? 0) : undefined
+      );
+    }
+    // recalculate the summary for the column
+    switch (columnView.kind) {
+      case 'BOOLEAN':
+        columnView.summary = {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: {
+            distribution: currSeries.valueCounts().toJSON()
+          },
+          floatSummary: null,
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+        break;
+      case 'STRING':
+        columnView.summary = {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: null,
+          floatSummary: null,
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+        break;
+      case 'INT':
+        columnView.summary = {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: null,
+          floatSummary: null,
+          intSummary: {
+            max: currSeries.max(),
+            mean: currSeries.mean(),
+            median: currSeries.median(),
+            min: currSeries.min(),
+            mode: currSeries.mode()[0],
+            std: currSeries.rollingStd(currSeries.len())[-1]
+          },
+          notNullCount: currSeries.nullCount()
+        };
+        break;
+      case 'FLOAT':
+        columnView.summary = {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: null,
+          floatSummary: {
+            max: currSeries.max(),
+            mean: currSeries.mean(),
+            median: currSeries.median(),
+            min: currSeries.min(),
+            std: currSeries.rollingStd(currSeries.len())[-1]
+          },
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+        break;
+      case 'ENUM':
+        columnView.summary = {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: {
+            distribution: currSeries.valueCounts().toJSON()
+          },
+          floatSummary: null,
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+        break;
+      case 'DATETIME':
+        columnView.summary = {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: {
+            max: new Date(),
+            min: new Date('1970-01-01')
+          },
+          enumSummary: null,
+          floatSummary: null,
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+        break;
+    }
+
+    return columnView;
   }
 
   async mutateColumnType(columnId: string, currentUserId: string, colType: ColumnType) {
@@ -348,8 +481,6 @@ export class ColumnsService {
     return await this.prisma.$transaction([updateColumnNullable]);
   }
 
-  updateColumn() {}
-
   async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumnDto) {
     return await this.columnModel.update({
       data: updateColumnDto,
@@ -358,15 +489,6 @@ export class ColumnsService {
       }
     });
   }
-
-  // TODO: implement this method
-  // async getColumnView() {
-  //   // On the column data array:
-  //   // check for hash, do the hashing
-  //   // check for trim, do the trim
-
-  //   // recalculate the summary for the column
-  // }
 
   private async canModifyColumn(columnId: string, currentUserId: string) {
     const col = await this.columnModel.findUnique({

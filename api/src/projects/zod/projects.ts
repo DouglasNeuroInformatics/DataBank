@@ -18,7 +18,7 @@ const $ProjectColumn = z.object({
 
 const $ProjectRowFilter = z.object({
   rowMax: z.number().int().nullable(),
-  rowMin: z.number().int().gte(0)
+  rowMin: z.number().int().gte(0).default(0)
 });
 
 const $ProjectDataset = z.object({
@@ -48,3 +48,6 @@ export type CreateProjectDto = z.infer<typeof $CreateProjectDto>;
 
 const $UpdateProjectDto = $CreateProjectDto.partial();
 export type UpdateProjectDto = z.infer<typeof $UpdateProjectDto>;
+
+const $GetColumnViewDto = $ProjectColumn.merge($ProjectRowFilter);
+export type GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;

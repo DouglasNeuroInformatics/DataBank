@@ -1,12 +1,13 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { PermissionLevel } from '@prisma/client';
+import type { PermissionLevel, TabularColumn } from '@prisma/client';
 import { type DataFrame, pl } from 'nodejs-polars';
 
 import type { ColumnsService } from '@/columns/columns.service';
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
+import type { GetColumnViewDto, ProjectDatasetDto } from '@/projects/zod/projects';
 
-import type { GetTabularDataViewDto, UpdatePrimaryKeysDto } from './zod/tabular-data';
+import type { UpdatePrimaryKeysDto } from './zod/tabular-data';
 
 @Injectable()
 export class TabularDataService {
@@ -211,25 +212,46 @@ export class TabularDataService {
 
     return tabularData;
   }
-  // getTabularDataView
-  async getViewById(getTabularDataViewDto: GetTabularDataViewDto) {
-    // get view dto should contain a list of columns
+
+  async getViewById(projectDatasetDto: ProjectDatasetDto) {
+    const columnIds: string[] = [];
+    const columnsView: TabularColumn[] = [];
+    for (let col of projectDatasetDto.columns) {
+      columnIds.push(col.columnId);
+      const getColumnViewDto: GetColumnViewDto = {
+        ...col,
+        rowMax: projectDatasetDto.rowFilter ? projectDatasetDto.rowFilter.rowMax : null,
+        rowMin: projectDatasetDto.rowFilter ? projectDatasetDto.rowFilter.rowMin : 0
+      };
+      const currColumnView = await this.columnsService.getColumnView(getColumnViewDto);
+      // 2. need to handle column type filter HANDLE HERE, throw an error if there is a conflict between the column ID and the type filter
+      if (!projectDatasetDto.useDataTypeFilter || currColumnView.kind in projectDatasetDto.dataTypeFilters) {
+        columnsView.push(currColumnView);
+      } else {
+        continue;
+      }
+    }
+
     const tabularData = await this.tabularDataModel.findUnique({
       include: {
         columns: {
           where: {
-            id: { in: getTabularDataViewDto.columnIds }
+            id: { in: columnIds }
           }
         }
       },
       where: {
-        id: getTabularDataViewDto.tabularDataId
+        datasetId: projectDatasetDto.datasetId
       }
     });
 
     if (!tabularData) {
-      throw new NotFoundException(`Cannot find tabular data with id ${getTabularDataViewDto.tabularDataId}`);
+      throw new NotFoundException(`Cannot find tabular data with id ${projectDatasetDto.datasetId}`);
     }
+
+    tabularData.columns = columnsView;
+
+    return tabularData;
   }
 
   // update Primary keys for a tabular column

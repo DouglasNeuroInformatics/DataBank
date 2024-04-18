@@ -211,21 +211,13 @@ export class DatasetsService {
       throw new NotFoundException(`Cannot find dataset with id ${projectDatasetDto.datasetId}`);
     }
 
-    if (!(currentUserId in dataset.managerIds)) {
-      // replace the tabular data section according to the rule
-      // row range should be handled in the tabular data level
-      // data type filter should be handled in the tabular data level
-      // intra-column data hashing and trimming should be handled by the column service
-      // const tabularDataView = await this.tabularDataService;
-      return 'THE DATASET VIEW';
+    if (currentUserId in dataset.managerIds) {
+      return dataset;
     }
 
+    const tabularDataView = await this.tabularDataService.getViewById(projectDatasetDto);
+    dataset.tabularData = tabularDataView;
     return dataset;
-    // if currentUser can modify dataset, return ???
-    // get the dataset including the tabular data
-    // get a set of columns based on the tabular data id and column names
-    // call the getColumnView function for each column?
-    // return the view of the dataset
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
