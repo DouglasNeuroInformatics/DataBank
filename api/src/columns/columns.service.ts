@@ -49,6 +49,125 @@ export class ColumnsService {
     });
   }
 
+  async createFromSeries(tabularDataId: string, colSeries: Series) {
+    // create a float column
+    if (colSeries.isFloat()) {
+      const floatSummary = await this.calculateSummaryOnSeries('FLOAT', colSeries);
+      if (!floatSummary || !floatSummary.floatSummary) {
+        throw new NotFoundException('Float summary NOT FOUND!');
+      }
+      await this.create({
+        dataPermission: 'MANAGER',
+        floatData: colSeries.toArray(),
+        kind: 'FLOAT',
+        name: colSeries.name,
+        nullable: colSeries.nullCount() != 0,
+        // numericColumnValidation: {
+        //   max: col.max(),
+        //   min: col.min()
+        // },
+        summary: {
+          count: floatSummary.count,
+          ...floatSummary.floatSummary,
+          notNullCount: floatSummary.notNullCount
+        },
+        summaryPermission: 'MANAGER',
+        tabularDataId: tabularDataId
+      });
+    }
+
+    // create an int column
+    if (colSeries.isNumeric()) {
+      const intSummary = await this.calculateSummaryOnSeries('INT', colSeries);
+      if (!intSummary || !intSummary.intSummary) {
+        throw new NotFoundException('Int summary NOT FOUND!');
+      }
+      await this.create({
+        dataPermission: 'MANAGER',
+        intData: colSeries.toArray(),
+        kind: 'INT',
+        name: colSeries.name,
+        // numericColumnValidation: {
+        //   max: col.max(),
+        //   min: col.min()
+        nullable: colSeries.nullCount() != 0,
+        // },
+        summary: {
+          count: intSummary.count,
+          notNullCount: intSummary.notNullCount,
+          ...intSummary.intSummary
+        },
+        summaryPermission: 'MANAGER',
+        tabularDataId: tabularDataId
+      });
+    }
+
+    // create a boolean column
+    if (colSeries.isBoolean()) {
+      const enumSummary = await this.calculateSummaryOnSeries('BOOLEAN', colSeries);
+      if (!enumSummary || !enumSummary.enumSummary) {
+        throw new NotFoundException('Enum summary NOT FOUND!');
+      }
+      await this.create({
+        dataPermission: 'MANAGER',
+        enumData: colSeries.toArray(),
+        kind: 'ENUM',
+        name: colSeries.name,
+        nullable: colSeries.nullCount() != 0,
+        summary: {
+          count: enumSummary.count,
+          distribution: { ...enumSummary.enumSummary.distribution },
+          notNullCount: enumSummary.notNullCount
+        },
+        summaryPermission: 'MANAGER',
+        tabularDataId: tabularDataId
+      });
+    }
+
+    // create a datetime column
+    if (colSeries.isDateTime()) {
+      const datetimeSummary = await this.calculateSummaryOnSeries('DATETIME', colSeries);
+      if (!datetimeSummary || !datetimeSummary.datetimeSummary) {
+        throw new NotFoundException('Datetime summary NOT FOUND!');
+      }
+      await this.create({
+        dataPermission: 'MANAGER',
+        // date is represented as time difference from 1970-Jan-01
+        // datetimeColumnValidation: {
+        //   max: new Date(),
+        //   min: '1970-01-01'
+        // },
+        // datetime is represented as milliseconds from 1970-Jan-01 00:00:00
+        datetimeData: colSeries.toArray(),
+        kind: 'DATETIME',
+        name: colSeries.name,
+        nullable: colSeries.nullCount() != 0,
+        summary: {
+          count: datetimeSummary.count,
+          notNullCount: datetimeSummary.notNullCount,
+          ...datetimeSummary.datetimeSummary
+        },
+        summaryPermission: 'MANAGER',
+        tabularDataId: tabularDataId
+      });
+    }
+
+    // create a string column
+    await this.create({
+      dataPermission: 'MANAGER',
+      kind: 'STRING',
+      name: colSeries.name,
+      // stringColumnValidation: {
+      //   minLength: 0
+      nullable: colSeries.nullCount() != 0,
+      // },
+      stringData: colSeries.toArray(),
+      summary: await this.calculateSummaryOnSeries('STRING', colSeries),
+      summaryPermission: 'MANAGER',
+      tabularDataId: tabularDataId
+    });
+  }
+
   async deleteById(columnId: string, currentUserId: string) {
     const column = await this.canModifyColumn(columnId, currentUserId);
     return await this.columnModel.delete({
@@ -83,27 +202,7 @@ export class ColumnsService {
     const columnView = await this.getById(getColumnViewDto.columnId);
 
     // store column data in a polars series according to the type
-    let currSeries: Series;
-    switch (columnView.kind) {
-      case 'BOOLEAN':
-        currSeries = pl.Series(columnView.booleanData);
-        break;
-      case 'STRING':
-        currSeries = pl.Series(columnView.stringData);
-        break;
-      case 'INT':
-        currSeries = pl.Series(columnView.intData);
-        break;
-      case 'FLOAT':
-        currSeries = pl.Series(columnView.floatData);
-        break;
-      case 'ENUM':
-        currSeries = pl.Series(columnView.enumData);
-        break;
-      case 'DATETIME':
-        currSeries = pl.Series(columnView.datetimeData);
-        break;
-    }
+    const currSeries = await this.columnIdToSeries(getColumnViewDto.columnId);
 
     // check if there is a row max bound
     if (getColumnViewDto.rowMax) {
@@ -128,88 +227,7 @@ export class ColumnsService {
       );
     }
     // recalculate the summary for the column
-    switch (columnView.kind) {
-      case 'BOOLEAN':
-        columnView.summary = {
-          count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
-          enumSummary: {
-            distribution: currSeries.valueCounts().toJSON()
-          },
-          floatSummary: null,
-          intSummary: null,
-          notNullCount: currSeries.nullCount()
-        };
-        break;
-      case 'STRING':
-        columnView.summary = {
-          count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
-          enumSummary: null,
-          floatSummary: null,
-          intSummary: null,
-          notNullCount: currSeries.nullCount()
-        };
-        break;
-      case 'INT':
-        columnView.summary = {
-          count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
-          enumSummary: null,
-          floatSummary: null,
-          intSummary: {
-            max: currSeries.max(),
-            mean: currSeries.mean(),
-            median: currSeries.median(),
-            min: currSeries.min(),
-            mode: currSeries.mode()[0],
-            std: currSeries.rollingStd(currSeries.len())[-1]
-          },
-          notNullCount: currSeries.nullCount()
-        };
-        break;
-      case 'FLOAT':
-        columnView.summary = {
-          count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
-          enumSummary: null,
-          floatSummary: {
-            max: currSeries.max(),
-            mean: currSeries.mean(),
-            median: currSeries.median(),
-            min: currSeries.min(),
-            std: currSeries.rollingStd(currSeries.len())[-1]
-          },
-          intSummary: null,
-          notNullCount: currSeries.nullCount()
-        };
-        break;
-      case 'ENUM':
-        columnView.summary = {
-          count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
-          enumSummary: {
-            distribution: currSeries.valueCounts().toJSON()
-          },
-          floatSummary: null,
-          intSummary: null,
-          notNullCount: currSeries.nullCount()
-        };
-        break;
-      case 'DATETIME':
-        columnView.summary = {
-          count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: {
-            max: new Date(),
-            min: new Date('1970-01-01')
-          },
-          enumSummary: null,
-          floatSummary: null,
-          intSummary: null,
-          notNullCount: currSeries.nullCount()
-        };
-        break;
-    }
+    columnView.summary = await this.calculateSummaryOnSeries(columnView.kind, currSeries);
 
     return columnView;
   }
@@ -374,9 +392,7 @@ export class ColumnsService {
                 mean: data.mean(),
                 median: data.median(),
                 min: data.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 mode: data.mode()[0],
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 std: data.rollingStd(data.len())[-1]
               },
               notNullCount: data.len() - data.nullCount()
@@ -403,7 +419,6 @@ export class ColumnsService {
                 mean: data.mean(),
                 median: data.median(),
                 min: data.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 std: data.rollingStd(data.len())[-1]
               },
               notNullCount: data.len() - data.nullCount()
@@ -490,6 +505,85 @@ export class ColumnsService {
     });
   }
 
+  private async calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
+    switch (colType) {
+      case 'BOOLEAN':
+        return {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: {
+            distribution: currSeries.valueCounts().toRecords() as unknown as Record<string, number>
+          },
+          floatSummary: null,
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+      case 'STRING':
+        return {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: null,
+          floatSummary: null,
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+      case 'INT':
+        return {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: null,
+          floatSummary: null,
+          intSummary: {
+            max: currSeries.max(),
+            mean: currSeries.mean(),
+            median: currSeries.median(),
+            min: currSeries.min(),
+            mode: currSeries.mode()[0],
+            std: currSeries.rollingStd(currSeries.len())[-1]
+          },
+          notNullCount: currSeries.nullCount()
+        };
+      case 'FLOAT':
+        return {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: null,
+          floatSummary: {
+            max: currSeries.max(),
+            mean: currSeries.mean(),
+            median: currSeries.median(),
+            min: currSeries.min(),
+            std: currSeries.rollingStd(currSeries.len())[-1]
+          },
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+      case 'ENUM':
+        return {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: {
+            distribution: currSeries.valueCounts().toRecords() as unknown as Record<string, number>
+          },
+          floatSummary: null,
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+      case 'DATETIME':
+        return {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: {
+            max: new Date(),
+            min: new Date('1970-01-01')
+          },
+          enumSummary: null,
+          floatSummary: null,
+          intSummary: null,
+          notNullCount: currSeries.nullCount()
+        };
+    }
+  }
+
   private async canModifyColumn(columnId: string, currentUserId: string) {
     const col = await this.columnModel.findUnique({
       where: {
@@ -514,4 +608,29 @@ export class ColumnsService {
     }
     return col;
   }
+
+  // TO-DO: Helper methods to make code more readable
+  private async columnIdToSeries(columnId: string) {
+    const column = await this.getById(columnId);
+
+    // store column data in a polars series according to the type
+    switch (column.kind) {
+      case 'BOOLEAN':
+        return pl.Series(column.booleanData);
+      case 'STRING':
+        return pl.Series(column.stringData);
+      case 'INT':
+        return pl.Series(column.intData);
+      case 'FLOAT':
+        return pl.Series(column.floatData);
+      case 'ENUM':
+        return pl.Series(column.enumData);
+      case 'DATETIME':
+        return pl.Series(column.datetimeData);
+    }
+  }
+
+  // validateColumn() {
+  //   // return true or false
+  // }
 }
