@@ -506,6 +506,7 @@ export class ColumnsService {
   }
 
   private async calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
+    // Need to correctly compute the distribution for boolean and enum column
     switch (colType) {
       case 'BOOLEAN':
         return {
