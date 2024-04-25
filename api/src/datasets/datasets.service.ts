@@ -1,21 +1,16 @@
-import module from 'node:module';
-
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
-import type { DataFrame } from 'nodejs-polars';
 
-import type { ColumnsService } from '@/columns/columns.service.js';
+import { ColumnsService } from '@/columns/columns.service.js';
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 import type { ProjectDatasetDto } from '@/projects/zod/projects.js';
-import type { TabularDataService } from '@/tabular-data/tabular-data.service.js';
+import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
+import type { DataFrame } from '@/vendor/nodejs-polars.js';
+import { pl } from '@/vendor/nodejs-polars.js';
 
 import type { CreateTabularDatasetDto } from './zod/dataset.js';
-
-const require = module.createRequire(import.meta.url);
-
-const pl: typeof import('nodejs-polars').default = require('nodejs-polars');
 
 @Injectable()
 export class DatasetsService {

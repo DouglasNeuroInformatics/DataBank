@@ -1,11 +1,11 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { PermissionLevel, TabularColumn } from '@prisma/client';
-import { type DataFrame, pl } from 'nodejs-polars';
 
-import type { ColumnsService } from '@/columns/columns.service';
+import { ColumnsService } from '@/columns/columns.service';
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 import type { GetColumnViewDto, ProjectDatasetDto } from '@/projects/zod/projects';
+import { type DataFrame, pl } from '@/vendor/nodejs-polars.js';
 
 import type { UpdatePrimaryKeysDto } from './zod/tabular-data';
 

@@ -1,9 +1,9 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
-import type { DatasetsService } from '@/datasets/datasets.service';
+import { DatasetsService } from '@/datasets/datasets.service';
 import type { Model } from '@/prisma/prisma.types';
-import type { UsersService } from '@/users/users.service';
+import { UsersService } from '@/users/users.service';
 
 import type { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './zod/projects';
 

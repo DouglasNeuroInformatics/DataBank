@@ -1,4 +1,4 @@
-// @ts-check
+#!/usr/bin/env node
 
 import fs from 'fs/promises';
 import path from 'path';
@@ -6,15 +6,11 @@ import path from 'path';
 import { nativeModulesPlugin } from '@douglasneuroinformatics/esbuild-plugin-native-modules';
 import { prismaPlugin } from '@douglasneuroinformatics/esbuild-plugin-prisma';
 import esbuild from 'esbuild';
-import { copy } from 'esbuild-plugin-copy';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
 
 const entryFile = path.resolve(import.meta.dirname, '../src/main.ts');
 const outdir = path.resolve(import.meta.dirname, '../dist');
 const tsconfig = path.resolve(import.meta.dirname, '../tsconfig.json');
-
-await fs.rm(outdir, { force: true, recursive: true });
-await fs.mkdir(outdir);
 
 const cjsShims = `
 const { __dirname, __filename, require } = await (async () => {
@@ -30,9 +26,9 @@ const { __dirname, __filename, require } = await (async () => {
 })();
 `;
 
-const watch = process.argv.includes('--watch');
+const outfile = path.resolve(outdir, 'app.mjs');
 
-/** @type {import('esbuild').BuildOptions} */
+/** @type {import('esbuild').BuildOptions & { external: NonNullable<unknown>, plugins: NonNullable<unknown> }} */
 const options = {
   banner: {
     js: cjsShims
@@ -42,17 +38,9 @@ const options = {
   external: ['@nestjs/microservices', '@nestjs/websockets/socket-module', 'class-transformer', 'class-validator'],
   format: 'esm',
   keepNames: true,
-  outfile: path.resolve(outdir, 'app.mjs'),
+  outfile,
   platform: 'node',
   plugins: [
-    copy({
-      assets: {
-        from: ['./src/i18n/translations/*'],
-        to: ['./dist/translations']
-      },
-      resolveFrom: path.resolve(import.meta.dirname, '..'),
-      watch
-    }),
     esbuildPluginTsc({
       tsconfigPath: tsconfig
     }),
@@ -61,18 +49,56 @@ const options = {
       resolveFailure: 'warn'
     })
   ],
-  target: 'node20',
+  target: ['node18', 'es2022'],
   tsconfig
 };
 
-if (watch) {
-  const ctx = await esbuild.context({
-    ...options,
-    sourcemap: true
+async function clean() {
+  await fs.rm(outdir, { force: true, recursive: true });
+  await fs.mkdir(outdir);
+}
+
+async function build() {
+  await clean();
+  fs.cp(path.resolve(import.meta.dirname, '../src/i18n/translations'), path.resolve(outdir, 'translations'), {
+    recursive: true
   });
-  await ctx.watch();
-  console.log('Watching...');
-} else {
   await esbuild.build(options);
   console.log('Done!');
 }
+
+async function watch() {
+  return new Promise((resolve, reject) => {
+    esbuild
+      .context({
+        ...options,
+        plugins: [
+          ...options.plugins,
+          {
+            name: 'rebuild',
+            setup(build) {
+              build.onEnd((result) => {
+                console.log(`Done! Build completed with ${result.errors.length} errors`);
+                resolve(result);
+              });
+            }
+          }
+        ],
+        sourcemap: true
+      })
+      .then((ctx) => {
+        ctx.watch();
+        console.log('Watching...');
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+const isEntry = process.argv[1] === import.meta.filename;
+if (isEntry) {
+  build();
+}
+
+export { clean, outfile, watch };

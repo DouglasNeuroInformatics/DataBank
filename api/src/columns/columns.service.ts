@@ -1,22 +1,23 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { ColumnType, PermissionLevel } from '@prisma/client';
 import type { PrismaClient } from '@prisma/client/extension';
-import pl, { Series } from 'nodejs-polars';
 
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
-import type { DatasetsService } from '@/datasets/datasets.service';
+// import { DatasetsService } from '@/datasets/datasets.service';
 import type { Model } from '@/prisma/prisma.types';
 import type { GetColumnViewDto } from '@/projects/zod/projects';
+// import { TabularDataService } from '@/tabular-data/tabular-data.service';
+import { type Series, pl } from '@/vendor/nodejs-polars.js';
 
 import type { CreateTabularColumnDto, UpdateTabularColumnDto } from './zod/columns';
 
 @Injectable()
 export class ColumnsService {
   constructor(
-    @InjectModel('TabularData') private readonly tabularDataModel: Model<'TabularData'>,
     @InjectModel('TabularColumn') private readonly columnModel: Model<'TabularColumn'>,
-    @InjectPrismaClient() private readonly prisma: PrismaClient,
-    private readonly datasetService: DatasetsService
+    @InjectPrismaClient() private readonly prisma: PrismaClient
+    // private readonly tabularDataService: TabularDataService,
+    // private readonly datasetService: DatasetsService
   ) {}
 
   async changeColumnDataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) {
@@ -595,18 +596,13 @@ export class ColumnsService {
       throw new NotFoundException();
     }
 
-    const tabularData = await this.tabularDataModel.findUnique({
-      where: {
-        id: col.tabularDataId
-      }
-    });
-    if (!tabularData) {
-      throw new NotFoundException();
-    }
+    console.log(currentUserId);
 
-    if (!(await this.datasetService.canModifyDataset(tabularData.datasetId, currentUserId))) {
-      throw new ForbiddenException('Only managers can modify this dataset!');
-    }
+    // const tabularData = await this.tabularDataService.findById(col.tabularDataId);
+
+    // if (!(await this.datasetService.canModifyDataset("tabularData.datasetId", currentUserId))) {
+    //   throw new ForbiddenException('Only managers can modify this dataset!');
+    // }
     return col;
   }
 

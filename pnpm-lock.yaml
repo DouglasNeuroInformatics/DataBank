@@ -131,6 +131,9 @@ importers:
       '@types/nodemailer':
         specifier: ^6.4.14
         version: 6.4.14
+      '@types/nodemon':
+        specifier: ^1.19.6
+        version: 1.19.6
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.2
@@ -2092,6 +2095,13 @@ packages:
       '@types/node': 20.11.25
     dev: true
 
+  /@types/nodemon@1.19.6:
+    resolution:
+      { integrity: sha512-vjKuaQOLUA5EY2zkUmWG1ipXbKt9Wd+H/0SiIuHVeH4cHtt6509iRUGH9ZR0iqgUrtj3BrP9KqoTuV3ZCbQcYA== }
+    dependencies:
+      '@types/node': 20.11.25
+    dev: true
+
   /@types/papaparse@5.3.14:
     resolution:
       { integrity: sha512-LxJ4iEFcpqc6METwp9f6BV6VVc43m6MfH0VqFosHvrUgfXiFe6ww7R3itkOQ+TCK6Y+Iv/+RnnvtRZnkc5Kc9g== }
@@ -2876,6 +2886,7 @@ packages:
     resolution:
       { integrity: sha512-6/gSSEdbkuFlSb+ufj5jUSU4+wo8xQOwm2bDSqwmxiPE17JTpsP63eAwoN8iF8Oy4gJYj+PAL3zdRCTdaw5Y1g== }
     engines: { node: '>=16.20.1' }
+    deprecated: a critical bug affecting zSeries s390x big-endian systems is fixed in bson@6.5.0
     dev: false
 
   /buffer-equal-constant-time@1.0.1:
