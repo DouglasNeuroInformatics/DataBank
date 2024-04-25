@@ -58,11 +58,15 @@ async function clean() {
   await fs.mkdir(outdir);
 }
 
-async function build() {
-  await clean();
+async function copyTranslations() {
   fs.cp(path.resolve(import.meta.dirname, '../src/i18n/translations'), path.resolve(outdir, 'translations'), {
     recursive: true
   });
+}
+
+async function build() {
+  await clean();
+  await copyTranslations();
   await esbuild.build(options);
   console.log('Done!');
 }
@@ -101,4 +105,4 @@ if (isEntry) {
   build();
 }
 
-export { clean, outfile, watch };
+export { clean, copyTranslations, outfile, watch };

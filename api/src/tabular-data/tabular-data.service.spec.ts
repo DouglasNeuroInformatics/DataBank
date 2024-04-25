@@ -17,7 +17,7 @@ describe('TabularDataService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TabularDataService,
-        MockFactory.createForModelToken('TabularData'),
+        MockFactory.createForModelToken(getModelToken('TabularData')),
         MockFactory.createForService(ColumnsService)
       ]
     }).compile();

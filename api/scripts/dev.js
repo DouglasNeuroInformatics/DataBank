@@ -1,7 +1,8 @@
 import nodemon from 'nodemon';
 
-import { clean, outfile, watch } from './build.js';
+import { clean, copyTranslations, outfile, watch } from './build.js';
 
 await clean();
+await copyTranslations();
 await watch();
 nodemon(outfile);

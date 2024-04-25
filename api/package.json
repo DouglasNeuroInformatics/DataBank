@@ -6,7 +6,7 @@
   "license": "AGPL-3.0",
   "scripts": {
     "build": "node scripts/build.js",
-    "dev": "NODE_ENV=development env-cmd -f ../../.env node scripts/dev.js",
+    "dev": "NODE_ENV=development env-cmd -f ../.env node scripts/dev.js",
     "build:watch": "node scripts/build.js --watch",
     "db:generate": "prisma generate",
     "format": "prettier --write src",
