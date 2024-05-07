@@ -3,10 +3,8 @@ import type { ColumnType, PermissionLevel } from '@prisma/client';
 import type { PrismaClient } from '@prisma/client/extension';
 
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
-// import { DatasetsService } from '@/datasets/datasets.service';
 import type { Model } from '@/prisma/prisma.types';
 import type { GetColumnViewDto } from '@/projects/zod/projects';
-// import { TabularDataService } from '@/tabular-data/tabular-data.service';
 import { type Series, pl } from '@/vendor/nodejs-polars.js';
 
 import type { CreateTabularColumnDto, UpdateTabularColumnDto } from './zod/columns';
@@ -16,12 +14,9 @@ export class ColumnsService {
   constructor(
     @InjectModel('TabularColumn') private readonly columnModel: Model<'TabularColumn'>,
     @InjectPrismaClient() private readonly prisma: PrismaClient
-    // private readonly tabularDataService: TabularDataService,
-    // private readonly datasetService: DatasetsService
   ) {}
 
-  async changeColumnDataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-    await this.canModifyColumn(columnId, currentUserId);
+  async changeColumnDataPermission(columnId: string, permissionLevel: PermissionLevel) {
     return await this.columnModel.update({
       data: {
         dataPermission: permissionLevel
@@ -32,8 +27,7 @@ export class ColumnsService {
     });
   }
 
-  async changeColumnMetadataPermission(columnId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-    await this.canModifyColumn(columnId, currentUserId);
+  async changeColumnMetadataPermission(columnId: string, permissionLevel: PermissionLevel) {
     return await this.columnModel.update({
       data: {
         summaryPermission: permissionLevel
@@ -169,11 +163,10 @@ export class ColumnsService {
     });
   }
 
-  async deleteById(columnId: string, currentUserId: string) {
-    const column = await this.canModifyColumn(columnId, currentUserId);
+  async deleteById(columnId: string) {
     return await this.columnModel.delete({
       where: {
-        id: column.id
+        id: columnId
       }
     });
   }
@@ -233,8 +226,8 @@ export class ColumnsService {
     return columnView;
   }
 
-  async mutateColumnType(columnId: string, currentUserId: string, colType: ColumnType) {
-    const col = await this.canModifyColumn(columnId, currentUserId);
+  async mutateColumnType(columnId: string, colType: ColumnType) {
+    const col = await this.getById(columnId);
     if (col.kind === colType) {
       throw new ConflictException(
         'Cannot change column type! Input column type is the same as the current column type!'
@@ -478,9 +471,8 @@ export class ColumnsService {
     return (await this.prisma.$transaction([removeFromCol, addToCol])) as unknown[];
   }
 
-  async toggleColumnNullable(columnId: string, currentUserId: string) {
-    const col = await this.canModifyColumn(columnId, currentUserId);
-
+  async toggleColumnNullable(columnId: string) {
+    const col = await this.getById(columnId);
     if (col.nullable && col.summary.notNullCount !== col.summary.count) {
       throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
     }
@@ -584,26 +576,6 @@ export class ColumnsService {
           notNullCount: currSeries.nullCount()
         };
     }
-  }
-
-  private async canModifyColumn(columnId: string, currentUserId: string) {
-    const col = await this.columnModel.findUnique({
-      where: {
-        id: columnId
-      }
-    });
-    if (!col) {
-      throw new NotFoundException();
-    }
-
-    console.log(currentUserId);
-
-    // const tabularData = await this.tabularDataService.findById(col.tabularDataId);
-
-    // if (!(await this.datasetService.canModifyDataset("tabularData.datasetId", currentUserId))) {
-    //   throw new ForbiddenException('Only managers can modify this dataset!');
-    // }
-    return col;
   }
 
   // TO-DO: Helper methods to make code more readable

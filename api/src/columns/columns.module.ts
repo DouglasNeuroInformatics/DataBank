@@ -11,12 +11,7 @@ import { ColumnsService } from './columns.service';
 @Module({
   controllers: [ColumnsController],
   exports: [ColumnsService],
-  imports: [
-    PrismaModule.forFeature('TabularColumn'),
-    PrismaClient
-    // TabularDataModule,
-    // DatasetsModule
-  ],
+  imports: [PrismaModule.forFeature('TabularColumn'), PrismaClient],
   providers: [ColumnsService]
 })
 export class ColumnsModule {}
