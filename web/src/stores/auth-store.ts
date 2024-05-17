@@ -1,5 +1,5 @@
 import type { CurrentUser } from '@databank/types';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { create } from 'zustand';
 
 export type AuthStore = {

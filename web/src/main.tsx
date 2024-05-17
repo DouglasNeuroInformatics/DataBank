@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { App } from './App';
+import { App } from './App.js';
 
-import './styles.css';
+import '@douglasneuroinformatics/libui/styles/globals.css';
 
 const root = document.getElementById('root')!;
 

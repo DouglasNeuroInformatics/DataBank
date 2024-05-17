@@ -12,10 +12,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@douglasneuroinformatics/libui": "^2.5.2",
     "@douglasneuroinformatics/ui": "^5.2.2",
     "@douglasneuroinformatics/utils": "^1.0.5",
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
+    "@import-meta-env/unplugin": "^0.5.1",
     "axios": "^1.6.7",
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.8",

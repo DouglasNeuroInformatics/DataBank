@@ -4,11 +4,13 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
     "esModuleInterop": false,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "paths": {
       "@/*": ["*"]
     },
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
   },
   "include": ["src"]
 }

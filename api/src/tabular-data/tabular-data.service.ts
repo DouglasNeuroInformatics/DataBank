@@ -16,11 +16,7 @@ export class TabularDataService {
     private readonly columnsService: ColumnsService
   ) {}
 
-  async changeTabularColumnsMetadataPermission(
-    datasetId: string,
-    currentUserId: string,
-    permissionLevel: PermissionLevel
-  ) {
+  async changeTabularColumnsMetadataPermission(datasetId: string, permissionLevel: PermissionLevel) {
     const tabularData = await this.tabularDataModel.findUnique({
       include: {
         columns: true
@@ -34,7 +30,7 @@ export class TabularDataService {
     }
 
     for (let col of tabularData.columns) {
-      await this.columnsService.changeColumnMetadataPermission(col.id, currentUserId, permissionLevel);
+      await this.columnsService.changeColumnMetadataPermission(col.id, permissionLevel);
     }
 
     return tabularData;
@@ -106,8 +102,6 @@ export class TabularDataService {
       // 2. need to handle column type filter HANDLE HERE, throw an error if there is a conflict between the column ID and the type filter
       if (!projectDatasetDto.useDataTypeFilter || currColumnView.kind in projectDatasetDto.dataTypeFilters) {
         columnsView.push(currColumnView);
-      } else {
-        continue;
       }
     }
 
@@ -150,7 +144,6 @@ export class TabularDataService {
         return false;
       }
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const checkPrimaryKeysArray: boolean[] = df
       .select(...primaryKeys)
       .isUnique()

@@ -1,3 +1,3 @@
 export * from './Layout';
-export * from './Logo';
-export * from './SuspenseFallback';
+export * from './Logo.js';
+export * from './SuspenseFallback.js';

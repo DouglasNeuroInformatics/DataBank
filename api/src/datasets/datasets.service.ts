@@ -84,11 +84,7 @@ export class DatasetsService {
     if (!dataset) {
       throw new ForbiddenException(`The current user is not allowed to modify the dataset with id ${datasetId}`);
     }
-    return await this.tabularDataService.changeTabularColumnsMetadataPermission(
-      datasetId,
-      currentUserId,
-      permissionLevel
-    );
+    return await this.tabularDataService.changeTabularColumnsMetadataPermission(datasetId, permissionLevel);
   }
 
   async createDataset(
