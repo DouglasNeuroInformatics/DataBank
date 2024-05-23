@@ -1,0 +1,11 @@
+{
+  "extends": "../../jsconfig.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "*": ["../../dist/*"]
+    }
+  },
+  "include": ["src/**/*", "*.js", "*.cjs"]
+}
