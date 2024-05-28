@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import React from 'react';
 
-import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/ui';
+import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { Bars3Icon } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
@@ -34,7 +35,7 @@ export const LandingHeader = () => {
           </button>
           <div className="flex flex-grow justify-end gap-3 bg-inherit md:order-last">
             <ThemeToggle />
-            <LanguageToggle options={['en', 'fr']} />
+            <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
           </div>
           <nav
             className={clsx(

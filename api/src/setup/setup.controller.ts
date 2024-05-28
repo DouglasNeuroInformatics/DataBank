@@ -10,7 +10,7 @@ import type { SetupDto } from './zod/setup.js';
 @ApiTags('Setup')
 @Controller({ path: 'setup' })
 export class SetupController {
-  constructor(private readonly setupService: SetupService) { }
+  constructor(private readonly setupService: SetupService) {}
 
   @ApiOperation({
     description: 'Return the current setup state',
@@ -19,7 +19,7 @@ export class SetupController {
   @Get()
   @RouteAccess('public')
   getState() {
-    return this.setupService.getState();
+    return this.setupService.getSetupConfig();
   }
 
   @ApiOperation({

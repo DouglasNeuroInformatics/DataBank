@@ -1,4 +1,6 @@
-import { Button } from '@douglasneuroinformatics/ui';
+import React from 'react';
+
+import { Button } from '@douglasneuroinformatics/libui/components';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';

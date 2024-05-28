@@ -17,9 +17,9 @@ export const App = () => {
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <QueryClientProvider client={queryClient}>
           <NotificationHub />
-          <SetupProvider>
-            <Router />
-          </SetupProvider>
+          {/* <SetupProvider> */}
+          <Router />
+          {/* </SetupProvider> */}
           <ReactQueryDevtools />
         </QueryClientProvider>
       </ErrorBoundary>
