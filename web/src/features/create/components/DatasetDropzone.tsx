@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import React from 'react';
 
 import { type DatasetColumnType } from '@databank/types';
 import { Button, useNotificationsStore } from '@douglasneuroinformatics/ui';
@@ -166,7 +167,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
 
   const [element, key] = match(result)
     .with(P.nullish, () => [<Dropzone file={file} key="upload" setFile={setFile} />, 'upload'] as const)
-    // .with({ isProcessing: P.boolean }, () => [<SuspenseFallback key="loading" />, 'loading'] as const)
+    .with({ isProcessing: P.boolean }, () => [<LoadingFallback key="loading" />, 'loading'] as const)
     .with(
       { columns: P.any, data: P.any },
       (result) =>

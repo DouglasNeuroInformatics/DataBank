@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { SuspenseFallback } from '@/components';
+import { LoadingFallback } from '@/components';
 import { DatasetCard } from '@/components/DatasetCard';
 import { Heading } from '@/components/Heading';
 import { useAuthStore } from '@/stores/auth-store';
@@ -47,7 +47,7 @@ export const ManagePage = () => {
       />
       <div className="overflow-hidden">
         {filteredDatasets === null ? (
-          <SuspenseFallback />
+          <LoadingFallback />
         ) : filteredDatasets.length === 0 ? (
           <div>
             <p>{t('noResultsFound')}</p>

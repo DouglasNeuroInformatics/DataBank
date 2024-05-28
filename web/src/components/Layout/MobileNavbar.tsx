@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import React from 'react';
 
 import { ThemeToggle } from '@douglasneuroinformatics/ui';
 import { Bars3Icon } from '@heroicons/react/24/outline';

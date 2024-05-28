@@ -1,5 +1,7 @@
+import React from 'react';
+
 import type { LoginCredentials } from '@databank/types';
-import { Form } from '@douglasneuroinformatics/ui';
+import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
@@ -11,10 +13,10 @@ export const LoginForm = ({ onSubmit }: LoginFormProps) => {
   const { t } = useTranslation();
 
   return (
-    <Form<LoginCredentials>
+    <Form
       content={{
-        email: { kind: 'text', label: t('email'), variant: 'short' },
-        password: { kind: 'text', label: t('password'), variant: 'password' }
+        email: { kind: 'string', label: t('email'), variant: 'input' },
+        password: { kind: 'string', label: t('password'), variant: 'password' }
       }}
       submitBtnLabel={t('login')}
       validationSchema={z.object({

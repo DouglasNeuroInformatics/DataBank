@@ -1,4 +1,6 @@
-import { ThemeToggle } from '@douglasneuroinformatics/ui';
+import React from 'react';
+
+import { ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { Link, NavLink } from 'react-router-dom';
 
 import { Logo } from '@/components';

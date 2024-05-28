@@ -8,7 +8,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Router } from './Router.js';
 import { LoadingFallback } from './components';
 import { ErrorPage } from './components/ErrorPage.js';
-// import { SetupProvider } from './features/setup';
+import { SetupProvider } from './features/setup';
 import { queryClient } from './services/react-query.js';
 
 export const App = () => {
@@ -17,9 +17,9 @@ export const App = () => {
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <QueryClientProvider client={queryClient}>
           <NotificationHub />
-          {/* <SetupProvider> */}
-          <Router />
-          {/* </SetupProvider> */}
+          <SetupProvider>
+            <Router />
+          </SetupProvider>
           <ReactQueryDevtools />
         </QueryClientProvider>
       </ErrorBoundary>

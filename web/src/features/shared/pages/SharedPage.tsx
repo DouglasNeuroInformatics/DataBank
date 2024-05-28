@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 
 import type { DatasetInfo } from '@databank/types';
 import { SearchBar } from '@douglasneuroinformatics/ui';
@@ -6,7 +7,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { SuspenseFallback } from '@/components';
+import { LoadingFallback } from '@/components';
 import { DatasetCard } from '@/components/DatasetCard';
 import { Heading } from '@/components/Heading';
 
@@ -45,7 +46,7 @@ export const SharedPage = () => {
       />
       <div className="overflow-hidden">
         {filteredDatasets === null ? (
-          <SuspenseFallback />
+          <LoadingFallback />
         ) : filteredDatasets.length === 0 ? (
           <div>
             <p>{t('noResultsFound')}</p>

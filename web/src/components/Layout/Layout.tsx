@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import React from 'react';
 
 import { FolderArrowDownIcon, FolderMinusIcon, FolderPlusIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';

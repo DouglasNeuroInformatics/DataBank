@@ -7,8 +7,7 @@ import { SetupLoadingPage } from '../pages/SetupLoadingPage';
 import { SetupPage } from '../pages/SetupPage';
 
 export const SetupProvider = ({ children }: { children: React.ReactNode }) => {
-  // const setupStateQuery = useSetupState();
-  const setupStateQuery = {};
+  const setupStateQuery = useSetupState();
   const createSetupStateMutation = useCreateSetupState();
 
   useEffect(() => {
