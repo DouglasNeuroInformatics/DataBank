@@ -50,6 +50,15 @@ export const LandingHeader = () => {
                 'block p-3 font-medium',
                 i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
+              to="/datasets/public"
+            >
+              {t('View Datasets')}
+            </Link>
+            <Link
+              className={clsx(
+                'block p-3 font-medium',
+                i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
+              )}
               to="/auth/login"
             >
               {t('login')}

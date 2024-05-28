@@ -8,7 +8,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 // import { P, match } from 'ts-pattern';
 
 // import { Layout } from './components';
-// import { ConfirmEmailPage, CreateAccountPage, LoginPage } from './features/auth';
+import { ConfirmEmailPage, CreateAccountPage, LoginPage } from './features/auth';
 // import { CreateDatasetPage } from './features/create';
 // import { DashboardPage } from './features/dashboard';
 import { LandingPage } from './features/landing';
@@ -37,11 +37,14 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route index element={<LandingPage />} />
-      {/* <Route path="auth">
+      <Route path="datasets">
+        <Route element={<h1>Available Datasets</h1>} path="public" />
+      </Route>
+      <Route path="auth">
         <Route element={<LoginPage />} path="login" />
         <Route element={<CreateAccountPage />} path="create-account" />
         <Route element={<ConfirmEmailPage />} path="confirm-email" />
-      </Route> */}
+      </Route>
       {/* {match(currentUser)
         .with({ confirmedAt: P.number }, () => (
           <Route element={<Layout />} path="portal">
