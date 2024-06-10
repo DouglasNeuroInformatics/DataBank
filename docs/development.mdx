@@ -1,0 +1,176 @@
+---
+title: Development
+slug: en/tutorials/development
+sidebar:
+  order: 0
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This tutorial describes the procedure to run Open Data Bank on your local system in development mode. For information on how to deploy Open Data Dank in production, please refer to our [deployment guide](/deployment/).
+
+### System Prerequisites
+
+This setup is designed for Unix-like operating systems and has been tested on MacOS and Linux. We do not support running Open Data Dank on Windows. For Windows users, we recommend using [WSL](https://learn.microsoft.com/en-us/windows/wsl/install).
+
+#### Required Packages
+
+<Tabs>
+
+<TabItem label="MacOS">
+  First, make sure that [homebrew](https://brew.sh/) is installed on your system. This will also ensure that the Xcode
+  Command Line Tools are available. Then, install the following packages:
+  
+  ```sh
+  brew install bash jq 
+  ```
+
+</TabItem>
+<TabItem label="Ubuntu">
+  Please ensure that the following packages are installed:
+
+```sh
+apt-get install build-essential jq
+```
+
+</TabItem>
+<TabItem label="Arch Linux">
+  Please ensure that the following packages are installed:
+
+```sh
+pacman -S base-devel curl git jq
+```
+
+</TabItem>
+
+</Tabs>
+
+### Git Setup
+
+We use Git for version control and host our source code on GitHub. Please fork [our repository](https://github.com/DouglasNeuroInformatics/DataDank) and clone your fork:
+
+```sh
+# Replace 'DouglasNeuroinformatics' with your GitHub username
+git clone https://github.com/DouglasNeuroInformatics/DataDank
+```
+
+Next, navigate to the root of the repository:
+
+```sh
+cd DataDank
+```
+
+### Configuration
+
+All of the required configuration is stored in the file `.env`, which can be generated from `.env.template` using the following script:
+
+```sh
+./scripts/generate-env.sh && source .env
+```
+
+### System Dependencies
+
+Now, in order to run the code, we need to install some additional system dependencies (i.e., a JavaScript runtime and database).
+
+#### Node.js
+
+We use [Node Version Manager](https://github.com/nvm-sh/nvm) (nvm) to manage the supported Node version. Please follow the installation instructions to install nvm on your system. Then, install the current Node version with the following command:
+
+```sh
+nvm install $(cat .nvmrc)
+```
+
+Once installed, enable the `pnpm` package manager:
+
+```sh
+corepack enable
+```
+
+:::note
+This is not the only way to manage Node versions. If you have another preferred method, feel free to use it. However, we strongly recommend against using a system installation of Node.
+:::
+
+#### MongoDB
+
+Now, you need to setup a [MongoDB](https://www.mongodb.com/docs/) instance. There are several ways you can do this. Please follow the guide for your prefered method:
+
+<Tabs>
+  <TabItem label="Docker (Recommended)">
+		First, make sure that Docker and Docker Compose are installed on your system (for installation instructions, please refer to the [official documentation](https://docs.docker.com/engine/install/)).
+    Then, launch the MongoDB container:
+
+    ```sh
+    docker compose -f docker-compose.dev.yaml up -d
+    ```
+
+    Once the container is running, we need to create a replication set, as is [required by Prisma](https://github.com/prisma/prisma/issues/8266). This can be done with the following command:
+
+    ```sh
+    docker compose -f docker-compose.dev.yaml exec mongo mongosh --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]});"
+    ```
+
+    </TabItem>
+
+  <TabItem label="System Install (MacOS)">
+
+:::caution
+These instructions assume you are using a Mac with Apple Silicon. For older, Intel-based Macs, make sure to adjust the paths as needed (e.g., homebrew is likely installed in `/usr/local` rather than in `/opt/homebrew`).
+:::
+
+    First, install MongoDB using Homebrew:
+
+    ```sh
+    brew tap mongodb/brew
+    brew update
+    brew install mongodb-community@7.0
+    ```
+
+    Then, open `/opt/homebrew/etc/mongod.conf` and make the following changes:
+
+    ```yaml
+    systemLog:
+      destination: file
+      path: /opt/homebrew/var/log/mongodb/mongo.log
+      logAppend: true
+    storage:
+      dbPath: /opt/homebrew/var/mongodb
+    net:
+      bindIp: 127.0.0.1, ::1
+      ipv6: true
+    replication:
+      replSetName: rs0
+    ```
+
+    Next, run MongoDB as a MacOS service:
+
+    ```sh
+    brew services start mongodb-community@7.0
+    ```
+
+    Finally, initiate the replication set:
+
+
+    ```sh
+    mongosh --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]});"
+    ```
+
+  </TabItem>
+</Tabs>
+
+### Runtime Dependencies
+
+Next, install runtime dependencies:
+
+```sh
+pnpm install
+```
+
+### Run Dev Server
+
+Now, you should be able to start the development server, which is configured with hot module replacement.
+
+```shell
+pnpm dev
+```
+
+Navigate to [http://localhost:3000](http://localhost:3000) and you should be greeted with a setup screen. Follow the instructions to create the first admin user and seed the database.

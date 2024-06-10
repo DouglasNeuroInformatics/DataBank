@@ -1,73 +1,72 @@
+/* eslint-disable perfectionist/sort-objects */
 import { useEffect } from 'react';
 import React from 'react';
 
 import type { AuthPayload } from '@databank/types';
 import axios from 'axios';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { P, match } from 'ts-pattern';
+import { BrowserRouter, Navigate, type RouteObject, useRoutes } from 'react-router-dom';
 
-import { Layout } from './components';
-import { ConfirmEmailPage, CreateAccountPage, LoginPage } from './features/auth';
-import { CreateDatasetPage } from './features/create';
-import { DashboardPage } from './features/dashboard';
+import { Layout } from './components/Layout/Layout';
+import { PublicLayout } from './components/Layout/PublicLayout';
+import { authRoutes } from './features/auth';
+import { publicDatasetsRoutes } from './features/dataset';
 import { LandingPage } from './features/landing';
-import { ManageDatasetPage, ManagePage } from './features/manage';
-import { SharedDatasetPage, SharedPage } from './features/shared';
-import { UserPage } from './features/user';
 import { useAuthStore } from './stores/auth-store';
 
+const publicRoutes: RouteObject[] = [
+  // authRoutes,
+  // {
+  //   element: <PublicLayout />,
+  //   children: [publicDatasetsRoutes]
+  // },
+  {
+    index: true,
+    element: <LandingPage />
+  }
+  // {
+  //   path: '*',
+  //   element: <Navigate to={"/auth/login"} />
+  // }
+];
+
+const protectedRoutes: RouteObject[] = [
+  authRoutes,
+  // other routes for pages that do not need the layout wrapper
+  {
+    element: <Layout />,
+    children: [
+      // many routes provided in the features folder that needs the layout template
+    ]
+  }
+];
+
 const AppRoutes = () => {
-  const { currentUser, setAccessToken } = useAuthStore();
+  /**
+   * component to return the routes depending on the state of the access token
+   * in the auth store
+   *
+   * at the first render, if the environment is DEV and the developer configured
+   * the app to bypass auth, then a post request will be send to the backend to
+   * fake the creation of a user and get back an access token
+   */
+  // const { accessToken, setAccessToken } = useAuthStore();
 
-  useEffect(() => {
-    if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH === 'true') {
-      axios
-        .post<AuthPayload>('/v1/auth/login', {
-          email: import.meta.env.VITE_DEV_EMAIL,
-          password: import.meta.env.VITE_DEV_PASSWORD
-        })
-        .then((response) => {
-          setAccessToken(response.data.accessToken);
-        })
-        .catch(console.error);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH === 'true') {
+  //     axios
+  //       .post<AuthPayload>('/v1/auth/login', {
+  //         email: import.meta.env.VITE_DEV_EMAIL,
+  //         password: import.meta.env.VITE_DEV_PASSWORD
+  //       })
+  //       .then((response) => {
+  //         setAccessToken(response.data.accessToken);
+  //       })
+  //       .catch(console.error);
+  //   }
+  // }, []);
 
-  return (
-    <Routes>
-      <Route index element={<LandingPage />} />
-      <Route path="datasets">
-        <Route element={<h1>Available Datasets</h1>} path="public" />
-      </Route>
-      <Route path="auth">
-        <Route element={<LoginPage />} path="login" />
-        <Route element={<CreateAccountPage />} path="create-account" />
-        <Route element={<ConfirmEmailPage />} path="confirm-email" />
-      </Route>
-      {match(currentUser)
-        .with({ confirmedAt: P.number }, () => (
-          <Route element={<Layout />} path="portal">
-            <Route index element={<DashboardPage />} path="dashboard" />
-            <Route path="create">
-              <Route index element={<CreateDatasetPage />} />
-            </Route>
-            <Route path="manage">
-              <Route index element={<ManagePage />} />
-              <Route element={<ManageDatasetPage />} path=":id" />
-            </Route>
-            <Route path="shared">
-              <Route index element={<SharedPage />} />
-              <Route element={<SharedDatasetPage />} path=":id" />
-            </Route>
-            <Route element={<UserPage />} path="user" />
-          </Route>
-        ))
-        .with({ confirmedAt: P.nullish }, () => <Route element={<Navigate to={'/auth/confirm-email'} />} path="*" />)
-        .otherwise(() => (
-          <Route element={<Navigate to="/" />} path="*" />
-        ))}
-    </Routes>
-  );
+  // return useRoutes(accessToken ? protectedRoutes : publicRoutes);
+  return useRoutes(publicRoutes);
 };
 
 export const Router = () => {

@@ -1,5 +1,5 @@
 import { type ExceptionResponse } from '@databank/types';
-import { useNotificationsStore } from '@douglasneuroinformatics/ui';
+import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios, { isAxiosError } from 'axios';
 
 import { useAuthStore } from '@/stores/auth-store';

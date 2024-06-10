@@ -1,7 +1,5 @@
 /** CORE */
 
-import { Simplify } from 'type-fest';
-
 export type Locale = 'en' | 'fr';
 
 export type ExceptionResponse = {

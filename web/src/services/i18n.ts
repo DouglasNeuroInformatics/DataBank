@@ -20,7 +20,7 @@ void i18n
   });
 
 i18n.on('languageChanged', (lang) => {
-  i18nLib.changeLanguage(lang).catch(console.error);
+  i18n.changeLanguage(lang).catch(console.error);
 });
 
 export default i18n;
