@@ -174,3 +174,83 @@ pnpm dev
 ```
 
 Navigate to [http://localhost:3000](http://localhost:3000) and you should be greeted with a setup screen. Follow the instructions to create the first admin user and seed the database.
+
+### How to use the i18n object from @DouglasNeuroInformatics/libui
+
+1. In `vite.config.js`, we don't need to add the `translation()` plugin
+
+```typescript
+export default defineConfig(() => ({
+  plugins: [
+    react(),
+    importMetaEnv.vite({
+      example: path.resolve(import.meta.dirname, '.env.public')
+    })
+    // translation()              this line is removed
+  ]
+}));
+```
+
+2. In the application, `web` in this repo, in the `src/services/i18n.ts`, add the following code:
+
+```typescript
+import { i18n } from '@douglasneuroinformatics/libui/i18n';
+
+import common from '../translations/common.json';
+
+i18n.setDefaultNamespace('common');
+i18n.addPreInitTranslations({ common });
+
+await i18n.init();
+
+export default i18n;
+```
+
+- this code imports the i18n object from the `@DouglasNeuroInformatics/libui` library
+- import the json file with the translations and add the translations to the i18n object
+structure of the translations file
+  :
+
+```json
+{
+  "hello": {
+    "en": "Hello",
+    "fr": "Bonjour"
+  }
+}
+```
+
+3. In the application's folder, locate/create `typings/i18next.d.ts`
+
+```typescript
+import type { TranslatedResource } from '@douglasneuroinformatics/libui/i18n';
+
+import common from '../translations/common.json';
+
+import 'i18next';
+
+declare module 'i18next' {
+  // Extend CustomTypeOptions
+  interface CustomTypeOptions {
+    // custom namespace type, if you changed it
+    defaultNS: 'common';
+    // custom resources type
+    resources: {
+      common: TranslatedResource<typeof common>;
+    };
+    // other
+  }
+}
+```
+
+4. Finally, in a react component that uses the translation function `Hero.tsx` for example
+
+```typescript
+import {useTranslation} from 'react-i18next'
+
+const {t} = useTranslation('common'); // inside the useTranslation hook, use the name space defined above
+
+<h1> {t('hello')} </h1>
+```
+
+5. In `App.tsx`, `import './services/i18n.ts'`

@@ -1,14 +1,18 @@
-// import the original type declarations
-// import all namespaces (for the default language, only)
-import translation from '../../public/locales/en/translation.json';
+import type { TranslatedResource } from '@douglasneuroinformatics/libui/i18n';
+
+import common from '../translations/common.json';
 
 import 'i18next';
 
 declare module 'i18next' {
-  type CustomTypeOptions = {
-    defaultNS: 'translation';
+  // Extend CustomTypeOptions
+  interface CustomTypeOptions {
+    // custom namespace type, if you changed it
+    defaultNS: 'common';
+    // custom resources type
     resources: {
-      translation: typeof translation;
+      common: TranslatedResource<typeof common>;
     };
-  };
+    // other
+  }
 }
