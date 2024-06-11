@@ -44,7 +44,7 @@ const items = [
 ] as const;
 
 export const DashboardPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <div>
       <Heading title={t('dashboard')} />

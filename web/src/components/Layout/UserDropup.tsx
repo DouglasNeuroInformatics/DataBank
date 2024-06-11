@@ -9,7 +9,7 @@ import { useAuthStore } from '@/stores/auth-store';
 
 export const UserDropup = () => {
   const auth = useAuthStore();
-  const { i18n, t } = useTranslation();
+  const { i18n, t } = useTranslation('common');
   return (
     <Menu as="div" className="relative p-2">
       <Menu.Button>

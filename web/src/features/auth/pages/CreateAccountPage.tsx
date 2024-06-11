@@ -14,7 +14,7 @@ export const CreateAccountPage = () => {
   const auth = useAuthStore();
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const createAccount = async (data: CreateAccountData) => {
     await axios.post('/v1/auth/account', data);

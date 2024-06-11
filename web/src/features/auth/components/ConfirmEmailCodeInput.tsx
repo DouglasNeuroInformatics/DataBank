@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
+import React from 'react';
 
 import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { range } from '@douglasneuroinformatics/utils';
@@ -21,7 +22,7 @@ function getUpdatedDigits(digits: (null | number)[], index: number, value: null 
 
 export const ConfirmEmailCodeInput = ({ className, onComplete }: ConfirmEmailCodeInputProps) => {
   const notifications = useNotificationsStore();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const [digits, setDigits] = useState<(null | number)[]>(range(CODE_LENGTH).map(() => null));
   const inputRefs = range(6).map(() => useRef<HTMLInputElement>(null));
 

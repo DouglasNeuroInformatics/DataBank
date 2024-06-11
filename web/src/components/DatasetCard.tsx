@@ -11,7 +11,7 @@ export type DatasetCardProps = {
 };
 
 export const DatasetCard = ({ className, dataset, onClick }: DatasetCardProps) => {
-  const { i18n, t } = useTranslation();
+  const { i18n, t } = useTranslation('common');
   return (
     <div
       className={twMerge(

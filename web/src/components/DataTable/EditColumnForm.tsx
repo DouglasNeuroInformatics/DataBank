@@ -14,7 +14,7 @@ export type EditColumnFormProps = {
 };
 
 export const EditColumnForm = ({ initialValues, onSubmit }: EditColumnFormProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <Form<EditColumnFormData>
       content={{

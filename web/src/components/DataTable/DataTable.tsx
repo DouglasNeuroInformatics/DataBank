@@ -15,7 +15,7 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
   const [columnWidth, setColumnWidth] = useState<number>();
   const [columnToDelete, setColumnToDelete] = useState<null | string>(null);
   const [columnToEdit, setColumnToEdit] = useState<null | string>(null);
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const deleteColumn = (columnName: string) => {
     axios

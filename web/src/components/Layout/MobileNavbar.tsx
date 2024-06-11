@@ -17,7 +17,7 @@ export type MobileNavbarProps = {
 
 export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { i18n } = useTranslation();
+  const { i18n } = useTranslation('common');
 
   return (
     <>

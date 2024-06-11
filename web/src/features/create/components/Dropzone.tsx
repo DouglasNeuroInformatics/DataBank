@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import React from 'react';
 
 import { useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
@@ -12,7 +13,7 @@ export type DropzoneProps = {
 
 export const Dropzone = ({ file, setFile }: DropzoneProps) => {
   const notifications = useNotificationsStore();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const handleDrop = useCallback(
     (acceptedFiles: File[], rejections: FileRejection[]) => {

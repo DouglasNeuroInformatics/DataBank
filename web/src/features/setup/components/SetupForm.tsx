@@ -13,12 +13,12 @@ type SetupFormProps = {
 };
 
 export const SetupForm = ({ onSubmit }: SetupFormProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <Form
       content={[
         {
-          description: t('setup.admin.description'),
+          description: t('setupAdminDescription'),
           fields: {
             email: {
               kind: 'string',
@@ -41,7 +41,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               variant: 'password'
             }
           },
-          title: t('setup.admin.title')
+          title: t('setupAdminTitle')
         },
         {
           description: 'Admin selects the method for user verification',

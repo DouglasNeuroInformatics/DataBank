@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Form } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -14,7 +16,7 @@ export type CreateAccountFormProps = {
 };
 
 export const CreateAccountForm = ({ onSubmit }: CreateAccountFormProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <Form<CreateAccountData>
       content={{

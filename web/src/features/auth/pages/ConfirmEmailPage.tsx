@@ -18,7 +18,7 @@ export const ConfirmEmailPage = () => {
   const auth = useAuthStore();
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const [seconds, setSeconds] = useState<number>();
 
   useEffect(() => {

@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
 
 export const LandingHeader = () => {
-  const { i18n, t } = useTranslation();
+  const { i18n, t } = useTranslation('common');
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (
@@ -52,7 +52,7 @@ export const LandingHeader = () => {
               )}
               to="/public"
             >
-              {t('View Datasets')}
+              {t('viewDatasets')}
             </Link>
             <Link
               className={clsx(

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -8,7 +9,7 @@ type CountdownProps = {
 
 export const Countdown = ({ seconds }: CountdownProps) => {
   const [count, setCount] = useState(seconds);
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   useEffect(() => {
     if (count === 0) return;

@@ -17,7 +17,7 @@ export type ActivityCardProps = {
 };
 
 export const ActivityCard = ({ activity, fullName, timestamp }: ActivityCardProps) => {
-  const { i18n, t } = useTranslation();
+  const { i18n, t } = useTranslation('common');
 
   /** Return a string representing the time passed since the timestamp */
   const formatTimestamp = useCallback(

@@ -15,7 +15,7 @@ export const SharedPage = () => {
   const navigate = useNavigate();
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>();
   const [searchTerm, setSearchTerm] = useState('');
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const fetchAvailable = async () => {
     const response = await axios.get<DatasetInfo[]>('/v1/datasets/available');

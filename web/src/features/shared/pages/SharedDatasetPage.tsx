@@ -11,7 +11,7 @@ import { useDataset } from '@/hooks/useDataset';
 export const SharedDatasetPage = () => {
   const params = useParams();
   const { dataset, download, table } = useDataset(params.id!);
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   return dataset ? (
     <div className="flex h-full w-full flex-col">

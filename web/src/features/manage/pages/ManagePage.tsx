@@ -14,7 +14,7 @@ import { useAuthStore } from '@/stores/auth-store';
 export const ManagePage = () => {
   const auth = useAuthStore();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>();
   const [searchTerm, setSearchTerm] = useState('');
 

@@ -10,6 +10,7 @@ import { P, match } from 'ts-pattern';
 import { type Simplify } from 'type-fest';
 import { ZodError, z } from 'zod';
 
+import { LoadingFallback } from '@/components';
 import { AnimatedCheckIcon } from '@/components/AnimatedCheckIcon';
 
 import { Dropzone } from './Dropzone';
@@ -69,7 +70,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
   // const [result, setResult] = useState<DropzoneResult | { isProcessing: boolean } | null>(null);
   const [result, setResult] = useState<DropzoneResult | null>(null);
   const notifications = useNotificationsStore();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   /** Function to validate the structure of the parsed data and infer types */
   const validate = useCallback(async (parsedData: unknown) => {

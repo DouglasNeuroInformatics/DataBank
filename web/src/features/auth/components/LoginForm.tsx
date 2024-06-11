@@ -10,7 +10,7 @@ export type LoginFormProps = {
 };
 
 export const LoginForm = ({ onSubmit }: LoginFormProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   return (
     <Form

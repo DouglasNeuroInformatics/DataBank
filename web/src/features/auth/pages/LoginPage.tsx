@@ -14,7 +14,7 @@ import { LoginForm } from '../components/LoginForm';
 export const LoginPage = () => {
   const auth = useAuthStore();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   useEffect(() => {
     if (auth.accessToken) {
