@@ -24,7 +24,7 @@ export class UsersService {
     ...rest
   }: CreateUserDto): Promise<Omit<User, 'hashedPassword'>> {
     const userExists = await this.findByEmail(email);
-    if (userExists!) {
+    if (userExists) {
       throw new ConflictException(`User with the provided email already exists: ${email}`);
     }
     const hashedPassword = await this.cryptoService.hashPassword(password);
@@ -47,12 +47,9 @@ export class UsersService {
   async findByEmail(email: string) {
     const user = await this.userModel.findUnique({
       where: {
-        id: email
+        email: email
       }
     });
-    if (!user) {
-      throw new NotFoundException('User with email ' + email + ' is not found!');
-    }
     return user;
   }
 
