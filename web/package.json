@@ -9,7 +9,9 @@
     "dev": "pnpm vite",
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@douglasneuroinformatics/libui": "^2.5.2",
@@ -18,6 +20,7 @@
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "@import-meta-env/unplugin": "^0.5.1",
+    "@storybook/addon-themes": "^8.1.7",
     "@tanstack/react-query": "^5.37.1",
     "@tanstack/react-query-devtools": "^5.37.1",
     "axios": "^1.6.7",
@@ -41,8 +44,18 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^1.5.0",
     "@douglasneuroinformatics/form-types": "^5.2.0",
     "@headlessui/tailwindcss": "^0.2.0",
+    "@storybook/addon-essentials": "^8.1.7",
+    "@storybook/addon-interactions": "^8.1.7",
+    "@storybook/addon-links": "^8.1.7",
+    "@storybook/addon-onboarding": "^8.1.7",
+    "@storybook/blocks": "^8.1.7",
+    "@storybook/builder-vite": "^8.1.7",
+    "@storybook/react": "^8.1.7",
+    "@storybook/react-vite": "^8.1.7",
+    "@storybook/test": "^8.1.7",
     "@tailwindcss/container-queries": "^0.1.1",
     "@types/papaparse": "^5.3.14",
     "@types/react": "^18.2.64",
@@ -51,6 +64,8 @@
     "autoprefixer": "^10.4.18",
     "postcss": "^8.4.35",
     "prettier-plugin-tailwindcss": "^0.5.12",
+    "prop-types": "^15.8.1",
+    "storybook": "^8.1.7",
     "tailwindcss": "^3.4.1",
     "vite": "^4.4.10"
   }

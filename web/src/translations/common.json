@@ -19,13 +19,29 @@
     "en": "View Datasets",
     "fr": "Voir les ensembles de données"
   },
+  "home": {
+    "en": "Home Page",
+    "fr": "page d'accueil"
+  },
   "login": {
     "en": "Login",
     "fr": "Connexion"
   },
+  "manageDataset": {
+    "en": "Manage Dataset",
+    "fr": "Gérer l'ensemble de données"
+  },
+  "publicDatasets": {
+    "en": "Public Datasets",
+    "fr": "Ensembles de données publics"
+  },
   "createAccount": {
     "en": "Create Account",
     "fr": "Créer un compte"
+  },
+  "viewPublicDatasets": {
+    "en": "View Public Datasets",
+    "fr": "afficher les ensembles de données publics"
   },
   "verifyAccount": {
     "en": "Verify Account",

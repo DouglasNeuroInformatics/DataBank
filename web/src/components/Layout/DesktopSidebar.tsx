@@ -4,8 +4,8 @@ import { ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { Link, NavLink } from 'react-router-dom';
 
 import { Logo } from '@/components';
+import i18n from '@/services/i18n';
 
-import { UserDropup } from './UserDropup';
 import { type NavItem } from './types';
 
 export type DesktopSidebarProps = {
@@ -34,7 +34,15 @@ export const DesktopSidebar = ({ navigation }: DesktopSidebarProps) => {
       </div>
       <div className="flex flex-shrink flex-col items-center space-y-3">
         <ThemeToggle className="hover:backdrop-brightness-150" />
-        <UserDropup />
+        <button
+          className="block w-full p-2 text-center first-letter:capitalize hover:bg-slate-700"
+          type="button"
+          onClick={() => {
+            void i18n.changeLanguage(i18n.resolvedLanguage === 'en' ? 'fr' : 'en');
+          }}
+        >
+          {i18n.resolvedLanguage === 'en' ? 'Fr' : 'En'}
+        </button>
       </div>
     </div>
   );

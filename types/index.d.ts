@@ -15,13 +15,13 @@ export type AuthPayload = {
 export type UserRole = 'ADMIN' | 'STANDARD';
 
 export type CurrentUser = {
-  id: string;
+  confirmedAt: Date | null | undefined;
   email: string;
   firstName: string;
+  id: string;
   lastName: string;
   role: UserRole;
   verifiedAt: Date | null | undefined;
-  confirmedAt: Date | null | undefined;
 };
 
 export type LoginCredentials = {
@@ -40,25 +40,25 @@ export type EmailConfirmationProcedureInfo = {
 /** USER */
 
 export type TUser = {
+  confirmedAt: null | number | undefined;
+  creationTime?: number;
+  email: string;
   firstName: string;
   lastName: string;
-  email: string;
   role: UserRole;
-  verifiedAt: number | null | undefined;
-  confirmedAt: number | null | undefined;
-  creationTime?: number;
+  verifiedAt: null | number | undefined;
 };
 
 /** Activity */
 
 export type CreateDatasetActivity = {
-  kind: 'CREATED_DATASET';
   datasetName: string;
+  kind: 'CREATED_DATASET';
 };
 
 export type UpdateDatasetActivity = {
-  kind: 'UPDATED_DATASET';
   datasetName: string;
+  kind: 'UPDATED_DATASET';
 };
 
 export type Activity = CreateDatasetActivity | UpdateDatasetActivity;
@@ -71,9 +71,9 @@ export type SetupState = {
 
 export type SetupOptions = {
   admin: {
+    email: string;
     firstName: string;
     lastName: string;
-    email: string;
     password: string;
   };
 
@@ -99,4 +99,19 @@ export type TManualVerification = {
   kind: 'MANUAL_VERIFICATION';
 };
 
-export type TVerificationInfo = TVerificationWithRegex | TVerificationUponConfirmEmail | TManualVerification;
+export type TVerificationInfo = TManualVerification | TVerificationUponConfirmEmail | TVerificationWithRegex;
+
+// 2024-06 new types for the open data bank
+
+// Datasets
+export type DatasetInfo = {
+  createdAt: Date;
+  description: string;
+  id: string;
+  license: string;
+  managerIds: string[];
+  name: string;
+  updatedAt: Date;
+};
+
+export type DatasetCardProps = { isManager: boolean } & DatasetInfo;

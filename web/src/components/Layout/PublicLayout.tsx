@@ -17,17 +17,17 @@ export const PublicLayout = () => {
       {
         href: '/',
         icon: HomeIcon,
-        label: t('Home')
+        label: t('home')
       },
       {
         href: '/auth/login',
         icon: ArrowRightEndOnRectangleIcon,
-        label: t('Login')
+        label: t('login')
       },
       {
         href: '/auth/create-account',
         icon: UsersIcon,
-        label: t('Create Account')
+        label: t('createAccount')
       }
     ],
     [i18n.resolvedLanguage]
@@ -38,7 +38,7 @@ export const PublicLayout = () => {
       <DesktopSidebar navigation={navigation} />
       <MobileNavbar navigation={navigation} />
       <main className="h-full w-full flex-1 overflow-hidden">
-        <div className="mx-auto h-full w-full max-w-screen-2xl overflow-auto px-3 pb-3 sm:px-6 md:px-12 xl:px-24">
+        <div className="mx-auto h-full w-full max-w-screen-2xl overflow-auto px-3 pb-3 sm:px-6 md:px-12 mu:px-12 xl:px-24">
           <Outlet />
         </div>
       </main>
