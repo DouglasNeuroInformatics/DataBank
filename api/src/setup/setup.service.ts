@@ -53,10 +53,10 @@ export class SetupService {
 
     const createStarterDatasetDto: CreateTabularDatasetDto = {
       datasetType: 'TABULAR',
-      description: 'a sample dataset containing data about iris',
-      license: 'PUBLIC',
-      managerIds: [user.id],
-      name: 'iris',
+      // description: 'a sample dataset containing data about iris',
+      // license: 'PUBLIC',
+      // managerIds: [user.id],
+      // name: 'iris',
       primaryKeys: []
     };
     await this.datasetsService.createDataset(

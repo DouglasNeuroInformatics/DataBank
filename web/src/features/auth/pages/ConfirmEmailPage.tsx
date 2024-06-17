@@ -34,7 +34,7 @@ export const ConfirmEmailPage = () => {
   /** Send code and then set seconds to milliseconds remaining in minutes, rounded down, converted to seconds */
   const sendConfirmEmailCode = async () => {
     const response = await axios.post<EmailConfirmationProcedureInfo>('/v1/auth/confirm-email-code');
-    setSeconds(Math.floor((response.data.expiry.getTime() - Date.now()) / 60000) * 60);
+    setSeconds(Math.floor((new Date(response.data.expiry).getTime() - Date.now()) / 60000) * 60);
   };
 
   const verifyCode = async (code: number) => {

@@ -1,13 +1,12 @@
 import React from 'react';
 
+import type { SetupDto } from '@databank/types';
 import { Card, Heading, LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from 'react-i18next';
 
 import { Logo } from '@/components/Logo';
 
 import { SetupForm } from '../components/SetupForm';
-
-import type { SetupDto } from '../../../../../packages/schemas/src/setup/setup';
 
 export type SetupPageProps = {
   onSubmit: (data: SetupDto) => void;
