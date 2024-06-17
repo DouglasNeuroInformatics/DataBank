@@ -20,7 +20,7 @@ export const authRoutes: RouteObject = {
       element: <CreateAccountPage />
     },
     {
-      path: 'confirm-email',
+      path: 'confirm-email-code',
       element: <ConfirmEmailPage />
     },
     {
