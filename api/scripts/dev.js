@@ -1,8 +1,10 @@
 import nodemon from 'nodemon';
 
-import { clean, copyTranslations, outfile, watch } from './build.js';
+import { clean, copyIrisDataset, copyTranslations, outfile, watch } from './build.js';
 
 await clean();
+await copyIrisDataset();
 await copyTranslations();
 await watch();
+// @ts-ignore
 nodemon(outfile);

@@ -64,9 +64,16 @@ async function copyTranslations() {
   });
 }
 
+async function copyIrisDataset() {
+  fs.cp(path.resolve(import.meta.dirname, '../src/setup/resources'), path.resolve(outdir, 'resources'), {
+    recursive: true
+  });
+}
+
 async function build() {
   await clean();
   await copyTranslations();
+  await copyIrisDataset();
   await esbuild.build(options);
   console.log('Done!');
 }
@@ -105,4 +112,4 @@ if (isEntry) {
   build();
 }
 
-export { clean, copyTranslations, outfile, watch };
+export { clean, copyIrisDataset, copyTranslations, outfile, watch };
