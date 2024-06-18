@@ -69,7 +69,7 @@ export type SetupState = {
   isSetup: boolean | null;
 };
 
-export type SetupOptions = {
+export type SetupDto = {
   admin: {
     email: string;
     firstName: string;
@@ -81,27 +81,25 @@ export type SetupOptions = {
 };
 
 export type TSetupConfig = {
-  verificationInfo: TVerificationInfo;
+  userVerification: TVerificationInfo;
 };
 
 /** Verification */
 
 export type TVerificationWithRegex = {
-  kind: 'VERIFICATION_WITH_REGEX';
+  kind: 'REGEX_EMAIL';
   regex: string;
 };
 
 export type TVerificationUponConfirmEmail = {
-  kind: 'VERIFICATION_UPON_CONFIRM_EMAIL';
+  kind: 'CONFIRM_EMAIL';
 };
 
 export type TManualVerification = {
-  kind: 'MANUAL_VERIFICATION';
+  kind: 'MANUAL';
 };
 
 export type TVerificationInfo = TManualVerification | TVerificationUponConfirmEmail | TVerificationWithRegex;
-
-// 2024-06 new types for the open data bank
 
 // Datasets
 export type DatasetInfo = {

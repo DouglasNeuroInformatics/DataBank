@@ -19,7 +19,7 @@ export class SetupController {
   @Get()
   @RouteAccess('public')
   getState() {
-    return this.setupService.getSetupConfig();
+    return this.setupService.getState();
   }
 
   @ApiOperation({

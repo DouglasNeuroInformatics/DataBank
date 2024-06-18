@@ -1,14 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { z } from 'zod';
 
-// FIX this messy import, use @databank/schemas instead
-import { $SetupDto } from '../../../packages/schemas/src/setup/setup';
+const $SetupState = z.object({
+  isSetup: z.boolean()
+});
 
 export function useSetupState() {
   return useQuery({
     queryFn: async () => {
       const response = await axios.get('/v1/setup');
-      return $SetupDto.parseAsync(response.data);
+      return $SetupState.parseAsync(response.data);
     },
     queryKey: ['setup-state']
   });

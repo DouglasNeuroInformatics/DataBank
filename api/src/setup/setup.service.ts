@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import type { UserVerification } from '@prisma/client';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
@@ -20,11 +21,19 @@ export class SetupService {
   ) {}
 
   async getSetupConfig() {
-    const setupConfig = await this.setupModel.findMany();
-    if (!setupConfig) {
+    const setup = await this.setupModel.findFirst({
+      include: {
+        setupConfig: {
+          include: {
+            userVerification: true
+          }
+        }
+      }
+    });
+    if (!setup?.setupConfig) {
       throw new NotFoundException('Setup Config not found in the database.');
     }
-    return setupConfig;
+    return setup.setupConfig;
   }
 
   async getState() {
@@ -33,10 +42,10 @@ export class SetupService {
 
   async getVerificationInfo() {
     const setupConfig = await this.getSetupConfig();
-    if (!setupConfig[0]?.userVerification) {
+    if (!setupConfig.userVerification) {
       throw new NotFoundException('Cannot access verification info.');
     }
-    return setupConfig[0]?.userVerification;
+    return setupConfig.userVerification as UserVerification;
   }
 
   async initApp({ admin, setupConfig }: SetupDto) {
@@ -47,7 +56,7 @@ export class SetupService {
 
     await this.setupModel.create({
       data: {
-        userVerification: setupConfig.userVerification
+        setupConfig: setupConfig
       }
     });
 

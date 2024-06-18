@@ -2,11 +2,10 @@
 
 import React from 'react';
 
+import type { SetupDto } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-
-import type { SetupDto } from '../../../../../packages/schemas/src/setup/setup';
 
 type SetupFormProps = {
   onSubmit: (data: SetupDto) => void;
@@ -44,16 +43,16 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
           title: t('setupAdminTitle')
         },
         {
-          description: 'Admin selects the method for user verification',
+          description: t('verificationSectionDescription'),
           fields: {
             verificationType: {
               kind: 'string',
               variant: 'select',
-              label: 'Verification Method',
+              label: t('verificationMethods'),
               options: {
-                MANUAL: 'Manually verify users by the admin',
-                CONFIRM_EMAIL: 'Automatically verify users when they confirm their emails',
-                REGEX_EMAIL: 'Verify users by matching their emails with a predefined regex'
+                MANUAL: t('manualVerification'),
+                CONFIRM_EMAIL: t('verifyWhenConfirmEmail'),
+                REGEX_EMAIL: t('verifyWithEmailRegex')
               }
             },
             verificationRegex: {
@@ -63,7 +62,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
                 if (data?.verificationType === 'REGEX_EMAIL') {
                   return {
                     kind: 'string',
-                    label: 'Regular expression',
+                    label: t('regularExpression'),
                     variant: 'input'
                   };
                 }
@@ -71,7 +70,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               }
             }
           },
-          title: 'User Verification Options'
+          title: t('verificationSectionTitle')
         }
       ]}
       submitBtnLabel={t('submit')}
@@ -80,7 +79,6 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
         firstName: z.string().min(1),
         lastName: z.string().min(1),
         password: z.string().min(1),
-        role: z.literal('Admin'),
         verificationRegex: z.string().optional(),
         verificationType: z.enum(['REGEX_EMAIL', 'CONFIRM_EMAIL', 'MANUAL'])
       })}
@@ -91,12 +89,11 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               email: data.email,
               firstName: data.firstName,
               lastName: data.lastName,
-              password: data.password,
-              role: 'ADMIN'
+              password: data.password
             },
             setupConfig: {
               userVerification: {
-                method: data.verificationType,
+                kind: 'REGEX_EMAIL',
                 regex: data.verificationRegex
               }
             }
@@ -107,12 +104,11 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               email: data.email,
               firstName: data.firstName,
               lastName: data.lastName,
-              password: data.password,
-              role: 'ADMIN'
+              password: data.password
             },
             setupConfig: {
               userVerification: {
-                method: data.verificationType
+                kind: 'MANUAL'
               }
             }
           });

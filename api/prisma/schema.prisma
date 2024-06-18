@@ -191,14 +191,18 @@ type DatetimeColumnValidation {
 
 // ---------------- Setup ----------------
 model Setup {
-  id               String           @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt        DateTime         @default(now()) @db.Date
-  updatedAt        DateTime         @default(now()) @db.Date
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime    @default(now()) @db.Date
+  updatedAt   DateTime    @default(now()) @db.Date
+  setupConfig SetupConfig
+}
+
+type SetupConfig {
   userVerification UserVerification
 }
 
 type UserVerification {
-  method     VerificationMethod
+  kind       VerificationMethod
   emailRegex String?
 }
 

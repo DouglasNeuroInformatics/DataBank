@@ -47,6 +47,34 @@
     "en": "Verify Account",
     "fr": "Vérifier le compte"
   },
+  "verificationMethods": {
+    "en": "Verification Methods",
+    "fr": "Méthodes de vérification"
+  },
+  "manualVerification": {
+    "en": "Manual Verification",
+    "fr": "Vérification manuelle"
+  },
+  "verifyWhenConfirmEmail": {
+    "en": "Verify When Confirming Email",
+    "fr": "Vérifier lors de la confirmation de l'email"
+  },
+  "verifyWithEmailRegex": {
+    "en": "Verify With Email Regex",
+    "fr": "Vérifier avec Regex de l'email"
+  },
+  "verificationSectionTitle": {
+    "en": "User Verification Options",
+    "fr": "Options de vérification de l'utilisateur"
+  },
+  "verificationSectionDescription": {
+    "en": "Admin selects the method for user verification",
+    "fr": "L'administrateur sélectionne la méthode de vérification de l'utilisateur"
+  },
+  "regularExpression": {
+    "en": "Regular Expression",
+    "fr": "Expression Régulière"
+  },
   "pleaseSignIn": {
     "en": "Please sign in",
     "fr": "Veuillez vous connecter"

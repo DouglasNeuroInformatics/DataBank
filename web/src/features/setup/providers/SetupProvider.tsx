@@ -16,7 +16,7 @@ export const SetupProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [setupStateQuery.data]);
 
-  if (setupStateQuery.data) {
+  if (setupStateQuery.data?.isSetup) {
     return children;
   } else if (createSetupStateMutation.isPending) {
     return <SetupLoadingPage subtitle="Setup Loading Subtitle" title="Setup Loading Title" />;
