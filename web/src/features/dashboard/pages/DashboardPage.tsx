@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import type { RouteObject } from 'react-router-dom';
 
 import { Heading } from '@/components/Heading';
 
@@ -60,4 +61,9 @@ export const DashboardPage = () => {
       </div>
     </div>
   );
+};
+
+export const DashboardRoute: RouteObject = {
+  element: <DashboardPage />,
+  path: 'dashboard'
 };

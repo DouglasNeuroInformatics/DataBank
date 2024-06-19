@@ -6,7 +6,7 @@ const $PermissionLevel: Zod.ZodType<PermissionLevel> = z.enum(['PUBLIC', 'LOGIN'
 // ---------------------- Column Summaries ---------------------
 const $BaseSummary = z.object({
   count: z.number().int(),
-  notNullCount: z.number().int()
+  nullCount: z.number().int()
 });
 type BaseSummary = z.infer<typeof $BaseSummary>;
 

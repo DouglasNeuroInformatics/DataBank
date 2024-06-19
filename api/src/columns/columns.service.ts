@@ -7,7 +7,7 @@ import type { Model } from '@/prisma/prisma.types';
 import type { GetColumnViewDto } from '@/projects/zod/projects';
 import { type Series, pl } from '@/vendor/nodejs-polars.js';
 
-import type { CreateTabularColumnDto, UpdateTabularColumnDto } from './zod/columns';
+import type { UpdateTabularColumnDto } from './zod/columns';
 
 @Injectable()
 export class ColumnsService {
@@ -38,129 +38,140 @@ export class ColumnsService {
     });
   }
 
-  async create(tabularColumn: CreateTabularColumnDto) {
-    return await this.columnModel.create({
-      data: tabularColumn
-    });
-  }
-
   async createFromSeries(tabularDataId: string, colSeries: Series) {
     // create a float column
     if (colSeries.isFloat()) {
-      const floatSummary = await this.calculateSummaryOnSeries('FLOAT', colSeries);
-      if (!floatSummary || !floatSummary.floatSummary) {
+      const floatSummary = this.calculateSummaryOnSeries('FLOAT', colSeries);
+      if (!floatSummary.floatSummary) {
         throw new NotFoundException('Float summary NOT FOUND!');
       }
-      await this.create({
-        dataPermission: 'MANAGER',
-        floatData: colSeries.toArray(),
-        kind: 'FLOAT',
-        name: colSeries.name,
-        nullable: colSeries.nullCount() != 0,
-        // numericColumnValidation: {
-        //   max: col.max(),
-        //   min: col.min()
-        // },
-        summary: {
-          count: floatSummary.count,
-          ...floatSummary.floatSummary,
-          notNullCount: floatSummary.notNullCount
-        },
-        summaryPermission: 'MANAGER',
-        tabularDataId: tabularDataId
-      });
-    }
 
-    // create an int column
-    if (colSeries.isNumeric()) {
-      const intSummary = await this.calculateSummaryOnSeries('INT', colSeries);
-      if (!intSummary || !intSummary.intSummary) {
+      await this.columnModel.create({
+        data: {
+          dataPermission: 'MANAGER',
+          floatData: colSeries.toArray(),
+          kind: 'FLOAT',
+          name: colSeries.name,
+          nullable: colSeries.nullCount() != 0,
+          // numericColumnValidation: {
+          //   max: col.max(),
+          //   min: col.min()
+          // },
+          summary: {
+            count: colSeries.len() - colSeries.nullCount(),
+            floatSummary: floatSummary.floatSummary,
+            nullCount: colSeries.nullCount()
+          },
+          summaryPermission: 'MANAGER',
+          tabularDataId: tabularDataId
+        }
+      });
+    } // create an int column
+    else if (colSeries.isNumeric()) {
+      const intSummary = this.calculateSummaryOnSeries('INT', colSeries);
+      if (!intSummary?.intSummary) {
         throw new NotFoundException('Int summary NOT FOUND!');
       }
-      await this.create({
-        dataPermission: 'MANAGER',
-        intData: colSeries.toArray(),
-        kind: 'INT',
-        name: colSeries.name,
-        // numericColumnValidation: {
-        //   max: col.max(),
-        //   min: col.min()
-        nullable: colSeries.nullCount() != 0,
-        // },
-        summary: {
-          count: intSummary.count,
-          notNullCount: intSummary.notNullCount,
-          ...intSummary.intSummary
-        },
-        summaryPermission: 'MANAGER',
-        tabularDataId: tabularDataId
+      await this.columnModel.create({
+        data: {
+          dataPermission: 'MANAGER',
+          intData: colSeries.toArray(),
+          kind: 'INT',
+          name: colSeries.name,
+          nullable: colSeries.nullCount() != 0,
+          // numericColumnValidation: {
+          //   max: col.max(),
+          //   min: col.min()
+          // },
+          summary: {
+            count: colSeries.len() - colSeries.nullCount(),
+            intSummary: intSummary.intSummary,
+            nullCount: colSeries.nullCount()
+          },
+          summaryPermission: 'MANAGER',
+          tabularDataId: tabularDataId
+        }
       });
     }
 
     // create a boolean column
     if (colSeries.isBoolean()) {
-      const enumSummary = await this.calculateSummaryOnSeries('BOOLEAN', colSeries);
-      if (!enumSummary || !enumSummary.enumSummary) {
+      const enumSummary = this.calculateSummaryOnSeries('BOOLEAN', colSeries);
+      if (!enumSummary?.enumSummary) {
         throw new NotFoundException('Enum summary NOT FOUND!');
       }
-      await this.create({
-        dataPermission: 'MANAGER',
-        enumData: colSeries.toArray(),
-        kind: 'ENUM',
-        name: colSeries.name,
-        nullable: colSeries.nullCount() != 0,
-        summary: {
-          count: enumSummary.count,
-          distribution: { ...enumSummary.enumSummary.distribution },
-          notNullCount: enumSummary.notNullCount
-        },
-        summaryPermission: 'MANAGER',
-        tabularDataId: tabularDataId
+      await this.columnModel.create({
+        data: {
+          dataPermission: 'MANAGER',
+          enumData: colSeries.toArray(),
+          kind: 'BOOLEAN',
+          name: colSeries.name,
+          nullable: colSeries.nullCount() != 0,
+          // numericColumnValidation: {
+          //   max: col.max(),
+          //   min: col.min()
+          // },
+          summary: {
+            count: colSeries.len() - colSeries.nullCount(),
+            enumSummary: enumSummary.enumSummary,
+            nullCount: colSeries.nullCount()
+          },
+          summaryPermission: 'MANAGER',
+          tabularDataId: tabularDataId
+        }
       });
     }
 
     // create a datetime column
     if (colSeries.isDateTime()) {
-      const datetimeSummary = await this.calculateSummaryOnSeries('DATETIME', colSeries);
-      if (!datetimeSummary || !datetimeSummary.datetimeSummary) {
+      const datetimeSummary = this.calculateSummaryOnSeries('DATETIME', colSeries);
+      if (!datetimeSummary?.datetimeSummary) {
         throw new NotFoundException('Datetime summary NOT FOUND!');
       }
-      await this.create({
-        dataPermission: 'MANAGER',
-        // date is represented as time difference from 1970-Jan-01
-        // datetimeColumnValidation: {
-        //   max: new Date(),
-        //   min: '1970-01-01'
-        // },
-        // datetime is represented as milliseconds from 1970-Jan-01 00:00:00
-        datetimeData: colSeries.toArray(),
-        kind: 'DATETIME',
-        name: colSeries.name,
-        nullable: colSeries.nullCount() != 0,
-        summary: {
-          count: datetimeSummary.count,
-          notNullCount: datetimeSummary.notNullCount,
-          ...datetimeSummary.datetimeSummary
-        },
-        summaryPermission: 'MANAGER',
-        tabularDataId: tabularDataId
+      await this.columnModel.create({
+        data: {
+          dataPermission: 'MANAGER',
+          datetimeData: colSeries.toArray(),
+          kind: 'DATETIME',
+          name: colSeries.name,
+          nullable: colSeries.nullCount() != 0,
+          // numericColumnValidation: {
+          //   max: col.max(),
+          //   min: col.min()
+          // },
+          summary: {
+            count: colSeries.len() - colSeries.nullCount(),
+            datetimeSummary: datetimeSummary.datetimeSummary,
+            nullCount: colSeries.nullCount()
+          },
+          summaryPermission: 'MANAGER',
+          tabularDataId: tabularDataId
+        }
       });
     }
 
     // create a string column
-    await this.create({
-      dataPermission: 'MANAGER',
-      kind: 'STRING',
-      name: colSeries.name,
-      // stringColumnValidation: {
-      //   minLength: 0
-      nullable: colSeries.nullCount() != 0,
-      // },
-      stringData: colSeries.toArray(),
-      summary: await this.calculateSummaryOnSeries('STRING', colSeries),
-      summaryPermission: 'MANAGER',
-      tabularDataId: tabularDataId
-    });
+    if (colSeries.isString()) {
+      await this.columnModel.create({
+        data: {
+          dataPermission: 'MANAGER',
+          kind: 'STRING',
+          name: colSeries.name,
+          nullable: colSeries.nullCount() != 0,
+          stringData: colSeries.toArray(),
+          // numericColumnValidation: {
+          //   max: col.max(),
+          //   min: col.min()
+          // },
+          summary: {
+            count: colSeries.len() - colSeries.nullCount(),
+            nullCount: colSeries.nullCount()
+          },
+          summaryPermission: 'MANAGER',
+          tabularDataId: tabularDataId
+        }
+      });
+    }
   }
 
   async deleteById(columnId: string) {
@@ -221,7 +232,7 @@ export class ColumnsService {
       );
     }
     // recalculate the summary for the column
-    columnView.summary = await this.calculateSummaryOnSeries(columnView.kind, currSeries);
+    columnView.summary = this.calculateSummaryOnSeries(columnView.kind, currSeries);
 
     return columnView;
   }
@@ -338,13 +349,13 @@ export class ColumnsService {
             booleanData: data.toArray(),
             enumColumnValidation: {},
             summary: {
-              count: data.len(),
+              count: data.len() - data.nullCount(),
               // valueCounts() function always return null.
               // issue opened on nodejs-polars github
               // enumSummary: {
               //   distribution: data.valueCounts().toJSON()
               // },
-              notNullCount: data.len() - data.nullCount()
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -361,8 +372,8 @@ export class ColumnsService {
             },
             stringData: data.toArray(),
             summary: {
-              count: data.len(),
-              notNullCount: data.len() - data.nullCount()
+              count: data.len() - data.nullCount(),
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -380,7 +391,7 @@ export class ColumnsService {
               min: data.min()
             },
             summary: {
-              count: data.len(),
+              count: data.len() - data.nullCount(),
               intSummary: {
                 max: data.max(),
                 mean: data.mean(),
@@ -389,7 +400,7 @@ export class ColumnsService {
                 mode: data.mode()[0],
                 std: data.rollingStd(data.len())[-1]
               },
-              notNullCount: data.len() - data.nullCount()
+              nullCount: data.len()
             }
           },
           where: {
@@ -407,7 +418,7 @@ export class ColumnsService {
               min: data.min()
             },
             summary: {
-              count: data.len(),
+              count: data.len() - data.nullCount(),
               floatSummary: {
                 max: data.max(),
                 mean: data.mean(),
@@ -415,7 +426,7 @@ export class ColumnsService {
                 min: data.min(),
                 std: data.rollingStd(data.len())[-1]
               },
-              notNullCount: data.len() - data.nullCount()
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -429,13 +440,13 @@ export class ColumnsService {
           data: {
             enumData: data.toArray(),
             summary: {
-              count: data.len(),
+              count: data.len() - data.nullCount(),
               // valueCounts() function always return null.
               // issue opened on nodejs-polars github
               // enumSummary: {
               //   distribution: data.valueCounts().toJSON()
               // },
-              notNullCount: data.len() - data.nullCount()
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -453,12 +464,12 @@ export class ColumnsService {
             },
             datetimeData: data.toArray(),
             summary: {
-              count: data.len(),
+              count: data.len() - data.nullCount(),
               datetimeSummary: {
                 max: new Date(),
                 min: '1970-01-01'
               },
-              notNullCount: data.len() - data.nullCount()
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -473,7 +484,7 @@ export class ColumnsService {
 
   async toggleColumnNullable(columnId: string) {
     const col = await this.getById(columnId);
-    if (col.nullable && col.summary.notNullCount !== col.summary.count) {
+    if (col.nullable && col.summary.nullCount !== col.summary.count) {
       throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
     }
 
@@ -486,7 +497,7 @@ export class ColumnsService {
       }
     });
 
-    return await this.prisma.$transaction([updateColumnNullable]);
+    return await updateColumnNullable;
   }
 
   async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumnDto) {
@@ -498,7 +509,7 @@ export class ColumnsService {
     });
   }
 
-  private async calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
+  private calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
     // Need to correctly compute the distribution for boolean and enum column
     switch (colType) {
       case 'BOOLEAN':
@@ -506,11 +517,11 @@ export class ColumnsService {
           count: currSeries.len() - currSeries.nullCount(),
           datetimeSummary: null,
           enumSummary: {
-            distribution: currSeries.valueCounts().toRecords() as unknown as Record<string, number>
+            distribution: currSeries.valueCounts().toRecords() as unknown as { [key: string]: number }
           },
           floatSummary: null,
           intSummary: null,
-          notNullCount: currSeries.nullCount()
+          nullCount: currSeries.nullCount()
         };
       case 'STRING':
         return {
@@ -519,7 +530,7 @@ export class ColumnsService {
           enumSummary: null,
           floatSummary: null,
           intSummary: null,
-          notNullCount: currSeries.nullCount()
+          nullCount: currSeries.nullCount()
         };
       case 'INT':
         return {
@@ -535,7 +546,7 @@ export class ColumnsService {
             mode: currSeries.mode()[0],
             std: currSeries.rollingStd(currSeries.len())[-1]
           },
-          notNullCount: currSeries.nullCount()
+          nullCount: currSeries.nullCount()
         };
       case 'FLOAT':
         return {
@@ -550,18 +561,18 @@ export class ColumnsService {
             std: currSeries.rollingStd(currSeries.len())[-1]
           },
           intSummary: null,
-          notNullCount: currSeries.nullCount()
+          nullCount: currSeries.nullCount()
         };
       case 'ENUM':
         return {
           count: currSeries.len() - currSeries.nullCount(),
           datetimeSummary: null,
           enumSummary: {
-            distribution: currSeries.valueCounts().toRecords() as unknown as Record<string, number>
+            distribution: currSeries.valueCounts().toRecords() as unknown as { [key: string]: number }
           },
           floatSummary: null,
           intSummary: null,
-          notNullCount: currSeries.nullCount()
+          nullCount: currSeries.nullCount()
         };
       case 'DATETIME':
         return {
@@ -573,7 +584,7 @@ export class ColumnsService {
           enumSummary: null,
           floatSummary: null,
           intSummary: null,
-          notNullCount: currSeries.nullCount()
+          nullCount: currSeries.nullCount()
         };
     }
   }

@@ -2,7 +2,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { UserVerification } from '@prisma/client';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
@@ -45,7 +44,7 @@ export class SetupService {
     if (!setupConfig.userVerification) {
       throw new NotFoundException('Cannot access verification info.');
     }
-    return setupConfig.userVerification as UserVerification;
+    return setupConfig.userVerification;
   }
 
   async initApp({ admin, setupConfig }: SetupDto) {
@@ -62,10 +61,10 @@ export class SetupService {
 
     const createStarterDatasetDto: CreateTabularDatasetDto = {
       datasetType: 'TABULAR',
-      // description: 'a sample dataset containing data about iris',
-      // license: 'PUBLIC',
-      // managerIds: [user.id],
-      // name: 'iris',
+      description: 'a sample dataset containing data about iris',
+      license: 'PUBLIC',
+      managerIds: [user.id],
+      name: 'iris',
       primaryKeys: []
     };
     await this.datasetsService.createDataset(

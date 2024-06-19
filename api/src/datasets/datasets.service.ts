@@ -100,7 +100,8 @@ export class DatasetsService {
       // file received through the network is stored in memory buffer which is converted to a string
       csvString = file.buffer.toString().replaceAll('\t', ','); // polars has a bug parsing tsv, this is a hack for it to work
     }
-    df = pl.readCSV(csvString, { tryParseDates: true });
+    // df = pl.readCSV(csvString, { tryParseDates: true });
+    df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
 
     const dataset = await this.datasetModel.create({
       data: {

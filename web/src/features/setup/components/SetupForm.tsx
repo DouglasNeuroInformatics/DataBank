@@ -108,7 +108,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
             },
             setupConfig: {
               userVerification: {
-                kind: 'MANUAL'
+                kind: data.verificationType
               }
             }
           });

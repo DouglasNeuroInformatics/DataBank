@@ -6,10 +6,8 @@ import type { AuthPayload } from '@databank/types';
 import axios from 'axios';
 import { BrowserRouter, Navigate, type RouteObject, useRoutes } from 'react-router-dom';
 
-import { Layout } from './components/Layout/Layout';
 import { authRoutes } from './features/auth';
-import { publicDatasetsRoute } from './features/dashboard';
-import { viewDatasetsRoute } from './features/dataset/pages/ViewDatasetsPage';
+import { protectedRoutes, publicDatasetsRoute } from './features/dashboard';
 import { LandingPage } from './features/landing';
 import { useAuthStore } from './stores/auth-store';
 
@@ -23,19 +21,6 @@ const publicRoutes: RouteObject[] = [
   {
     path: '*',
     element: <Navigate to={'/auth/login'} />
-  }
-];
-
-const protectedRoutes: RouteObject[] = [
-  authRoutes,
-  // other routes for pages that do not need the layout wrapper
-  {
-    path: 'dashboard',
-    element: <Layout />,
-    children: [
-      // many routes provided in the features folder that needs the layout template
-      viewDatasetsRoute
-    ]
   }
 ];
 

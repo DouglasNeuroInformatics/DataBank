@@ -43,7 +43,6 @@ const $CreateTabularDatasetDto = $DatasetInfo
   .omit({
     createdAt: true,
     id: true,
-    managerIDs: true,
     updatedAt: true
   })
   .extend({

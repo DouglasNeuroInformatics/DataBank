@@ -38,13 +38,6 @@ export class TabularDataService {
 
   // create tabular dataset
   async create(df: DataFrame, datasetId: string, primaryKeys: string[]) {
-    const tabularData = await this.tabularDataModel.create({
-      data: {
-        datasetId,
-        primaryKeys
-      }
-    });
-
     // for datasets without primary keys, generate a sequential id column
     if (primaryKeys.length === 0) {
       const indexArray = [];
@@ -59,6 +52,13 @@ export class TabularDataService {
     if (!this.primaryKeyCheck(primaryKeys, df)) {
       throw new ForbiddenException('Dataset failed primary keys check!');
     }
+
+    const tabularData = await this.tabularDataModel.create({
+      data: {
+        datasetId,
+        primaryKeys
+      }
+    });
 
     for (let col of df.getColumns()) {
       await this.columnsService.createFromSeries(tabularData.id, col);
