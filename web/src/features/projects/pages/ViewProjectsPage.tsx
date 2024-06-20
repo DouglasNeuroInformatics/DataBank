@@ -1,19 +1,15 @@
 /* eslint-disable perfectionist/sort-objects */
 import React from 'react';
 
-import type { DatasetCardProps } from '@databank/types';
 import type { RouteObject } from 'react-router-dom';
 
-import DatasetCard from '../components/DatasetCard';
+import { ProjectCard, type ProjectCardProps } from '../components/ProjectCard';
 
-// the dataset card should show a list of user emails and when the manager clicks remove user,
-// there should be a callback function for the
-
-const ViewDatasetsPage = () => {
-  const dummyDatasetsInfo: DatasetCardProps[] = [
+const ViewProjectsPage = () => {
+  const dummyProjectsInfo: ProjectCardProps[] = [
     {
       createdAt: new Date('2024-02-20'),
-      description: `This is a test dataset for the dataset card. 
+      description: `This is a test Project for the Project card. 
     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus 
     quibusdam exercitationem non distinctio tempore earum consectetur id 
     nisi facilis, at, inventore placeat dignissimos vel labore culpa in 
@@ -37,15 +33,16 @@ const ViewDatasetsPage = () => {
     laboriosam, temporibus adipisci at neque maiores porro? Natus dolor 
     eveniet ducimus.`,
       id: '001',
-      isManager: true,
-      license: 'Public',
-      managerIds: ['063b5c7', '063b5eb', '063b598', '063b537'],
-      name: 'Happiness Dataset',
-      updatedAt: new Date('2024-05-29')
+      userIds: ['063b5c7', '063b5eb', '063b598', '063b537'],
+      name: 'Happiness Project',
+      updatedAt: new Date('2024-05-29'),
+      isProjectManager: true,
+      expiry: new Date('2025-11-20'),
+      externalId: 'LETS_WORK_ON_A_PROJECT'
     },
     {
-      createdAt: new Date('2024-06-19'),
-      description: `This is a test dataset for the dataset card. 
+      createdAt: new Date('2024-02-20'),
+      description: `This is a test Project for the Project card. 
     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus 
     quibusdam exercitationem non distinctio tempore earum consectetur id 
     nisi facilis, at, inventore placeat dignissimos vel labore culpa in 
@@ -68,16 +65,17 @@ const ViewDatasetsPage = () => {
     est minus quam, quasi enim? Eos amet sapiente culpa. Officiis facilis 
     laboriosam, temporibus adipisci at neque maiores porro? Natus dolor 
     eveniet ducimus.`,
-      id: '002',
-      isManager: false,
-      license: 'Public',
-      managerIds: ['063b5c7', '063b5eb', '063b598', '063b537'],
-      name: 'Happiness Dataset',
-      updatedAt: new Date('2024-10-29')
+      id: '001',
+      userIds: ['063b5c7', '063b5eb', '063b598', '063b537'],
+      name: 'Happiness Project',
+      updatedAt: new Date('2024-05-29'),
+      isProjectManager: true,
+      expiry: new Date('2025-11-20'),
+      externalId: 'LETS_WORK_ON_A_PROJECT'
     },
     {
-      createdAt: new Date('2024-9-20'),
-      description: `This is a test dataset for the dataset card. 
+      createdAt: new Date('2024-02-20'),
+      description: `This is a test Project for the Project card. 
     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus 
     quibusdam exercitationem non distinctio tempore earum consectetur id 
     nisi facilis, at, inventore placeat dignissimos vel labore culpa in 
@@ -100,16 +98,17 @@ const ViewDatasetsPage = () => {
     est minus quam, quasi enim? Eos amet sapiente culpa. Officiis facilis 
     laboriosam, temporibus adipisci at neque maiores porro? Natus dolor 
     eveniet ducimus.`,
-      id: '003',
-      isManager: true,
-      license: 'Public',
-      managerIds: ['063b5c7', '063b5eb', '063b598', '063b537'],
-      name: 'Happiness Dataset',
-      updatedAt: new Date('2024-11-29')
+      id: '001',
+      userIds: ['063b5c7', '063b5eb', '063b598', '063b537'],
+      name: 'Happiness Project',
+      updatedAt: new Date('2024-05-29'),
+      isProjectManager: true,
+      expiry: new Date('2025-11-20'),
+      externalId: 'LETS_WORK_ON_A_PROJECT'
     },
     {
-      createdAt: new Date('2024-10-20'),
-      description: `This is a test dataset for the dataset card. 
+      createdAt: new Date('2024-02-20'),
+      description: `This is a test Project for the Project card. 
     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus 
     quibusdam exercitationem non distinctio tempore earum consectetur id 
     nisi facilis, at, inventore placeat dignissimos vel labore culpa in 
@@ -132,12 +131,46 @@ const ViewDatasetsPage = () => {
     est minus quam, quasi enim? Eos amet sapiente culpa. Officiis facilis 
     laboriosam, temporibus adipisci at neque maiores porro? Natus dolor 
     eveniet ducimus.`,
-      id: '004',
-      isManager: false,
-      license: 'Public',
-      managerIds: ['063b5c7', '063b5eb', '063b598', '063b537'],
-      name: 'WhatA Dataset',
-      updatedAt: new Date('2024-12-29')
+      id: '001',
+      userIds: ['063b5c7', '063b5eb', '063b598', '063b537'],
+      name: 'Happiness Project',
+      updatedAt: new Date('2024-05-29'),
+      isProjectManager: true,
+      expiry: new Date('2025-11-20'),
+      externalId: 'LETS_WORK_ON_A_PROJECT'
+    },
+    {
+      createdAt: new Date('2024-02-20'),
+      description: `This is a test Project for the Project card. 
+    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus 
+    quibusdam exercitationem non distinctio tempore earum consectetur id 
+    nisi facilis, at, inventore placeat dignissimos vel labore culpa in 
+    similique, laudantium tempora. Lorem ipsum dolor sit amet consectetur 
+    adipisicing elit. Vel tenetur minus quod numquam consequuntur, velit, 
+    obcaecati nobis aliquid sit temporibus mollitia tempora ducimus? Maxime 
+    voluptatem alias debitis nemo perspiciatis sapiente.
+    Distinctio ut perspiciatis possimus molestias magnam nisi deleniti 
+    repudiandae porro repellendus totam necessitatibus, error iusto 
+    reprehenderit dolor dolorum nostrum sit! Molestias molestiae autem 
+    suscipit eveniet nostrum pariatur dignissimos tenetur error.
+    Iure in dolor ab ipsa numquam excepturi repellendus sunt voluptates 
+    vel. Itaque, debitis vitae dolores temporibus fugit modi sit consectetur
+     excepturi. Laudantium impedit quam eligendi in accusamus nulla 
+     obcaecati odio?
+    Eligendi, iste excepturi nemo autem nesciunt, repellendus minima unde 
+    quod ullam nihil neque placeat pariatur odit expedita cupiditate ut 
+    labore accusantium nulla soluta maiores earum sed nam. Iste, odit temporibus?
+    Aut aliquam excepturi fugit, eveniet nesciunt repudiandae molestiae 
+    est minus quam, quasi enim? Eos amet sapiente culpa. Officiis facilis 
+    laboriosam, temporibus adipisci at neque maiores porro? Natus dolor 
+    eveniet ducimus.`,
+      id: '001',
+      userIds: ['063b5c7', '063b5eb', '063b598', '063b537'],
+      name: 'Happiness Project',
+      updatedAt: new Date('2024-05-29'),
+      isProjectManager: true,
+      expiry: new Date('2025-11-20'),
+      externalId: 'LETS_WORK_ON_A_PROJECT'
     }
   ];
 
@@ -145,19 +178,20 @@ const ViewDatasetsPage = () => {
   // // here should use a function to get all
   return (
     <ul>
-      {dummyDatasetsInfo.map((datasetInfo, i) => {
+      {dummyProjectsInfo.map((projectInfo, i) => {
         return (
           <>
             <li key={i}>
-              <DatasetCard
-                createdAt={datasetInfo.createdAt}
-                description={datasetInfo.description}
-                id={datasetInfo.id}
-                isManager={datasetInfo.isManager}
-                license={datasetInfo.license}
-                managerIds={datasetInfo.managerIds}
-                name={datasetInfo.name}
-                updatedAt={datasetInfo.updatedAt}
+              <ProjectCard
+                createdAt={projectInfo.createdAt}
+                description={projectInfo.description}
+                expiry={projectInfo.expiry}
+                externalId={projectInfo.externalId}
+                id={projectInfo.id}
+                isProjectManager={projectInfo.isProjectManager}
+                name={projectInfo.name}
+                updatedAt={projectInfo.updatedAt}
+                userIds={projectInfo.userIds}
               />
             </li>
           </>
@@ -167,7 +201,7 @@ const ViewDatasetsPage = () => {
   );
 };
 
-export const viewDatasetsRoute: RouteObject = {
-  path: 'datasets',
-  element: <ViewDatasetsPage />
+export const viewProjectsRoute: RouteObject = {
+  path: 'projects',
+  element: <ViewProjectsPage />
 };

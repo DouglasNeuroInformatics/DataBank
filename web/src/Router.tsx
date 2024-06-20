@@ -6,9 +6,14 @@ import type { AuthPayload } from '@databank/types';
 import axios from 'axios';
 import { BrowserRouter, Navigate, type RouteObject, useRoutes } from 'react-router-dom';
 
+import { Layout } from './components';
 import { authRoutes } from './features/auth';
-import { protectedRoutes, publicDatasetsRoute } from './features/dashboard';
+import { DashboardRoute, publicDatasetsRoute } from './features/dashboard';
+import { viewDatasetsRoute } from './features/dataset/pages/ViewDatasetsPage';
 import { LandingPage } from './features/landing';
+import { manageProjectRoute } from './features/projects/pages/ManageProjectPage';
+import { viewProjectsRoute } from './features/projects/pages/ViewProjectsPage';
+import { UserRoute } from './features/user';
 import { useAuthStore } from './stores/auth-store';
 
 const publicRoutes: RouteObject[] = [
@@ -16,11 +21,26 @@ const publicRoutes: RouteObject[] = [
   publicDatasetsRoute,
   {
     index: true,
+    path: '',
     element: <LandingPage />
   },
   {
     path: '*',
     element: <Navigate to={'/auth/login'} />
+  }
+];
+
+export const protectedRoutes: RouteObject[] = [
+  authRoutes,
+  publicDatasetsRoute,
+  {
+    index: true,
+    element: <LandingPage />
+  },
+  {
+    children: [DashboardRoute, viewDatasetsRoute, viewProjectsRoute, manageProjectRoute, UserRoute],
+    element: <Layout />,
+    path: 'portal'
   }
 ];
 

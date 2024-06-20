@@ -115,6 +115,10 @@
     "en": "Schema Validation Failed",
     "fr": "Échec de la validation du schéma"
   },
+  "viewProjects": {
+    "en": "View Projects",
+    "fr": "voir les projets"
+  },
   "datasetName": {
     "en": "Dataset Name",
     "fr": "Nom de l'ensemble de données"
@@ -286,5 +290,13 @@
   "setupPageTitle": {
     "en": "Setup Page Title",
     "fr": "Titre de la page de configuration"
+  },
+  "logout": {
+    "en": "Logout",
+    "fr": "Se déconnecter"
+  },
+  "preferences": {
+    "en": "Preferences",
+    "fr": "Préférences"
   }
 }

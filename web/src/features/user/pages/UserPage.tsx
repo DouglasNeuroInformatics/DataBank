@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { UserCircleIcon } from '@heroicons/react/24/solid';
+import type { RouteObject } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -23,4 +24,9 @@ export const UserPage = () => {
       <h3>{currentUser?.email}</h3>
     </div>
   );
+};
+
+export const UserRoute: RouteObject = {
+  element: <UserPage />,
+  path: 'user'
 };

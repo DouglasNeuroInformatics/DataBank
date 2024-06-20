@@ -1,15 +1,19 @@
 /* eslint-disable perfectionist/sort-objects */
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import type { DatasetCardProps } from '@databank/types';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from 'react-i18next';
-import type { RouteObject } from 'react-router-dom';
+import { type RouteObject, useNavigate } from 'react-router-dom';
+
+import { useAuthStore } from '@/stores/auth-store';
 
 import DatasetCard from '../components/DatasetCard';
 
 const ViewPublicDatasetsPage = () => {
   const { t } = useTranslation('common');
+  const auth = useAuthStore();
+  const navigate = useNavigate();
   const dummyDatasetInfo: DatasetCardProps = {
     createdAt: new Date('2024-02-20'),
     description: `This is a test dataset for the dataset card. 
@@ -48,6 +52,12 @@ const ViewPublicDatasetsPage = () => {
     dummyDatasetInfo,
     dummyDatasetInfo
   ];
+
+  useEffect(() => {
+    if (auth.accessToken) {
+      navigate('/portal/datasets');
+    }
+  }, [auth.accessToken]);
 
   // // useEffect to fetch all public datasets information
   // // here should use a function to get all

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
@@ -15,6 +15,14 @@ export const CreateAccountPage = () => {
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
   const { t } = useTranslation('common');
+
+  useEffect(() => {
+    if (auth.accessToken && auth.currentUser?.confirmedAt) {
+      navigate('/portal/dashboard');
+    } else if (auth.accessToken) {
+      navigate('/auth/confirm-email-code');
+    }
+  }, [auth.accessToken]);
 
   const createAccount = async (data: CreateAccountData) => {
     await axios.post('/v1/auth/account', data);

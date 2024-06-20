@@ -23,7 +23,9 @@ export const LandingHeader = () => {
         transition={{ duration: 0.5 }}
       >
         <div className="container flex flex-wrap items-center bg-inherit py-2">
-          <Logo className="m-2 mr-10 hidden h-10 w-auto md:block" />
+          <Link className="flex items-center justify-center" to="/">
+            <Logo className="m-2 mr-10 hidden h-10 w-auto md:block" />
+          </Link>
           <button
             className="m-2 md:hidden"
             type="button"

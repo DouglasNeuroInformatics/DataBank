@@ -20,14 +20,14 @@ export const Layout = () => {
         label: t('dashboard')
       },
       {
-        href: '/portal/view-datasets',
+        href: '/portal/datasets',
         icon: CircleStackIcon,
-        label: t('datasets')
+        label: t('viewDatasets')
       },
       {
-        href: '/portal/view-projects',
+        href: '/portal/projects',
         icon: ClipboardDocumentListIcon,
-        label: t('projects')
+        label: t('viewProjects')
       }
     ],
     [i18n.resolvedLanguage]
@@ -35,8 +35,8 @@ export const Layout = () => {
 
   return (
     <div className="flex h-screen flex-col lg:flex-row">
-      <DesktopSidebar navigation={navigation} />
-      <MobileNavbar navigation={navigation} />
+      <DesktopSidebar isLogIn={true} navigation={navigation} />
+      <MobileNavbar isLogIn={true} navigation={navigation} />
       <main className="h-full w-full flex-1 overflow-hidden">
         <div className="mx-auto h-full w-full max-w-screen-2xl overflow-auto px-3 pb-3 sm:px-6 md:px-12 xl:px-24">
           <Outlet />

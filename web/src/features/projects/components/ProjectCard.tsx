@@ -1,20 +1,38 @@
 import React from 'react';
 
-import type { DatasetCardProps } from '@databank/types';
 import { Badge } from '@douglasneuroinformatics/libui/components';
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
 
-const DatasetCard = ({
+export type ProjectInfo = {
+  createdAt: Date;
+  description: string;
+  expiry: Date;
+  externalId: string;
+  id: string;
+  name: string;
+  updatedAt: Date;
+  userIds: string[];
+};
+
+export type ProjectCardProps = { isProjectManager: boolean } & ProjectInfo;
+
+// use effect:
+// the current user will send a request to the backend with its currentUserId
+// the backend will determine if the user is a manager of the project and send the
+// object back for the frontend to render
+
+export const ProjectCard = ({
   createdAt,
   description,
+  expiry,
+  externalId,
   id,
-  isManager,
-  license,
-  managerIds,
+  isProjectManager,
   name,
-  updatedAt
-}: DatasetCardProps) => {
+  updatedAt,
+  userIds
+}: ProjectCardProps) => {
   return (
     <>
       <Card className="my-3">
@@ -24,15 +42,16 @@ const DatasetCard = ({
         </Card.Header>
         <Card.Content>
           <ul>
-            <li>Dataset Id: {id}</li>
+            <li>Project Id: {id}</li>
+            <li>External Id: {externalId}</li>
             <li>Created at: {createdAt.toDateString()}</li>
             <li>Updated at: {updatedAt.toDateString()}</li>
-            <li>Licence: {license}</li>
+            <li>Expiry: {expiry.toDateString()}</li>
             <li>
-              ManagerId:{' '}
-              {managerIds.map((element) => {
+              UserId:{' '}
+              {userIds.map((element) => {
                 return (
-                  <Badge key={`managerId-${element}`} variant={'secondary'}>
+                  <Badge key={`UserId-${element}`} variant={'secondary'}>
                     {element}
                   </Badge>
                 );
@@ -41,53 +60,53 @@ const DatasetCard = ({
           </ul>
         </Card.Content>
         <Card.Footer className="flex justify-between">
-          {isManager ? (
+          {isProjectManager ? (
             <Button
               variant={'primary'}
               onClick={() => {
-                alert('Entering Manage Dataset Page');
+                alert('Entering Manage Project Page');
               }}
             >
-              Manage Dataset
+              Manage Project
             </Button>
           ) : (
             <Button
               variant={'primary'}
               onClick={() => {
-                alert('Entering View Dataset Page');
+                alert('Entering View Project Page');
               }}
             >
-              View Dataset
+              View Project
             </Button>
           )}
-          {isManager && (
+          {isProjectManager && (
             <Button
               variant={'secondary'}
               onClick={() => {
-                alert('Added a new Manager');
+                alert('Added a new User');
               }}
             >
-              Add Manager
+              Add User
             </Button>
           )}
-          {isManager && (
+          {isProjectManager && (
             <Button
               variant={'secondary'}
               onClick={() => {
-                alert('Removed a manager');
+                alert('Removed a User');
               }}
             >
-              Remove Manager
+              Remove User
             </Button>
           )}
-          {isManager && (
+          {isProjectManager && (
             <Button
               variant={'danger'}
               onClick={() => {
-                alert('Deleting Dataset!');
+                alert('Deleting Project!');
               }}
             >
-              Delete Dataset
+              Delete Project
             </Button>
           )}
         </Card.Footer>
@@ -95,5 +114,3 @@ const DatasetCard = ({
     </>
   );
 };
-
-export default DatasetCard;
