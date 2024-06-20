@@ -4,6 +4,7 @@ import type { DatasetCardProps } from '@databank/types';
 import { Badge } from '@douglasneuroinformatics/libui/components';
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
+import { useNavigate } from 'react-router-dom';
 
 const DatasetCard = ({
   createdAt,
@@ -15,6 +16,19 @@ const DatasetCard = ({
   name,
   updatedAt
 }: DatasetCardProps) => {
+  const navigate = useNavigate();
+  const removeManager = () => {
+    return 555666;
+  };
+
+  const addManager = () => {
+    return 555666;
+  };
+
+  const deleteDataset = () => {
+    return 555666;
+  };
+
   return (
     <>
       <Card className="my-3">
@@ -42,51 +56,26 @@ const DatasetCard = ({
         </Card.Content>
         <Card.Footer className="flex justify-between">
           {isManager ? (
-            <Button
-              variant={'primary'}
-              onClick={() => {
-                alert('Entering Manage Dataset Page');
-              }}
-            >
+            <Button variant={'primary'} onClick={() => navigate('/portal/dataset')}>
               Manage Dataset
             </Button>
           ) : (
-            <Button
-              variant={'primary'}
-              onClick={() => {
-                alert('Entering View Dataset Page');
-              }}
-            >
+            <Button variant={'primary'} onClick={() => navigate('/portal/dataset')}>
               View Dataset
             </Button>
           )}
           {isManager && (
-            <Button
-              variant={'secondary'}
-              onClick={() => {
-                alert('Added a new Manager');
-              }}
-            >
+            <Button variant={'secondary'} onClick={addManager}>
               Add Manager
             </Button>
           )}
           {isManager && (
-            <Button
-              variant={'secondary'}
-              onClick={() => {
-                alert('Removed a manager');
-              }}
-            >
+            <Button variant={'secondary'} onClick={removeManager}>
               Remove Manager
             </Button>
           )}
           {isManager && (
-            <Button
-              variant={'danger'}
-              onClick={() => {
-                alert('Deleting Dataset!');
-              }}
-            >
+            <Button variant={'danger'} onClick={deleteDataset}>
               Delete Dataset
             </Button>
           )}
