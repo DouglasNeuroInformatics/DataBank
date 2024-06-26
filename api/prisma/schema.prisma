@@ -51,17 +51,16 @@ enum UserRole {
 
 // ---------------- Dataset ----------------
 model Dataset {
-  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
   name           String
   description    String?
-  createdAt      DateTime       @default(now()) @db.Date
-  updatedAt      DateTime       @default(now()) @db.Date
-  license        DatasetLicense @default(PUBLIC)
-  managers       User[]         @relation(fields: [managerIds], references: [id])
-  managerIds     String[]       @db.ObjectId
+  createdAt      DateTime        @default(now()) @db.Date
+  updatedAt      DateTime        @default(now()) @db.Date
+  license        DatasetLicense  @default(PUBLIC)
+  managers       User[]          @relation(fields: [managerIds], references: [id])
+  managerIds     String[]        @db.ObjectId
   datasetType    DatasetType
-  // need to make adjustment for this property
-  // initially set to "false", when the dataset is validated the managers can set this value to true
+  permission     PermissionLevel
   isReadyToShare Boolean
   tabularData    TabularData?
   // binaryData       BinaryData?
@@ -102,7 +101,7 @@ model TabularColumn {
   summary                  ColumnSummary
   dataPermission           PermissionLevel
   tabularData              TabularData               @relation(fields: [tabularDataId], references: [id], onDelete: Cascade)
-  tabularDataId            String                    @unique @db.ObjectId()
+  tabularDataId            String                    @db.ObjectId()
   // store the actual data in a pl.series(array) depending on the type of the column
   stringData               String[]
   intData                  Int[]

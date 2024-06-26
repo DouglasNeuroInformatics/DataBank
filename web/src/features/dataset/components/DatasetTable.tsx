@@ -85,7 +85,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                     );
                                   }}
                                 >
-                                  Set Matadata Permission Level
+                                  Set Metadata Permission Level
                                 </DropdownMenu.Item>
                                 <DropdownMenu.Item
                                   onClick={() => {

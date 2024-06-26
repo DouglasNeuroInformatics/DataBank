@@ -17,6 +17,7 @@ const DatasetCard = ({
   updatedAt
 }: DatasetCardProps) => {
   const navigate = useNavigate();
+
   const removeManager = () => {
     return 555666;
   };
@@ -38,11 +39,11 @@ const DatasetCard = ({
         </Card.Header>
         <Card.Content>
           <ul>
-            <li>Dataset Id: {id}</li>
-            <li>Created at: {createdAt.toDateString()}</li>
-            <li>Updated at: {updatedAt.toDateString()}</li>
-            <li>Licence: {license}</li>
-            <li>
+            <li key={id}>Dataset Id: {id}</li>
+            <li key={id + 'createdAt'}>Created at: {createdAt.toString()}</li>
+            <li key={id + 'updatedAt'}>Updated at: {updatedAt.toString()}</li>
+            <li key={id + license}>Licence: {license}</li>
+            <li key={id + 'managerIds'}>
               ManagerId:{' '}
               {managerIds.map((element) => {
                 return (

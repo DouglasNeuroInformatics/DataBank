@@ -104,7 +104,8 @@ export type TVerificationInfo = TManualVerification | TVerificationUponConfirmEm
 // Datasets
 export type DatasetInfo = {
   createdAt: Date;
-  description: string;
+  datasetType: 'BASE' | 'BINARY' | 'TABULAR';
+  description: null | string;
   id: string;
   license: string;
   managerIds: string[];

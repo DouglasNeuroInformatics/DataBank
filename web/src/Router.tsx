@@ -4,7 +4,7 @@ import React from 'react';
 
 import type { AuthPayload } from '@databank/types';
 import axios from 'axios';
-import { BrowserRouter, Navigate, type RouteObject, useRoutes } from 'react-router-dom';
+import { BrowserRouter, type RouteObject, useRoutes } from 'react-router-dom';
 
 import { Layout } from './components';
 import { authRoutes } from './features/auth';
@@ -22,12 +22,8 @@ const publicRoutes: RouteObject[] = [
   publicDatasetsRoute,
   {
     index: true,
-    path: '',
-    element: <LandingPage />
-  },
-  {
     path: '*',
-    element: <Navigate to={'/auth/login'} />
+    element: <LandingPage />
   }
 ];
 

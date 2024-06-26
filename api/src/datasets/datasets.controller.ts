@@ -42,8 +42,8 @@ export class DatasetsController {
     return this.datasetsService.deleteDataset(datasetId, currentUserId);
   }
 
-  @ApiOperation({ summary: 'Get All Datasets' })
-  @Get('available')
+  @ApiOperation({ summary: 'Get All Available Datasets' })
+  @Get()
   @RouteAccess({ role: 'STANDARD' })
   getAvailable(@CurrentUser('id') currentUserId: string) {
     return this.datasetsService.getAvailable(currentUserId);
@@ -54,6 +54,13 @@ export class DatasetsController {
   @RouteAccess({ role: 'STANDARD' })
   getById(@Param('id') datasetId: string, @CurrentUser('id') currentUserId: string) {
     return this.datasetsService.getById(datasetId, currentUserId);
+  }
+
+  @ApiOperation({ summary: 'Get Public Datasets' })
+  @Get('public')
+  @RouteAccess('public')
+  getPublic() {
+    return this.datasetsService.getPublic();
   }
 
   @Patch('manageDataset/managers/remove/:id/:managerIdToRemove')

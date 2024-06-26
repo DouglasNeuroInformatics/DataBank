@@ -1,3 +1,4 @@
+import type { DatasetCardProps } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 
@@ -100,8 +101,13 @@ export class DatasetsService {
       // file received through the network is stored in memory buffer which is converted to a string
       csvString = file.buffer.toString().replaceAll('\t', ','); // polars has a bug parsing tsv, this is a hack for it to work
     }
-    // df = pl.readCSV(csvString, { tryParseDates: true });
-    df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
+
+    if (createTabularDatasetDto.isJSON) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
+    } else {
+      df = pl.readCSV(csvString, { tryParseDates: true });
+    }
 
     const dataset = await this.datasetModel.create({
       data: {
@@ -109,7 +115,8 @@ export class DatasetsService {
         description: createTabularDatasetDto.description,
         isReadyToShare: false,
         managerIds: [managerId],
-        name: createTabularDatasetDto.name
+        name: createTabularDatasetDto.name,
+        permission: 'MANAGER'
       }
     });
 
@@ -210,6 +217,31 @@ export class DatasetsService {
     const tabularDataView = await this.tabularDataService.getViewById(projectDatasetDto);
     dataset.tabularData = tabularDataView;
     return dataset;
+  }
+
+  async getPublic() {
+    const publicDatasets = await this.datasetModel.findMany({
+      where: {
+        isReadyToShare: true,
+        permission: 'PUBLIC'
+      }
+    });
+
+    const resDatasetsInfo: DatasetCardProps[] = [];
+    publicDatasets.forEach((publicDataset) => {
+      resDatasetsInfo.push({
+        createdAt: publicDataset.createdAt,
+        datasetType: publicDataset.datasetType,
+        description: publicDataset.description,
+        id: publicDataset.id,
+        isManager: false,
+        license: publicDataset.license,
+        managerIds: publicDataset.managerIds,
+        name: publicDataset.name,
+        updatedAt: publicDataset.updatedAt
+      });
+    });
+    return resDatasetsInfo;
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
