@@ -123,18 +123,19 @@ export class AuthService {
     }
 
     await this.usersService.updateConfirmEmailInfo(user.email, null);
-    user.confirmedAt = new Date(Date.now());
-
+    await this.usersService.updateUser(user.id, {
+      confirmedAt: new Date()
+    });
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
     const verificationInfo = await this.setupService.getVerificationInfo();
     let isVerified: boolean;
 
-    if (verificationInfo.method === 'CONFIRM_EMAIL') {
+    if (verificationInfo.kind === 'CONFIRM_EMAIL') {
       isVerified = true;
-    } else if (verificationInfo.method === 'REGEX_EMAIL' && verificationInfo.emailRegex) {
+    } else if (verificationInfo.kind === 'REGEX_EMAIL' && verificationInfo.emailRegex) {
       isVerified = new RegExp(verificationInfo.emailRegex).test(user.email) ? true : false;
     } else {
-      throw new Error(`Unexpected verification method: ${verificationInfo.method}`);
+      throw new Error(`Unexpected verification method: ${verificationInfo.kind}`);
     }
 
     if (isVerified) {
