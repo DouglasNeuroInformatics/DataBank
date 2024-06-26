@@ -81,6 +81,7 @@ export class SetupService {
       ...admin,
       confirmedAt: new Date(Date.now()),
       datasetId: [],
+      role: 'ADMIN',
       verifiedAt: new Date(Date.now())
     });
   }
