@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from 'react';
 
 import type { DatasetCardProps } from '@databank/types';
+import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import axios from 'axios';
-import type { RouteObject } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { type RouteObject, useNavigate } from 'react-router-dom';
 
 import DatasetCard from '../components/DatasetCard';
 
@@ -11,6 +13,9 @@ import DatasetCard from '../components/DatasetCard';
 // there should be a callback function for the
 
 const ViewDatasetsPage = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
 
   useEffect(() => {
@@ -23,25 +28,38 @@ const ViewDatasetsPage = () => {
   }, []);
 
   return (
-    <ul>
-      {datasetsInfoArray?.map((datasetInfo, i) => {
-        return (
-          <li key={i}>
-            <DatasetCard
-              createdAt={datasetInfo.createdAt}
-              datasetType={'TABULAR'}
-              description={datasetInfo.description}
-              id={datasetInfo.id}
-              isManager={datasetInfo.isManager}
-              license={datasetInfo.license}
-              managerIds={datasetInfo.managerIds}
-              name={datasetInfo.name}
-              updatedAt={datasetInfo.updatedAt}
-            />
-          </li>
-        );
-      })}
-    </ul>
+    <Card>
+      <Card.Header>
+        <Card.Title className="text-3xl">{t('datasets')}</Card.Title>
+        <Button className="m-2" variant={'secondary'} onClick={() => navigate('/portal/createDataset')}>
+          Create Dataset
+        </Button>
+      </Card.Header>
+      <Card.Content>
+        <ul>
+          {datasetsInfoArray?.map((datasetInfo, i) => {
+            return (
+              <li key={i}>
+                <DatasetCard
+                  createdAt={datasetInfo.createdAt}
+                  datasetType={datasetInfo.datasetType}
+                  description={datasetInfo.description}
+                  id={datasetInfo.id}
+                  isManager={datasetInfo.isManager}
+                  isReadyToShare={false}
+                  license={datasetInfo.license}
+                  managerIds={datasetInfo.managerIds}
+                  name={datasetInfo.name}
+                  permission={datasetInfo.permission}
+                  updatedAt={datasetInfo.updatedAt}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      </Card.Content>
+      <Card.Footer className="flex justify-between"></Card.Footer>
+    </Card>
   );
 };
 

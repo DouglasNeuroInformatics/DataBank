@@ -151,6 +151,14 @@
     "en": "No",
     "fr": "Non"
   },
+  "datasets": {
+    "en": "Datasets",
+    "fr": "ensembles de données"
+  },
+  "createDatasetSuccess": {
+    "en": "successfully created dataset",
+    "fr": "ensemble de données créé avec succès"
+  },
   "unexpectedValue": {
     "en": "Unexpected Value",
     "fr": "Valeur inattendue"

@@ -95,6 +95,7 @@ export class DatasetsService {
   ) {
     let csvString: string;
     let df: DataFrame;
+
     if (typeof file === 'string') {
       csvString = file;
     } else {
@@ -102,12 +103,14 @@ export class DatasetsService {
       csvString = file.buffer.toString().replaceAll('\t', ','); // polars has a bug parsing tsv, this is a hack for it to work
     }
 
-    if (createTabularDatasetDto.isJSON) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
-    } else {
-      df = pl.readCSV(csvString, { tryParseDates: true });
-    }
+    // if (createTabularDatasetDto.isJSON) {
+    //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    //   df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
+    // } else {
+    //   df = pl.readCSV(csvString, { tryParseDates: true });
+    // }
+
+    df = pl.readCSV(csvString, { tryParseDates: true });
 
     const dataset = await this.datasetModel.create({
       data: {
@@ -120,7 +123,11 @@ export class DatasetsService {
       }
     });
 
-    await this.tabularDataService.create(df, dataset.id, createTabularDatasetDto.primaryKeys);
+    await this.tabularDataService.create(
+      df,
+      dataset.id,
+      createTabularDatasetDto.primaryKeys ? createTabularDatasetDto.primaryKeys.split(',') : []
+    );
 
     return dataset;
   }
@@ -235,9 +242,11 @@ export class DatasetsService {
         description: publicDataset.description,
         id: publicDataset.id,
         isManager: false,
+        isReadyToShare: false,
         license: publicDataset.license,
         managerIds: publicDataset.managerIds,
         name: publicDataset.name,
+        permission: 'MANAGER',
         updatedAt: publicDataset.updatedAt
       });
     });

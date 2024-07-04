@@ -18,18 +18,6 @@ const DatasetCard = ({
 }: DatasetCardProps) => {
   const navigate = useNavigate();
 
-  const removeManager = () => {
-    return 555666;
-  };
-
-  const addManager = () => {
-    return 555666;
-  };
-
-  const deleteDataset = () => {
-    return 555666;
-  };
-
   return (
     <>
       <Card className="my-3">
@@ -63,21 +51,6 @@ const DatasetCard = ({
           ) : (
             <Button variant={'primary'} onClick={() => navigate('/portal/dataset')}>
               View Dataset
-            </Button>
-          )}
-          {isManager && (
-            <Button variant={'secondary'} onClick={addManager}>
-              Add Manager
-            </Button>
-          )}
-          {isManager && (
-            <Button variant={'secondary'} onClick={removeManager}>
-              Remove Manager
-            </Button>
-          )}
-          {isManager && (
-            <Button variant={'danger'} onClick={deleteDataset}>
-              Delete Dataset
             </Button>
           )}
         </Card.Footer>

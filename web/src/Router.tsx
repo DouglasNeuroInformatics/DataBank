@@ -9,6 +9,7 @@ import { BrowserRouter, type RouteObject, useRoutes } from 'react-router-dom';
 import { Layout } from './components';
 import { authRoutes } from './features/auth';
 import { DashboardRoute, publicDatasetsRoute } from './features/dashboard';
+import { CreateDatasetRoute } from './features/dataset/pages/CreateDatasetPage';
 import { viewDatasetsRoute } from './features/dataset/pages/ViewDatasetsPage';
 import { viewOneDatasetRoute } from './features/dataset/pages/ViewOneDatasetPage';
 import { LandingPage } from './features/landing';
@@ -36,6 +37,7 @@ export const protectedRoutes: RouteObject[] = [
   },
   {
     children: [
+      CreateDatasetRoute,
       DashboardRoute,
       viewDatasetsRoute,
       viewOneDatasetRoute,

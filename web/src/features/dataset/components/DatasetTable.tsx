@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React from 'react';
 
 import type { DatasetInfo } from '@databank/types';
@@ -6,7 +7,11 @@ import { Card } from '@douglasneuroinformatics/libui/components';
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { HoverCard } from '@douglasneuroinformatics/libui/components';
 import { Table } from '@douglasneuroinformatics/libui/components';
+import { useDownload } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+
+// need a type for all columns metadata: an object with column names as keys and
+// the value with types of a union of all summaries
 
 export type TabularDataset = {
   columnIds: { [key: string]: string };
@@ -27,7 +32,20 @@ export type TabularDataset = {
 export type DatasetTableProps = { isManager: boolean } & TabularDataset;
 
 const DatasetTable = (tabularDataset: DatasetTableProps) => {
+  const download = useDownload();
   // useEffect to fetch the dataset from the server
+
+  const removeManager = () => {
+    return 555666;
+  };
+
+  const addManager = () => {
+    return 555666;
+  };
+
+  const deleteDataset = () => {
+    return 555666;
+  };
 
   return (
     <>
@@ -35,6 +53,21 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
         <Card.Header>
           <Card.Title>{tabularDataset.name}</Card.Title>
           <Card.Description>{tabularDataset.description}</Card.Description>
+          {tabularDataset.isManager && (
+            <>
+              <Button className="m-2" variant={'secondary'} onClick={addManager}>
+                Add Manager
+              </Button>
+
+              <Button className="m-2" variant={'secondary'} onClick={removeManager}>
+                Remove Manager
+              </Button>
+
+              <Button className="m-2" variant={'danger'} onClick={deleteDataset}>
+                Delete Dataset
+              </Button>
+            </>
+          )}
         </Card.Header>
         <Card.Content>
           <ul>
@@ -71,45 +104,35 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                               <>
                                 <DropdownMenu.Item
                                   onClick={() => {
-                                    alert(
-                                      `Send a request to the server to change the data permission level for column ${column} with columnId ${tabularDataset.columnIds[column]}`
-                                    );
+                                    return 'TODO';
                                   }}
                                 >
                                   Set Data Permission Level
                                 </DropdownMenu.Item>
                                 <DropdownMenu.Item
                                   onClick={() => {
-                                    alert(
-                                      `Send a request to the server to change the metadata permission level for column ${column} with columnId ${tabularDataset.columnIds[column]}`
-                                    );
+                                    return 'TODO';
                                   }}
                                 >
                                   Set Metadata Permission Level
                                 </DropdownMenu.Item>
                                 <DropdownMenu.Item
                                   onClick={() => {
-                                    alert(
-                                      `Send a request to the server to set nullable for column ${column} with columnId ${tabularDataset.columnIds[column]}`
-                                    );
+                                    return 'TODO';
                                   }}
                                 >
                                   Set Nullable
                                 </DropdownMenu.Item>
                                 <DropdownMenu.Item
                                   onClick={() => {
-                                    alert(
-                                      `Send a request to the server to change the data type for column ${column} with columnId ${tabularDataset.columnIds[column]}`
-                                    );
+                                    return 'TODO';
                                   }}
                                 >
                                   Change Type
                                 </DropdownMenu.Item>
                                 <DropdownMenu.Item
                                   onClick={() => {
-                                    alert(
-                                      `Send a request to the server to delete the column ${column} with columnId ${tabularDataset.columnIds[column]}`
-                                    );
+                                    return 'TODO';
                                   }}
                                 >
                                   Delete
@@ -126,9 +149,9 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                 <HoverCard.Content className="w-80">
                                   <div className="flex justify-between space-x-4">
                                     <div className="space-y-1">
-                                      <h4 className="text-sm font-semibold">{`Type: ${tabularDataset.metadata[column].type}`}</h4>
-                                      <h4 className="text-sm font-semibold">{`Nullable: ${tabularDataset.metadata[column].nullable}`}</h4>
-                                      <h4 className="text-sm font-semibold">{`Count: ${tabularDataset.metadata[column].summary.count}`}</h4>
+                                      <h4 className="text-sm font-semibold">{`Type: ${tabularDataset.metadata[column]?.type}`}</h4>
+                                      <h4 className="text-sm font-semibold">{`Nullable: ${tabularDataset.metadata[column]?.nullable}`}</h4>
+                                      <h4 className="text-sm font-semibold">{`Count: ${tabularDataset.metadata[column]?.summary.count}`}</h4>
                                     </div>
                                   </div>
                                 </HoverCard.Content>
@@ -160,31 +183,73 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                 className="m-2"
                 variant={'primary'}
                 onClick={() => {
-                  alert(`Entering Edit dataset info page`);
+                  return 'TODO';
                 }}
               >
                 Edit Dataset Information
               </Button>
+
               <Button
                 className="m-2"
                 variant={'primary'}
                 onClick={() => {
-                  alert(`Setting dataset to sharable`);
+                  return 'TODO';
                 }}
               >
                 Set Dataset Sharable
               </Button>
+
+              <Button className="m-2" variant={'secondary'}>
+                <DropdownMenu>
+                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
+                    Download Dataset
+                    <ChevronDownIcon className="size-[1rem]" />
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Content className="w-48">
+                    <DropdownMenu.Item
+                      onClick={async () => {
+                        await download('hello' + '.tsv', 'wowowowo\there\tis\ta\thello');
+                      }}
+                    >
+                      Download TSV
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item
+                      onClick={async () => {
+                        await download('hello' + '.csv', 'wowowowo,here,is,a,hello');
+                      }}
+                    >
+                      Download CSV
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu>
+              </Button>
+
+              <Button className="m-2" variant={'secondary'}>
+                <DropdownMenu>
+                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
+                    Download Metadata
+                    <ChevronDownIcon className="size-[1rem]" />
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Content className="w-48">
+                    <DropdownMenu.Item
+                      onClick={async () => {
+                        await download('hello' + '_dictionary_' + '.tsv', 'wowowowo\there\tis\ta\thello');
+                      }}
+                    >
+                      Download TSV
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item
+                      onClick={async () => {
+                        await download('hello' + '_dictionary_' + '.csv', 'wowowowo,here,is,a,hello');
+                      }}
+                    >
+                      Download CSV
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu>
+              </Button>
             </>
           )}
-          <Button
-            className="m-2"
-            variant={'secondary'}
-            onClick={() => {
-              alert(`Downloading Dataset ...`);
-            }}
-          >
-            Download Dataset
-          </Button>
         </Card.Footer>
       </Card>
     </>

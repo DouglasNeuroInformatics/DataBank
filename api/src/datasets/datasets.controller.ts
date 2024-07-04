@@ -26,7 +26,7 @@ export class DatasetsController {
   }
 
   @ApiOperation({ summary: 'Create Dataset' })
-  @Post()
+  @Post('create')
   @RouteAccess({ role: 'STANDARD' })
   @UseInterceptors(FileInterceptor('file'))
   createDataset(
@@ -52,7 +52,7 @@ export class DatasetsController {
 
   @ApiOperation({ summary: 'Get All Available Datasets' })
   @Get()
-  @RouteAccess('public')
+  @RouteAccess({ role: 'STANDARD' })
   getAvailable(@CurrentUser('id') currentUserId: string) {
     return this.datasetsService.getAvailable(currentUserId);
   }

@@ -102,8 +102,8 @@ export class ColumnsService {
       }
       await this.columnModel.create({
         data: {
+          booleanData: colSeries.toArray(),
           dataPermission: 'MANAGER',
-          enumData: colSeries.toArray(),
           kind: 'BOOLEAN',
           name: colSeries.name,
           nullable: colSeries.nullCount() != 0,
@@ -397,7 +397,9 @@ export class ColumnsService {
                 mean: data.mean(),
                 median: data.median(),
                 min: data.min(),
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 mode: data.mode()[0],
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 std: data.rollingStd(data.len())[-1]
               },
               nullCount: data.len()
@@ -424,6 +426,7 @@ export class ColumnsService {
                 mean: data.mean(),
                 median: data.median(),
                 min: data.min(),
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 std: data.rollingStd(data.len())[-1]
               },
               nullCount: data.nullCount()
@@ -479,6 +482,7 @@ export class ColumnsService {
         break;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return (await this.prisma.$transaction([removeFromCol, addToCol])) as unknown[];
   }
 
@@ -543,7 +547,9 @@ export class ColumnsService {
             mean: currSeries.mean(),
             median: currSeries.median(),
             min: currSeries.min(),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             mode: currSeries.mode()[0],
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             std: currSeries.rollingStd(currSeries.len())[-1]
           },
           nullCount: currSeries.nullCount()
@@ -558,6 +564,7 @@ export class ColumnsService {
             mean: currSeries.mean(),
             median: currSeries.median(),
             min: currSeries.min(),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             std: currSeries.rollingStd(currSeries.len())[-1]
           },
           intSummary: null,

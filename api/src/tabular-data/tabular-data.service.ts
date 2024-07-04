@@ -144,6 +144,7 @@ export class TabularDataService {
         return false;
       }
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const checkPrimaryKeysArray: boolean[] = df
       .select(...primaryKeys)
       .isUnique()

@@ -44,13 +44,15 @@ const ViewPublicDatasetsPage = () => {
                 <li key={i}>
                   <DatasetCard
                     createdAt={datasetInfo.createdAt}
-                    datasetType={'TABULAR'}
+                    datasetType={datasetInfo.datasetType}
                     description={datasetInfo.description}
                     id={datasetInfo.id}
                     isManager={datasetInfo.isManager}
+                    isReadyToShare={false}
                     license={datasetInfo.license}
                     managerIds={datasetInfo.managerIds}
                     name={datasetInfo.name}
+                    permission={'PUBLIC'}
                     updatedAt={datasetInfo.updatedAt}
                   />
                 </li>

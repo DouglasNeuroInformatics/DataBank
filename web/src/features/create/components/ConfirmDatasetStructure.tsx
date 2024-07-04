@@ -19,9 +19,9 @@ const DatasetStructureItem = (props: { label: string; value: string }) => {
   );
 };
 
-export type CreateDatasetData = DatasetFormData & {
-  data: Record<string, number | string>[];
-};
+export type CreateDatasetData = {
+  data: { [key: string]: number | string }[];
+} & DatasetFormData;
 
 export type ConfirmDatasetStructureProps = {
   dataset: CreateDatasetData;

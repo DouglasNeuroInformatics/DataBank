@@ -28,7 +28,7 @@ const $TabularData = z.object({
   columns: z.array($TabularColumn),
   datasetId: z.string(),
   id: z.string(),
-  primaryKeys: z.string().array()
+  primaryKeys: z.string()
 });
 
 const $TabularDatasetModel = $DatasetInfo.extend({
@@ -49,7 +49,7 @@ const $CreateTabularDatasetDto = $DatasetInfo
   })
   .extend({
     datasetType: z.literal('TABULAR'),
-    primaryKeys: z.string().array()
+    primaryKeys: z.string()
   });
 
 export type CreateTabularDatasetDto = z.infer<typeof $CreateTabularDatasetDto>;
