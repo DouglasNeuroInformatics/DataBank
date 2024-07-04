@@ -60,6 +60,13 @@ const CreateDatasetPage = () => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (!acceptedFiles[0]) {
+      notifications.addNotification({ type: 'error', message: 'Unexpected file error' });
+      throw console.error();
+    } else if (!acceptedFiles[0].name.includes('.csv') && !acceptedFiles[0].name.includes('.tsv')) {
+      notifications.addNotification({ type: 'error', message: 'Only CSV or TSV files are allowed!' });
+      throw console.error();
+    } else if (acceptedFiles[0].size > MAX_UPLOAD_FILE_SIZE) {
+      notifications.addNotification({ type: 'error', message: 'File size larger than 1 GB' });
       throw console.error();
     } else {
       setFile(acceptedFiles[0]);
@@ -156,22 +163,30 @@ const CreateDatasetPage = () => {
 
   return (
     <>
-      <div className="w-full mt-6 sm:max-w-md space-y-40">
-        <div className="h-auto cursor-pointer rounded-lg border-2 border-dashed border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
-          <AnimatePresence initial={false} mode="wait">
-            <motion.div
-              animate={{ opacity: 1 }}
-              className="flex h-full flex-col items-center justify-center"
-              exit={{ opacity: 0 }}
-              initial={{ opacity: 0 }}
-              key={'test'}
-              transition={{ duration: 1 }}
-            >
-              {element}
-            </motion.div>
-          </AnimatePresence>
+      <motion.div
+        animate={{ opacity: 1 }}
+        className="flex flex-grow h-full flex-col items-center justify-center"
+        exit={{ opacity: 0 }}
+        initial={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="w-full mt-6 sm:max-w-md space-y-40">
+          <div className="h-auto cursor-pointer rounded-lg border-2 border-dashed border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                animate={{ opacity: 1 }}
+                className="flex h-full flex-col items-center justify-center"
+                exit={{ opacity: 0 }}
+                initial={{ opacity: 0 }}
+                key={'test'}
+                transition={{ duration: 1 }}
+              >
+                {element}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 };
