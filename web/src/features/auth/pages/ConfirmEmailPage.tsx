@@ -27,7 +27,7 @@ export const ConfirmEmailPage = () => {
 
   useEffect(() => {
     if (auth.currentUser?.confirmedAt) {
-      navigate('/portal/dashboard');
+      navigate('/');
     }
   }, [auth.currentUser]);
 

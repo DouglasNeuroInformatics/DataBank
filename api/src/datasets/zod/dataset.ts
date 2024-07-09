@@ -10,11 +10,12 @@ const $DatasetInfo = z.object({
   createdAt: z.coerce.date(),
   description: z.string().optional(),
   id: z.string(),
-  isJSON: z.boolean(),
+  isJSON: z.enum(['true', 'false']),
+  isReadyToShare: z.enum(['true', 'false']),
   license: $License,
   managerIds: z.string().array().min(1),
   name: z.string(),
-  permission: z.enum(['PUBLIC', 'LOGIN', 'VERIFY', 'MANAGER']),
+  permission: z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']),
   updatedAt: z.coerce.date()
 });
 // export type DatasetInfo = z.infer<typeof $DatasetInfo>;

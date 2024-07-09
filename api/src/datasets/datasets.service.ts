@@ -93,6 +93,20 @@ export class DatasetsService {
     file: Express.Multer.File | string,
     managerId: string
   ) {
+    // create base dataset without file
+    if (!file) {
+      return await this.datasetModel.create({
+        data: {
+          datasetType: 'BASE',
+          description: createTabularDatasetDto.description,
+          isReadyToShare: false,
+          managerIds: [managerId],
+          name: createTabularDatasetDto.name,
+          permission: 'MANAGER'
+        }
+      });
+    }
+
     let csvString: string;
     let df: DataFrame;
 
@@ -103,31 +117,34 @@ export class DatasetsService {
       csvString = file.buffer.toString().replaceAll('\t', ','); // polars has a bug parsing tsv, this is a hack for it to work
     }
 
-    // if (createTabularDatasetDto.isJSON) {
-    //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    //   df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
-    // } else {
-    //   df = pl.readCSV(csvString, { tryParseDates: true });
-    // }
-
-    df = pl.readCSV(csvString, { tryParseDates: true });
+    if (createTabularDatasetDto.isJSON.toLowerCase() === 'true') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
+    } else {
+      df = pl.readCSV(csvString, { tryParseDates: true });
+    }
 
     const dataset = await this.datasetModel.create({
       data: {
-        datasetType: 'TABULAR',
+        datasetType: createTabularDatasetDto.datasetType,
         description: createTabularDatasetDto.description,
-        isReadyToShare: false,
+        isReadyToShare: createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true',
         managerIds: [managerId],
         name: createTabularDatasetDto.name,
-        permission: 'MANAGER'
+        permission: createTabularDatasetDto.permission
       }
     });
 
-    await this.tabularDataService.create(
-      df,
-      dataset.id,
-      createTabularDatasetDto.primaryKeys ? createTabularDatasetDto.primaryKeys.split(',') : []
-    );
+    // prepare the primary keys array
+    if (createTabularDatasetDto.primaryKeys) {
+      const primaryKeysArray = createTabularDatasetDto.primaryKeys.split(',');
+      primaryKeysArray.map((x) => {
+        x.trim();
+      });
+      await this.tabularDataService.create(df, dataset.id, primaryKeysArray);
+    } else {
+      await this.tabularDataService.create(df, dataset.id, []);
+    }
 
     return dataset;
   }
@@ -242,11 +259,11 @@ export class DatasetsService {
         description: publicDataset.description,
         id: publicDataset.id,
         isManager: false,
-        isReadyToShare: false,
+        isReadyToShare: publicDataset.isReadyToShare,
         license: publicDataset.license,
         managerIds: publicDataset.managerIds,
         name: publicDataset.name,
-        permission: 'MANAGER',
+        permission: publicDataset.permission,
         updatedAt: publicDataset.updatedAt
       });
     });

@@ -102,7 +102,7 @@ export type TManualVerification = {
 export type TVerificationInfo = TManualVerification | TVerificationUponConfirmEmail | TVerificationWithRegex;
 
 // Datasets
-type PermissionLevel = 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFY';
+type PermissionLevel = 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED';
 
 type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
 
@@ -177,12 +177,12 @@ export type DatetimeColumnSummary = {
   min: Date;
 };
 
-export type ColumnSummary = BaseColumnSummary &
-  (
-    | BooleanColumnSummary
-    | DatetimeColumnSummary
-    | EnumColumnSummary
-    | FloatColumnSummary
-    | IntColumnSummary
-    | StringColumnSummary
-  );
+export type ColumnSummary = (
+  | BooleanColumnSummary
+  | DatetimeColumnSummary
+  | EnumColumnSummary
+  | FloatColumnSummary
+  | IntColumnSummary
+  | StringColumnSummary
+) &
+  BaseColumnSummary;

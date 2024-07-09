@@ -151,9 +151,29 @@
     "en": "No",
     "fr": "Non"
   },
+  "back": {
+    "en": "Back",
+    "fr": "Retourner"
+  },
+  "confirm": {
+    "en": "Confirm",
+    "fr": "Confirmer"
+  },
+  "confirmCreateBaseDataset": {
+    "en": "Please confirm that you want to create a BASE dataset without any files",
+    "fr": "Veuillez confirmer que vous souhaitez créer un ensemble de données BASE sans aucun fichier."
+  },
   "datasets": {
     "en": "Datasets",
     "fr": "ensembles de données"
+  },
+  "datasetType": {
+    "en": "Dataset Type",
+    "fr": "Type d'ensemble de données"
+  },
+  "primaryKeys": {
+    "en": "Primary keys (use , as the delimiter)",
+    "fr": "Clés primaires (utilisez , comme délimiteur)"
   },
   "createDatasetSuccess": {
     "en": "successfully created dataset",

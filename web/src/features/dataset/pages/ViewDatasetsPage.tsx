@@ -7,6 +7,8 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { type RouteObject, useNavigate } from 'react-router-dom';
 
+import { useAuthStore } from '@/stores/auth-store';
+
 import DatasetCard from '../components/DatasetCard';
 
 // the dataset card should show a list of user emails and when the manager clicks remove user,
@@ -15,6 +17,7 @@ import DatasetCard from '../components/DatasetCard';
 const ViewDatasetsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { currentUser } = useAuthStore();
 
   const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
 
@@ -38,6 +41,12 @@ const ViewDatasetsPage = () => {
       <Card.Content>
         <ul>
           {datasetsInfoArray?.map((datasetInfo, i) => {
+            let isManager: boolean;
+            if (!currentUser?.id) {
+              isManager = false;
+            } else {
+              isManager = datasetInfo.managerIds.includes(currentUser.id);
+            }
             return (
               <li key={i}>
                 <DatasetCard
@@ -45,7 +54,7 @@ const ViewDatasetsPage = () => {
                   datasetType={datasetInfo.datasetType}
                   description={datasetInfo.description}
                   id={datasetInfo.id}
-                  isManager={datasetInfo.isManager}
+                  isManager={isManager}
                   isReadyToShare={false}
                   license={datasetInfo.license}
                   managerIds={datasetInfo.managerIds}

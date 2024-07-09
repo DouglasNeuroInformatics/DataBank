@@ -47,7 +47,7 @@ const ViewPublicDatasetsPage = () => {
                     datasetType={datasetInfo.datasetType}
                     description={datasetInfo.description}
                     id={datasetInfo.id}
-                    isManager={datasetInfo.isManager}
+                    isManager={false}
                     isReadyToShare={false}
                     license={datasetInfo.license}
                     managerIds={datasetInfo.managerIds}
