@@ -199,23 +199,44 @@ export class DatasetsService {
     return availableDatasets;
   }
 
-  async getById(datasetId: string, currentUserIduserId: string) {
+  async getById(datasetId: string, currentUserId: string) {
     const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: {
+          include: {
+            columns: true
+          }
+        }
+      },
       where: {
         id: datasetId
       }
     });
+
     if (!dataset) {
       throw new NotFoundException();
     }
-    if (!dataset.isReadyToShare && !(currentUserIduserId in dataset.managerIds)) {
+    if (!dataset.isReadyToShare && !dataset.managerIds.includes(currentUserId)) {
       throw new ForbiddenException('The dataset is not ready for share!');
     }
+
+    // need to reformat the return view so that the frontend can display directly
+    // Think about pagination?
+    // - columnsPerPage, currentColumnPage, previousColumnPage, nextColumnPage
+    // - rowsPerPage, currentRowPage, previousRowPage, nextRowPage
+
+    // the frontend search function should allow the user to fill a form
+    // according to the form data (filter constrains), the backend should find
+    // rows and columns
 
     return dataset;
   }
 
-  async getDatasetView(currentUserId: string, projectDatasetDto: ProjectDatasetDto) {
+  // private formatDatasetView() {
+  //   return "TODO"
+  // }
+
+  async getProjectDatasetView(currentUserId: string, projectDatasetDto: ProjectDatasetDto) {
     // if currentUser cannot modify dataset, return dataset view
     const dataset = await this.datasetModel.findUnique({
       include: {

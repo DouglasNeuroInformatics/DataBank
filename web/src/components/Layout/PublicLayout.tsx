@@ -35,8 +35,8 @@ export const PublicLayout = () => {
 
   return (
     <div className="flex h-screen flex-col lg:flex-row">
-      <DesktopSidebar navigation={navigation} />
-      <MobileNavbar navigation={navigation} />
+      <DesktopSidebar isLogIn={false} navigation={navigation} />
+      <MobileNavbar isLogIn={false} navigation={navigation} />
       <main className="h-full w-full flex-1 overflow-hidden">
         <div className="mx-auto h-full w-full max-w-screen-2xl overflow-auto px-3 pb-3 sm:px-6 md:px-12 mu:px-12 xl:px-24">
           <Outlet />
