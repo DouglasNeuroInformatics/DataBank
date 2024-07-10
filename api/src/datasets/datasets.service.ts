@@ -229,6 +229,11 @@ export class DatasetsService {
     // according to the form data (filter constrains), the backend should find
     // rows and columns
 
+    // const returnDataset: WhatTheFrontendNeeds;
+
+    // Idea:
+    // Column pagination: <current COL1 COL2 COL3 COL4 COL5> ()
+    // row pagination <first> <before> <current / total pages> <next> <last>
     return dataset;
   }
 
