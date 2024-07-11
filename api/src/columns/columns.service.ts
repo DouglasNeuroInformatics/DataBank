@@ -39,7 +39,6 @@ export class ColumnsService {
   }
 
   async createFromSeries(tabularDataId: string, colSeries: Series) {
-    // create a float column
     if (colSeries.isFloat()) {
       const floatSummary = this.calculateSummaryOnSeries('FLOAT', colSeries);
       if (!floatSummary.floatSummary) {
@@ -185,7 +184,8 @@ export class ColumnsService {
   deleteByTabularDataId(tabularDataId: string) {
     return this.columnModel.delete({
       where: {
-        tabularDataId: tabularDataId
+        // this is incorrect
+        id: tabularDataId
       }
     });
   }
@@ -508,7 +508,8 @@ export class ColumnsService {
     return await this.columnModel.update({
       data: updateColumnDto,
       where: {
-        tabularDataId
+        // This is incorrect
+        id: tabularDataId
       }
     });
   }
