@@ -39,6 +39,11 @@ export class ColumnsService {
   }
 
   async createFromSeries(tabularDataId: string, colSeries: Series) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const dataArray = colSeries.toArray().map((x) => {
+      return { value: x };
+    });
+
     if (colSeries.isFloat()) {
       const floatSummary = this.calculateSummaryOnSeries('FLOAT', colSeries);
       if (!floatSummary.floatSummary) {
@@ -48,7 +53,7 @@ export class ColumnsService {
       await this.columnModel.create({
         data: {
           dataPermission: 'MANAGER',
-          floatData: colSeries.toArray(),
+          floatData: dataArray,
           kind: 'FLOAT',
           name: colSeries.name,
           nullable: colSeries.nullCount() != 0,
@@ -74,7 +79,7 @@ export class ColumnsService {
       await this.columnModel.create({
         data: {
           dataPermission: 'MANAGER',
-          intData: colSeries.toArray(),
+          intData: dataArray,
           kind: 'INT',
           name: colSeries.name,
           nullable: colSeries.nullCount() != 0,
@@ -101,7 +106,7 @@ export class ColumnsService {
       }
       await this.columnModel.create({
         data: {
-          booleanData: colSeries.toArray(),
+          booleanData: dataArray,
           dataPermission: 'MANAGER',
           kind: 'BOOLEAN',
           name: colSeries.name,
@@ -130,7 +135,7 @@ export class ColumnsService {
       await this.columnModel.create({
         data: {
           dataPermission: 'MANAGER',
-          datetimeData: colSeries.toArray(),
+          datetimeData: dataArray,
           kind: 'DATETIME',
           name: colSeries.name,
           nullable: colSeries.nullCount() != 0,
@@ -157,7 +162,7 @@ export class ColumnsService {
           kind: 'STRING',
           name: colSeries.name,
           nullable: colSeries.nullCount() != 0,
-          stringData: colSeries.toArray(),
+          stringData: dataArray,
           // numericColumnValidation: {
           //   max: col.max(),
           //   min: col.min()

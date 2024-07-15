@@ -88,7 +88,11 @@ const $TabularColumnInfo = z.object({
 
 const $StringColumn = $TabularColumnInfo.extend({
   kind: z.literal('STRING'),
-  stringData: z.string().array(),
+  stringData: z.array(
+    z.object({
+      value: z.string().optional()
+    })
+  ),
   summary: $BaseSummary
 });
 export type StringColumn = z.infer<typeof $StringColumn>;
@@ -101,7 +105,11 @@ const $UpdateStringColumnDto = $CreateStringColumnDto.partial();
 export type UpdateStringColumnDto = z.infer<typeof $UpdateStringColumnDto>;
 
 const $IntColumn = $TabularColumnInfo.extend({
-  intData: z.number().int().array(),
+  intData: z.array(
+    z.object({
+      value: z.number().optional()
+    })
+  ),
   kind: z.literal('INT'),
   summary: $IntSummary
 });
@@ -115,7 +123,11 @@ const $UpdateIntColumnDto = $CreateIntColumnDto.partial();
 export type UpdateIntColumnDto = z.infer<typeof $UpdateIntColumnDto>;
 
 const $FloatColumn = $TabularColumnInfo.extend({
-  floatData: z.number().array(),
+  floatData: z.array(
+    z.object({
+      value: z.number().optional()
+    })
+  ),
   kind: z.literal('FLOAT'),
   summary: $FloatSummary
 });
@@ -129,7 +141,11 @@ const $UpdateFloatColumnDto = $CreateFloatColumnDto.partial();
 export type UpdateFloatColumnDto = z.infer<typeof $UpdateFloatColumnDto>;
 
 const $EnumColumn = $TabularColumnInfo.extend({
-  enumData: z.string().array(),
+  enumData: z.array(
+    z.object({
+      value: z.string().optional()
+    })
+  ),
   kind: z.literal('ENUM'),
   summary: $EnumSummary
 });
@@ -143,14 +159,22 @@ const $UpdateEnumColumnDto = $CreateEnumColumnDto.partial();
 export type UpdateEnumColumnDto = z.infer<typeof $UpdateEnumColumnDto>;
 
 const $DatetimeColumn = $TabularColumnInfo.extend({
-  datetimeData: z.date().array(),
+  datetimeData: z.array(
+    z.object({
+      value: z.date().optional()
+    })
+  ),
   kind: z.literal('DATETIME'),
   summary: $DatetimeSummary
 });
 type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
 
 const $BooleanColumn = $TabularColumnInfo.extend({
-  booleanData: z.boolean().array(),
+  booleanData: z.array(
+    z.object({
+      value: z.boolean().optional()
+    })
+  ),
   kind: z.literal('BOOLEAN'),
   summary: $DatetimeSummary
 });

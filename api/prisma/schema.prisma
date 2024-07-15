@@ -103,17 +103,41 @@ model TabularColumn {
   tabularData              TabularData               @relation(fields: [tabularDataId], references: [id], onDelete: Cascade)
   tabularDataId            String                    @db.ObjectId()
   // store the actual data in a pl.series(array) depending on the type of the column
-  stringData               String[]
-  intData                  Int[]
-  floatData                Float[]
-  enumData                 String[]
-  datetimeData             DateTime[]
-  booleanData              Boolean[]
+  stringData               StringEntry[]
+  intData                  IntEntry[]
+  floatData                FloatEntry[]
+  enumData                 StringEntry[]
+  datetimeData             DateTimeEntry[]
+  booleanData              BooleanEntry[]
   // column validation
   stringColumnValidation   StringColumnValidation?
   numericColumnValidation  NumericColumnValidation?
   enumColumnValidation     EnumColumnValidation?
   datetimeColumnValidation DatetimeColumnValidation?
+}
+
+type StringEntry {
+  value String?
+}
+
+type IntEntry {
+  value Int?
+}
+
+type FloatEntry {
+  value Float?
+}
+
+type EnumEntry {
+  value String?
+}
+
+type DateTimeEntry {
+  value DateTime?
+}
+
+type BooleanEntry {
+  value Boolean?
 }
 
 enum ColumnType {
