@@ -1,4 +1,5 @@
 /* eslint-disable perfectionist/sort-classes */
+import type { DatasetViewPaginationDto } from '@databank/types';
 import { CurrentUser, ParseObjectIdPipe } from '@douglasneuroinformatics/libnest/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -60,8 +61,12 @@ export class DatasetsController {
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
   @Get(':id')
   @RouteAccess({ role: 'STANDARD' })
-  getById(@Param('id') datasetId: string, @CurrentUser('id') currentUserId: string) {
-    return this.datasetsService.getById(datasetId, currentUserId);
+  getById(
+    @Param('id') datasetId: string,
+    @CurrentUser('id') currentUserId: string,
+    datasetViewPaginationDto: DatasetViewPaginationDto
+  ) {
+    return this.datasetsService.getViewById(datasetId, currentUserId, datasetViewPaginationDto);
   }
 
   @Patch('manageDataset/managers/remove/:id/:managerIdToRemove')

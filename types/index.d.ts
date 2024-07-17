@@ -1,5 +1,7 @@
 /** CORE */
 
+import type { JsonValue } from 'type-fest';
+
 export type Locale = 'en' | 'fr';
 
 export type ExceptionResponse = {
@@ -133,6 +135,14 @@ export type TabularDataset<T extends TabularDataRow> = {
   rows: T[];
 } & DatasetInfo;
 
+export type TabularDatasetView = {
+  columnIds: string[];
+  columns: string[];
+  metadata: { [key: string]: ColumnSummary };
+  primaryKeys: string[];
+  rows: { [key: string]: boolean | null | number | string }[];
+};
+
 export type BaseColumnSummary = {
   count: number;
   nullCount: number;
@@ -144,21 +154,21 @@ export type StringColumnSummary = {
 
 export type IntColumnSummary = {
   kind: 'INT';
-  max: number;
-  mean: number;
-  median: number;
-  min: number;
-  mode: number;
-  std: number;
+  max?: number;
+  mean?: number;
+  median?: number;
+  min?: number;
+  mode?: number;
+  std?: number;
 };
 
 export type FloatColumnSummary = {
   kind: 'FLOAT';
-  max: number;
-  mean: number;
-  median: number;
-  min: number;
-  std: number;
+  max?: number;
+  mean?: number;
+  median?: number;
+  min?: number;
+  std?: number;
 };
 
 export type BooleanColumnSummary = {
@@ -167,7 +177,7 @@ export type BooleanColumnSummary = {
 };
 
 export type EnumColumnSummary = {
-  distribution: { [key: string]: number };
+  distribution?: JsonValue;
   kind: 'ENUM';
 };
 
@@ -186,3 +196,10 @@ export type ColumnSummary = (
   | StringColumnSummary
 ) &
   BaseColumnSummary;
+
+export type DatasetViewPaginationDto = {
+  columnsPerPage: number;
+  currentColumnPage: number;
+  currentRowPage: number;
+  rowsPerPage: number;
+};

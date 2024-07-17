@@ -39,8 +39,8 @@ export class ColumnsService {
   }
 
   async createFromSeries(tabularDataId: string, colSeries: Series) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const dataArray = colSeries.toArray().map((x) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       return { value: x };
     });
 
@@ -187,10 +187,9 @@ export class ColumnsService {
   }
 
   deleteByTabularDataId(tabularDataId: string) {
-    return this.columnModel.delete({
+    return this.columnModel.deleteMany({
       where: {
-        // this is incorrect
-        id: tabularDataId
+        tabularDataId
       }
     });
   }
@@ -240,6 +239,33 @@ export class ColumnsService {
     columnView.summary = this.calculateSummaryOnSeries(columnView.kind, currSeries);
 
     return columnView;
+  }
+
+  async getLengthById(columnId: string) {
+    const col = await this.columnModel.findUnique({
+      where: {
+        id: columnId
+      }
+    });
+    if (col?.booleanData) {
+      return col.booleanData.length;
+    }
+    if (col?.stringData) {
+      return col.stringData.length;
+    }
+    if (col?.intData) {
+      return col.intData.length;
+    }
+    if (col?.floatData) {
+      return col.floatData.length;
+    }
+    if (col?.datetimeData) {
+      return col.datetimeData.length;
+    }
+    if (col?.enumData) {
+      return col.enumData.length;
+    }
+    return 0;
   }
 
   async mutateColumnType(columnId: string, colType: ColumnType) {
@@ -510,12 +536,24 @@ export class ColumnsService {
   }
 
   async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumnDto) {
-    return await this.columnModel.update({
-      data: updateColumnDto,
+    const columnsToUpdate = await this.columnModel.findMany({
       where: {
-        // This is incorrect
-        id: tabularDataId
+        tabularDataId: tabularDataId
       }
+    });
+
+    if (!columnsToUpdate) {
+      throw new NotFoundException('No columns found with the given tabular data id!');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    columnsToUpdate.forEach(async (x) => {
+      await this.columnModel.update({
+        data: updateColumnDto,
+        where: {
+          id: x.id
+        }
+      });
     });
   }
 

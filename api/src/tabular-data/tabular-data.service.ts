@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+import type { ColumnSummary, DatasetViewPaginationDto, TabularDatasetView } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { PermissionLevel, TabularColumn } from '@prisma/client';
 
@@ -88,7 +93,7 @@ export class TabularDataService {
     return tabularData;
   }
 
-  async getViewById(projectDatasetDto: ProjectDatasetDto) {
+  async getProjectViewById(projectDatasetDto: ProjectDatasetDto) {
     const columnIds: string[] = [];
     const columnsView: TabularColumn[] = [];
     for (let col of projectDatasetDto.columns) {
@@ -125,6 +130,135 @@ export class TabularDataService {
     tabularData.columns = columnsView;
 
     return tabularData;
+  }
+
+  async getViewById(tabularDataId: string, datasetViewPaginationDto: DatasetViewPaginationDto) {
+    const tabularData = await this.tabularDataModel.findUnique({
+      include: {
+        columns: true
+      },
+      where: {
+        id: tabularDataId
+      }
+    });
+
+    if (!tabularData) {
+      throw new NotFoundException('No tabular data found!');
+    }
+
+    let columnIds: string[] = [];
+    let columns: string[] = [];
+
+    let rows: { [key: string]: boolean | null | number | string }[] = [];
+    if (!tabularData.columns[0]?.id) {
+      throw new NotFoundException('No columns in this tabular data.');
+    }
+    const numberOfRows = await this.columnsService.getLengthById(tabularData.columns[0]?.id);
+    for (let i = 0; i < numberOfRows; i++) {
+      rows.push({});
+    }
+
+    let metaData: { [key: string]: ColumnSummary } = {};
+
+    // handle pagination here: TODO
+    datasetViewPaginationDto.columnsPerPage;
+
+    for (let col of tabularData.columns) {
+      columnIds.push(col.id);
+      columns.push(col.name);
+
+      switch (col.kind) {
+        case 'STRING':
+          col.stringData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][col.name] = entry.value;
+          });
+          metaData[col.name] = {
+            kind: 'STRING',
+            ...col.summary
+          };
+          break;
+        case 'BOOLEAN':
+          col.booleanData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][col.name] = entry.value;
+          });
+          metaData[col.name] = {
+            count: col.summary.count,
+            kind: 'BOOLEAN',
+            nullCount: col.summary.nullCount,
+            trueCount: col.summary.count
+          };
+          break;
+        case 'INT':
+          col.intData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][col.name] = entry.value;
+          });
+          metaData[col.name] = {
+            count: col.summary.count,
+            kind: 'INT',
+            nullCount: col.summary.nullCount,
+            ...col.summary.intSummary
+          };
+          break;
+        case 'FLOAT':
+          col.floatData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][col.name] = entry.value;
+          });
+          metaData[col.name] = {
+            count: col.summary.count,
+            kind: 'FLOAT',
+            nullCount: col.summary.nullCount,
+            ...col.summary.floatSummary
+          };
+          break;
+        case 'ENUM':
+          col.enumData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][col.name] = entry.value;
+          });
+          metaData[col.name] = {
+            count: col.summary.count,
+            kind: 'ENUM',
+            nullCount: col.summary.nullCount
+          };
+          break;
+        case 'DATETIME':
+          col.datetimeData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][col.name] = entry.value?.toDateString() ?? null;
+          });
+          metaData[col.name] = {
+            kind: 'STRING',
+            ...col.summary
+          };
+          break;
+      }
+    }
+
+    const dataView: TabularDatasetView = {
+      columnIds,
+      columns,
+      metadata: metaData,
+      primaryKeys: tabularData.primaryKeys,
+      rows
+    };
+
+    return dataView;
   }
 
   // update Primary keys for a tabular column

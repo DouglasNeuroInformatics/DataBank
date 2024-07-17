@@ -1,4 +1,4 @@
-import type { DatasetCardProps } from '@databank/types';
+import type { DatasetCardProps, DatasetViewPaginationDto } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 
@@ -199,48 +199,6 @@ export class DatasetsService {
     return availableDatasets;
   }
 
-  async getById(datasetId: string, currentUserId: string) {
-    const dataset = await this.datasetModel.findUnique({
-      include: {
-        tabularData: {
-          include: {
-            columns: true
-          }
-        }
-      },
-      where: {
-        id: datasetId
-      }
-    });
-
-    if (!dataset) {
-      throw new NotFoundException();
-    }
-    if (!dataset.isReadyToShare && !dataset.managerIds.includes(currentUserId)) {
-      throw new ForbiddenException('The dataset is not ready for share!');
-    }
-
-    // need to reformat the return view so that the frontend can display directly
-    // Think about pagination?
-    // - columnsPerPage, currentColumnPage, previousColumnPage, nextColumnPage
-    // - rowsPerPage, currentRowPage, previousRowPage, nextRowPage
-
-    // the frontend search function should allow the user to fill a form
-    // according to the form data (filter constrains), the backend should find
-    // rows and columns
-
-    // const returnDataset: WhatTheFrontendNeeds;
-
-    // Idea:
-    // Column pagination: <current COL1 COL2 COL3 COL4 COL5> ()
-    // row pagination <first> <before> <current / total pages> <next> <last>
-    return dataset;
-  }
-
-  // private formatDatasetView() {
-  //   return "TODO"
-  // }
-
   async getProjectDatasetView(currentUserId: string, projectDatasetDto: ProjectDatasetDto) {
     // if currentUser cannot modify dataset, return dataset view
     const dataset = await this.datasetModel.findUnique({
@@ -264,10 +222,14 @@ export class DatasetsService {
       return dataset;
     }
 
-    const tabularDataView = await this.tabularDataService.getViewById(projectDatasetDto);
+    const tabularDataView = await this.tabularDataService.getProjectViewById(projectDatasetDto);
     dataset.tabularData = tabularDataView;
     return dataset;
   }
+
+  // private formatDatasetView() {
+  //   return "TODO"
+  // }
 
   async getPublic() {
     const publicDatasets = await this.datasetModel.findMany({
@@ -294,6 +256,37 @@ export class DatasetsService {
       });
     });
     return resDatasetsInfo;
+  }
+
+  async getViewById(datasetId: string, currentUserId: string, datasetViewPaginationDto: DatasetViewPaginationDto) {
+    const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: true
+      },
+      where: {
+        id: datasetId
+      }
+    });
+
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+    if (!dataset.isReadyToShare && !dataset.managerIds.includes(currentUserId)) {
+      throw new ForbiddenException('The dataset is not ready for share!');
+    }
+
+    if (!dataset.tabularData?.id) {
+      throw new NotFoundException('No such tabular data available!');
+    }
+    const datasetView = await this.tabularDataService.getViewById(dataset.tabularData.id, datasetViewPaginationDto);
+    // the frontend search function should allow the user to fill a form
+    // according to the form data (filter constrains), the backend should find
+    // rows and columns
+
+    // Idea:
+    // Column pagination: <current COL1 COL2 COL3 COL4 COL5> ()
+    // row pagination <first> <before> <current / total pages> <next> <last>
+    return datasetView;
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
