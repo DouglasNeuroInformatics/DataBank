@@ -3,6 +3,7 @@ import React from 'react';
 import { Badge } from '@douglasneuroinformatics/libui/components';
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
+import { useNavigate } from 'react-router-dom';
 
 export type ProjectInfo = {
   createdAt: Date;
@@ -17,11 +18,6 @@ export type ProjectInfo = {
 
 export type ProjectCardProps = { isProjectManager: boolean } & ProjectInfo;
 
-// use effect:
-// the current user will send a request to the backend with its currentUserId
-// the backend will determine if the user is a manager of the project and send the
-// object back for the frontend to render
-
 export const ProjectCard = ({
   createdAt,
   description,
@@ -33,6 +29,7 @@ export const ProjectCard = ({
   updatedAt,
   userIds
 }: ProjectCardProps) => {
+  const navigate = useNavigate();
   return (
     <>
       <Card className="my-3">
@@ -44,9 +41,9 @@ export const ProjectCard = ({
           <ul>
             <li>Project Id: {id}</li>
             <li>External Id: {externalId}</li>
-            <li>Created at: {createdAt.toDateString()}</li>
-            <li>Updated at: {updatedAt.toDateString()}</li>
-            <li>Expiry: {expiry.toDateString()}</li>
+            <li>Created at: {createdAt.toString()}</li>
+            <li>Updated at: {updatedAt.toString()}</li>
+            <li>Expiry: {expiry.toString()}</li>
             <li>
               UserId:{' '}
               {userIds.map((element) => {
@@ -61,52 +58,12 @@ export const ProjectCard = ({
         </Card.Content>
         <Card.Footer className="flex justify-between">
           {isProjectManager ? (
-            <Button
-              variant={'primary'}
-              onClick={() => {
-                alert('Entering Manage Project Page');
-              }}
-            >
+            <Button variant={'primary'} onClick={() => navigate('/portal/project', { state: id })}>
               Manage Project
             </Button>
           ) : (
-            <Button
-              variant={'primary'}
-              onClick={() => {
-                alert('Entering View Project Page');
-              }}
-            >
+            <Button variant={'primary'} onClick={() => navigate('/portal/project', { state: id })}>
               View Project
-            </Button>
-          )}
-          {isProjectManager && (
-            <Button
-              variant={'secondary'}
-              onClick={() => {
-                alert('Added a new User');
-              }}
-            >
-              Add User
-            </Button>
-          )}
-          {isProjectManager && (
-            <Button
-              variant={'secondary'}
-              onClick={() => {
-                alert('Removed a User');
-              }}
-            >
-              Remove User
-            </Button>
-          )}
-          {isProjectManager && (
-            <Button
-              variant={'danger'}
-              onClick={() => {
-                alert('Deleting Project!');
-              }}
-            >
-              Delete Project
             </Button>
           )}
         </Card.Footer>

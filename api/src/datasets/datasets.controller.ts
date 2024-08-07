@@ -61,15 +61,38 @@ export class DatasetsController {
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
   @Get(':id')
   @RouteAccess({ role: 'STANDARD' })
-  getById(
+  getViewById(
     @Param('id') datasetId: string,
     @CurrentUser('id') currentUserId: string,
-    datasetViewPaginationDto: DatasetViewPaginationDto
+    @Param() datasetViewRowPaginationDto: DatasetViewPaginationDto,
+    @Param() datasetViewColumnPaginationDto: DatasetViewPaginationDto
   ) {
-    return this.datasetsService.getViewById(datasetId, currentUserId, datasetViewPaginationDto);
+    return this.datasetsService.getViewById(
+      datasetId,
+      currentUserId,
+      datasetViewRowPaginationDto,
+      datasetViewColumnPaginationDto
+    );
   }
 
-  @Patch('manageDataset/managers/remove/:id/:managerIdToRemove')
+  @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
+  @Get(':id')
+  @RouteAccess({ role: 'STANDARD' })
+  getProjectDatasetViewById(
+    @Param('id') projectId: string,
+    @CurrentUser('id') currentUserId: string,
+    @Param() datasetViewRowPaginationDto: DatasetViewPaginationDto,
+    @Param() datasetViewColumnPaginationDto: DatasetViewPaginationDto
+  ) {
+    return this.datasetsService.getProjectDatasetViewById(
+      projectId,
+      currentUserId,
+      datasetViewRowPaginationDto,
+      datasetViewColumnPaginationDto
+    );
+  }
+
+  @Delete('managers/:id/:managerIdToRemove')
   @RouteAccess({ role: 'STANDARD' })
   removeManager(
     @Param('id') datasetId: string,
@@ -79,7 +102,7 @@ export class DatasetsController {
     return this.datasetsService.removeManager(datasetId, managerId, managerIdToRemove);
   }
 
-  @Patch('manageDataset/share')
+  @Patch('share/:id')
   @RouteAccess({ role: 'STANDARD' })
   setReadyToShare(@Param('id') datasetId: string, @CurrentUser('id') managerId: string) {
     return this.datasetsService.setReadyToShare(datasetId, managerId);

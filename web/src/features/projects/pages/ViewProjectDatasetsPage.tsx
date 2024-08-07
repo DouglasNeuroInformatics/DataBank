@@ -5,16 +5,17 @@ import type { DatasetCardProps } from '@databank/types';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { type RouteObject, useNavigate } from 'react-router-dom';
+import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
-import DatasetCard from '../components/DatasetCard';
+import DatasetCard from '../../dataset/components/DatasetCard';
 
 // the dataset card should show a list of user emails and when the manager clicks remove user,
 // there should be a callback function for the
 
-const ViewDatasetsPage = () => {
+const ViewProjectDatasetsPage = () => {
+  const params = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { currentUser } = useAuthStore();
@@ -23,7 +24,7 @@ const ViewDatasetsPage = () => {
 
   useEffect(() => {
     axios
-      .get<DatasetCardProps[]>('/v1/datasets')
+      .get<DatasetCardProps[]>(`/v1/datasets/project/${params.id}`)
       .then((response) => {
         setDatasetsInfoArray(response.data);
       })
@@ -74,7 +75,7 @@ const ViewDatasetsPage = () => {
   );
 };
 
-export const viewDatasetsRoute: RouteObject = {
-  path: 'datasets',
-  element: <ViewDatasetsPage />
+export const viewProjectDatasetsRoute: RouteObject = {
+  path: 'projects/datasets',
+  element: <ViewProjectDatasetsPage />
 };

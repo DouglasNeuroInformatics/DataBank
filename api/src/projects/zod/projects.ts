@@ -40,7 +40,7 @@ const $CreateProjectDto = z.object({
   description: z.string().nullable(),
   expiry: z.date(),
   externalId: z.string().nullable(),
-  name: z.string(),
+  name: z.string().min(1),
   userIds: z.string().array().min(1)
 });
 

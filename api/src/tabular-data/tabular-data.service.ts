@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import type { ColumnSummary, DatasetViewPaginationDto, TabularDatasetView } from '@databank/types';
+import type {
+  ColumnSummary,
+  DatasetViewColumnPaginationDto,
+  DatasetViewRowPaginationDto,
+  TabularDatasetView
+} from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { PermissionLevel, TabularColumn } from '@prisma/client';
 
@@ -132,7 +136,11 @@ export class TabularDataService {
     return tabularData;
   }
 
-  async getViewById(tabularDataId: string, datasetViewPaginationDto: DatasetViewPaginationDto) {
+  async getViewById(
+    tabularDataId: string,
+    datasetViewRowPaginationDto: DatasetViewRowPaginationDto,
+    datasetViewColumnPaginationDto: DatasetViewColumnPaginationDto
+  ) {
     const tabularData = await this.tabularDataModel.findUnique({
       include: {
         columns: true
@@ -161,7 +169,8 @@ export class TabularDataService {
     let metaData: { [key: string]: ColumnSummary } = {};
 
     // handle pagination here: TODO
-    datasetViewPaginationDto.columnsPerPage;
+    datasetViewColumnPaginationDto.columnsPerPage;
+    datasetViewRowPaginationDto.rowsPerPage;
 
     for (let col of tabularData.columns) {
       columnIds.push(col.id);
@@ -191,7 +200,9 @@ export class TabularDataService {
             count: col.summary.count,
             kind: 'BOOLEAN',
             nullCount: col.summary.nullCount,
-            trueCount: col.summary.count
+            // This is incorrect as the distribution is sorted with
+            // the higher count at position 0
+            trueCount: col.summary.enumSummary?.distribution[0]['count']
           };
           break;
         case 'INT':

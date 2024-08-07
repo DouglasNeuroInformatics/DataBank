@@ -119,6 +119,38 @@
     "en": "View Projects",
     "fr": "voir les projets"
   },
+  "projectName": {
+    "en": "Project Name",
+    "fr": "Nom du Projet"
+  },
+  "projectDescription": {
+    "en": "Project Description",
+    "fr": "Description du Projet"
+  },
+  "projectExternalId": {
+    "en": "Project External ID",
+    "fr": "ID Externe du Projet"
+  },
+  "projectExpiry": {
+    "en": "Project Expiry",
+    "fr": "Expiration du Projet"
+  },
+  "projectDatasets": {
+    "en": "Project Datasets",
+    "fr": "Ensembles de données du projet"
+  },
+  "projectDataset": {
+    "en": "Project Dataset",
+    "fr": "Ensemble de données du projet"
+  },
+  "paginationPrevious": {
+    "en": "Previous",
+    "fr": "Précédente"
+  },
+  "paginationNext": {
+    "en": "Next",
+    "fr": "Suivante"
+  },
   "datasetName": {
     "en": "Dataset Name",
     "fr": "Nom de l'ensemble de données"
@@ -306,6 +338,10 @@
   "noResultsFound": {
     "en": "No Results Found",
     "fr": "Aucun résultat trouvé"
+  },
+  "projects": {
+    "en": "Projects",
+    "fr": "Projets"
   },
   "setupAdminDescription": {
     "en": "Setup Admin Description",

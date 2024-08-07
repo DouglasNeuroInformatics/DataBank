@@ -592,9 +592,9 @@ export class ColumnsService {
             median: currSeries.median(),
             min: currSeries.min(),
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            mode: currSeries.mode()[0],
+            mode: currSeries.filter(currSeries.isNotNull()).mode()[0],
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: currSeries.rollingStd(currSeries.len())[-1]
+            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
           },
           nullCount: currSeries.nullCount()
         };
@@ -609,7 +609,7 @@ export class ColumnsService {
             median: currSeries.median(),
             min: currSeries.min(),
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: currSeries.rollingStd(currSeries.len())[-1]
+            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
           },
           intSummary: null,
           nullCount: currSeries.nullCount()
@@ -640,7 +640,6 @@ export class ColumnsService {
     }
   }
 
-  // TO-DO: Helper methods to make code more readable
   private async columnIdToSeries(columnId: string) {
     const column = await this.getById(columnId);
 

@@ -55,7 +55,7 @@ model Dataset {
   name           String
   description    String?
   createdAt      DateTime        @default(now()) @db.Date
-  updatedAt      DateTime        @default(now()) @db.Date
+  updatedAt      DateTime        @default(now()) @updatedAt @db.Date
   license        DatasetLicense  @default(PUBLIC)
   managers       User[]          @relation(fields: [managerIds], references: [id])
   managerIds     String[]        @db.ObjectId
@@ -217,7 +217,7 @@ type DatetimeColumnValidation {
 model Setup {
   id          String      @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime    @default(now()) @db.Date
-  updatedAt   DateTime    @default(now()) @db.Date
+  updatedAt   DateTime    @default(now()) @updatedAt @db.Date
   setupConfig SetupConfig
 }
 
@@ -244,7 +244,7 @@ model Project {
   description String?
   userIds     String[]
   createdAt   DateTime         @default(now()) @db.Date
-  updatedAt   DateTime         @default(now()) @db.Date
+  updatedAt   DateTime         @default(now()) @updatedAt @db.Date
   expiry      DateTime
   // Each project dataset should contain filters on columns 
   datasets    ProjectDataset[]

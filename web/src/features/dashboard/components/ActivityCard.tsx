@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import React from 'react';
 
 import type { Activity } from '@databank/types';
 import { useTranslation } from 'react-i18next';

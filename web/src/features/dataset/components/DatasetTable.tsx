@@ -1,58 +1,59 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import React from 'react';
 
-import type { DatasetInfo } from '@databank/types';
+import type { TabularDataset } from '@databank/types';
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { HoverCard } from '@douglasneuroinformatics/libui/components';
 import { Table } from '@douglasneuroinformatics/libui/components';
-import { useDownload } from '@douglasneuroinformatics/libui/hooks';
+import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import axios from 'axios';
 
 // need a type for all columns metadata: an object with column names as keys and
 // the value with types of a union of all summaries
-
-export type TabularDataset = {
-  columnIds: { [key: string]: string };
-  columns: string[];
-  metadata: {
-    [key: string]: {
-      nullable: boolean;
-      summary: {
-        count: number;
-      };
-      type: string;
-    };
-  };
-  primaryKeys: string[];
-  rows: { [key: string]: string }[];
-} & DatasetInfo;
 
 export type DatasetTableProps = { isManager: boolean } & TabularDataset;
 
 const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const download = useDownload();
+  const notifications = useNotificationsStore();
   // useEffect to fetch the dataset from the server
 
   const removeManager = () => {
-    return 555666;
+    //
   };
 
   const addManager = () => {
-    return 555666;
+    //
   };
 
-  const deleteDataset = () => {
-    return 555666;
+  const deleteDataset = (datasetId: string) => {
+    axios
+      .delete(`v1/datasets/${datasetId}`)
+      .then(() => {
+        notifications.addNotification({
+          message: `Successfully deleted the dataset with ID ${datasetId}`,
+          type: 'info'
+        });
+      })
+      .catch(() => {
+        notifications.addNotification({
+          message: `Fail to delete the dataset with ID ${datasetId}`,
+          type: 'error'
+        });
+      });
   };
 
+  // move this part one level above into a page, this component should just be
+  // the table
   return (
     <>
       <Card>
         <Card.Header>
-          <Card.Title>{tabularDataset.name}</Card.Title>
-          <Card.Description>{tabularDataset.description}</Card.Description>
+          {/* <Card.Title>{tabularDataset.name}</Card.Title>
+          <Card.Description>{tabularDataset.description}</Card.Description> */}
           {tabularDataset.isManager && (
             <>
               <Button className="m-2" variant={'secondary'} onClick={addManager}>
@@ -63,7 +64,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                 Remove Manager
               </Button>
 
-              <Button className="m-2" variant={'danger'} onClick={deleteDataset}>
+              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(tabularDataset.id)}>
                 Delete Dataset
               </Button>
             </>
@@ -71,9 +72,9 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
         </Card.Header>
         <Card.Content>
           <ul>
-            <li>Created at: {tabularDataset.createdAt.toDateString()}</li>
-            <li>Updated at: {tabularDataset.updatedAt.toDateString()}</li>
-            <li>Licence: {tabularDataset.license}</li>
+            {/* <li>Created at: {tabularDataset.createdAt}</li>
+            <li>Updated at: {tabularDataset.updatedAt}</li> */}
+            {/* <li>Licence: {tabularDataset.}</li> */}
             <li>
               Primary keys:{' '}
               {tabularDataset.primaryKeys.map((pk, i) => {
@@ -149,9 +150,30 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                 <HoverCard.Content className="w-80">
                                   <div className="flex justify-between space-x-4">
                                     <div className="space-y-1">
-                                      <h4 className="text-sm font-semibold">{`Type: ${tabularDataset.metadata[column]?.type}`}</h4>
-                                      <h4 className="text-sm font-semibold">{`Nullable: ${tabularDataset.metadata[column]?.nullable}`}</h4>
+                                      <h4 className="text-sm font-semibold">{`Data Type: ${tabularDataset.metadata[column]?.kind}`}</h4>
+                                      <h4 className="text-sm font-semibold">{`Null Count: ${tabularDataset.metadata[column]?.summary.nullCount}`}</h4>
                                       <h4 className="text-sm font-semibold">{`Count: ${tabularDataset.metadata[column]?.summary.count}`}</h4>
+                                      {Boolean(tabularDataset.metadata[column]?.summary.min) && (
+                                        <h4 className="text-sm font-semibold">{`Min: ${tabularDataset.metadata[column]?.summary.min}`}</h4>
+                                      )}
+                                      {Boolean(tabularDataset.metadata[column]?.summary.max) && (
+                                        <h4 className="text-sm font-semibold">{`Max: ${tabularDataset.metadata[column]?.summary.max}`}</h4>
+                                      )}
+                                      {Boolean(tabularDataset.metadata[column]?.summary.mean) && (
+                                        <h4 className="text-sm font-semibold">{`Mean: ${tabularDataset.metadata[column]?.summary.mean}`}</h4>
+                                      )}
+                                      {Boolean(tabularDataset.metadata[column]?.summary.median) && (
+                                        <h4 className="text-sm font-semibold">{`Median: ${tabularDataset.metadata[column]?.summary.median}`}</h4>
+                                      )}
+                                      {Boolean(tabularDataset.metadata[column]?.summary.mode) && (
+                                        <h4 className="text-sm font-semibold">{`Mode: ${tabularDataset.metadata[column]?.summary.mode}`}</h4>
+                                      )}
+                                      {Boolean(tabularDataset.metadata[column]?.summary.std) && (
+                                        <h4 className="text-sm font-semibold">{`Standard deviation: ${tabularDataset.metadata[column]?.summary.std}`}</h4>
+                                      )}
+                                      {Boolean(tabularDataset.metadata[column]?.summary.distribution) && (
+                                        <h4 className="text-sm font-semibold">{`Distribution: ${JSON.stringify(tabularDataset.metadata[column]?.summary.distribution)}`}</h4>
+                                      )}
                                     </div>
                                   </div>
                                 </HoverCard.Content>
@@ -168,7 +190,13 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                 {tabularDataset.rows.map((currRow, i) => (
                   <Table.Row key={i}>
                     {tabularDataset.columns.map((currCol, j) => (
-                      <Table.Cell key={j}>{currRow[currCol]}</Table.Cell>
+                      <Table.Cell key={j}>
+                        {typeof currRow[currCol] === 'boolean'
+                          ? currRow[currCol]
+                            ? 'TRUE'
+                            : 'FALSE'
+                          : currRow[currCol]}
+                      </Table.Cell>
                     ))}
                   </Table.Row>
                 ))}

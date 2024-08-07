@@ -45,11 +45,11 @@ const DatasetCard = ({
         </Card.Content>
         <Card.Footer className="flex justify-between">
           {isManager ? (
-            <Button variant={'primary'} onClick={() => navigate('/portal/dataset', { state: id })}>
+            <Button variant={'primary'} onClick={() => navigate(`/portal/dataset/${id}`)}>
               Manage Dataset
             </Button>
           ) : (
-            <Button variant={'primary'} onClick={() => navigate('/portal/dataset', { state: id })}>
+            <Button variant={'primary'} onClick={() => navigate(`/portal/dataset/${id}`, {})}>
               View Dataset
             </Button>
           )}

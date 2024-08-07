@@ -13,7 +13,8 @@ import { CreateDatasetRoute } from './features/dataset/pages/CreateDatasetPage';
 import { viewDatasetsRoute } from './features/dataset/pages/ViewDatasetsPage';
 import { viewOneDatasetRoute } from './features/dataset/pages/ViewOneDatasetPage';
 import { LandingPage } from './features/landing';
-import { manageProjectRoute } from './features/projects/pages/ManageProjectPage';
+import { CreateProjectRoute } from './features/projects/pages/CreateProjectPage';
+import { viewOneProjectRoute } from './features/projects/pages/ViewOneProjectPage';
 import { viewProjectsRoute } from './features/projects/pages/ViewProjectsPage';
 import { UserRoute } from './features/user';
 import { useAuthStore } from './stores/auth-store';
@@ -42,8 +43,9 @@ export const protectedRoutes: RouteObject[] = [
       viewDatasetsRoute,
       viewOneDatasetRoute,
       viewProjectsRoute,
-      manageProjectRoute,
-      UserRoute
+      viewOneProjectRoute,
+      UserRoute,
+      CreateProjectRoute
     ],
     element: <Layout />,
     path: 'portal'

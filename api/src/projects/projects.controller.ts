@@ -1,6 +1,8 @@
 import { CurrentUser } from '@douglasneuroinformatics/libnest/core';
-import { Controller, Delete, Get, Param } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
 import { ProjectsService } from './projects.service';
 
@@ -11,6 +13,9 @@ import type { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './zo
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
+  @ApiOperation({ summary: 'Add a Dataset to a Project' })
+  @Post('add-dataset')
+  @RouteAccess({ role: 'STANDARD' })
   addDatasetToProject(
     @CurrentUser('id') currentUserId: string,
     projectId: string,
@@ -19,27 +24,46 @@ export class ProjectsController {
     return this.projectsService.addDataset(currentUserId, projectId, projectDatasetDto);
   }
 
+  @ApiOperation({ summary: 'Add a User to a Project' })
+  @Post('add-user')
+  @RouteAccess({ role: 'STANDARD' })
   addUserToProject(@CurrentUser('id') currentUserId: string, projectId: string, newUserId: string) {
     return this.projectsService.addUser(currentUserId, projectId, newUserId);
   }
 
-  createProject(@CurrentUser('id') currentUserId: string, createProjectDto: CreateProjectDto) {
+  @ApiOperation({ summary: 'Get All Available Projects' })
+  @Post('create')
+  @RouteAccess({ role: 'STANDARD' })
+  createProject(@CurrentUser('id') currentUserId: string, @Body() createProjectDto: CreateProjectDto) {
     return this.projectsService.createProject(currentUserId, createProjectDto);
   }
 
+  @ApiOperation({ summary: 'Delete a Project' })
+  @RouteAccess({ role: 'STANDARD' })
   @Delete(':id')
   deleteProject(@CurrentUser('id') currentUserId: string, @Param('id') projectId: string) {
     return this.projectsService.deleteProject(currentUserId, projectId);
   }
 
+  @ApiOperation({ summary: 'Get All Available Projects' })
   @Get()
+  @RouteAccess({ role: 'STANDARD' })
   getAllProjects(@CurrentUser('id') currentUserId: string) {
     return this.projectsService.getAllProjects(currentUserId);
   }
 
+  @ApiOperation({ summary: 'Get One Project by ID' })
+  @RouteAccess({ role: 'STANDARD' })
   @Get(':id')
   getProjectById(@CurrentUser('id') currentUserId: string, @Param('id') projectId: string) {
     return this.projectsService.getProjectById(currentUserId, projectId);
+  }
+
+  @ApiOperation({ summary: 'Get Project Datasets by ID' })
+  @RouteAccess({ role: 'STANDARD' })
+  @Get('datasets/:id')
+  getProjectDatasets(@Param('projectid') projectId: string) {
+    return this.projectsService.getProjectDatasets(projectId);
   }
 
   updateProject(@CurrentUser('id') currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {

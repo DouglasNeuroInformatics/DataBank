@@ -1,11 +1,10 @@
-import type { DatasetCardProps, DatasetViewPaginationDto } from '@databank/types';
+import type { DatasetCardProps, DatasetViewColumnPaginationDto, DatasetViewRowPaginationDto } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 
 import { ColumnsService } from '@/columns/columns.service.js';
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
-import type { ProjectDatasetDto } from '@/projects/zod/projects.js';
 import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 import type { DataFrame } from '@/vendor/nodejs-polars.js';
@@ -93,9 +92,15 @@ export class DatasetsService {
     file: Express.Multer.File | string,
     managerId: string
   ) {
+    const currUser = await this.usersService.findById(managerId);
+    if (!currUser.datasetId) {
+      throw new NotFoundException('User Not Found!');
+    }
+    let datasetIdArr = currUser.datasetId;
+
     // create base dataset without file
     if (!file) {
-      return await this.datasetModel.create({
+      const baseDataset = await this.datasetModel.create({
         data: {
           datasetType: 'BASE',
           description: createTabularDatasetDto.description,
@@ -105,6 +110,13 @@ export class DatasetsService {
           permission: 'MANAGER'
         }
       });
+
+      datasetIdArr.push(baseDataset.id);
+
+      await this.usersService.updateUser(managerId, {
+        datasetId: datasetIdArr
+      });
+      return baseDataset;
     }
 
     let csvString: string;
@@ -146,6 +158,12 @@ export class DatasetsService {
       await this.tabularDataService.create(df, dataset.id, []);
     }
 
+    datasetIdArr.push(dataset.id);
+
+    await this.usersService.updateUser(managerId, {
+      datasetId: datasetIdArr
+    });
+
     return dataset;
   }
 
@@ -184,6 +202,9 @@ export class DatasetsService {
   }
 
   async getAvailable(currentUserId: string) {
+    const currentUser = await this.usersService.findById(currentUserId);
+
+    // get datasets that are ready to share or managed by the current user
     const availableDatasets = await this.datasetModel.findMany({
       where: {
         OR: [
@@ -196,40 +217,40 @@ export class DatasetsService {
         ]
       }
     });
+
+    if (!currentUser.verifiedAt) {
+      return availableDatasets.filter((dataset) => {
+        dataset.managerIds.includes(currentUserId) || dataset.permission == 'LOGIN' || dataset.permission == 'PUBLIC';
+      });
+    }
+
+    availableDatasets.forEach((dataset) => {
+      dataset.managerIds.includes(currentUserId) || dataset.permission !== 'MANAGER' ? dataset : null;
+    });
     return availableDatasets;
   }
 
-  async getProjectDatasetView(currentUserId: string, projectDatasetDto: ProjectDatasetDto) {
-    // if currentUser cannot modify dataset, return dataset view
+  async getById(datasetId: string) {
     const dataset = await this.datasetModel.findUnique({
-      include: {
-        tabularData: {
-          include: {
-            columns: true
-          }
-        }
-      },
       where: {
-        id: projectDatasetDto.datasetId
+        id: datasetId
       }
     });
 
-    if (!dataset) {
-      throw new NotFoundException(`Cannot find dataset with id ${projectDatasetDto.datasetId}`);
-    }
-
-    if (currentUserId in dataset.managerIds) {
-      return dataset;
-    }
-
-    const tabularDataView = await this.tabularDataService.getProjectViewById(projectDatasetDto);
-    dataset.tabularData = tabularDataView;
     return dataset;
   }
 
-  // private formatDatasetView() {
-  //   return "TODO"
-  // }
+  async getProjectDatasetViewById(
+    datasetId: string,
+    currentUserId: string,
+    datasetViewRowPaginationDto: DatasetViewRowPaginationDto,
+    datasetViewColumnPaginationDto: DatasetViewColumnPaginationDto
+  ) {
+    await new Promise(() => {
+      return;
+    });
+    return [datasetId, currentUserId, datasetViewColumnPaginationDto, datasetViewRowPaginationDto];
+  }
 
   async getPublic() {
     const publicDatasets = await this.datasetModel.findMany({
@@ -258,7 +279,12 @@ export class DatasetsService {
     return resDatasetsInfo;
   }
 
-  async getViewById(datasetId: string, currentUserId: string, datasetViewPaginationDto: DatasetViewPaginationDto) {
+  async getViewById(
+    datasetId: string,
+    currentUserId: string,
+    datasetViewRowPaginationDto: DatasetViewRowPaginationDto,
+    datasetViewColumnPaginationDto: DatasetViewColumnPaginationDto
+  ) {
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: true
@@ -278,7 +304,11 @@ export class DatasetsService {
     if (!dataset.tabularData?.id) {
       throw new NotFoundException('No such tabular data available!');
     }
-    const datasetView = await this.tabularDataService.getViewById(dataset.tabularData.id, datasetViewPaginationDto);
+    const datasetView = await this.tabularDataService.getViewById(
+      dataset.tabularData.id,
+      datasetViewRowPaginationDto,
+      datasetViewColumnPaginationDto
+    );
     // the frontend search function should allow the user to fill a form
     // according to the form data (filter constrains), the backend should find
     // rows and columns

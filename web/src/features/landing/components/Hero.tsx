@@ -32,7 +32,14 @@ export const Hero = () => {
               navigate('/auth/create-account');
             }}
           />
-          <Button label={t('learnMore')} type="button" variant="secondary" />
+          <Button
+            label={t('learnMore')}
+            type="button"
+            variant="secondary"
+            onClick={() => {
+              navigate('/auth/login');
+            }}
+          />
         </div>
       </motion.div>
       <motion.div

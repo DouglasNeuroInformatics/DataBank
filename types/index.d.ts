@@ -18,6 +18,7 @@ export type UserRole = 'ADMIN' | 'STANDARD';
 
 export type CurrentUser = {
   confirmedAt: Date | null | undefined;
+  datasetId: string[];
   email: string;
   firstName: string;
   id: string;
@@ -127,14 +128,6 @@ export type TabularDataRow = {
   [key: string]: Date | boolean | number | string;
 };
 
-export type TabularDataset<T extends TabularDataRow> = {
-  columnIds: [string];
-  columns: [keyof T];
-  metadata: { [k in keyof T]: ColumnSummary };
-  primaryKeys: [Partial<keyof T>];
-  rows: T[];
-} & DatasetInfo;
-
 export type TabularDatasetView = {
   columnIds: string[];
   columns: string[];
@@ -142,6 +135,30 @@ export type TabularDatasetView = {
   primaryKeys: string[];
   rows: { [key: string]: boolean | null | number | string }[];
 };
+
+export type TabularDataset = {
+  columnIds: { [key: string]: string };
+  columns: string[];
+  metadata: {
+    [key: string]: {
+      kind: 'BOOLEAN' | 'DATETIME' | 'ENUM' | 'FLOAT' | 'INT' | 'STRING';
+      nullable: boolean;
+      summary: {
+        count: number;
+        distribution?: { [key: string]: number };
+        max?: number;
+        mean?: number;
+        median?: number;
+        min?: number;
+        mode?: number;
+        nullCount: number;
+        std?: number;
+      };
+    };
+  };
+  primaryKeys: string[];
+  rows: { [key: string]: string }[];
+} & DatasetInfo;
 
 export type BaseColumnSummary = {
   count: number;
@@ -198,8 +215,7 @@ export type ColumnSummary = (
   BaseColumnSummary;
 
 export type DatasetViewPaginationDto = {
-  columnsPerPage: number;
-  currentColumnPage: number;
-  currentRowPage: number;
-  rowsPerPage: number;
+  currentPage: number;
+  itemsPerPage: number;
+  totalItems: number;
 };

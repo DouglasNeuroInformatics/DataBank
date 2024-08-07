@@ -1,11 +1,4 @@
 /* eslint-disable perfectionist/sort-objects */
-// fill a form with dataset information
-// dropzone with file select to upload a file
-// simply check the size of the file (max: 1GB) and the file extension: only tsv or csv is allowed
-// submit function to send the file
-// navigate to success page with options to view datasets or create more dataset?
-// alternative option: navigate to view dataset page directly
-
 import React, { useCallback, useState } from 'react';
 
 import { Button, Form } from '@douglasneuroinformatics/libui/components';
@@ -18,7 +11,9 @@ import { type RouteObject, useNavigate } from 'react-router-dom';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
 
-const $CreateDataformValidation = z.object({
+import { LoadingFallback } from '@/components';
+
+const $CreateDatasetFormValidation = z.object({
   description: z.string().optional(),
   datasetType: z.enum(['BASE', 'BINARY', 'TABULAR']),
   license: z.enum(['PUBLIC', 'OTHER']),
@@ -26,7 +21,7 @@ const $CreateDataformValidation = z.object({
   primaryKeys: z.string().optional()
 });
 
-export type CreateDatasetFormData = z.infer<typeof $CreateDataformValidation>;
+export type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
 
 const CreateDatasetPage = () => {
   const MAX_UPLOAD_FILE_SIZE = 1024 * 1024 * 1024;
@@ -35,9 +30,11 @@ const CreateDatasetPage = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<CreateDatasetFormData | null>(null);
+  const [processingFile, setProcessingFile] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
 
   const createDataset = async () => {
+    setProcessingFile(true);
     // important to add the header content type for posting file
     await axios.post(
       '/v1/datasets/create',
@@ -133,7 +130,7 @@ const CreateDatasetPage = () => {
               }
             }}
             submitBtnLabel="Confirm"
-            validationSchema={$CreateDataformValidation}
+            validationSchema={$CreateDatasetFormValidation}
             onSubmit={(data) => {
               setFormData(data);
             }}
@@ -161,7 +158,9 @@ const CreateDatasetPage = () => {
       );
     })
     .otherwise(() => {
-      return (
+      return processingFile ? (
+        <LoadingFallback />
+      ) : (
         <>
           <div {...getRootProps()}>
             <input {...getInputProps()} />
@@ -170,7 +169,7 @@ const CreateDatasetPage = () => {
           <div className="flex gap-2">
             <Button
               className="mt-2 w-full"
-              disabled={formData?.datasetType !== 'BASE' && !file}
+              disabled={file ? false : formData?.datasetType !== 'BASE'}
               label={t('submit')}
               type="button"
               onClick={() => void createDataset()}

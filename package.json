@@ -11,7 +11,8 @@
     "format": "turbo run format",
     "lint": "turbo run lint",
     "prepare": "husky install",
-    "test": "env-cmd turbo run test"
+    "test": "env-cmd turbo run test",
+    "docker:db": "docker compose -f docker-compose.dev.yaml up -d"
   },
   "devDependencies": {
     "@databank/types": "workspace:*",

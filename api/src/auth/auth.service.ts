@@ -148,8 +148,8 @@ export class AuthService {
   }
 
   private async signToken(user: User) {
-    const { confirmedAt, email, firstName, lastName, role, verifiedAt } = user;
-    const payload: CurrentUser = { confirmedAt, email, firstName, id: user.id, lastName, role, verifiedAt };
+    const { confirmedAt, datasetId, email, firstName, lastName, role, verifiedAt } = user;
+    const payload: CurrentUser = { confirmedAt, datasetId, email, firstName, id: user.id, lastName, role, verifiedAt };
     return this.jwtService.signAsync(payload);
   }
 }

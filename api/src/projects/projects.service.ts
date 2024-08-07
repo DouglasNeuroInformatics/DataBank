@@ -1,3 +1,4 @@
+import type { DatasetInfo } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
@@ -16,7 +17,7 @@ export class ProjectsService {
   ) {}
 
   async addDataset(currentUserId: string, projectId: string, projectDatasetDto: ProjectDatasetDto) {
-    if (!this.isProjectManager(currentUserId, projectId)) {
+    if (!(await this.isProjectManager(currentUserId, projectId))) {
       throw new ForbiddenException('Only project managers can add new dataset!');
     }
 
@@ -34,7 +35,7 @@ export class ProjectsService {
   }
 
   async addUser(currentUserId: string, projectId: string, newUserId: string) {
-    if (!this.isProjectManager(currentUserId, projectId)) {
+    if (!(await this.isProjectManager(currentUserId, projectId))) {
       throw new ForbiddenException('Only project managers can add new users!');
     }
 
@@ -53,11 +54,11 @@ export class ProjectsService {
   }
 
   async createProject(currentUserId: string, createProjectDto: CreateProjectDto) {
-    if (!this.usersService.isOwnerOfDatasets(currentUserId)) {
+    if (!(await this.usersService.isOwnerOfDatasets(currentUserId))) {
       throw new ForbiddenException('Only dataset owners can create project!');
     }
 
-    if (!(currentUserId in createProjectDto.userIds)) {
+    if (!createProjectDto.userIds.includes(currentUserId)) {
       throw new ForbiddenException('Creator of the project must be a user of the project!');
     }
 
@@ -67,7 +68,7 @@ export class ProjectsService {
   }
 
   async deleteProject(currentUserId: string, projectId: string) {
-    if (!this.isProjectManager(currentUserId, projectId)) {
+    if (!(await this.isProjectManager(currentUserId, projectId))) {
       throw new ForbiddenException('The current user has no right to delete this project!');
     }
 
@@ -100,19 +101,39 @@ export class ProjectsService {
       }
     });
 
-    if (!project || !(currentUserId in project.userIds)) {
-      throw new NotFoundException(`Cannot find project with id ${projectId}`);
+    if (!project) {
+      throw new NotFoundException(`Cannot find project with id ${projectId} for
+        user with id ${currentUserId}`);
     }
 
     return project;
   }
 
-  async getProjectDataset(currentUserId: string, projectDatasetDto: ProjectDatasetDto) {
-    return await this.datasetService.getDatasetView(currentUserId, projectDatasetDto);
+  async getProjectDatasets(projectId: string) {
+    const project = await this.projectModel.findUnique({
+      where: {
+        id: projectId
+      }
+    });
+    if (!project) {
+      throw new NotFoundException(`Project with id ${projectId} cannot be found`);
+    }
+
+    const projectDatasetsInfo: DatasetInfo[] = [];
+    for (let projectDataset of project.datasets) {
+      const projectDatasetInfo = await this.datasetService.getById(projectDataset.datasetId);
+      if (!projectDatasetInfo) {
+        throw new NotFoundException('Project dataset Information NOT found!');
+      }
+
+      projectDatasetsInfo.push(projectDatasetInfo);
+    }
+
+    return projectDatasetsInfo;
   }
 
   async removeDataset(currentUserId: string, projectId: string, datasetId: string) {
-    if (!this.isProjectManager(currentUserId, projectId)) {
+    if (!(await this.isProjectManager(currentUserId, projectId))) {
       throw new ForbiddenException('Only project managers can remove dataset!');
     }
 
@@ -124,7 +145,7 @@ export class ProjectsService {
   }
 
   async removeUser(currentUserId: string, projectId: string, userIdToRemove: string) {
-    if (!this.isProjectManager(currentUserId, projectId)) {
+    if (!(await this.isProjectManager(currentUserId, projectId))) {
       throw new ForbiddenException('Only project managers can remove users!');
     }
 
@@ -143,7 +164,7 @@ export class ProjectsService {
   }
 
   async updateProject(currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {
-    const isProjectManager = this.isProjectManager(currentUserId, projectId);
+    const isProjectManager = await this.isProjectManager(currentUserId, projectId);
     if (!isProjectManager) {
       throw new ForbiddenException('The current user has no right to manipulate this project!');
     }
@@ -162,12 +183,12 @@ export class ProjectsService {
     const project = await this.getProjectById(currentUserId, projectId);
 
     const datasetIdSet = new Set();
-    for (let curr_datasetId in user.datasetId) {
+    for (let curr_datasetId of user.datasetId) {
       datasetIdSet.add(curr_datasetId);
     }
 
-    for (let i = 0; i < project.datasets.length; i++) {
-      if (datasetIdSet.has(project.datasets[i]?.datasetId)) {
+    for (let dataset of project.datasets) {
+      if (datasetIdSet.has(dataset.datasetId)) {
         return true;
       }
     }
