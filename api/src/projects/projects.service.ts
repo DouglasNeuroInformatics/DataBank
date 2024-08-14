@@ -106,7 +106,9 @@ export class ProjectsService {
         user with id ${currentUserId}`);
     }
 
-    return project;
+    const isProjectManager = this.isProjectManager(currentUserId, project.id);
+
+    return { ...project, isProjectManager };
   }
 
   async getProjectDatasets(projectId: string) {

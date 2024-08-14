@@ -37,6 +37,15 @@ const ViewOneProjectDatasetPage = () => {
 
   return dataset ? (
     <>
+      <h1>{columnPaginationDto?.currentPage}</h1>
+      <DatasetPagination
+        currentPage={0}
+        itemsPerPage={0}
+        kind={'COLUMN'}
+        setDatasetPagination={setColumnPaginationDto}
+        totalNumberOfItems={0}
+      />
+
       <DatasetTable
         columnIds={dataset.columnIds}
         columns={dataset.columns}
@@ -53,30 +62,19 @@ const ViewOneProjectDatasetPage = () => {
         permission={'LOGIN'}
         primaryKeys={dataset.primaryKeys}
         rows={dataset.rows}
+        totalNumberOfColumns={0}
+        totalNumberOfRows={0}
         updatedAt={dataset.updatedAt}
       />
 
-      <DatasetPagination
-        datasetPaginationDto={{
-          currentPage: 0,
-          itemsPerPage: 0,
-          totalItems: 0
-        }}
-        setDatasetPagination={setColumnPaginationDto}
-      />
-
-      <h1>{columnPaginationDto?.currentPage}</h1>
-
-      <DatasetPagination
-        datasetPaginationDto={{
-          currentPage: 0,
-          itemsPerPage: 0,
-          totalItems: 0
-        }}
-        setDatasetPagination={setRowPaginationDto}
-      />
-
       <h1>{rowPaginationDto?.currentPage}</h1>
+      <DatasetPagination
+        currentPage={0}
+        itemsPerPage={0}
+        kind={'ROW'}
+        setDatasetPagination={setRowPaginationDto}
+        totalNumberOfItems={0}
+      />
     </>
   ) : (
     <LoadingFallback />

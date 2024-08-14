@@ -25,14 +25,12 @@ const ViewOnePublicDatasetPage = () => {
 
   const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto>({
     currentPage: 1,
-    itemsPerPage: 10,
-    totalItems: 100
+    itemsPerPage: 10
   });
 
   const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPaginationDto>({
     currentPage: 1,
-    itemsPerPage: 10,
-    totalItems: 100
+    itemsPerPage: 10
   });
 
   useEffect(() => {
@@ -129,15 +127,15 @@ const ViewOnePublicDatasetPage = () => {
           columnName,
           data.metadata[columnName]?.kind,
           data.metadata[columnName]?.nullable,
-          data.metadata[columnName]?.summary.count,
-          data.metadata[columnName]?.summary.nullCount,
-          data.metadata[columnName]?.summary.max,
-          data.metadata[columnName]?.summary.min,
-          data.metadata[columnName]?.summary.mean,
-          data.metadata[columnName]?.summary.median,
-          data.metadata[columnName]?.summary.mode,
-          data.metadata[columnName]?.summary.std,
-          data.metadata[columnName]?.summary.distribution
+          data.metadata[columnName]?.count,
+          data.metadata[columnName]?.nullCount,
+          data.metadata[columnName]?.max,
+          data.metadata[columnName]?.min,
+          data.metadata[columnName]?.mean,
+          data.metadata[columnName]?.median,
+          data.metadata[columnName]?.mode,
+          data.metadata[columnName]?.std,
+          data.metadata[columnName]?.distribution
         ].join(delimiter);
       })
       .join('\n');
@@ -171,12 +169,11 @@ const ViewOnePublicDatasetPage = () => {
         </Card.Header>
         <Card.Content>
           <DatasetPagination
-            datasetPaginationDto={{
-              currentPage: columnPaginationDto.currentPage,
-              itemsPerPage: columnPaginationDto.itemsPerPage,
-              totalItems: columnPaginationDto.totalItems
-            }}
+            currentPage={0}
+            itemsPerPage={0}
+            kind={'COLUMN'}
             setDatasetPagination={setColumnPaginationDto}
+            totalNumberOfItems={0}
           />
 
           <DatasetTable
@@ -195,16 +192,17 @@ const ViewOnePublicDatasetPage = () => {
             permission={dataset.permission}
             primaryKeys={dataset.primaryKeys}
             rows={dataset.rows}
+            totalNumberOfColumns={0}
+            totalNumberOfRows={0}
             updatedAt={dataset.updatedAt}
           />
 
           <DatasetPagination
-            datasetPaginationDto={{
-              currentPage: rowPaginationDto.currentPage,
-              itemsPerPage: rowPaginationDto.itemsPerPage,
-              totalItems: rowPaginationDto.totalItems
-            }}
+            currentPage={0}
+            itemsPerPage={0}
+            kind={'ROW'}
             setDatasetPagination={setRowPaginationDto}
+            totalNumberOfItems={0}
           />
         </Card.Content>
         <Card.Footer>

@@ -48,14 +48,14 @@ const ViewOneProjectPage = () => {
 
   useEffect(() => {
     axios
-      .get<Project>(`/v1/projects/projects/${location.state}`)
+      .get<Project>(`/v1/projects/${location.state}`)
       .then((response) => {
         setProject(response.data);
       })
       .catch(console.error);
 
     axios
-      .get<DatasetCardProps[]>('/v1/projects/datasets')
+      .get<DatasetCardProps[]>(`/v1/projects/datasets/${location.state}`)
       .then((response) => {
         setDatasetsInfoArray(response.data);
       })
@@ -68,9 +68,9 @@ const ViewOneProjectPage = () => {
         <>
           <Card>
             <Card.Header>
-              <Card.Title>{project.name}</Card.Title>
-              <Card.Description>{project.description}</Card.Description>
-              <>
+              <Card.Title>{`${t('projectName')}: ${project.name}`}</Card.Title>
+              <Card.Description>{`${t('projectDescription')}: ${project.description}`}</Card.Description>
+              <div className="flex justify-between">
                 <Button className="m-2" variant={'secondary'} onClick={addUser}>
                   Add User
                 </Button>
@@ -82,13 +82,13 @@ const ViewOneProjectPage = () => {
                 <Button className="m-2" variant={'danger'} onClick={deleteProject}>
                   Delete Project
                 </Button>
-              </>
+              </div>
             </Card.Header>
             <Card.Content>
               <ul>
-                <li>Created at: {project.createdAt.toDateString()}</li>
-                <li>Updated at: {project.updatedAt.toDateString()}</li>
-                <li>External Id: {project.externalId}</li>
+                <li>{`${t('createdAt')}: ${project.createdAt.toString()}`}</li>
+                <li>{`${t('updatedAt')}: ${project.updatedAt.toString()}`}</li>
+                <li>{`${t('projectExternalId')}: ${project.externalId}`}</li>
               </ul>
               <div className="m-3 rounded-md border bg-card tracking-tight text-muted-foreground shadow-sm"></div>
             </Card.Content>

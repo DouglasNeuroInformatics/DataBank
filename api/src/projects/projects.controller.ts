@@ -62,7 +62,7 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Get Project Datasets by ID' })
   @RouteAccess({ role: 'STANDARD' })
   @Get('datasets/:id')
-  getProjectDatasets(@Param('projectid') projectId: string) {
+  getProjectDatasets(@Param('id') projectId: string) {
     return this.projectsService.getProjectDatasets(projectId);
   }
 
