@@ -59,13 +59,13 @@ export class DatasetsController {
   }
 
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
-  @Get(':id')
+  @Post(':id')
   @RouteAccess({ role: 'STANDARD' })
   getViewById(
     @Param('id') datasetId: string,
     @CurrentUser('id') currentUserId: string,
-    @Param() datasetViewRowPaginationDto: DatasetViewPaginationDto,
-    @Param() datasetViewColumnPaginationDto: DatasetViewPaginationDto
+    @Body('rowPaginationDto') datasetViewRowPaginationDto: DatasetViewPaginationDto,
+    @Body('columnPaginationDto') datasetViewColumnPaginationDto: DatasetViewPaginationDto
   ) {
     return this.datasetsService.getViewById(
       datasetId,
@@ -76,13 +76,13 @@ export class DatasetsController {
   }
 
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
-  @Get(':id')
+  @Post('/project/:id')
   @RouteAccess({ role: 'STANDARD' })
   getProjectDatasetViewById(
     @Param('id') projectId: string,
     @CurrentUser('id') currentUserId: string,
-    @Param() datasetViewRowPaginationDto: DatasetViewPaginationDto,
-    @Param() datasetViewColumnPaginationDto: DatasetViewPaginationDto
+    @Body('rowPaginationDto') datasetViewRowPaginationDto: DatasetViewPaginationDto,
+    @Body('columnPaginationDto') datasetViewColumnPaginationDto: DatasetViewPaginationDto
   ) {
     return this.datasetsService.getProjectDatasetViewById(
       projectId,
@@ -97,7 +97,7 @@ export class DatasetsController {
   removeManager(
     @Param('id') datasetId: string,
     @CurrentUser('id') managerId: string,
-    @Param('managerIdToAdd') managerIdToRemove: string
+    @Param('managerIdToRemove') managerIdToRemove: string
   ) {
     return this.datasetsService.removeManager(datasetId, managerId, managerIdToRemove);
   }

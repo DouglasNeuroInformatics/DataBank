@@ -1,4 +1,4 @@
-import type { DatasetCardProps, DatasetViewColumnPaginationDto, DatasetViewRowPaginationDto } from '@databank/types';
+import type { DatasetCardProps, DatasetViewPaginationDto } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 
@@ -61,7 +61,7 @@ export class DatasetsService {
     if (!dataset) {
       throw new NotFoundException();
     }
-    if (!(currentUserId in dataset.managerIds)) {
+    if (!dataset.managerIds.includes(currentUserId)) {
       throw new ForbiddenException('Only managers can modify this dataset!');
     }
     return dataset;
@@ -184,7 +184,7 @@ export class DatasetsService {
       }
     });
 
-    // need to update all users that are managers of this dataset
+    // update all managers of this dataset
     const managersToUpdate = await this.usersService.findManyByDatasetId(dataset.id);
 
     const updateManagers = [];
@@ -204,7 +204,6 @@ export class DatasetsService {
   async getAvailable(currentUserId: string) {
     const currentUser = await this.usersService.findById(currentUserId);
 
-    // get datasets that are ready to share or managed by the current user
     const availableDatasets = await this.datasetModel.findMany({
       where: {
         OR: [
@@ -243,13 +242,13 @@ export class DatasetsService {
   async getProjectDatasetViewById(
     datasetId: string,
     currentUserId: string,
-    datasetViewRowPaginationDto: DatasetViewRowPaginationDto,
-    datasetViewColumnPaginationDto: DatasetViewColumnPaginationDto
+    rowPagination: DatasetViewPaginationDto,
+    columnPagination: DatasetViewPaginationDto
   ) {
     await new Promise(() => {
       return;
     });
-    return [datasetId, currentUserId, datasetViewColumnPaginationDto, datasetViewRowPaginationDto];
+    return [datasetId, currentUserId, columnPagination, rowPagination];
   }
 
   async getPublic() {
@@ -282,8 +281,8 @@ export class DatasetsService {
   async getViewById(
     datasetId: string,
     currentUserId: string,
-    datasetViewRowPaginationDto: DatasetViewRowPaginationDto,
-    datasetViewColumnPaginationDto: DatasetViewColumnPaginationDto
+    datasetViewRowPaginationDto: DatasetViewPaginationDto,
+    datasetViewColumnPaginationDto: DatasetViewPaginationDto
   ) {
     const dataset = await this.datasetModel.findUnique({
       include: {
@@ -316,7 +315,19 @@ export class DatasetsService {
     // Idea:
     // Column pagination: <current COL1 COL2 COL3 COL4 COL5> ()
     // row pagination <first> <before> <current / total pages> <next> <last>
-    return datasetView;
+    return {
+      createdAt: dataset.createdAt,
+      datasetType: dataset.datasetType,
+      description: dataset.description,
+      id: dataset.id,
+      isReadyToShare: dataset.isReadyToShare,
+      license: dataset.license,
+      managerIds: dataset.managerIds,
+      name: dataset.name,
+      permission: dataset.permission,
+      updatedAt: dataset.updatedAt,
+      ...datasetView
+    };
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {

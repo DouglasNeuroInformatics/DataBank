@@ -1,12 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
-import type {
-  ColumnSummary,
-  DatasetViewColumnPaginationDto,
-  DatasetViewRowPaginationDto,
-  TabularDatasetView
-} from '@databank/types';
+import type { ColumnSummary, DatasetViewPaginationDto, TabularDatasetView } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { PermissionLevel, TabularColumn } from '@prisma/client';
 
@@ -138,8 +131,8 @@ export class TabularDataService {
 
   async getViewById(
     tabularDataId: string,
-    datasetViewRowPaginationDto: DatasetViewRowPaginationDto,
-    datasetViewColumnPaginationDto: DatasetViewColumnPaginationDto
+    rowPagination: DatasetViewPaginationDto,
+    columnPagination: DatasetViewPaginationDto
   ) {
     const tabularData = await this.tabularDataModel.findUnique({
       include: {
@@ -161,36 +154,41 @@ export class TabularDataService {
     if (!tabularData.columns[0]?.id) {
       throw new NotFoundException('No columns in this tabular data.');
     }
+
+    const rowStart = (rowPagination.currentPage - 1) * rowPagination.itemsPerPage;
+    const rowEnd = rowPagination.currentPage * rowPagination.itemsPerPage - 1;
     const numberOfRows = await this.columnsService.getLengthById(tabularData.columns[0]?.id);
-    for (let i = 0; i < numberOfRows; i++) {
+    const columnStart = (columnPagination.currentPage - 1) * columnPagination.itemsPerPage;
+    const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage - 1;
+
+    for (let i = rowStart; i < rowEnd + 1; i++) {
       rows.push({});
     }
 
     let metaData: { [key: string]: ColumnSummary } = {};
 
-    // handle pagination here: TODO
-    datasetViewColumnPaginationDto.columnsPerPage;
-    datasetViewRowPaginationDto.rowsPerPage;
-
-    for (let col of tabularData.columns) {
+    for (let col of tabularData.columns.slice(columnStart, columnEnd + 1)) {
       columnIds.push(col.id);
       columns.push(col.name);
 
       switch (col.kind) {
         case 'STRING':
-          col.stringData.map((entry, i) => {
+          col.stringData.slice(rowStart, rowEnd + 1).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
+
             rows[i][col.name] = entry.value;
           });
+
           metaData[col.name] = {
+            count: col.summary.count,
             kind: 'STRING',
-            ...col.summary
+            nullCount: col.summary.nullCount
           };
           break;
         case 'BOOLEAN':
-          col.booleanData.map((entry, i) => {
+          col.booleanData.slice(rowStart, rowEnd + 1).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
@@ -200,13 +198,12 @@ export class TabularDataService {
             count: col.summary.count,
             kind: 'BOOLEAN',
             nullCount: col.summary.nullCount,
-            // This is incorrect as the distribution is sorted with
-            // the higher count at position 0
-            trueCount: col.summary.enumSummary?.distribution[0]['count']
+            // TODO: find the true count
+            trueCount: 0
           };
           break;
         case 'INT':
-          col.intData.map((entry, i) => {
+          col.intData.slice(rowStart, rowEnd + 1).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
@@ -215,12 +212,16 @@ export class TabularDataService {
           metaData[col.name] = {
             count: col.summary.count,
             kind: 'INT',
+            max: col.summary.intSummary?.max,
+            median: col.summary.intSummary?.median,
+            min: col.summary.intSummary?.min,
+            mode: col.summary.intSummary?.mode,
             nullCount: col.summary.nullCount,
-            ...col.summary.intSummary
+            std: col.summary.intSummary?.std
           };
           break;
         case 'FLOAT':
-          col.floatData.map((entry, i) => {
+          col.floatData.slice(rowStart, rowEnd + 1).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
@@ -229,12 +230,15 @@ export class TabularDataService {
           metaData[col.name] = {
             count: col.summary.count,
             kind: 'FLOAT',
+            max: col.summary.floatSummary?.max,
+            median: col.summary.floatSummary?.median,
+            min: col.summary.floatSummary?.min,
             nullCount: col.summary.nullCount,
-            ...col.summary.floatSummary
+            std: col.summary.floatSummary?.std
           };
           break;
         case 'ENUM':
-          col.enumData.map((entry, i) => {
+          col.enumData.slice(rowStart, rowEnd + 1).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
@@ -247,15 +251,18 @@ export class TabularDataService {
           };
           break;
         case 'DATETIME':
-          col.datetimeData.map((entry, i) => {
+          col.datetimeData.slice(rowStart, rowEnd + 1).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
             rows[i][col.name] = entry.value?.toDateString() ?? null;
           });
           metaData[col.name] = {
-            kind: 'STRING',
-            ...col.summary
+            count: 0,
+            kind: 'DATETIME',
+            max: col.summary.datetimeSummary?.max ? col.summary.datetimeSummary?.max : new Date(),
+            min: col.summary.datetimeSummary?.min ? col.summary.datetimeSummary?.min : new Date(),
+            nullCount: 10
           };
           break;
       }
@@ -266,7 +273,9 @@ export class TabularDataService {
       columns,
       metadata: metaData,
       primaryKeys: tabularData.primaryKeys,
-      rows
+      rows,
+      totalNumberOfColumns: tabularData.columns.length,
+      totalNumberOfRows: numberOfRows
     };
 
     return dataView;
@@ -289,7 +298,7 @@ export class TabularDataService {
         return false;
       }
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const checkPrimaryKeysArray: boolean[] = df
       .select(...primaryKeys)
       .isUnique()

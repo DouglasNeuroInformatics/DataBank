@@ -18,19 +18,9 @@ const ViewOneProjectDatasetPage = () => {
 
   const [dataset, setDataset] = useState<TabularDataset | null>(null);
 
-  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto | null>({
-    columnsPerPage: 10,
-    currentColumnPage: 1,
-    rowsPerPage: 10,
-    currentRowPage: 1
-  });
+  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto | null>(null);
 
-  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPaginationDto | null>({
-    columnsPerPage: 10,
-    currentColumnPage: 1,
-    rowsPerPage: 10,
-    currentRowPage: 1
-  });
+  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPaginationDto | null>(null);
 
   useEffect(() => {
     const fetchDataset = async () => {
@@ -68,27 +58,25 @@ const ViewOneProjectDatasetPage = () => {
 
       <DatasetPagination
         datasetPaginationDto={{
-          columnsPerPage: 0,
-          currentColumnPage: 0,
-          currentRowPage: 0,
-          rowsPerPage: 0
+          currentPage: 0,
+          itemsPerPage: 0,
+          totalItems: 0
         }}
         setDatasetPagination={setColumnPaginationDto}
       />
 
-      <h1>{columnPaginationDto?.currentColumnPage}</h1>
+      <h1>{columnPaginationDto?.currentPage}</h1>
 
       <DatasetPagination
         datasetPaginationDto={{
-          columnsPerPage: 0,
-          currentColumnPage: 0,
-          currentRowPage: 0,
-          rowsPerPage: 0
+          currentPage: 0,
+          itemsPerPage: 0,
+          totalItems: 0
         }}
         setDatasetPagination={setRowPaginationDto}
       />
 
-      <h1>{rowPaginationDto?.currentRowPage}</h1>
+      <h1>{rowPaginationDto?.currentPage}</h1>
     </>
   ) : (
     <LoadingFallback />

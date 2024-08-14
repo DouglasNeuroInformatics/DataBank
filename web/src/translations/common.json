@@ -327,6 +327,86 @@
     "en": "Delete Dataset",
     "fr": "Supprimer l'ensemble de données"
   },
+  "addManager": {
+    "en": "Add Manager",
+    "fr": "Ajouter un gestionnaire"
+  },
+  "removeManager": {
+    "en": "Remove Manager",
+    "fr": "Supprimer un gestionnaire"
+  },
+  "editDatasetInfo": {
+    "en": "Edit Dataset Information",
+    "fr": "Modifier les informations du jeu de données"
+  },
+  "setDatasetSharable": {
+    "en": "Set Dataset Sharable",
+    "fr": "Rendre le jeu de données partageable"
+  },
+  "downloadDataset": {
+    "en": "Download Dataset",
+    "fr": "Télécharger le jeu de données"
+  },
+  "downloadTsv": {
+    "en": "Download TSV",
+    "fr": "Télécharger TSV"
+  },
+  "downloadCsv": {
+    "en": "Download CSV",
+    "fr": "Télécharger CSV"
+  },
+  "downloadMetadata": {
+    "en": "Download Metadata",
+    "fr": "Télécharger les métadonnées"
+  },
+  "createdAt": {
+    "en": "Created At",
+    "fr": "Créé le"
+  },
+  "updatedAt": {
+    "en": "Updated At",
+    "fr": "Mis à jour le"
+  },
+  "datasetPrimaryKeys": {
+    "en": "Primary keys",
+    "fr": "Clés primaires"
+  },
+  "setColumnPermissionLevel": {
+    "en": "Set Data Permission Level",
+    "fr": "Définir le niveau de permission des données"
+  },
+  "setColumnMetadataPermissionLevel": {
+    "en": "Set Metadata Permission Level",
+    "fr": "Définir le niveau de permission des métadonnées"
+  },
+  "setColumnNullable": {
+    "en": "Set Nullable",
+    "fr": "Définir comme nullable"
+  },
+  "changeColumnType": {
+    "en": "Change Column Data Type",
+    "fr": "Changer le type de données de la colonne"
+  },
+  "deleteColumn": {
+    "en": "Delete Column",
+    "fr": "Supprimer la colonne"
+  },
+  "columnPagination": {
+    "en": "Column Page",
+    "fr": "Page de colonne"
+  },
+  "rowPagination": {
+    "en": "Row Page",
+    "fr": "Page de rangée"
+  },
+  "columnsPerPage": {
+    "en": "Columns Per Page",
+    "fr": "Colonnes par page"
+  },
+  "rowsPerPage": {
+    "en": "Rows Per Page",
+    "fr": "Lignes par page"
+  },
   "more": {
     "en": "More",
     "fr": "Plus"

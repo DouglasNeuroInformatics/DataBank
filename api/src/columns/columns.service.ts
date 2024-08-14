@@ -247,25 +247,26 @@ export class ColumnsService {
         id: columnId
       }
     });
-    if (col?.booleanData) {
+
+    if (col?.kind === 'BOOLEAN') {
       return col.booleanData.length;
     }
-    if (col?.stringData) {
+    if (col?.kind === 'STRING') {
       return col.stringData.length;
     }
-    if (col?.intData) {
+    if (col?.kind === 'INT') {
       return col.intData.length;
     }
-    if (col?.floatData) {
+    if (col?.kind === 'FLOAT') {
       return col.floatData.length;
     }
-    if (col?.datetimeData) {
+    if (col?.kind === 'DATETIME') {
       return col.datetimeData.length;
     }
-    if (col?.enumData) {
+    if (col?.kind === 'ENUM') {
       return col.enumData.length;
     }
-    return 0;
+    throw new ForbiddenException('Column type does not match any expected types!');
   }
 
   async mutateColumnType(columnId: string, colType: ColumnType) {

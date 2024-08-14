@@ -6,6 +6,7 @@ import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/compo
 import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
@@ -15,7 +16,7 @@ import { DatasetPagination } from '../components/DatasetPagination';
 import DatasetTable from '../components/DatasetTable';
 
 const ViewOneDatasetPage = () => {
-  // location contains the variable in the state of the navigate function
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
   const params = useParams();
@@ -25,29 +26,30 @@ const ViewOneDatasetPage = () => {
 
   const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto>({
     currentPage: 1,
-    itemsPerPage: 10,
-    totalItems: 100
+    itemsPerPage: 10
   });
 
   const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPaginationDto>({
     currentPage: 1,
-    itemsPerPage: 10,
-    totalItems: 100
+    itemsPerPage: 10
   });
 
   useEffect(() => {
     const fetchDataset = () => {
       axios
-        .get<TabularDataset>(`/v1/datasets/${params.datasetId}`)
+        .post<TabularDataset>(`/v1/datasets/${params.datasetId}`, {
+          columnPaginationDto,
+          rowPaginationDto
+        })
         .then((response) => {
           setDataset(response.data);
         })
         .catch(console.error);
     };
     void fetchDataset();
-  }, [params.datasetId, rowPaginationDto, columnPaginationDto]);
+  }, [columnPaginationDto, rowPaginationDto]);
 
-  const isManager = !currentUser;
+  const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
 
   const addManager = (managerIdToAdd: string) => {
     axios
@@ -89,24 +91,17 @@ const ViewOneDatasetPage = () => {
 
   const handleDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const delimiter = format === 'CSV' ? ',' : '\t';
-    const filename = data.name + '_' + new Date().toISOString() + format === 'CSV' ? '.csv' : '.tsv';
-
-    let resultString = ''.concat(
-      data.columns.join(delimiter),
-      '\n',
-      data.rows
-        .map((row) => {
-          Object.values(row).join(delimiter);
-        })
-        .join('\n')
-    );
-
+    const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
+    let resultString = data.columns.join(delimiter) + '\n';
+    for (let row of data.rows) {
+      resultString += Object.values(row).join(delimiter) + '\n';
+    }
     void download(filename, resultString);
   };
 
   const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const delimiter = format === 'CSV' ? ',' : '\t';
-    const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + format === 'CSV' ? '.csv' : '.tsv';
+    const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
 
     const metaDataHeader = [
       'column_name',
@@ -123,60 +118,90 @@ const ViewOneDatasetPage = () => {
       'distribution'
     ];
 
-    const metadataRowsString = data.columns
-      .map((columnName) => {
-        [
-          columnName,
-          data.metadata[columnName]?.kind,
-          data.metadata[columnName]?.nullable,
-          data.metadata[columnName]?.summary.count,
-          data.metadata[columnName]?.summary.nullCount,
-          data.metadata[columnName]?.summary.max,
-          data.metadata[columnName]?.summary.min,
-          data.metadata[columnName]?.summary.mean,
-          data.metadata[columnName]?.summary.median,
-          data.metadata[columnName]?.summary.mode,
-          data.metadata[columnName]?.summary.std,
-          data.metadata[columnName]?.summary.distribution
-        ].join(delimiter);
-      })
-      .join('\n');
-
-    let resultString = ''.concat(metaDataHeader.join(delimiter), '\n', metadataRowsString);
-
-    void download(filename, resultString);
+    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
+    for (let columnName of Object.keys(data.metadata)) {
+      metadataRowsString +=
+        columnName +
+        delimiter +
+        data.metadata[columnName]?.kind +
+        delimiter +
+        data.metadata[columnName]?.nullable +
+        delimiter +
+        data.metadata[columnName]?.count +
+        delimiter +
+        data.metadata[columnName]?.nullCount +
+        delimiter +
+        data.metadata[columnName]?.max +
+        delimiter +
+        data.metadata[columnName]?.min +
+        delimiter +
+        data.metadata[columnName]?.mean +
+        delimiter +
+        data.metadata[columnName]?.median +
+        delimiter +
+        data.metadata[columnName]?.mode +
+        delimiter +
+        data.metadata[columnName]?.std +
+        delimiter +
+        JSON.stringify(data.metadata[columnName]?.distribution) +
+        delimiter +
+        '\n';
+    }
+    void download(filename, metadataRowsString);
   };
 
   return dataset ? (
     <>
       <Card>
         <Card.Header>
-          <Card.Title>{dataset.name}</Card.Title>
-          <Card.Description>{dataset.description}</Card.Description>
+          <Card.Title>{`${t('datasetName')}: ${dataset.name}`}</Card.Title>
+          <Card.Description>{`${t('datasetDescription')}: ${dataset.description}`}</Card.Description>
           {isManager && (
-            <>
+            <div className="flex justify-between">
               <Button className="m-2" variant={'secondary'} onClick={() => addManager('managerIdToAdd')}>
-                Add Manager
+                {t('addManager')}
               </Button>
 
               <Button className="m-2" variant={'secondary'} onClick={() => removeManager('managerIdToRemove')}>
-                Remove Manager
+                {t('removeManager')}
               </Button>
 
               <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(dataset.id)}>
-                Delete Dataset
+                {t('deleteDataset')}
               </Button>
-            </>
+            </div>
           )}
         </Card.Header>
         <Card.Content>
+          <ul>
+            <li>
+              {t('createdAt')}
+              {`: ${dataset.createdAt.toString()}`}
+            </li>
+            <li>
+              {t('updatedAt')}
+              {`: ${dataset.updatedAt.toString()}`}
+            </li>
+            <li>{`${t('datasetLicense')}: ${dataset.license}`}</li>
+            <li>
+              {t('datasetPrimaryKeys')}
+              {': '}
+              {dataset.primaryKeys.map((pk, i) => {
+                return (
+                  <span className="m-2" key={i}>
+                    {pk}
+                  </span>
+                );
+              })}
+            </li>
+          </ul>
+
           <DatasetPagination
-            datasetPaginationDto={{
-              currentPage: columnPaginationDto.currentPage,
-              itemsPerPage: columnPaginationDto.itemsPerPage,
-              totalItems: columnPaginationDto.totalItems
-            }}
+            currentPage={columnPaginationDto.currentPage}
+            itemsPerPage={columnPaginationDto.itemsPerPage}
+            kind={'COLUMN'}
             setDatasetPagination={setColumnPaginationDto}
+            totalNumberOfItems={dataset.totalNumberOfColumns}
           />
 
           <DatasetTable
@@ -195,16 +220,17 @@ const ViewOneDatasetPage = () => {
             permission={dataset.permission}
             primaryKeys={dataset.primaryKeys}
             rows={dataset.rows}
+            totalNumberOfColumns={dataset.columns.length}
+            totalNumberOfRows={dataset.totalNumberOfRows}
             updatedAt={dataset.updatedAt}
           />
 
           <DatasetPagination
-            datasetPaginationDto={{
-              currentPage: rowPaginationDto.currentPage,
-              itemsPerPage: rowPaginationDto.itemsPerPage,
-              totalItems: rowPaginationDto.totalItems
-            }}
+            currentPage={rowPaginationDto.currentPage}
+            itemsPerPage={rowPaginationDto.itemsPerPage}
+            kind={'ROW'}
             setDatasetPagination={setRowPaginationDto}
+            totalNumberOfItems={dataset.totalNumberOfRows}
           />
         </Card.Content>
         <Card.Footer>
@@ -217,7 +243,7 @@ const ViewOneDatasetPage = () => {
                   return 'TODO';
                 }}
               >
-                Edit Dataset Information
+                {t('editDatasetInfo')}
               </Button>
 
               <Button
@@ -227,21 +253,21 @@ const ViewOneDatasetPage = () => {
                   return 'TODO';
                 }}
               >
-                Set Dataset Sharable
+                {t('setDatasetSharable')}
               </Button>
 
               <Button className="m-2" variant={'secondary'}>
                 <DropdownMenu>
                   <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
-                    Download Dataset
+                    {t('downloadDataset')}
                     <ChevronDownIcon className="size-[1rem]" />
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Content className="w-48">
                     <DropdownMenu.Item onClick={() => handleDataDownload('TSV', dataset)}>
-                      Download TSV
+                      {t('downloadTsv')}
                     </DropdownMenu.Item>
                     <DropdownMenu.Item onClick={() => handleDataDownload('CSV', dataset)}>
-                      Download CSV
+                      {t('downloadCsv')}
                     </DropdownMenu.Item>
                   </DropdownMenu.Content>
                 </DropdownMenu>
@@ -250,15 +276,15 @@ const ViewOneDatasetPage = () => {
               <Button className="m-2" variant={'secondary'}>
                 <DropdownMenu>
                   <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
-                    Download Metadata
+                    {t('downloadMetadata')}
                     <ChevronDownIcon className="size-[1rem]" />
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Content className="w-48">
                     <DropdownMenu.Item onClick={() => handleMetaDataDownload('TSV', dataset)}>
-                      Download TSV
+                      {t('downloadTsv')}
                     </DropdownMenu.Item>
                     <DropdownMenu.Item onClick={() => handleMetaDataDownload('CSV', dataset)}>
-                      Download CSV
+                      {t('downloadCsv')}
                     </DropdownMenu.Item>
                   </DropdownMenu.Content>
                 </DropdownMenu>

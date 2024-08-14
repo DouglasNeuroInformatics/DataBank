@@ -134,6 +134,8 @@ export type TabularDatasetView = {
   metadata: { [key: string]: ColumnSummary };
   primaryKeys: string[];
   rows: { [key: string]: boolean | null | number | string }[];
+  totalNumberOfColumns: number;
+  totalNumberOfRows: number;
 };
 
 export type TabularDataset = {
@@ -141,23 +143,23 @@ export type TabularDataset = {
   columns: string[];
   metadata: {
     [key: string]: {
+      count: number;
+      distribution?: { [key: string]: number };
       kind: 'BOOLEAN' | 'DATETIME' | 'ENUM' | 'FLOAT' | 'INT' | 'STRING';
+      max?: number;
+      mean?: number;
+      median?: number;
+      min?: number;
+      mode?: number;
+      nullCount: number;
       nullable: boolean;
-      summary: {
-        count: number;
-        distribution?: { [key: string]: number };
-        max?: number;
-        mean?: number;
-        median?: number;
-        min?: number;
-        mode?: number;
-        nullCount: number;
-        std?: number;
-      };
+      std?: number;
     };
   };
   primaryKeys: string[];
   rows: { [key: string]: string }[];
+  totalNumberOfColumns: number;
+  totalNumberOfRows: number;
 } & DatasetInfo;
 
 export type BaseColumnSummary = {
@@ -217,5 +219,4 @@ export type ColumnSummary = (
 export type DatasetViewPaginationDto = {
   currentPage: number;
   itemsPerPage: number;
-  totalItems: number;
 };
