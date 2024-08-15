@@ -51,6 +51,17 @@ export class DatasetsController {
     return this.datasetsService.getPublic();
   }
 
+  @ApiOperation({ summary: 'Get Public Datasets' })
+  @RouteAccess('public')
+  @Post('public/:id')
+  getOnePublicById(
+    @Param('id') datasetId: string,
+    @Body('rowPaginationDto') rowPaginationDto: DatasetViewPaginationDto,
+    @Body('columnPaginationDto') columnPaginationDto: DatasetViewPaginationDto
+  ) {
+    return this.datasetsService.getOnePublicById(datasetId, rowPaginationDto, columnPaginationDto);
+  }
+
   @ApiOperation({ summary: 'Get All Available Datasets' })
   @Get()
   @RouteAccess({ role: 'STANDARD' })

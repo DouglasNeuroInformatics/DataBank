@@ -239,6 +239,54 @@ export class DatasetsService {
     return dataset;
   }
 
+  async getOnePublicById(
+    datasetId: string,
+    rowPaginationDto: DatasetViewPaginationDto,
+    columnPaginationDto: DatasetViewPaginationDto
+  ) {
+    const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: true
+      },
+      where: {
+        id: datasetId
+      }
+    });
+
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+    if (dataset.permission !== 'PUBLIC') {
+      throw new ForbiddenException('The dataset is not public!');
+    }
+
+    if (!dataset.tabularData?.id) {
+      throw new NotFoundException('No such tabular data available!');
+    }
+    const datasetView = await this.tabularDataService.getViewById(
+      dataset.tabularData.id,
+      rowPaginationDto,
+      columnPaginationDto
+    );
+    // the frontend search function should allow the user to fill a form
+    // according to the form data (filter constrains), the backend should find
+    // rows and columns
+
+    return {
+      createdAt: dataset.createdAt,
+      datasetType: dataset.datasetType,
+      description: dataset.description,
+      id: dataset.id,
+      isReadyToShare: dataset.isReadyToShare,
+      license: dataset.license,
+      managerIds: dataset.managerIds,
+      name: dataset.name,
+      permission: dataset.permission,
+      updatedAt: dataset.updatedAt,
+      ...datasetView
+    };
+  }
+
   async getProjectDatasetViewById(
     projectDatasetDto: ProjectDatasetDto,
     rowPagination: DatasetViewPaginationDto,

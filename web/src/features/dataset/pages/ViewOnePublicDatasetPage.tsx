@@ -31,7 +31,10 @@ const ViewOnePublicDatasetPage = () => {
   useEffect(() => {
     const fetchDataset = () => {
       axios
-        .get<TabularDataset>(`/v1/datasets/${params.id}`)
+        .post<TabularDataset>(`/v1/datasets/public/${params.id}`, {
+          columnPaginationDto,
+          rowPaginationDto
+        })
         .then((response) => {
           setDataset(response.data);
         })
