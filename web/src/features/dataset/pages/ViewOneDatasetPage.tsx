@@ -96,12 +96,18 @@ const ViewOneDatasetPage = () => {
     for (let row of data.rows) {
       resultString += Object.values(row).join(delimiter) + '\n';
     }
+
+    // axios request to get the data string for the entire dataset
+    // once the request is resolved, send it to the download function
     void download(filename, resultString);
   };
 
   const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const delimiter = format === 'CSV' ? ',' : '\t';
     const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
+
+    // axios request to get the meta data string for the entire dataset
+    // once the request is resolved, send it to the download function
 
     const metaDataHeader = [
       'column_name',
@@ -299,7 +305,7 @@ const ViewOneDatasetPage = () => {
   );
 };
 
-export const viewOneDatasetRoute: RouteObject = {
+export const ViewOneDatasetRoute: RouteObject = {
   path: 'dataset/:datasetId',
   element: <ViewOneDatasetPage />
 };

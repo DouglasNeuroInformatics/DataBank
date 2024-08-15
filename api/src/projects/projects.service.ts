@@ -28,6 +28,11 @@ export class ProjectsService {
     }
 
     const projectDatasets = project.datasets;
+    projectDatasets.forEach((dataset) => {
+      if (dataset.datasetId === projectDatasetDto.datasetId) {
+        throw new ForbiddenException(`Dataset with ID ${projectDatasetDto.datasetId} already exists in the Project!`);
+      }
+    });
     projectDatasets.push(projectDatasetDto);
     return await this.updateProject(currentUserId, projectId, {
       datasets: projectDatasets
@@ -120,7 +125,6 @@ export class ProjectsService {
     if (!project) {
       throw new NotFoundException(`Project with id ${projectId} cannot be found`);
     }
-
     const projectDatasetsInfo: DatasetInfo[] = [];
     for (let projectDataset of project.datasets) {
       const projectDatasetInfo = await this.datasetService.getById(projectDataset.datasetId);
@@ -141,7 +145,7 @@ export class ProjectsService {
 
     const project = await this.getProjectById(currentUserId, projectId);
 
-    const newProjectDatasets = project.datasets.filter((x) => x.datasetId !== datasetId);
+    const newProjectDatasets = project.datasets.filter((dataset) => dataset.datasetId !== datasetId);
 
     return await this.updateProject(currentUserId, projectId, { datasets: newProjectDatasets });
   }
@@ -158,7 +162,7 @@ export class ProjectsService {
     }
 
     const userIdsArray = project.userIds;
-    const newUserIdsArray = userIdsArray.filter((x) => x !== userIdToRemove);
+    const newUserIdsArray = userIdsArray.filter((userId) => userId !== userIdToRemove);
 
     return await this.updateProject(currentUserId, projectId, {
       userIds: newUserIdsArray

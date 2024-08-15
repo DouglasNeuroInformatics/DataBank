@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
 import axios from 'axios';
-import { type RouteObject, useLocation } from 'react-router-dom';
+import { type RouteObject, useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { DatasetPagination } from '@/features/dataset/components/DatasetPagination';
@@ -13,9 +13,7 @@ import DatasetTable from '@/features/dataset/components/DatasetTable';
 // there should be a callback function for the
 
 const ViewOneProjectDatasetPage = () => {
-  // location contains the variable in the state of the navigate function
-  const location = useLocation();
-
+  const params = useParams();
   const [dataset, setDataset] = useState<TabularDataset | null>(null);
 
   const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto | null>(null);
@@ -25,15 +23,16 @@ const ViewOneProjectDatasetPage = () => {
   useEffect(() => {
     const fetchDataset = async () => {
       setDataset(
-        await axios.get(`/v1/datasets/${location.state}`, {
+        await axios.post(`/v1/datasets/project/${params.id}`, {
           data: {
-            datasetViewPaginationDto: rowPaginationDto
+            columnPaginationDto,
+            rowPaginationDto
           }
         })
       );
     };
     void fetchDataset();
-  }, [location.state]);
+  }, [params.id]);
 
   return dataset ? (
     <>
@@ -82,6 +81,6 @@ const ViewOneProjectDatasetPage = () => {
 };
 
 export const viewOneProjectDatasetRoute: RouteObject = {
-  path: 'project/dataset',
+  path: 'project/dataset/:id',
   element: <ViewOneProjectDatasetPage />
 };

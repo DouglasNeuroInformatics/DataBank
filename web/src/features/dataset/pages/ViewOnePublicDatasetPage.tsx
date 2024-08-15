@@ -3,25 +3,20 @@ import React, { useEffect, useState } from 'react';
 
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
-import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useDownload } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
-import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
+import { type RouteObject, useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
-import { useAuthStore } from '@/stores/auth-store';
 
 import { DatasetPagination } from '../components/DatasetPagination';
 import DatasetTable from '../components/DatasetTable';
 
 const ViewOnePublicDatasetPage = () => {
-  // location contains the variable in the state of the navigate function
-  const navigate = useNavigate();
-  const notifications = useNotificationsStore();
   const params = useParams();
   const [dataset, setDataset] = useState<TabularDataset | null>(null);
   const download = useDownload();
-  const { currentUser } = useAuthStore();
 
   const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto>({
     currentPage: 1,
@@ -44,46 +39,6 @@ const ViewOnePublicDatasetPage = () => {
     };
     void fetchDataset();
   }, [params.id, rowPaginationDto, columnPaginationDto]);
-
-  const isManager = !currentUser;
-
-  const addManager = (managerIdToAdd: string) => {
-    axios
-      .patch(`/v1/datasets/managers/${params.id}/${managerIdToAdd}`)
-      .then(() => {
-        notifications.addNotification({
-          type: 'success',
-          message: `User with Id ${managerIdToAdd} has been added to the current dataset`
-        });
-      })
-      .catch(console.error);
-  };
-
-  const removeManager = (managerIdToRemove: string) => {
-    axios
-      .delete(`/v1/datasets/managers/${params.id}/${managerIdToRemove}`)
-      .then(() => {
-        notifications.addNotification({
-          type: 'success',
-          message: `User with Id ${managerIdToRemove} has been removed from the dataset`
-        });
-        navigate('/portal/datasets');
-      })
-      .catch(console.error);
-  };
-
-  const deleteDataset = (datasetId: string) => {
-    axios
-      .delete(`/v1/datasets/${datasetId}`)
-      .then(() => {
-        notifications.addNotification({
-          type: 'success',
-          message: `Dataset with Id ${datasetId} has been deleted`
-        });
-        navigate('/portal/datasets');
-      })
-      .catch(console.error);
-  };
 
   const handleDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const delimiter = format === 'CSV' ? ',' : '\t';
@@ -151,21 +106,6 @@ const ViewOnePublicDatasetPage = () => {
         <Card.Header>
           <Card.Title>{dataset.name}</Card.Title>
           <Card.Description>{dataset.description}</Card.Description>
-          {isManager && (
-            <>
-              <Button className="m-2" variant={'secondary'} onClick={() => addManager('managerIdToAdd')}>
-                Add Manager
-              </Button>
-
-              <Button className="m-2" variant={'secondary'} onClick={() => removeManager('managerIdToRemove')}>
-                Remove Manager
-              </Button>
-
-              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(dataset.id)}>
-                Delete Dataset
-              </Button>
-            </>
-          )}
         </Card.Header>
         <Card.Content>
           <DatasetPagination
@@ -183,7 +123,7 @@ const ViewOnePublicDatasetPage = () => {
             datasetType={dataset.datasetType}
             description={dataset.description}
             id={dataset.id}
-            isManager={isManager}
+            isManager={false}
             isReadyToShare={dataset.isReadyToShare}
             license={dataset.license}
             managerIds={dataset.managerIds}
@@ -206,63 +146,35 @@ const ViewOnePublicDatasetPage = () => {
           />
         </Card.Content>
         <Card.Footer>
-          {isManager && (
-            <>
-              <Button
-                className="m-2"
-                variant={'primary'}
-                onClick={() => {
-                  return 'TODO';
-                }}
-              >
-                Edit Dataset Information
-              </Button>
+          <Button className="m-2" variant={'secondary'}>
+            <DropdownMenu>
+              <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
+                Download Dataset
+                <ChevronDownIcon className="size-[1rem]" />
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content className="w-48">
+                <DropdownMenu.Item onClick={() => handleDataDownload('TSV', dataset)}>Download TSV</DropdownMenu.Item>
+                <DropdownMenu.Item onClick={() => handleDataDownload('CSV', dataset)}>Download CSV</DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu>
+          </Button>
 
-              <Button
-                className="m-2"
-                variant={'primary'}
-                onClick={() => {
-                  return 'TODO';
-                }}
-              >
-                Set Dataset Sharable
-              </Button>
-
-              <Button className="m-2" variant={'secondary'}>
-                <DropdownMenu>
-                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
-                    Download Dataset
-                    <ChevronDownIcon className="size-[1rem]" />
-                  </DropdownMenu.Trigger>
-                  <DropdownMenu.Content className="w-48">
-                    <DropdownMenu.Item onClick={() => handleDataDownload('TSV', dataset)}>
-                      Download TSV
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => handleDataDownload('CSV', dataset)}>
-                      Download CSV
-                    </DropdownMenu.Item>
-                  </DropdownMenu.Content>
-                </DropdownMenu>
-              </Button>
-
-              <Button className="m-2" variant={'secondary'}>
-                <DropdownMenu>
-                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
-                    Download Metadata
-                    <ChevronDownIcon className="size-[1rem]" />
-                  </DropdownMenu.Trigger>
-                  <DropdownMenu.Content className="w-48">
-                    <DropdownMenu.Item onClick={() => handleMetaDataDownload('TSV', dataset)}>
-                      Download TSV
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => handleMetaDataDownload('CSV', dataset)}>
-                      Download CSV
-                    </DropdownMenu.Item>
-                  </DropdownMenu.Content>
-                </DropdownMenu>
-              </Button>
-            </>
-          )}
+          <Button className="m-2" variant={'secondary'}>
+            <DropdownMenu>
+              <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
+                Download Metadata
+                <ChevronDownIcon className="size-[1rem]" />
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content className="w-48">
+                <DropdownMenu.Item onClick={() => handleMetaDataDownload('TSV', dataset)}>
+                  Download TSV
+                </DropdownMenu.Item>
+                <DropdownMenu.Item onClick={() => handleMetaDataDownload('CSV', dataset)}>
+                  Download CSV
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu>
+          </Button>
         </Card.Footer>
       </Card>
     </>

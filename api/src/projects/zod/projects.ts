@@ -18,7 +18,7 @@ const $ProjectColumn = z.object({
 
 const $ProjectRowFilter = z.object({
   rowMax: z.number().int().nullable(),
-  rowMin: z.number().int().gte(0).default(0)
+  rowMin: z.number().int().gte(0).default(0).nullable()
 });
 
 const $ProjectDataset = z.object({

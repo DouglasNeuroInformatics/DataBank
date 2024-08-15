@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-classes */
-import type { DatasetViewPaginationDto } from '@databank/types';
+import type { DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/types';
 import { CurrentUser, ParseObjectIdPipe } from '@douglasneuroinformatics/libnest/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -76,20 +76,14 @@ export class DatasetsController {
   }
 
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
-  @Post('/project/:id')
+  @Post('/project')
   @RouteAccess({ role: 'STANDARD' })
   getProjectDatasetViewById(
-    @Param('id') projectId: string,
-    @CurrentUser('id') currentUserId: string,
-    @Body('rowPaginationDto') datasetViewRowPaginationDto: DatasetViewPaginationDto,
-    @Body('columnPaginationDto') datasetViewColumnPaginationDto: DatasetViewPaginationDto
+    @Body('rowPaginationDto') rowPaginationDto: DatasetViewPaginationDto,
+    @Body('columnPaginationDto') columnPaginationDto: DatasetViewPaginationDto,
+    @Body('projectDatasetDto') projectDatasetDto: ProjectDatasetDto
   ) {
-    return this.datasetsService.getProjectDatasetViewById(
-      projectId,
-      currentUserId,
-      datasetViewRowPaginationDto,
-      datasetViewColumnPaginationDto
-    );
+    return this.datasetsService.getProjectDatasetViewById(projectDatasetDto, rowPaginationDto, columnPaginationDto);
   }
 
   @Delete('managers/:id/:managerIdToRemove')

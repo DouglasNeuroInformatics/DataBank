@@ -10,12 +10,13 @@ import { Layout } from './components';
 import { authRoutes } from './features/auth';
 import { DashboardRoute, publicDatasetsRoute } from './features/dashboard';
 import { CreateDatasetRoute } from './features/dataset/pages/CreateDatasetPage';
-import { viewDatasetsRoute } from './features/dataset/pages/ViewDatasetsPage';
-import { viewOneDatasetRoute } from './features/dataset/pages/ViewOneDatasetPage';
+import { ViewDatasetsRoute } from './features/dataset/pages/ViewDatasetsPage';
+import { ViewOneDatasetRoute } from './features/dataset/pages/ViewOneDatasetPage';
 import { LandingPage } from './features/landing';
+import { AddProjectDatasetRoute } from './features/projects/pages/AddProjectDatasetPage';
 import { CreateProjectRoute } from './features/projects/pages/CreateProjectPage';
-import { viewOneProjectRoute } from './features/projects/pages/ViewOneProjectPage';
-import { viewProjectsRoute } from './features/projects/pages/ViewProjectsPage';
+import { ViewOneProjectRoute } from './features/projects/pages/ViewOneProjectPage';
+import { ViewProjectsRoute } from './features/projects/pages/ViewProjectsPage';
 import { UserRoute } from './features/user';
 import { useAuthStore } from './stores/auth-store';
 
@@ -40,12 +41,13 @@ export const protectedRoutes: RouteObject[] = [
     children: [
       CreateDatasetRoute,
       DashboardRoute,
-      viewDatasetsRoute,
-      viewOneDatasetRoute,
-      viewProjectsRoute,
-      viewOneProjectRoute,
+      ViewDatasetsRoute,
+      ViewOneDatasetRoute,
+      ViewProjectsRoute,
+      ViewOneProjectRoute,
       UserRoute,
-      CreateProjectRoute
+      CreateProjectRoute,
+      AddProjectDatasetRoute
     ],
     element: <Layout />,
     path: 'portal'

@@ -11,7 +11,6 @@ import { type NavItem } from './types';
 
 export const Layout = () => {
   const { i18n, t } = useTranslation('common');
-
   const navigation: NavItem[] = useMemo(
     () => [
       {

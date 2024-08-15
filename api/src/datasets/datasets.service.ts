@@ -1,4 +1,4 @@
-import type { DatasetCardProps, DatasetViewPaginationDto } from '@databank/types';
+import type { DatasetCardProps, DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 
@@ -240,15 +240,47 @@ export class DatasetsService {
   }
 
   async getProjectDatasetViewById(
-    datasetId: string,
-    currentUserId: string,
+    projectDatasetDto: ProjectDatasetDto,
     rowPagination: DatasetViewPaginationDto,
     columnPagination: DatasetViewPaginationDto
   ) {
-    await new Promise(() => {
-      return;
+    const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: true
+      },
+      where: {
+        id: projectDatasetDto.datasetId
+      }
     });
-    return [datasetId, currentUserId, columnPagination, rowPagination];
+
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+
+    if (!dataset.tabularData?.id) {
+      throw new NotFoundException('No such tabular data available!');
+    }
+    const datasetView = await this.tabularDataService.getProjectDatasetView(
+      projectDatasetDto,
+      rowPagination,
+      columnPagination
+    );
+    // the frontend search function should allow the user to fill a form
+    // according to the form data (filter constrains), the backend should find
+    // rows and columns
+
+    return {
+      createdAt: dataset.createdAt,
+      datasetType: dataset.datasetType,
+      description: dataset.description,
+      isReadyToShare: dataset.isReadyToShare,
+      license: dataset.license,
+      managerIds: dataset.managerIds,
+      name: dataset.name,
+      permission: dataset.permission,
+      updatedAt: dataset.updatedAt,
+      ...datasetView
+    };
   }
 
   async getPublic() {
@@ -281,8 +313,8 @@ export class DatasetsService {
   async getViewById(
     datasetId: string,
     currentUserId: string,
-    datasetViewRowPaginationDto: DatasetViewPaginationDto,
-    datasetViewColumnPaginationDto: DatasetViewPaginationDto
+    rowPaginationDto: DatasetViewPaginationDto,
+    columnPaginationDto: DatasetViewPaginationDto
   ) {
     const dataset = await this.datasetModel.findUnique({
       include: {
@@ -305,16 +337,13 @@ export class DatasetsService {
     }
     const datasetView = await this.tabularDataService.getViewById(
       dataset.tabularData.id,
-      datasetViewRowPaginationDto,
-      datasetViewColumnPaginationDto
+      rowPaginationDto,
+      columnPaginationDto
     );
     // the frontend search function should allow the user to fill a form
     // according to the form data (filter constrains), the backend should find
     // rows and columns
 
-    // Idea:
-    // Column pagination: <current COL1 COL2 COL3 COL4 COL5> ()
-    // row pagination <first> <before> <current / total pages> <next> <last>
     return {
       createdAt: dataset.createdAt,
       datasetType: dataset.datasetType,

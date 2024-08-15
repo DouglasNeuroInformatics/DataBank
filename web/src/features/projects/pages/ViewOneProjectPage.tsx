@@ -3,13 +3,15 @@ import React, { useEffect, useState } from 'react';
 
 import type { DatasetCardProps } from '@databank/types';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
+import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { type RouteObject, useLocation, useNavigate } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
-import DatasetCard from '@/features/dataset/components/DatasetCard';
 import { useAuthStore } from '@/stores/auth-store';
+
+import ProjectDatasetCard from '../components/ProjectDatasetCard';
 
 type Project = {
   createdAt: Date;
@@ -28,6 +30,7 @@ const ViewOneProjectPage = () => {
   const location = useLocation();
   const { currentUser } = useAuthStore();
   const [project, setProject] = useState<Project | null>(null);
+  const notifications = useNotificationsStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -42,8 +45,17 @@ const ViewOneProjectPage = () => {
     //
   };
 
-  const deleteProject = () => {
-    //
+  const deleteProject = (projectId: string) => {
+    axios
+      .delete(`/v1/projects/${projectId}`)
+      .then(() => {
+        notifications.addNotification({
+          type: 'success',
+          message: `Project with Id ${projectId} has been deleted`
+        });
+        navigate('/portal/projects');
+      })
+      .catch(console.error);
   };
 
   useEffect(() => {
@@ -72,15 +84,15 @@ const ViewOneProjectPage = () => {
               <Card.Description>{`${t('projectDescription')}: ${project.description}`}</Card.Description>
               <div className="flex justify-between">
                 <Button className="m-2" variant={'secondary'} onClick={addUser}>
-                  Add User
+                  {t('addUser')}
                 </Button>
 
                 <Button className="m-2" variant={'secondary'} onClick={removeUser}>
-                  Remove User
+                  {t('removeUser')}
                 </Button>
 
-                <Button className="m-2" variant={'danger'} onClick={deleteProject}>
-                  Delete Project
+                <Button className="m-2" variant={'danger'} onClick={() => deleteProject(project.id)}>
+                  {t('deleteProject')}
                 </Button>
               </div>
             </Card.Header>
@@ -90,7 +102,49 @@ const ViewOneProjectPage = () => {
                 <li>{`${t('updatedAt')}: ${project.updatedAt.toString()}`}</li>
                 <li>{`${t('projectExternalId')}: ${project.externalId}`}</li>
               </ul>
-              <div className="m-3 rounded-md border bg-card tracking-tight text-muted-foreground shadow-sm"></div>
+              <div className="m-3 rounded-md border bg-card tracking-tight text-muted-foreground shadow-sm">
+                <Card>
+                  <Card.Header>
+                    <Card.Title>{`${t('projectDatasets')}`}</Card.Title>
+                    <Button
+                      className="m-2"
+                      variant={'secondary'}
+                      onClick={() => navigate('/portal/project/addDataset')}
+                    >
+                      Add Dataset to Current Project
+                    </Button>
+                  </Card.Header>
+                  <Card.Content>
+                    <ul>
+                      {datasetsInfoArray?.map((datasetInfo, i) => {
+                        let isManager: boolean;
+                        if (!currentUser?.id) {
+                          isManager = false;
+                        } else {
+                          isManager = datasetInfo.managerIds.includes(currentUser.id);
+                        }
+                        return (
+                          datasetInfo && (
+                            <li key={i}>
+                              <ProjectDatasetCard
+                                createdAt={datasetInfo.createdAt}
+                                description={datasetInfo.description}
+                                id={datasetInfo.id}
+                                isManager={isManager}
+                                license={datasetInfo.license}
+                                managerIds={datasetInfo.managerIds}
+                                name={datasetInfo.name}
+                                updatedAt={datasetInfo.updatedAt}
+                              />
+                            </li>
+                          )
+                        );
+                      })}
+                    </ul>
+                  </Card.Content>
+                  <Card.Footer className="flex justify-between"></Card.Footer>
+                </Card>
+              </div>
             </Card.Content>
             <Card.Footer>
               <>
@@ -108,46 +162,6 @@ const ViewOneProjectPage = () => {
               </>
             </Card.Footer>
           </Card>
-          <Card>
-            <Card.Header>
-              <Card.Title className="text-3xl">{t('projectDatasets')}</Card.Title>
-              <Button className="m-2" variant={'secondary'} onClick={() => navigate('/portal/project/addDataset')}>
-                Add Dataset to Current Project
-              </Button>
-            </Card.Header>
-            <Card.Content>
-              <ul>
-                {datasetsInfoArray?.map((datasetInfo, i) => {
-                  let isManager: boolean;
-                  if (!currentUser?.id) {
-                    isManager = false;
-                  } else {
-                    isManager = datasetInfo.managerIds.includes(currentUser.id);
-                  }
-                  return (
-                    datasetInfo && (
-                      <li key={i}>
-                        <DatasetCard
-                          createdAt={datasetInfo.createdAt}
-                          datasetType={datasetInfo.datasetType}
-                          description={datasetInfo.description}
-                          id={datasetInfo.id}
-                          isManager={isManager}
-                          isReadyToShare={false}
-                          license={datasetInfo.license}
-                          managerIds={datasetInfo.managerIds}
-                          name={datasetInfo.name}
-                          permission={datasetInfo.permission}
-                          updatedAt={datasetInfo.updatedAt}
-                        />
-                      </li>
-                    )
-                  );
-                })}
-              </ul>
-            </Card.Content>
-            <Card.Footer className="flex justify-between"></Card.Footer>
-          </Card>
         </>
       ) : (
         <LoadingFallback />
@@ -156,7 +170,7 @@ const ViewOneProjectPage = () => {
   );
 };
 
-export const viewOneProjectRoute: RouteObject = {
+export const ViewOneProjectRoute: RouteObject = {
   path: 'project',
   element: <ViewOneProjectPage />
 };

@@ -215,9 +215,9 @@ export class ColumnsService {
 
     // check if there is a row max bound
     if (getColumnViewDto.rowMax) {
-      currSeries.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax - getColumnViewDto.rowMin);
+      currSeries.slice(getColumnViewDto.rowMin ?? 0, getColumnViewDto.rowMax - (getColumnViewDto.rowMin ?? 0));
     } else {
-      currSeries.slice(getColumnViewDto.rowMin);
+      currSeries.slice(getColumnViewDto.rowMin ?? 0);
     }
 
     // check for hash, do the hashing

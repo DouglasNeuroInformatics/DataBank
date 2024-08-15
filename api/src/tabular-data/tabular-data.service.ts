@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { ColumnSummary, DatasetViewPaginationDto, TabularDatasetView } from '@databank/types';
+import type { ColumnSummary, DatasetViewPaginationDto, ProjectDatasetDto, TabularDatasetView } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { PermissionLevel, TabularColumn } from '@prisma/client';
+import type { PermissionLevel } from '@prisma/client';
 
 import { ColumnsService } from '@/columns/columns.service';
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
-import type { GetColumnViewDto, ProjectDatasetDto } from '@/projects/zod/projects';
+import type { GetColumnViewDto } from '@/projects/zod/projects';
 import { type DataFrame, pl } from '@/vendor/nodejs-polars.js';
 
 import type { UpdatePrimaryKeysDto } from './zod/tabular-data';
@@ -90,9 +90,17 @@ export class TabularDataService {
     return tabularData;
   }
 
-  async getProjectViewById(projectDatasetDto: ProjectDatasetDto) {
+  async getProjectDatasetView(
+    projectDatasetDto: ProjectDatasetDto,
+    _rowPagination: DatasetViewPaginationDto,
+    _columnPagination: DatasetViewPaginationDto
+  ) {
     const columnIds: string[] = [];
-    const columnsView: TabularColumn[] = [];
+    const columns: string[] = [];
+    const metaData = {};
+    const rows: { [key: string]: boolean | number | string }[] = [];
+    const numberOfRows = 10;
+
     for (let col of projectDatasetDto.columns) {
       columnIds.push(col.columnId);
       const getColumnViewDto: GetColumnViewDto = {
@@ -102,8 +110,8 @@ export class TabularDataService {
       };
       const currColumnView = await this.columnsService.getColumnView(getColumnViewDto);
       // 2. need to handle column type filter HANDLE HERE, throw an error if there is a conflict between the column ID and the type filter
-      if (!projectDatasetDto.useDataTypeFilter || currColumnView.kind in projectDatasetDto.dataTypeFilters) {
-        columnsView.push(currColumnView);
+      if (!projectDatasetDto.useDataTypeFilter || projectDatasetDto.dataTypeFilters.includes(currColumnView.kind)) {
+        columns.push(currColumnView.name);
       }
     }
 
@@ -124,9 +132,20 @@ export class TabularDataService {
       throw new NotFoundException(`Cannot find tabular data with id ${projectDatasetDto.datasetId}`);
     }
 
-    tabularData.columns = columnsView;
+    // we can first get all the columns using the row filter
+    // metadata needs to be recalculated for columns that uses trim and hash
 
-    return tabularData;
+    const dataView: TabularDatasetView = {
+      columnIds,
+      columns,
+      metadata: metaData,
+      primaryKeys: tabularData.primaryKeys,
+      rows,
+      totalNumberOfColumns: tabularData.columns.length,
+      totalNumberOfRows: numberOfRows
+    };
+
+    return dataView;
   }
 
   async getViewById(
@@ -258,11 +277,11 @@ export class TabularDataService {
             rows[i][col.name] = entry.value?.toDateString() ?? null;
           });
           metaData[col.name] = {
-            count: 0,
+            count: col.summary.count,
             kind: 'DATETIME',
             max: col.summary.datetimeSummary?.max ? col.summary.datetimeSummary?.max : new Date(),
             min: col.summary.datetimeSummary?.min ? col.summary.datetimeSummary?.min : new Date(),
-            nullCount: 10
+            nullCount: col.summary.nullCount
           };
           break;
       }

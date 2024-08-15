@@ -74,7 +74,7 @@ const ViewDatasetsPage = () => {
   );
 };
 
-export const viewDatasetsRoute: RouteObject = {
+export const ViewDatasetsRoute: RouteObject = {
   path: 'datasets',
   element: <ViewDatasetsPage />
 };

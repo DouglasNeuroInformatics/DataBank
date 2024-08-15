@@ -31,6 +31,10 @@
     "en": "Manage Dataset",
     "fr": "Gérer l'ensemble de données"
   },
+  "viewDataset": {
+    "en": "View Dataset",
+    "fr": "Voir l'ensemble de données"
+  },
   "publicDatasets": {
     "en": "Public Datasets",
     "fr": "Ensembles de données publics"
@@ -422,6 +426,18 @@
   "projects": {
     "en": "Projects",
     "fr": "Projets"
+  },
+  "addUser": {
+    "en": "Add User",
+    "fr": "Ajouter un utilisateur"
+  },
+  "removeUser": {
+    "en": "Remove User",
+    "fr": "Supprimer un utilisateur"
+  },
+  "deleteProject": {
+    "en": "Delete Project",
+    "fr": "Supprimer le projet"
   },
   "setupAdminDescription": {
     "en": "Setup Admin Description",

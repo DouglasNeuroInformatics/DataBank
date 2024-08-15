@@ -138,6 +138,8 @@ export type TabularDatasetView = {
   totalNumberOfRows: number;
 };
 
+export type ColumnDataType = 'BOOLEAN' | 'DATETIME' | 'ENUM' | 'FLOAT' | 'INT' | 'STRING';
+
 export type TabularDataset = {
   columnIds: { [key: string]: string };
   columns: string[];
@@ -145,7 +147,7 @@ export type TabularDataset = {
     [key: string]: {
       count: number;
       distribution?: { [key: string]: number };
-      kind: 'BOOLEAN' | 'DATETIME' | 'ENUM' | 'FLOAT' | 'INT' | 'STRING';
+      kind: ColumnDataType;
       max?: number;
       mean?: number;
       median?: number;
@@ -219,4 +221,37 @@ export type ColumnSummary = (
 export type DatasetViewPaginationDto = {
   currentPage: number;
   itemsPerPage: number;
+};
+
+// Projects
+export type ProjectColumnHash = {
+  length: null | number;
+  salt: string;
+};
+
+export type ProjectColumnTrim = {
+  end: null | number;
+  start: null | number;
+};
+
+export type ProjectColumn = {
+  columnId: string;
+  hash: ProjectColumnHash | null;
+  kind: ColumnDataType;
+  trim: ProjectColumnTrim | null;
+};
+
+export type ProjectRowFilter = {
+  rowMax: null | number;
+  rowMin: null | number;
+};
+
+export type ProjectDatasetDto = {
+  columns: ProjectColumn[];
+  dataTypeFilters: ColumnDataType[];
+  datasetId: string;
+  rowFilter: ProjectRowFilter | null;
+  useColumnFilter: boolean;
+  useDataTypeFilter: boolean;
+  useRowFilter: boolean;
 };
