@@ -51,31 +51,6 @@ const ViewOneDatasetPage = () => {
 
   const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
 
-  const addManager = (managerIdToAdd: string) => {
-    axios
-      .patch(`/v1/datasets/managers/${params.datasetId}/${managerIdToAdd}`)
-      .then(() => {
-        notifications.addNotification({
-          type: 'success',
-          message: `User with Id ${managerIdToAdd} has been added to the current dataset`
-        });
-      })
-      .catch(console.error);
-  };
-
-  const removeManager = (managerIdToRemove: string) => {
-    axios
-      .delete(`/v1/datasets/managers/${params.datasetId}/${managerIdToRemove}`)
-      .then(() => {
-        notifications.addNotification({
-          type: 'success',
-          message: `User with Id ${managerIdToRemove} has been removed from the dataset`
-        });
-        navigate('/portal/datasets');
-      })
-      .catch(console.error);
-  };
-
   const deleteDataset = (datasetId: string) => {
     axios
       .delete(`/v1/datasets/${datasetId}`)
@@ -164,12 +139,20 @@ const ViewOneDatasetPage = () => {
           <Card.Description>{`${t('datasetDescription')}: ${dataset.description}`}</Card.Description>
           {isManager && (
             <div className="flex justify-between">
-              <Button className="m-2" variant={'secondary'} onClick={() => addManager('managerIdToAdd')}>
-                {t('addManager')}
-              </Button>
-
-              <Button className="m-2" variant={'secondary'} onClick={() => removeManager('managerIdToRemove')}>
-                {t('removeManager')}
+              <Button
+                className="m-2"
+                variant={'secondary'}
+                onClick={() =>
+                  navigate(`/portal/manageDatasetManager`, {
+                    state: {
+                      datasetId: dataset.id,
+                      managerIds: dataset.managerIds,
+                      isManager
+                    }
+                  })
+                }
+              >
+                {t('manageDatasetManagers')}
               </Button>
 
               <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(dataset.id)}>

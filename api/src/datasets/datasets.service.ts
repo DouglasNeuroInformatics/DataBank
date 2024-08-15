@@ -22,20 +22,22 @@ export class DatasetsService {
     private readonly tabularDataService: TabularDataService
   ) {}
 
-  async addManager(datasetId: string, managerId: string, managerIdToAdd: string) {
+  async addManager(datasetId: string, managerId: string, managerEmailToAdd: string) {
     const dataset = await this.canModifyDataset(datasetId, managerId);
 
-    const managerToAdd = await this.usersService.findById(managerId);
-
+    const managerToAdd = await this.usersService.findByEmail(managerEmailToAdd);
+    if (!managerToAdd) {
+      throw new NotFoundException(`Cannot find user with email ${managerEmailToAdd}`);
+    }
     const newDatasetIds = managerToAdd.datasetId;
     newDatasetIds.push(datasetId);
 
-    const updateNewManagerDatasetsIds = this.usersService.updateUser(managerIdToAdd, {
+    const updateNewManagerDatasetsIds = this.usersService.updateUser(managerToAdd.id, {
       datasetId: newDatasetIds
     });
 
     const newManagerIds = dataset.managerIds;
-    newManagerIds.push(managerIdToAdd);
+    newManagerIds.push(managerToAdd.id);
 
     const updateManager = this.datasetModel.update({
       data: {

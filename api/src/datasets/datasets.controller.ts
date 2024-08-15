@@ -16,14 +16,14 @@ import type { CreateTabularDatasetDto } from './zod/dataset.js';
 export class DatasetsController {
   constructor(private readonly datasetsService: DatasetsService) {}
 
-  @Patch('managers/:id/:managerIdToAdd')
+  @Patch('managers/:id/:managerEmailToAdd')
   @RouteAccess({ role: 'STANDARD' })
   addManager(
     @Param('id') datasetId: string,
     @CurrentUser('id') managerId: string,
-    @Param('managerIdToAdd', ParseObjectIdPipe) managerIdToAdd: string
+    @Param('managerEmailToAdd') managerEmailToAdd: string
   ) {
-    return this.datasetsService.addManager(datasetId, managerId, managerIdToAdd);
+    return this.datasetsService.addManager(datasetId, managerId, managerEmailToAdd);
   }
 
   @ApiOperation({ summary: 'Create Dataset' })

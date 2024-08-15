@@ -35,6 +35,26 @@
     "en": "View Dataset",
     "fr": "Voir l'ensemble de données"
   },
+  "manageDatasetManagers": {
+    "en": "Manage Dataset Managers",
+    "fr": "Gérer les gestionnaires de jeux de données"
+  },
+  "newManagerEmail": {
+    "en": "New Manage Email: ",
+    "fr": "Nouvel e-mail du gestionnaire :"
+  },
+  "managerName": {
+    "en": "Manager Name: ",
+    "fr": "Nom du gestionnaire :"
+  },
+  "managerEmail": {
+    "en": "Manager Email: ",
+    "fr": "E-mail du gestionnaire :"
+  },
+  "delete": {
+    "en": "Delete",
+    "fr": "Supprimer"
+  },
   "publicDatasets": {
     "en": "Public Datasets",
     "fr": "Ensembles de données publics"
