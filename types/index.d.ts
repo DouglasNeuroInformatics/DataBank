@@ -262,3 +262,10 @@ export type ProjectDatasetDto = {
   useDataTypeFilter: boolean;
   useRowFilter: boolean;
 };
+
+export type EditProjectInfoDto = {
+  description?: string | undefined;
+  expiry?: Date | undefined;
+  externalId?: string | undefined;
+  name?: string | undefined;
+};

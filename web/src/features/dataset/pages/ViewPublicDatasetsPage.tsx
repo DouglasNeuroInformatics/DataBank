@@ -9,7 +9,7 @@ import { type RouteObject, useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
-import DatasetCard from '../components/DatasetCard';
+import PublicDatasetCard from '../components/PublicDatasetCard';
 
 const ViewPublicDatasetsPage = () => {
   const { t } = useTranslation('common');
@@ -42,7 +42,7 @@ const ViewPublicDatasetsPage = () => {
             {datasetsInfoArray?.map((datasetInfo, i) => {
               return (
                 <li key={i}>
-                  <DatasetCard
+                  <PublicDatasetCard
                     createdAt={datasetInfo.createdAt}
                     datasetType={datasetInfo.datasetType}
                     description={datasetInfo.description}

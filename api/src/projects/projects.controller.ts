@@ -1,5 +1,5 @@
 import { CurrentUser } from '@douglasneuroinformatics/libnest/core';
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
@@ -95,7 +95,14 @@ export class ProjectsController {
     return this.projectsService.removeUser(currentUserId, projectId, userIdToRemove);
   }
 
-  updateProject(@CurrentUser('id') currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {
+  @ApiOperation({ summary: 'Delete a Project' })
+  @RouteAccess({ role: 'STANDARD' })
+  @Patch('/update/:id')
+  updateProject(
+    @CurrentUser('id') currentUserId: string,
+    @Param('id') projectId: string,
+    @Body('updateProjectDto') updateProjectDto: UpdateProjectDto
+  ) {
     return this.projectsService.updateProject(currentUserId, projectId, updateProjectDto);
   }
 }

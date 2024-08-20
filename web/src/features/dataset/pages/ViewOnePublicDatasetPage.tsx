@@ -45,24 +45,23 @@ const ViewOnePublicDatasetPage = () => {
 
   const handleDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const delimiter = format === 'CSV' ? ',' : '\t';
-    const filename = data.name + '_' + new Date().toISOString() + format === 'CSV' ? '.csv' : '.tsv';
+    const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
+    let resultString = data.columns.join(delimiter) + '\n';
+    for (let row of data.rows) {
+      resultString += Object.values(row).join(delimiter) + '\n';
+    }
 
-    let resultString = ''.concat(
-      data.columns.join(delimiter),
-      '\n',
-      data.rows
-        .map((row) => {
-          Object.values(row).join(delimiter);
-        })
-        .join('\n')
-    );
-
+    // axios request to get the data string for the entire dataset
+    // once the request is resolved, send it to the download function
     void download(filename, resultString);
   };
 
   const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const delimiter = format === 'CSV' ? ',' : '\t';
-    const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + format === 'CSV' ? '.csv' : '.tsv';
+    const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
+
+    // axios request to get the meta data string for the entire dataset
+    // once the request is resolved, send it to the download function
 
     const metaDataHeader = [
       'column_name',
@@ -79,28 +78,36 @@ const ViewOnePublicDatasetPage = () => {
       'distribution'
     ];
 
-    const metadataRowsString = data.columns
-      .map((columnName) => {
-        [
-          columnName,
-          data.metadata[columnName]?.kind,
-          data.metadata[columnName]?.nullable,
-          data.metadata[columnName]?.count,
-          data.metadata[columnName]?.nullCount,
-          data.metadata[columnName]?.max,
-          data.metadata[columnName]?.min,
-          data.metadata[columnName]?.mean,
-          data.metadata[columnName]?.median,
-          data.metadata[columnName]?.mode,
-          data.metadata[columnName]?.std,
-          data.metadata[columnName]?.distribution
-        ].join(delimiter);
-      })
-      .join('\n');
-
-    let resultString = ''.concat(metaDataHeader.join(delimiter), '\n', metadataRowsString);
-
-    void download(filename, resultString);
+    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
+    for (let columnName of Object.keys(data.metadata)) {
+      metadataRowsString +=
+        columnName +
+        delimiter +
+        data.metadata[columnName]?.kind +
+        delimiter +
+        data.metadata[columnName]?.nullable +
+        delimiter +
+        data.metadata[columnName]?.count +
+        delimiter +
+        data.metadata[columnName]?.nullCount +
+        delimiter +
+        data.metadata[columnName]?.max +
+        delimiter +
+        data.metadata[columnName]?.min +
+        delimiter +
+        data.metadata[columnName]?.mean +
+        delimiter +
+        data.metadata[columnName]?.median +
+        delimiter +
+        data.metadata[columnName]?.mode +
+        delimiter +
+        data.metadata[columnName]?.std +
+        delimiter +
+        JSON.stringify(data.metadata[columnName]?.distribution) +
+        delimiter +
+        '\n';
+    }
+    void download(filename, metadataRowsString);
   };
 
   return dataset ? (
@@ -112,11 +119,11 @@ const ViewOnePublicDatasetPage = () => {
         </Card.Header>
         <Card.Content>
           <DatasetPagination
-            currentPage={0}
-            itemsPerPage={0}
+            currentPage={columnPaginationDto.currentPage}
+            itemsPerPage={columnPaginationDto.itemsPerPage}
             kind={'COLUMN'}
             setDatasetPagination={setColumnPaginationDto}
-            totalNumberOfItems={0}
+            totalNumberOfItems={dataset.totalNumberOfColumns}
           />
 
           <DatasetTable
@@ -141,11 +148,11 @@ const ViewOnePublicDatasetPage = () => {
           />
 
           <DatasetPagination
-            currentPage={0}
-            itemsPerPage={0}
+            currentPage={rowPaginationDto.currentPage}
+            itemsPerPage={rowPaginationDto.itemsPerPage}
             kind={'ROW'}
             setDatasetPagination={setRowPaginationDto}
-            totalNumberOfItems={0}
+            totalNumberOfItems={dataset.totalNumberOfRows}
           />
         </Card.Content>
         <Card.Footer>
@@ -187,6 +194,6 @@ const ViewOnePublicDatasetPage = () => {
 };
 
 export const viewOnePublicDatasetRoute: RouteObject = {
-  path: 'dataset/:datasetId',
+  path: 'dataset/:id',
   element: <ViewOnePublicDatasetPage />
 };

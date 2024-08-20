@@ -108,6 +108,7 @@ const ViewOneProjectPage = () => {
                 <li>{`${t('createdAt')}: ${project.createdAt.toString()}`}</li>
                 <li>{`${t('updatedAt')}: ${project.updatedAt.toString()}`}</li>
                 <li>{`${t('projectExternalId')}: ${project.externalId}`}</li>
+                <li>{`${t('projectExpiry')}: ${project.expiry.toString()}`}</li>
               </ul>
               <div className="m-3 rounded-md border bg-card tracking-tight text-muted-foreground shadow-sm">
                 <Card>
@@ -131,9 +132,7 @@ const ViewOneProjectPage = () => {
                                 createdAt={datasetInfo.createdAt}
                                 description={datasetInfo.description}
                                 id={datasetInfo.id}
-                                isManager={isManager}
                                 license={datasetInfo.license}
-                                managerIds={datasetInfo.managerIds}
                                 name={datasetInfo.name}
                                 updatedAt={datasetInfo.updatedAt}
                               />
@@ -152,11 +151,7 @@ const ViewOneProjectPage = () => {
                 <Button
                   className="m-2"
                   variant={'primary'}
-                  onClick={() => {
-                    // navigate to edit project information page? with a form?
-                    // submit button to change and back button to navigate back
-                    return 'TODO';
-                  }}
+                  onClick={() => navigate(`/portal/project/edit-info/${project.id}`)}
                 >
                   Edit Project Information
                 </Button>
