@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-classes */
-import type { DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/types';
+import type { DatasetViewPaginationDto, EditDatasetInfoDto, ProjectDatasetDto } from '@databank/types';
 import { CurrentUser, ParseObjectIdPipe } from '@douglasneuroinformatics/libnest/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -118,6 +118,16 @@ export class DatasetsController {
   @RouteAccess({ role: 'STANDARD' })
   setReadyToShare(@Param('id') datasetId: string, @CurrentUser('id') managerId: string) {
     return this.datasetsService.setReadyToShare(datasetId, managerId);
+  }
+
+  @Patch('info/:id')
+  @RouteAccess({ role: 'STANDARD' })
+  editDatasetInfo(
+    @Param('id') datasetId: string,
+    @CurrentUser('id') managerId: string,
+    @Body('editDatasetInfoDto') editDatasetInfoDto: EditDatasetInfoDto
+  ) {
+    return this.datasetsService.editDatasetInfo(datasetId, managerId, editDatasetInfoDto);
   }
 
   // @Patch(':id/:column')

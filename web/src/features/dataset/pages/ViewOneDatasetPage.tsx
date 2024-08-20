@@ -131,6 +131,19 @@ const ViewOneDatasetPage = () => {
     void download(filename, metadataRowsString);
   };
 
+  const handleSetReadyToShare = (datasetId: string) => {
+    axios
+      .patch(`/v1/datasets/share/${datasetId}`)
+      .then(() => {
+        notifications.addNotification({
+          type: 'success',
+          message: `Dataset with Id ${datasetId} is now ready to share!`
+        });
+        navigate('/portal/datasets');
+      })
+      .catch(console.error);
+  };
+
   return dataset ? (
     <>
       <Card>
@@ -228,22 +241,16 @@ const ViewOneDatasetPage = () => {
               <Button
                 className="m-2"
                 variant={'primary'}
-                onClick={() => {
-                  return 'TODO';
-                }}
+                onClick={() => navigate(`/portal/dataset/edit-info/${dataset.id}`)}
               >
                 {t('editDatasetInfo')}
               </Button>
 
-              <Button
-                className="m-2"
-                variant={'primary'}
-                onClick={() => {
-                  return 'TODO';
-                }}
-              >
-                {t('setDatasetSharable')}
-              </Button>
+              {!dataset.isReadyToShare && (
+                <Button className="m-2" variant={'primary'} onClick={() => handleSetReadyToShare(dataset.id)}>
+                  {t('setDatasetSharable')}
+                </Button>
+              )}
 
               <Button className="m-2" variant={'secondary'}>
                 <DropdownMenu>

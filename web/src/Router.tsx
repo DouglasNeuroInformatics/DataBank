@@ -10,6 +10,7 @@ import { Layout } from './components';
 import { authRoutes } from './features/auth';
 import { DashboardRoute, publicDatasetsRoute } from './features/dashboard';
 import { CreateDatasetRoute } from './features/dataset/pages/CreateDatasetPage';
+import { EditDatasetInfoRoute } from './features/dataset/pages/EditDatasetInfoPage';
 import { ManageDatasetManagersRoute } from './features/dataset/pages/ManageDatasetManagersPage';
 import { ViewDatasetsRoute } from './features/dataset/pages/ViewDatasetsPage';
 import { ViewOneDatasetRoute } from './features/dataset/pages/ViewOneDatasetPage';
@@ -53,7 +54,8 @@ export const protectedRoutes: RouteObject[] = [
       CreateProjectRoute,
       AddProjectDatasetRoute,
       ManageDatasetManagersRoute,
-      ManageProjectUsersRoute
+      ManageProjectUsersRoute,
+      EditDatasetInfoRoute
     ],
     element: <Layout />,
     path: 'portal'

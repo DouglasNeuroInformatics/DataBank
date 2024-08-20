@@ -1,4 +1,9 @@
-import type { DatasetCardProps, DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/types';
+import type {
+  DatasetCardProps,
+  DatasetViewPaginationDto,
+  EditDatasetInfoDto,
+  ProjectDatasetDto
+} from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 
@@ -206,6 +211,15 @@ export class DatasetsService {
     }
 
     return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
+  }
+
+  async editDatasetInfo(datasetId: string, managerId: string, editDatasetInfoDto: EditDatasetInfoDto) {
+    const dataset = await this.canModifyDataset(datasetId, managerId);
+
+    return await this.datasetModel.update({
+      data: editDatasetInfoDto,
+      where: { id: dataset.id }
+    });
   }
 
   async getAllByManagerId(currentUserId: string) {

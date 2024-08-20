@@ -223,6 +223,13 @@ export type DatasetViewPaginationDto = {
   itemsPerPage: number;
 };
 
+export type EditDatasetInfoDto = {
+  description?: string | undefined;
+  license?: 'OTHER' | 'PUBLIC' | undefined;
+  name?: string | undefined;
+  permission?: 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED' | undefined;
+};
+
 // Projects
 export type ProjectColumnHash = {
   length: null | number;

@@ -27,6 +27,17 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Add a User to a Project' })
   @Post('add-user/:id')
   @RouteAccess({ role: 'STANDARD' })
+  addProjectDataset(
+    @CurrentUser('id') currentUserId: string,
+    @Param('id') projectId: string,
+    @Body('projectDatasetDto') projectDatasetDto: ProjectDatasetDto
+  ) {
+    return this.projectsService.addDataset(currentUserId, projectId, projectDatasetDto);
+  }
+
+  @ApiOperation({ summary: 'Add a User to a Project' })
+  @Post('add-user/:id')
+  @RouteAccess({ role: 'STANDARD' })
   addUserToProject(@CurrentUser('id') currentUserId: string, @Param('id') projectId: string, newUserEmail: string) {
     return this.projectsService.addUser(currentUserId, projectId, newUserEmail);
   }

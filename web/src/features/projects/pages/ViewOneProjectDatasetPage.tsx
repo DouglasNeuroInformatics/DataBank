@@ -9,8 +9,9 @@ import { LoadingFallback } from '@/components';
 import { DatasetPagination } from '@/features/dataset/components/DatasetPagination';
 import DatasetTable from '@/features/dataset/components/DatasetTable';
 
-// the dataset card should show a list of user emails and when the manager clicks remove user,
-// there should be a callback function for the
+// should show the current view only for regular project users
+// depends on the project dataset object for rendering
+// straight ask the backend for a view of the dataset
 
 const ViewOneProjectDatasetPage = () => {
   const params = useParams();
