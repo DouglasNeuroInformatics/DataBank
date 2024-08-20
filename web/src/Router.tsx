@@ -16,6 +16,8 @@ import { ViewOneDatasetRoute } from './features/dataset/pages/ViewOneDatasetPage
 import { LandingPage } from './features/landing';
 import { AddProjectDatasetRoute } from './features/projects/pages/AddProjectDatasetPage';
 import { CreateProjectRoute } from './features/projects/pages/CreateProjectPage';
+import { ManageProjectUsersRoute } from './features/projects/pages/ManageProjectUsersPage';
+import { ViewOneProjectDatasetRoute } from './features/projects/pages/ViewOneProjectDatasetPage';
 import { ViewOneProjectRoute } from './features/projects/pages/ViewOneProjectPage';
 import { ViewProjectsRoute } from './features/projects/pages/ViewProjectsPage';
 import { UserRoute } from './features/user';
@@ -44,12 +46,14 @@ export const protectedRoutes: RouteObject[] = [
       DashboardRoute,
       ViewDatasetsRoute,
       ViewOneDatasetRoute,
+      ViewOneProjectDatasetRoute,
       ViewProjectsRoute,
       ViewOneProjectRoute,
       UserRoute,
       CreateProjectRoute,
       AddProjectDatasetRoute,
-      ManageDatasetManagersRoute
+      ManageDatasetManagersRoute,
+      ManageProjectUsersRoute
     ],
     element: <Layout />,
     path: 'portal'

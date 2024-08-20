@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { type RouteObject, useLocation, useNavigate } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
-import { useAuthStore } from '@/stores/auth-store';
 
 import ProjectDatasetCard from '../components/ProjectDatasetCard';
 
@@ -28,22 +27,14 @@ type Project = {
 const ViewOneProjectPage = () => {
   // location contains the variable in the state of the navigate function
   const location = useLocation();
-  const { currentUser } = useAuthStore();
   const [project, setProject] = useState<Project | null>(null);
   const notifications = useNotificationsStore();
+  const [isManager, setIsManager] = useState(false);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
-
-  const removeUser = () => {
-    //
-  };
-
-  const addUser = () => {
-    //
-  };
 
   const deleteProject = (projectId: string) => {
     axios
@@ -67,6 +58,13 @@ const ViewOneProjectPage = () => {
       .catch(console.error);
 
     axios
+      .get<boolean>(`/v1/projects/is-manager/${location.state}`)
+      .then((response) => {
+        setIsManager(response.data);
+      })
+      .catch(console.error);
+
+    axios
       .get<DatasetCardProps[]>(`/v1/projects/datasets/${location.state}`)
       .then((response) => {
         setDatasetsInfoArray(response.data);
@@ -82,19 +80,28 @@ const ViewOneProjectPage = () => {
             <Card.Header>
               <Card.Title>{`${t('projectName')}: ${project.name}`}</Card.Title>
               <Card.Description>{`${t('projectDescription')}: ${project.description}`}</Card.Description>
-              <div className="flex justify-between">
-                <Button className="m-2" variant={'secondary'} onClick={addUser}>
-                  {t('addUser')}
-                </Button>
+              {isManager && (
+                <div className="flex justify-between">
+                  <Button
+                    className="m-2"
+                    variant={'secondary'}
+                    onClick={() =>
+                      navigate(`/portal/manageProjectUsers`, {
+                        state: {
+                          projectId: project.id,
+                          userIds: project.userIds
+                        }
+                      })
+                    }
+                  >
+                    {t('manageDatasetManagers')}
+                  </Button>
 
-                <Button className="m-2" variant={'secondary'} onClick={removeUser}>
-                  {t('removeUser')}
-                </Button>
-
-                <Button className="m-2" variant={'danger'} onClick={() => deleteProject(project.id)}>
-                  {t('deleteProject')}
-                </Button>
-              </div>
+                  <Button className="m-2" variant={'danger'} onClick={() => deleteProject(location.state as string)}>
+                    {t('deleteDataset')}
+                  </Button>
+                </div>
+              )}
             </Card.Header>
             <Card.Content>
               <ul>
@@ -117,12 +124,6 @@ const ViewOneProjectPage = () => {
                   <Card.Content>
                     <ul>
                       {datasetsInfoArray?.map((datasetInfo, i) => {
-                        let isManager: boolean;
-                        if (!currentUser?.id) {
-                          isManager = false;
-                        } else {
-                          isManager = datasetInfo.managerIds.includes(currentUser.id);
-                        }
                         return (
                           datasetInfo && (
                             <li key={i}>

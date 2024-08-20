@@ -25,10 +25,10 @@ export class ProjectsController {
   }
 
   @ApiOperation({ summary: 'Add a User to a Project' })
-  @Post('add-user')
+  @Post('add-user/:id')
   @RouteAccess({ role: 'STANDARD' })
-  addUserToProject(@CurrentUser('id') currentUserId: string, projectId: string, newUserId: string) {
-    return this.projectsService.addUser(currentUserId, projectId, newUserId);
+  addUserToProject(@CurrentUser('id') currentUserId: string, @Param('id') projectId: string, newUserEmail: string) {
+    return this.projectsService.addUser(currentUserId, projectId, newUserEmail);
   }
 
   @ApiOperation({ summary: 'Get All Available Projects' })
@@ -64,6 +64,24 @@ export class ProjectsController {
   @Get('datasets/:id')
   getProjectDatasets(@Param('id') projectId: string) {
     return this.projectsService.getProjectDatasets(projectId);
+  }
+
+  @ApiOperation({ summary: 'Check if current user is project manager' })
+  @Get('is-manager/:id')
+  @RouteAccess({ role: 'STANDARD' })
+  isProjectManager(@CurrentUser('id') currentUserId: string, @Param('id') projectId: string) {
+    return this.projectsService.isProjectManager(currentUserId, projectId);
+  }
+
+  @ApiOperation({ summary: 'Delete a Project' })
+  @RouteAccess({ role: 'STANDARD' })
+  @Delete('/remove-user/:projectId/:id')
+  removeUser(
+    @CurrentUser('id') currentUserId: string,
+    @Param('projectId') projectId: string,
+    @Param('id') userIdToRemove: string
+  ) {
+    return this.projectsService.removeUser(currentUserId, projectId, userIdToRemove);
   }
 
   updateProject(@CurrentUser('id') currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {

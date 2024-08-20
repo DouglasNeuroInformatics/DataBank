@@ -39,7 +39,7 @@ export class ProjectsService {
     });
   }
 
-  async addUser(currentUserId: string, projectId: string, newUserId: string) {
+  async addUser(currentUserId: string, projectId: string, newUserEmail: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
       throw new ForbiddenException('Only project managers can add new users!');
     }
@@ -50,8 +50,13 @@ export class ProjectsService {
       throw new NotFoundException('Project Not Found!');
     }
 
+    const newUser = await this.usersService.findByEmail(newUserEmail);
+    if (!newUser) {
+      throw new NotFoundException(`User Not found with email: ${newUserEmail}`);
+    }
+
     const userIdsArray = project.userIds;
-    userIdsArray.push(newUserId);
+    userIdsArray.push(newUser.id);
 
     return await this.updateProject(currentUserId, projectId, {
       userIds: userIdsArray
@@ -138,6 +143,24 @@ export class ProjectsService {
     return projectDatasetsInfo;
   }
 
+  public async isProjectManager(currentUserId: string, projectId: string) {
+    const user = await this.usersService.findById(currentUserId);
+    const project = await this.getProjectById(currentUserId, projectId);
+
+    const datasetIdSet = new Set();
+    for (let curr_datasetId of user.datasetId) {
+      datasetIdSet.add(curr_datasetId);
+    }
+
+    for (let dataset of project.datasets) {
+      if (datasetIdSet.has(dataset.datasetId)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   async removeDataset(currentUserId: string, projectId: string, datasetId: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
       throw new ForbiddenException('Only project managers can remove dataset!');
@@ -182,23 +205,5 @@ export class ProjectsService {
       }
     });
     return updateProject;
-  }
-
-  private async isProjectManager(currentUserId: string, projectId: string) {
-    const user = await this.usersService.findById(currentUserId);
-    const project = await this.getProjectById(currentUserId, projectId);
-
-    const datasetIdSet = new Set();
-    for (let curr_datasetId of user.datasetId) {
-      datasetIdSet.add(curr_datasetId);
-    }
-
-    for (let dataset of project.datasets) {
-      if (datasetIdSet.has(dataset.datasetId)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }

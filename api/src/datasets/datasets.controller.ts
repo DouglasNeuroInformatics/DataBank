@@ -69,6 +69,13 @@ export class DatasetsController {
     return this.datasetsService.getAvailable(currentUserId);
   }
 
+  @ApiOperation({ summary: 'Get All Available Datasets Own By the Current Manager' })
+  @Get('owned-by')
+  @RouteAccess({ role: 'STANDARD' })
+  getAllByManagerId(@CurrentUser('id') currentUserId: string) {
+    return this.datasetsService.getAllByManagerId(currentUserId);
+  }
+
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
   @Post(':id')
   @RouteAccess({ role: 'STANDARD' })

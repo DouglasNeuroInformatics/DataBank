@@ -520,7 +520,7 @@ export class ColumnsService {
 
   async toggleColumnNullable(columnId: string) {
     const col = await this.getById(columnId);
-    if (col.nullable && col.summary.nullCount !== col.summary.count) {
+    if (col.nullable && col.summary.nullCount !== 0) {
       throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
     }
 

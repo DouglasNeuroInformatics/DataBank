@@ -167,6 +167,22 @@
     "en": "Project Dataset",
     "fr": "Ensemble de données du projet"
   },
+  "datasetsAvailableToAdd": {
+    "en": "Datasets Available To Add",
+    "fr": "Ensembles de données disponibles pour l'ajout"
+  },
+  "userFirstName": {
+    "en": "User First Name: ",
+    "fr": "Prénom de l'utilisateur : "
+  },
+  "userLastName": {
+    "en": "User Last Name: ",
+    "fr": "Nom de l'utilisateur : "
+  },
+  "userEmail": {
+    "en": "User Email: ",
+    "fr": "Email de l'utilisateur : "
+  },
   "paginationPrevious": {
     "en": "Previous",
     "fr": "Précédente"

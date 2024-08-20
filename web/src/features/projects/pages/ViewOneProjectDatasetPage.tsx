@@ -80,7 +80,7 @@ const ViewOneProjectDatasetPage = () => {
   );
 };
 
-export const viewOneProjectDatasetRoute: RouteObject = {
+export const ViewOneProjectDatasetRoute: RouteObject = {
   path: 'project/dataset/:id',
   element: <ViewOneProjectDatasetPage />
 };

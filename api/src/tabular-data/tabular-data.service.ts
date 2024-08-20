@@ -95,14 +95,13 @@ export class TabularDataService {
     _rowPagination: DatasetViewPaginationDto,
     _columnPagination: DatasetViewPaginationDto
   ) {
-    const columnIds: string[] = [];
+    const columnIds: { [key: string]: string } = {};
     const columns: string[] = [];
     const metaData = {};
     const rows: { [key: string]: boolean | number | string }[] = [];
     const numberOfRows = 10;
 
     for (let col of projectDatasetDto.columns) {
-      columnIds.push(col.columnId);
       const getColumnViewDto: GetColumnViewDto = {
         ...col,
         rowMax: projectDatasetDto.rowFilter ? projectDatasetDto.rowFilter.rowMax : null,
@@ -112,6 +111,7 @@ export class TabularDataService {
       // 2. need to handle column type filter HANDLE HERE, throw an error if there is a conflict between the column ID and the type filter
       if (!projectDatasetDto.useDataTypeFilter || projectDatasetDto.dataTypeFilters.includes(currColumnView.kind)) {
         columns.push(currColumnView.name);
+        columnIds[currColumnView.name] = currColumnView.id;
       }
     }
 
@@ -119,7 +119,7 @@ export class TabularDataService {
       include: {
         columns: {
           where: {
-            id: { in: columnIds }
+            id: { in: Object.values(columnIds) }
           }
         }
       },
@@ -166,7 +166,7 @@ export class TabularDataService {
       throw new NotFoundException('No tabular data found!');
     }
 
-    let columnIds: string[] = [];
+    let columnIds: { [key: string]: string } = {};
     let columns: string[] = [];
 
     let rows: { [key: string]: boolean | null | number | string }[] = [];
@@ -187,7 +187,7 @@ export class TabularDataService {
     let metaData: { [key: string]: ColumnSummary } = {};
 
     for (let col of tabularData.columns.slice(columnStart, columnEnd + 1)) {
-      columnIds.push(col.id);
+      columnIds[col.name] = col.id;
       columns.push(col.name);
 
       switch (col.kind) {

@@ -29,6 +29,11 @@ export class DatasetsService {
     if (!managerToAdd) {
       throw new NotFoundException(`Cannot find user with email ${managerEmailToAdd}`);
     }
+
+    if (dataset.managerIds.includes(managerToAdd.id)) {
+      throw new ForbiddenException(`User with email ${managerEmailToAdd} is already a manager of the dataset`);
+    }
+
     const newDatasetIds = managerToAdd.datasetId;
     newDatasetIds.push(datasetId);
 
@@ -201,6 +206,16 @@ export class DatasetsService {
     }
 
     return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
+  }
+
+  async getAllByManagerId(currentUserId: string) {
+    return await this.datasetModel.findMany({
+      where: {
+        managerIds: {
+          has: currentUserId
+        }
+      }
+    });
   }
 
   async getAvailable(currentUserId: string) {

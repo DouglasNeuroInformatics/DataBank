@@ -129,7 +129,7 @@ export type TabularDataRow = {
 };
 
 export type TabularDatasetView = {
-  columnIds: string[];
+  columnIds: { [key: string]: string };
   columns: string[];
   metadata: { [key: string]: ColumnSummary };
   primaryKeys: string[];

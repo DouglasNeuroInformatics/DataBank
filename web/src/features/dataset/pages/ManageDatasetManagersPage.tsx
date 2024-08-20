@@ -55,7 +55,11 @@ const ManageDatasetManagersPage = () => {
         {managerIds.map((managerId, i) => {
           return (
             <li key={i}>
-              <ManagerCard datasetId={datasetId} isManager={isManager} managerId={managerId} />
+              <ManagerCard
+                datasetId={datasetId}
+                isManager={managerIds.length > 1 ? isManager : false}
+                managerId={managerId}
+              />
             </li>
           );
         })}
