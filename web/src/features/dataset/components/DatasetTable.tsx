@@ -1,7 +1,7 @@
 import React from 'react';
 
-import type { PermissionLevel, TabularDataset } from '@databank/types';
-import { Button } from '@douglasneuroinformatics/libui/components';
+import type { TabularDataset } from '@databank/types';
+import { ActionDropdown, Button } from '@douglasneuroinformatics/libui/components';
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { HoverCard } from '@douglasneuroinformatics/libui/components';
 import { Table } from '@douglasneuroinformatics/libui/components';
@@ -18,9 +18,14 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
 
-  const handleSetColumnMetadataPermissionLevel = (columnId: string, newPermissionLevel: PermissionLevel) => {
+  const handleSetColumnMetadataPermissionLevel = (
+    columnId: string,
+    newPermissionLevel: 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED'
+  ) => {
     axios
-      .patch(`/v1/columns/${columnId}/${newPermissionLevel}`)
+      .patch(`/v1/columns/metadata-permission/${columnId}`, {
+        newPermissionLevel
+      })
       .then(() => {
         notifications.addNotification({
           message: `Column with Id ${columnId} has been modified`,
@@ -31,9 +36,14 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
       .catch(console.error);
   };
 
-  const handleSetColumnDataPermissionLevel = (columnId: string, newPermissionLevel: PermissionLevel) => {
+  const handleSetColumnDataPermissionLevel = (
+    columnId: string,
+    newPermissionLevel: 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED'
+  ) => {
     axios
-      .patch(`/v1/columns/${columnId}/${newPermissionLevel}`)
+      .patch(`/v1/columns/data-permission/${columnId}`, {
+        newPermissionLevel
+      })
       .then(() => {
         notifications.addNotification({
           message: `Column with Id ${columnId} has been modified`,
@@ -44,9 +54,9 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
       .catch(console.error);
   };
 
-  const handleSetColumnNullable = (columnId: string) => {
+  const handleToggleColumnNullable = (columnId: string) => {
     axios
-      .patch(`/v1/columns/${columnId}`)
+      .patch(`/v1/columns/nullable/${columnId}`)
       .then(() => {
         notifications.addNotification({
           message: `Column with Id ${columnId} has been modified`,
@@ -59,7 +69,9 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
 
   const handleChangeColumnType = (columnId: string, type: string) => {
     axios
-      .patch(`/v1/columns/${columnId}/${type}`)
+      .patch(`/v1/columns/type/${columnId}`, {
+        type
+      })
       .then(() => {
         notifications.addNotification({
           message: `Column with Id ${columnId} has been modified`,
@@ -101,33 +113,39 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                     <DropdownMenu.Group>
                       {tabularDataset.isManager && (
                         <>
-                          <DropdownMenu.Item
-                            onClick={() => {
-                              handleSetColumnDataPermissionLevel;
-                            }}
-                          >
-                            {t('setColumnPermissionLevel')}
+                          <DropdownMenu.Item>
+                            <ActionDropdown
+                              options={['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED']}
+                              title={t('setColumnPermissionLevel')}
+                              onSelection={(options) =>
+                                handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, options)
+                              }
+                            />
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Item>
+                            <ActionDropdown
+                              options={['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED']}
+                              title={t('setColumnMetadataPermissionLevel')}
+                              onSelection={(options) =>
+                                handleSetColumnMetadataPermissionLevel(tabularDataset.columnIds[column]!, options)
+                              }
+                            />
                           </DropdownMenu.Item>
                           <DropdownMenu.Item
-                            onClick={() => {
-                              handleSetColumnMetadataPermissionLevel;
-                            }}
-                          >
-                            {t('setColumnMetadataPermissionLevel')}
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item
-                            onClick={() => {
-                              handleSetColumnNullable;
-                            }}
+                            onClick={() => handleToggleColumnNullable(tabularDataset.columnIds[column]!)}
                           >
                             {t('setColumnNullable')}
                           </DropdownMenu.Item>
-                          <DropdownMenu.Item
-                            onClick={() => {
-                              handleChangeColumnType;
-                            }}
-                          >
-                            {t('changeColumnType')}
+                          <DropdownMenu.Item>
+                            <ActionDropdown
+                              options={['INT', 'FLOAT', 'String', 'BOOLEAN', 'DATETIME', 'ENUM'].filter(
+                                (x) => x !== tabularDataset.metadata[column]?.kind
+                              )}
+                              title={t('changeColumnType')}
+                              onSelection={(options) =>
+                                handleChangeColumnType(tabularDataset.columnIds[column]!, options)
+                              }
+                            />
                           </DropdownMenu.Item>
                           <DropdownMenu.Item onClick={() => handleDeleteColumn(tabularDataset.columnIds[column]!)}>
                             {t('deleteColumn')}

@@ -12,16 +12,16 @@ import { ColumnsService } from './columns.service';
 export class ColumnsController {
   constructor(private readonly columnsService: ColumnsService) {}
 
-  @Patch('/dataPermission/:id')
+  @Patch('/data-permission/:id')
   @RouteAccess({ role: 'STANDARD' })
   changeColumnDataPermission(
-    @Param('column') columnId: string,
+    @Param('id') columnId: string,
     @Body('newPermissionLevel') newPermissionLevel: PermissionLevel
   ) {
     return this.columnsService.changeColumnDataPermission(columnId, newPermissionLevel);
   }
 
-  @Patch('/metadataPermission/:id')
+  @Patch('/metadata-permission/:id')
   @RouteAccess({ role: 'STANDARD' })
   changeColumnMetadataPermission(
     @Param('id') columnId: string,
@@ -38,7 +38,7 @@ export class ColumnsController {
 
   @Patch('/type/:id')
   @RouteAccess({ role: 'STANDARD' })
-  mutateColumnType(@Param('id') columnId: string, columnType: ColumnDataType) {
+  mutateColumnType(@Param('id') columnId: string, @Body('type') columnType: ColumnDataType) {
     return this.columnsService.mutateColumnType(columnId, columnType);
   }
 
