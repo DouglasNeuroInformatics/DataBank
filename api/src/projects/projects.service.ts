@@ -1,4 +1,4 @@
-import type { DatasetInfo } from '@databank/types';
+import type { DatasetInfo, ProjectDatasetDto } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
@@ -6,7 +6,7 @@ import { DatasetsService } from '@/datasets/datasets.service';
 import type { Model } from '@/prisma/prisma.types';
 import { UsersService } from '@/users/users.service';
 
-import type { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './zod/projects';
+import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
 
 @Injectable()
 export class ProjectsService {
@@ -17,10 +17,6 @@ export class ProjectsService {
   ) {}
 
   async addDataset(currentUserId: string, projectId: string, projectDatasetDto: ProjectDatasetDto) {
-    if (!(await this.isProjectManager(currentUserId, projectId))) {
-      throw new ForbiddenException('Only project managers can add new dataset!');
-    }
-
     const project = await this.getProjectById(currentUserId, projectId);
 
     if (!project) {

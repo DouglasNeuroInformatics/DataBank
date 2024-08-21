@@ -31,6 +31,10 @@
     "en": "Manage Dataset",
     "fr": "Gérer l'ensemble de données"
   },
+  "selectDataset": {
+    "en": "Select Dataset",
+    "fr": "Sélectionner l'ensemble de données"
+  },
   "viewDataset": {
     "en": "View Dataset",
     "fr": "Voir l'ensemble de données"
@@ -411,17 +415,17 @@
     "en": "Primary keys",
     "fr": "Clés primaires"
   },
-  "setColumnPermissionLevel": {
-    "en": "Set Data Permission Level",
-    "fr": "Définir le niveau de permission des données"
+  "setColumnPermission": {
+    "en": "Set Data Permission",
+    "fr": "Définir le permission des données"
   },
-  "setColumnMetadataPermissionLevel": {
-    "en": "Set Metadata Permission Level",
-    "fr": "Définir le niveau de permission des métadonnées"
+  "setColumnMetadataPermission": {
+    "en": "Set Metadata Permission",
+    "fr": "Définir le permission des métadonnées"
   },
-  "setColumnNullable": {
-    "en": "Set Nullable",
-    "fr": "Définir comme nullable"
+  "toggleColumnNullable": {
+    "en": "Toggle Nullable",
+    "fr": "Activer/désactiver la nullité"
   },
   "changeColumnType": {
     "en": "Change Column Data Type",

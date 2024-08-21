@@ -117,7 +117,7 @@ const ViewOneProjectPage = () => {
                     <Button
                       className="m-2"
                       variant={'secondary'}
-                      onClick={() => navigate('/portal/project/addDataset')}
+                      onClick={() => navigate(`/portal/project/addDataset/${project.id}`)}
                     >
                       Add Dataset to Current Project
                     </Button>
@@ -130,10 +130,11 @@ const ViewOneProjectPage = () => {
                             <li key={i}>
                               <ProjectDatasetCard
                                 createdAt={datasetInfo.createdAt}
+                                datasetId={datasetInfo.id}
                                 description={datasetInfo.description}
-                                id={datasetInfo.id}
                                 license={datasetInfo.license}
                                 name={datasetInfo.name}
+                                projectId={project.id}
                                 updatedAt={datasetInfo.updatedAt}
                               />
                             </li>

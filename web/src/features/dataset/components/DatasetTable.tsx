@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import React from 'react';
 
 import type { TabularDataset } from '@databank/types';
@@ -31,7 +32,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
           message: `Column with Id ${columnId} has been modified`,
           type: 'success'
         });
-        navigate(`/portal/datasets`);
+        navigate(0);
       })
       .catch(console.error);
   };
@@ -49,7 +50,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
           message: `Column with Id ${columnId} has been modified`,
           type: 'success'
         });
-        navigate(`/portal/datasets`);
+        navigate(0);
       })
       .catch(console.error);
   };
@@ -62,7 +63,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
           message: `Column with Id ${columnId} has been modified`,
           type: 'success'
         });
-        navigate(`/portal/datasets`);
+        navigate(-1);
       })
       .catch(console.error);
   };
@@ -77,7 +78,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
           message: `Column with Id ${columnId} has been modified`,
           type: 'success'
         });
-        navigate(`/portal/datasets`);
+        navigate(0);
       })
       .catch(console.error);
   };
@@ -116,7 +117,8 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                           <DropdownMenu.Item>
                             <ActionDropdown
                               options={['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED']}
-                              title={t('setColumnPermissionLevel')}
+                              title={t('setColumnPermission')}
+                              widthFull={true}
                               onSelection={(options) =>
                                 handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, options)
                               }
@@ -125,7 +127,8 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                           <DropdownMenu.Item>
                             <ActionDropdown
                               options={['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED']}
-                              title={t('setColumnMetadataPermissionLevel')}
+                              title={t('setColumnMetadataPermission')}
+                              widthFull={true}
                               onSelection={(options) =>
                                 handleSetColumnMetadataPermissionLevel(tabularDataset.columnIds[column]!, options)
                               }
@@ -134,7 +137,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                           <DropdownMenu.Item
                             onClick={() => handleToggleColumnNullable(tabularDataset.columnIds[column]!)}
                           >
-                            {t('setColumnNullable')}
+                            {t('toggleColumnNullable')}
                           </DropdownMenu.Item>
                           <DropdownMenu.Item>
                             <ActionDropdown
@@ -142,6 +145,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                 (x) => x !== tabularDataset.metadata[column]?.kind
                               )}
                               title={t('changeColumnType')}
+                              widthFull={true}
                               onSelection={(options) =>
                                 handleChangeColumnType(tabularDataset.columnIds[column]!, options)
                               }
@@ -165,25 +169,31 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                 <h4 className="text-sm font-semibold">{`Data Type: ${tabularDataset.metadata[column]?.kind}`}</h4>
                                 <h4 className="text-sm font-semibold">{`Null Count: ${tabularDataset.metadata[column]?.nullCount}`}</h4>
                                 <h4 className="text-sm font-semibold">{`Count: ${tabularDataset.metadata[column]?.count}`}</h4>
-                                {Boolean(tabularDataset.metadata[column]?.min) && (
+                                {(tabularDataset.metadata[column]?.min ||
+                                  tabularDataset.metadata[column]?.min === 0) && (
                                   <h4 className="text-sm font-semibold">{`Min: ${tabularDataset.metadata[column]?.min}`}</h4>
                                 )}
-                                {Boolean(tabularDataset.metadata[column]?.max) && (
+                                {(tabularDataset.metadata[column]?.max ||
+                                  tabularDataset.metadata[column]?.max === 0) && (
                                   <h4 className="text-sm font-semibold">{`Max: ${tabularDataset.metadata[column]?.max}`}</h4>
                                 )}
-                                {Boolean(tabularDataset.metadata[column]?.mean) && (
+                                {(tabularDataset.metadata[column]?.mean ||
+                                  tabularDataset.metadata[column]?.mean === 0) && (
                                   <h4 className="text-sm font-semibold">{`Mean: ${tabularDataset.metadata[column]?.mean}`}</h4>
                                 )}
-                                {Boolean(tabularDataset.metadata[column]?.median) && (
+                                {(tabularDataset.metadata[column]?.median ||
+                                  tabularDataset.metadata[column]?.median === 0) && (
                                   <h4 className="text-sm font-semibold">{`Median: ${tabularDataset.metadata[column]?.median}`}</h4>
                                 )}
-                                {Boolean(tabularDataset.metadata[column]?.mode) && (
+                                {(tabularDataset.metadata[column]?.mode ||
+                                  tabularDataset.metadata[column]?.mode === 0) && (
                                   <h4 className="text-sm font-semibold">{`Mode: ${tabularDataset.metadata[column]?.mode}`}</h4>
                                 )}
-                                {Boolean(tabularDataset.metadata[column]?.std) && (
+                                {(tabularDataset.metadata[column]?.std ||
+                                  tabularDataset.metadata[column]?.std === 0) && (
                                   <h4 className="text-sm font-semibold">{`Standard deviation: ${tabularDataset.metadata[column]?.std}`}</h4>
                                 )}
-                                {Boolean(tabularDataset.metadata[column]?.distribution) && (
+                                {tabularDataset.metadata[column]?.distribution && (
                                   <h4 className="text-sm font-semibold">{`Distribution: ${JSON.stringify(tabularDataset.metadata[column]?.distribution)}`}</h4>
                                 )}
                               </div>

@@ -282,13 +282,15 @@ export class ColumnsService {
     let removeFromCol;
     switch (col.kind) {
       case 'BOOLEAN':
-        data = pl.Series(col.booleanData);
+        data = pl.Series(col.booleanData.map((entry) => Object.values(entry)[0]));
         removeFromCol = this.columnModel.update({
           data: {
             booleanData: undefined,
             enumColumnValidation: undefined,
             summary: {
-              enumSummary: undefined
+              count: data.len() - data.nullCount(),
+              enumSummary: undefined,
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -297,11 +299,15 @@ export class ColumnsService {
         });
         break;
       case 'STRING':
-        data = pl.Series(col.stringData);
+        data = pl.Series(col.stringData.map((entry) => Object.values(entry)[0]));
         removeFromCol = this.columnModel.update({
           data: {
             stringColumnValidation: undefined,
-            stringData: undefined
+            stringData: undefined,
+            summary: {
+              count: data.len() - data.nullCount(),
+              nullCount: data.nullCount()
+            }
           },
           where: {
             id: col.id
@@ -309,13 +315,15 @@ export class ColumnsService {
         });
         break;
       case 'INT':
-        data = pl.Series(col.intData);
+        data = pl.Series(col.intData.map((entry) => Object.values(entry)[0]));
         removeFromCol = this.columnModel.update({
           data: {
             intData: undefined,
             numericColumnValidation: undefined,
             summary: {
-              intSummary: undefined
+              count: data.len() - data.nullCount(),
+              intSummary: undefined,
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -324,13 +332,15 @@ export class ColumnsService {
         });
         break;
       case 'FLOAT':
-        data = pl.Series(col.floatData);
+        data = pl.Series(col.floatData.map((entry) => Object.values(entry)[0]));
         removeFromCol = this.columnModel.update({
           data: {
             floatData: undefined,
             numericColumnValidation: undefined,
             summary: {
-              floatSummary: undefined
+              count: data.len() - data.nullCount(),
+              floatSummary: undefined,
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -339,13 +349,15 @@ export class ColumnsService {
         });
         break;
       case 'ENUM':
-        data = pl.Series(col.enumData);
+        data = pl.Series(col.enumData.map((entry) => Object.values(entry)[0]));
         removeFromCol = this.columnModel.update({
           data: {
             enumColumnValidation: undefined,
             enumData: undefined,
             summary: {
-              enumSummary: undefined
+              count: data.len() - data.nullCount(),
+              enumSummary: undefined,
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -354,13 +366,15 @@ export class ColumnsService {
         });
         break;
       case 'DATETIME':
-        data = pl.Series(col.datetimeData);
+        data = pl.Series(col.datetimeData.map((entry) => Object.values(entry)[0]));
         removeFromCol = this.columnModel.update({
           data: {
             datetimeColumnValidation: undefined,
             datetimeData: undefined,
             summary: {
-              datetimeSummary: undefined
+              count: data.len() - data.nullCount(),
+              datetimeSummary: undefined,
+              nullCount: data.nullCount()
             }
           },
           where: {
@@ -378,15 +392,18 @@ export class ColumnsService {
         data = data.cast(pl.Bool, true);
         addToCol = this.columnModel.update({
           data: {
-            booleanData: data.toArray(),
+            booleanData: data.toArray().map((entry: boolean) => {
+              return { value: entry };
+            }),
             enumColumnValidation: {},
+            kind: colType,
             summary: {
               count: data.len() - data.nullCount(),
               // valueCounts() function always return null.
               // issue opened on nodejs-polars github
-              // enumSummary: {
-              //   distribution: data.valueCounts().toJSON()
-              // },
+              enumSummary: {
+                distribution: data.valueCounts().toJSON()
+              },
               nullCount: data.nullCount()
             }
           },
@@ -399,10 +416,13 @@ export class ColumnsService {
         data = data.cast(pl.Utf8, true);
         addToCol = this.columnModel.update({
           data: {
+            kind: colType,
             stringColumnValidation: {
               minLength: 0
             },
-            stringData: data.toArray(),
+            stringData: data.toArray().map((entry: string) => {
+              return { value: entry };
+            }),
             summary: {
               count: data.len() - data.nullCount(),
               nullCount: data.nullCount()
@@ -417,7 +437,10 @@ export class ColumnsService {
         data = data.cast(pl.Int64, true);
         addToCol = this.columnModel.update({
           data: {
-            intData: data.toArray(),
+            intData: data.toArray().map((entry: number) => {
+              return { value: entry };
+            }),
+            kind: colType,
             numericColumnValidation: {
               max: data.max(),
               min: data.min()
@@ -446,7 +469,10 @@ export class ColumnsService {
         data = data.cast(pl.Float64, true);
         addToCol = this.columnModel.update({
           data: {
-            floatData: data.toArray(),
+            floatData: data.toArray().map((entry: number) => {
+              return { value: entry };
+            }),
+            kind: colType,
             numericColumnValidation: {
               max: data.max(),
               min: data.min()
@@ -473,7 +499,10 @@ export class ColumnsService {
         data = data.cast(pl.Utf8, true);
         addToCol = this.columnModel.update({
           data: {
-            enumData: data.toArray(),
+            enumData: data.toArray().map((entry: string) => {
+              return { value: entry };
+            }),
+            kind: colType,
             summary: {
               count: data.len() - data.nullCount(),
               // valueCounts() function always return null.
@@ -497,7 +526,10 @@ export class ColumnsService {
               max: new Date(),
               min: '1970-01-01'
             },
-            datetimeData: data.toArray(),
+            datetimeData: data.toArray().map((entry: Date) => {
+              return { value: entry };
+            }),
+            kind: colType,
             summary: {
               count: data.len() - data.nullCount(),
               datetimeSummary: {

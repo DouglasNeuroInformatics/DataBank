@@ -7,14 +7,23 @@ import { useNavigate } from 'react-router-dom';
 
 export type ProjectDatasetCardProps = {
   createdAt: Date;
+  datasetId: string;
   description: null | string;
-  id: string;
   license: string;
   name: string;
+  projectId: string;
   updatedAt: Date;
 };
 
-const ProjectDatasetCard = ({ createdAt, description, id, license, name, updatedAt }: ProjectDatasetCardProps) => {
+const ProjectDatasetCard = ({
+  createdAt,
+  datasetId,
+  description,
+  license,
+  name,
+  projectId,
+  updatedAt
+}: ProjectDatasetCardProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   return (
@@ -26,15 +35,15 @@ const ProjectDatasetCard = ({ createdAt, description, id, license, name, updated
         </Card.Header>
         <Card.Content>
           <ul>
-            <li key={id}>Dataset Id: {id}</li>
-            <li key={id + 'createdAt'}>Created at: {createdAt.toString()}</li>
-            <li key={id + 'updatedAt'}>Updated at: {updatedAt.toString()}</li>
-            <li key={id + license}>Licence: {license}</li>
+            <li key={datasetId}>Dataset datasetId: {datasetId}</li>
+            <li key={datasetId + 'createdAt'}>Created at: {createdAt.toString()}</li>
+            <li key={datasetId + 'updatedAt'}>Updated at: {updatedAt.toString()}</li>
+            <li key={datasetId + license}>Licence: {license}</li>
           </ul>
         </Card.Content>
         <Card.Footer className="flex justify-between">
-          <Button variant={'primary'} onClick={() => navigate(`/portal/project/dataset/${id}`)}>
-            {t('manageDataset')}
+          <Button variant={'primary'} onClick={() => navigate(`/portal/project/add-columns/${projectId}/${datasetId}`)}>
+            {t('selectDataset')}
           </Button>
         </Card.Footer>
       </Card>

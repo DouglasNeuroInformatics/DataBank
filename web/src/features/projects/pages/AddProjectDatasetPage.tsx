@@ -4,13 +4,14 @@ import type { DatasetCardProps } from '@databank/types';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { type RouteObject } from 'react-router-dom';
+import { type RouteObject, useParams } from 'react-router-dom';
 
 import ProjectDatasetCard from '../components/ProjectDatasetCard';
 
 const AddProjectDatasetPage = () => {
   const { t } = useTranslation('common');
   const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
+  const params = useParams();
 
   useEffect(() => {
     axios
@@ -34,10 +35,11 @@ const AddProjectDatasetPage = () => {
                 <li key={i}>
                   <ProjectDatasetCard
                     createdAt={datasetInfo.createdAt}
+                    datasetId={datasetInfo.id}
                     description={datasetInfo.description}
-                    id={datasetInfo.id}
                     license={datasetInfo.license}
                     name={datasetInfo.name}
+                    projectId={params.projectId!}
                     updatedAt={datasetInfo.updatedAt}
                   />
                 </li>
@@ -53,5 +55,5 @@ const AddProjectDatasetPage = () => {
 
 export const AddProjectDatasetRoute: RouteObject = {
   element: <AddProjectDatasetPage />,
-  path: 'project/addDataset'
+  path: 'project/addDataset/:projectId'
 };

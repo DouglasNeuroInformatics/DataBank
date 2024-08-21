@@ -1,3 +1,4 @@
+import type { ProjectDatasetDto } from '@databank/types';
 import { CurrentUser } from '@douglasneuroinformatics/libnest/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -6,7 +7,7 @@ import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
 import { ProjectsService } from './projects.service';
 
-import type { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './zod/projects';
+import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
 
 @ApiTags('Projects')
 @Controller('projects')
@@ -14,12 +15,12 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @ApiOperation({ summary: 'Add a Dataset to a Project' })
-  @Post('add-dataset')
+  @Post('add-dataset/:projectId')
   @RouteAccess({ role: 'STANDARD' })
   addDatasetToProject(
     @CurrentUser('id') currentUserId: string,
-    projectId: string,
-    projectDatasetDto: ProjectDatasetDto
+    @Param('projectId') projectId: string,
+    @Body('projectDatasetDto') projectDatasetDto: ProjectDatasetDto
   ) {
     return this.projectsService.addDataset(currentUserId, projectId, projectDatasetDto);
   }

@@ -261,7 +261,7 @@ type ProjectDataset {
 }
 
 type ProjectRowFilter {
-  rowMin Int
+  rowMin Int?
   rowMax Int?
 }
 
