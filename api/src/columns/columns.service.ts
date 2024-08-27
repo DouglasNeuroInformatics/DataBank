@@ -194,6 +194,20 @@ export class ColumnsService {
     });
   }
 
+  async findManyByTabularDataId(tabularDataId: string) {
+    const columns = await this.columnModel.findMany({
+      where: {
+        tabularDataId: tabularDataId
+      }
+    });
+
+    if (!columns) {
+      throw new NotFoundException('No columns found with the given tabular data id!');
+    }
+
+    return columns;
+  }
+
   async getById(columnId: string) {
     const column = await this.columnModel.findUnique({
       where: {
@@ -679,17 +693,41 @@ export class ColumnsService {
     // store column data in a polars series according to the type
     switch (column.kind) {
       case 'BOOLEAN':
-        return pl.Series(column.booleanData);
+        return pl.Series(
+          column.booleanData.map((entry) => {
+            entry.value;
+          })
+        );
       case 'STRING':
-        return pl.Series(column.stringData);
+        return pl.Series(
+          column.stringData.map((entry) => {
+            entry.value;
+          })
+        );
       case 'INT':
-        return pl.Series(column.intData);
+        return pl.Series(
+          column.intData.map((entry) => {
+            entry.value;
+          })
+        );
       case 'FLOAT':
-        return pl.Series(column.floatData);
+        return pl.Series(
+          column.floatData.map((entry) => {
+            entry.value;
+          })
+        );
       case 'ENUM':
-        return pl.Series(column.enumData);
+        return pl.Series(
+          column.enumData.map((entry) => {
+            entry.value;
+          })
+        );
       case 'DATETIME':
-        return pl.Series(column.datetimeData);
+        return pl.Series(
+          column.datetimeData.map((entry) => {
+            entry.value;
+          })
+        );
     }
   }
 

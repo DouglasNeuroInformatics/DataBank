@@ -26,7 +26,6 @@ const $ProjectDataset = z.object({
   dataTypeFilters: z.enum(['INT', 'FLOAT', 'STRING', 'ENUM', 'DATETIME', 'BOOLEAN']).array(),
   datasetId: z.string(),
   rowFilter: $ProjectRowFilter.nullable(),
-  useColumnFilter: z.boolean(),
   useDataTypeFilter: z.boolean(),
   useRowFilter: z.boolean()
 });

@@ -6,7 +6,7 @@ import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { type RouteObject, useLocation, useNavigate } from 'react-router-dom';
+import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 
@@ -25,8 +25,7 @@ type Project = {
 };
 
 const ViewOneProjectPage = () => {
-  // location contains the variable in the state of the navigate function
-  const location = useLocation();
+  const params = useParams();
   const [project, setProject] = useState<Project | null>(null);
   const notifications = useNotificationsStore();
   const [isManager, setIsManager] = useState(false);
@@ -51,26 +50,26 @@ const ViewOneProjectPage = () => {
 
   useEffect(() => {
     axios
-      .get<Project>(`/v1/projects/${location.state}`)
+      .get<Project>(`/v1/projects/${params.projectId}`)
       .then((response) => {
         setProject(response.data);
       })
       .catch(console.error);
 
     axios
-      .get<boolean>(`/v1/projects/is-manager/${location.state}`)
+      .get<boolean>(`/v1/projects/is-manager/${params.projectId}`)
       .then((response) => {
         setIsManager(response.data);
       })
       .catch(console.error);
 
     axios
-      .get<DatasetCardProps[]>(`/v1/projects/datasets/${location.state}`)
+      .get<DatasetCardProps[]>(`/v1/projects/datasets/${params.projectId}`)
       .then((response) => {
         setDatasetsInfoArray(response.data);
       })
       .catch(console.error);
-  }, [location.state]);
+  }, [params.projectId]);
 
   return (
     <>
@@ -94,11 +93,11 @@ const ViewOneProjectPage = () => {
                       })
                     }
                   >
-                    {t('manageDatasetManagers')}
+                    {t('manageProjectUsers')}
                   </Button>
 
-                  <Button className="m-2" variant={'danger'} onClick={() => deleteProject(location.state as string)}>
-                    {t('deleteDataset')}
+                  <Button className="m-2" variant={'danger'} onClick={() => deleteProject(params.projectId!)}>
+                    {t('deleteProject')}
                   </Button>
                 </div>
               )}
@@ -168,6 +167,6 @@ const ViewOneProjectPage = () => {
 };
 
 export const ViewOneProjectRoute: RouteObject = {
-  path: 'project',
+  path: 'project/:projectId',
   element: <ViewOneProjectPage />
 };

@@ -58,11 +58,11 @@ export const ProjectCard = ({
         </Card.Content>
         <Card.Footer className="flex justify-between">
           {isProjectManager ? (
-            <Button variant={'primary'} onClick={() => navigate('/portal/project', { state: id })}>
+            <Button variant={'primary'} onClick={() => navigate(`/portal/project/${id}`)}>
               Manage Project
             </Button>
           ) : (
-            <Button variant={'primary'} onClick={() => navigate('/portal/project', { state: id })}>
+            <Button variant={'primary'} onClick={() => navigate(`/portal/project/${id}`)}>
               View Project
             </Button>
           )}

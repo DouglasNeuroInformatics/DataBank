@@ -244,7 +244,6 @@ export type ProjectColumnTrim = {
 export type ProjectColumn = {
   columnId: string;
   hash: ProjectColumnHash | null;
-  kind: ColumnDataType;
   trim: ProjectColumnTrim | null;
 };
 
@@ -258,7 +257,6 @@ export type ProjectDatasetDto = {
   dataTypeFilters: ColumnDataType[];
   datasetId: string;
   rowFilter: ProjectRowFilter | null;
-  useColumnFilter: boolean;
   useDataTypeFilter: boolean;
   useRowFilter: boolean;
 };
@@ -268,4 +266,8 @@ export type EditProjectInfoDto = {
   expiry?: Date | undefined;
   externalId?: string | undefined;
   name?: string | undefined;
+};
+
+export type AddProjectDatasetColumns = {
+  [key: string]: string;
 };

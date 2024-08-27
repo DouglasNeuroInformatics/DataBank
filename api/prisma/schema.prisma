@@ -256,7 +256,6 @@ type ProjectDataset {
   rowFilter         ProjectRowFilter?
   dataTypeFilters   ColumnType[]
   datasetId         String
-  useColumnFilter   Boolean
   columns           ProjectColumn[]
 }
 

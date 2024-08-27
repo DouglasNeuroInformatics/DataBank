@@ -112,9 +112,10 @@ export class ProjectsService {
         user with id ${currentUserId}`);
     }
 
-    const isProjectManager = this.isProjectManager(currentUserId, project.id);
+    // const isProjectManager = this.isProjectManager(currentUserId, project.id);
+    // return { ...project, isProjectManager };
 
-    return { ...project, isProjectManager };
+    return project;
   }
 
   async getProjectDatasets(projectId: string) {
@@ -189,10 +190,10 @@ export class ProjectsService {
   }
 
   async updateProject(currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {
-    const isProjectManager = await this.isProjectManager(currentUserId, projectId);
-    if (!isProjectManager) {
-      throw new ForbiddenException('The current user has no right to manipulate this project!');
-    }
+    // const isProjectManager = await this.isProjectManager(currentUserId, projectId);
+    // if (!isProjectManager) {
+    //   throw new ForbiddenException('The current user has no right to manipulate this project!');
+    // }
 
     const updateProject = await this.projectModel.update({
       data: updateProjectDto,

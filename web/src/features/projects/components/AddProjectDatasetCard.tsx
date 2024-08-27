@@ -5,7 +5,7 @@ import { Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-export type ProjectDatasetCardProps = {
+export type AddProjectDatasetCardProps = {
   createdAt: Date;
   datasetId: string;
   description: null | string;
@@ -15,7 +15,7 @@ export type ProjectDatasetCardProps = {
   updatedAt: Date;
 };
 
-const ProjectDatasetCard = ({
+const AddProjectDatasetCard = ({
   createdAt,
   datasetId,
   description,
@@ -23,7 +23,7 @@ const ProjectDatasetCard = ({
   name,
   projectId,
   updatedAt
-}: ProjectDatasetCardProps) => {
+}: AddProjectDatasetCardProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   return (
@@ -42,7 +42,7 @@ const ProjectDatasetCard = ({
           </ul>
         </Card.Content>
         <Card.Footer className="flex justify-between">
-          <Button variant={'primary'} onClick={() => navigate(`/portal/project/dataset/${projectId}/${datasetId}`)}>
+          <Button variant={'primary'} onClick={() => navigate(`/portal/project/add-columns/${projectId}/${datasetId}`)}>
             {t('selectDataset')}
           </Button>
         </Card.Footer>
@@ -51,4 +51,4 @@ const ProjectDatasetCard = ({
   );
 };
 
-export default ProjectDatasetCard;
+export default AddProjectDatasetCard;

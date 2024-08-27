@@ -151,6 +151,10 @@
     "en": "Project Name",
     "fr": "Nom du Projet"
   },
+  "manageProjectUsers": {
+    "en": "Manage Project Users",
+    "fr": "Gérer les utilisateurs du projet"
+  },
   "projectDescription": {
     "en": "Project Description",
     "fr": "Description du Projet"

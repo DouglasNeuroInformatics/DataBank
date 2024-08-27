@@ -1,4 +1,5 @@
 import type {
+  AddProjectDatasetColumns,
   DatasetCardProps,
   DatasetViewPaginationDto,
   EditDatasetInfoDto,
@@ -268,6 +269,34 @@ export class DatasetsService {
     });
 
     return dataset;
+  }
+
+  async getColumnsById(datasetId: string, currentUserId: string) {
+    const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: {
+          include: {
+            columns: true
+          }
+        }
+      },
+      where: {
+        id: datasetId,
+        managerIds: {
+          has: currentUserId
+        }
+      }
+    });
+
+    if (!dataset?.tabularData?.columns) {
+      throw new NotFoundException(`No colums are found with dataset ID ${datasetId}`);
+    }
+
+    const columnsNamesAndIds: AddProjectDatasetColumns = {};
+    dataset.tabularData.columns.forEach((column) => {
+      columnsNamesAndIds[column.name] = column.id;
+    });
+    return columnsNamesAndIds;
   }
 
   async getOnePublicById(

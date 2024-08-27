@@ -76,6 +76,13 @@ export class DatasetsController {
     return this.datasetsService.getAllByManagerId(currentUserId);
   }
 
+  @ApiOperation({ summary: 'Get All columns given the dataset id' })
+  @Get('columns/:id')
+  @RouteAccess({ role: 'STANDARD' })
+  getColumnsById(@Param('id') datasetId: string, @CurrentUser('id') currentUserId: string) {
+    return this.datasetsService.getColumnsById(datasetId, currentUserId);
+  }
+
   @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
   @Post(':id')
   @RouteAccess({ role: 'STANDARD' })
