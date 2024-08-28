@@ -9,6 +9,7 @@ export type ProjectDatasetCardProps = {
   createdAt: Date;
   datasetId: string;
   description: null | string;
+  isManager: boolean;
   license: string;
   name: string;
   projectId: string;
@@ -19,6 +20,7 @@ const ProjectDatasetCard = ({
   createdAt,
   datasetId,
   description,
+  isManager,
   license,
   name,
   projectId,
@@ -42,9 +44,15 @@ const ProjectDatasetCard = ({
           </ul>
         </Card.Content>
         <Card.Footer className="flex justify-between">
-          <Button variant={'primary'} onClick={() => navigate(`/portal/project/dataset/${projectId}/${datasetId}`)}>
-            {t('selectDataset')}
-          </Button>
+          {isManager ? (
+            <Button variant={'primary'} onClick={() => navigate(`/portal/project/dataset/${projectId}/${datasetId}`)}>
+              {t('manageProjectDataset')}
+            </Button>
+          ) : (
+            <Button variant={'primary'} onClick={() => navigate(`/portal/project/dataset/${projectId}/${datasetId}`)}>
+              {t('viewProjectDataset')}
+            </Button>
+          )}
         </Card.Footer>
       </Card>
     </>

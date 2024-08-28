@@ -1,4 +1,4 @@
-import type { DatasetInfo, ProjectDatasetDto } from '@databank/types';
+import type { DatasetInfo, DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
@@ -30,8 +30,13 @@ export class ProjectsService {
       }
     });
     projectDatasets.push(projectDatasetDto);
-    return await this.updateProject(currentUserId, projectId, {
-      datasets: projectDatasets
+    return await this.projectModel.update({
+      data: {
+        datasets: projectDatasets
+      },
+      where: {
+        id: projectId
+      }
     });
   }
 
@@ -95,6 +100,35 @@ export class ProjectsService {
         }
       }
     });
+  }
+
+  async getOneProjectDatasetView(
+    projectId: string,
+    datasetId: string,
+    rowPaginationDto: DatasetViewPaginationDto,
+    columnPaginationDto: DatasetViewPaginationDto
+  ) {
+    // get project
+    const project = await this.projectModel.findUnique({
+      where: {
+        id: projectId
+      }
+    });
+
+    if (!project) {
+      throw new NotFoundException('Project Not Found!');
+    }
+
+    const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
+    if (!projectDatasetDto) {
+      throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
+    }
+
+    return await this.datasetService.getProjectDatasetViewById(
+      projectDatasetDto,
+      rowPaginationDto,
+      columnPaginationDto
+    );
   }
 
   async getProjectById(currentUserId: string, projectId: string) {
@@ -190,10 +224,10 @@ export class ProjectsService {
   }
 
   async updateProject(currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {
-    // const isProjectManager = await this.isProjectManager(currentUserId, projectId);
-    // if (!isProjectManager) {
-    //   throw new ForbiddenException('The current user has no right to manipulate this project!');
-    // }
+    const isProjectManager = await this.isProjectManager(currentUserId, projectId);
+    if (!isProjectManager) {
+      throw new ForbiddenException('The current user has no right to manipulate this project!');
+    }
 
     const updateProject = await this.projectModel.update({
       data: updateProjectDto,

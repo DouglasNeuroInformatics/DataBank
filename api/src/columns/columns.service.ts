@@ -223,34 +223,84 @@ export class ColumnsService {
 
   async getColumnView(getColumnViewDto: GetColumnViewDto) {
     const columnView = await this.getById(getColumnViewDto.columnId);
-
     // store column data in a polars series according to the type
-    const currSeries = await this.columnIdToSeries(getColumnViewDto.columnId);
+    let currSeries = await this.columnIdToSeries(getColumnViewDto.columnId);
 
-    // check if there is a row max bound
-    if (getColumnViewDto.rowMax) {
-      currSeries.slice(getColumnViewDto.rowMin ?? 0, getColumnViewDto.rowMax - (getColumnViewDto.rowMin ?? 0));
-    } else {
-      currSeries.slice(getColumnViewDto.rowMin ?? 0);
+    // check if there is a row max and min bound
+    if (getColumnViewDto.rowMax && getColumnViewDto.rowMin) {
+      currSeries = currSeries.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax - getColumnViewDto.rowMin + 1);
+    } else if (getColumnViewDto.rowMin && !getColumnViewDto.rowMax) {
+      currSeries = currSeries.slice(getColumnViewDto.rowMin);
+    } else if (getColumnViewDto.rowMax && !getColumnViewDto.rowMin) {
+      currSeries = currSeries.slice(0, getColumnViewDto.rowMax);
     }
 
     // check for hash, do the hashing
     if (getColumnViewDto.hash) {
-      // do the hashing, will result in a UInt64 series
-      currSeries.hash();
-      // cast into a string series
+      currSeries = currSeries.hash();
+      if (getColumnViewDto.hash.length && getColumnViewDto.hash.length >= 0) {
+        currSeries = currSeries.slice(0, getColumnViewDto.hash.length);
+      }
       currSeries.cast(pl.String);
-      // if(getColumnViewDto.hash.length) {series.str.slice(0, length)}
-    } else if (getColumnViewDto.trim && columnView.kind === 'STRING') {
-      // trim the string in each cell of a string column (should trim columns of other data types)
-      // the slice function takes two parameters: offset and length (optional)
-      currSeries.str.slice(
-        getColumnViewDto.trim.start ?? 0,
-        getColumnViewDto.trim.end ? getColumnViewDto.trim.end - (getColumnViewDto.trim.start ?? 0) : undefined
-      );
+      columnView.kind = 'STRING';
+    }
+
+    if (getColumnViewDto.trim && columnView.kind === 'STRING') {
+      // trim the string in each cell of a string column
+      // the slice function takes two parameters: offset and length(optional)
+      if (getColumnViewDto.trim.start && getColumnViewDto.trim.end) {
+        currSeries = currSeries.str.slice(
+          getColumnViewDto.trim.start,
+          getColumnViewDto.trim.end - getColumnViewDto.trim.start + 1
+        );
+      }
     }
     // recalculate the summary for the column
     columnView.summary = this.calculateSummaryOnSeries(columnView.kind, currSeries);
+    switch (columnView.kind) {
+      case 'BOOLEAN':
+        columnView.booleanData = currSeries.toArray().map((entry) => {
+          return {
+            value: entry as boolean
+          };
+        });
+        break;
+      case 'INT':
+        columnView.intData = currSeries.toArray().map((entry) => {
+          return {
+            value: entry as number
+          };
+        });
+        break;
+      case 'FLOAT':
+        columnView.floatData = currSeries.toArray().map((entry) => {
+          return {
+            value: entry as number
+          };
+        });
+        break;
+      case 'STRING':
+        columnView.stringData = currSeries.toArray().map((entry) => {
+          return {
+            value: entry as string
+          };
+        });
+        break;
+      case 'ENUM':
+        columnView.enumData = currSeries.toArray().map((entry) => {
+          return {
+            value: entry as string
+          };
+        });
+        break;
+      case 'DATETIME':
+        columnView.datetimeData = currSeries.toArray().map((entry) => {
+          return {
+            value: entry as Date
+          };
+        });
+        break;
+    }
 
     return columnView;
   }
@@ -692,42 +742,42 @@ export class ColumnsService {
 
     // store column data in a polars series according to the type
     switch (column.kind) {
-      case 'BOOLEAN':
-        return pl.Series(
-          column.booleanData.map((entry) => {
-            entry.value;
-          })
-        );
-      case 'STRING':
-        return pl.Series(
-          column.stringData.map((entry) => {
-            entry.value;
-          })
-        );
-      case 'INT':
-        return pl.Series(
-          column.intData.map((entry) => {
-            entry.value;
-          })
-        );
-      case 'FLOAT':
-        return pl.Series(
-          column.floatData.map((entry) => {
-            entry.value;
-          })
-        );
-      case 'ENUM':
-        return pl.Series(
-          column.enumData.map((entry) => {
-            entry.value;
-          })
-        );
-      case 'DATETIME':
-        return pl.Series(
-          column.datetimeData.map((entry) => {
-            entry.value;
-          })
-        );
+      case 'BOOLEAN': {
+        const arr = column.booleanData.map((entry) => {
+          return entry.value;
+        });
+        return pl.Series(arr);
+      }
+      case 'STRING': {
+        const arr = column.stringData.map((entry) => {
+          return entry.value;
+        });
+        return pl.Series(arr);
+      }
+      case 'INT': {
+        const arr = column.intData.map((entry) => {
+          return entry.value;
+        });
+        return pl.Series(arr);
+      }
+      case 'FLOAT': {
+        const arr = column.floatData.map((entry) => {
+          return entry.value;
+        });
+        return pl.Series(arr);
+      }
+      case 'ENUM': {
+        const arr = column.enumData.map((entry) => {
+          return entry.value;
+        });
+        return pl.Series(arr);
+      }
+      case 'DATETIME': {
+        const arr = column.datetimeData.map((entry) => {
+          return entry.value;
+        });
+        return pl.Series(arr);
+      }
     }
   }
 

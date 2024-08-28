@@ -373,9 +373,6 @@ export class DatasetsService {
       rowPagination,
       columnPagination
     );
-    // the frontend search function should allow the user to fill a form
-    // according to the form data (filter constrains), the backend should find
-    // rows and columns
 
     return {
       createdAt: dataset.createdAt,

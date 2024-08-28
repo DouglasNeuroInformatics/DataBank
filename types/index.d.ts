@@ -138,6 +138,15 @@ export type TabularDatasetView = {
   totalNumberOfRows: number;
 };
 
+export type ProjectTabularDatasetView = {
+  columnIds: { [key: string]: string };
+  columns: string[];
+  metadata: { [key: string]: ColumnSummary };
+  rows: { [key: string]: boolean | null | number | string }[];
+  totalNumberOfColumns: number;
+  totalNumberOfRows: number;
+};
+
 export type ColumnDataType = 'BOOLEAN' | 'DATETIME' | 'ENUM' | 'FLOAT' | 'INT' | 'STRING';
 
 export type TabularDataset = {

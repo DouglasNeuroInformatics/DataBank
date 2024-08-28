@@ -5,18 +5,17 @@ import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { useNavigate } from 'react-router-dom';
 
-export type ProjectInfo = {
+export type ProjectCardProps = {
   createdAt: Date;
   description: string;
   expiry: Date;
   externalId: string;
   id: string;
+  isProjectManager: boolean;
   name: string;
   updatedAt: Date;
   userIds: string[];
 };
-
-export type ProjectCardProps = { isProjectManager: boolean } & ProjectInfo;
 
 export const ProjectCard = ({
   createdAt,

@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { type RouteObject, useParams } from 'react-router-dom';
 
-import ProjectDatasetCard from '../components/ProjectDatasetCard';
+import AddProjectDatasetCard from '../components/AddProjectDatasetCard';
 
 const AddProjectDatasetPage = () => {
   const { t } = useTranslation('common');
@@ -33,7 +33,7 @@ const AddProjectDatasetPage = () => {
             return (
               datasetInfo && (
                 <li key={i}>
-                  <ProjectDatasetCard
+                  <AddProjectDatasetCard
                     createdAt={datasetInfo.createdAt}
                     datasetId={datasetInfo.id}
                     description={datasetInfo.description}

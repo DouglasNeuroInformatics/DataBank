@@ -175,6 +175,14 @@
     "en": "Project Dataset",
     "fr": "Ensemble de données du projet"
   },
+  "viewProjectDataset": {
+    "en": "View Project Dataset",
+    "fr": "Ensemble de données du projet"
+  },
+  "manageProjectDataset": {
+    "en": "Manage Project Dataset",
+    "fr": "Ensemble de données du projet"
+  },
   "datasetsAvailableToAdd": {
     "en": "Datasets Available To Add",
     "fr": "Ensembles de données disponibles pour l'ajout"
@@ -432,8 +440,8 @@
     "fr": "Activer/désactiver la nullité"
   },
   "changeColumnType": {
-    "en": "Change Column Data Type",
-    "fr": "Changer le type de données de la colonne"
+    "en": "Change Data Type",
+    "fr": "Changer le type de données"
   },
   "deleteColumn": {
     "en": "Delete Column",

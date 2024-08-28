@@ -54,21 +54,19 @@ const ViewProjectsPage = () => {
         <ul>
           {projectsInfoArray.map((projectInfo, i) => {
             return (
-              <>
-                <li key={i}>
-                  <ProjectCard
-                    createdAt={projectInfo.createdAt}
-                    description={projectInfo.description}
-                    expiry={projectInfo.expiry}
-                    externalId={projectInfo.externalId}
-                    id={projectInfo.id}
-                    isProjectManager={projectInfo.isProjectManager}
-                    name={projectInfo.name}
-                    updatedAt={projectInfo.updatedAt}
-                    userIds={projectInfo.userIds}
-                  />
-                </li>
-              </>
+              <li key={i}>
+                <ProjectCard
+                  createdAt={projectInfo.createdAt}
+                  description={projectInfo.description}
+                  expiry={projectInfo.expiry}
+                  externalId={projectInfo.externalId}
+                  id={projectInfo.id}
+                  isProjectManager={projectInfo.isProjectManager}
+                  name={projectInfo.name}
+                  updatedAt={projectInfo.updatedAt}
+                  userIds={projectInfo.userIds}
+                />
+              </li>
             );
           })}
         </ul>

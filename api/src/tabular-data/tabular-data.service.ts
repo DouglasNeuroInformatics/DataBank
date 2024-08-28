@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { ColumnSummary, DatasetViewPaginationDto, ProjectDatasetDto, TabularDatasetView } from '@databank/types';
+import type {
+  ColumnSummary,
+  DatasetViewPaginationDto,
+  ProjectDatasetDto,
+  ProjectTabularDatasetView,
+  TabularDatasetView
+} from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { PermissionLevel } from '@prisma/client';
 
@@ -97,7 +103,7 @@ export class TabularDataService {
   ) {
     const columnIds: { [key: string]: string } = {};
     const columns: string[] = [];
-    const metaData = {};
+    const metaData: { [key: string]: any } = {};
     const rows: { [key: string]: boolean | number | string }[] = [];
     const numberOfRows = 10;
 
@@ -108,40 +114,70 @@ export class TabularDataService {
         rowMin: projectDatasetDto.rowFilter ? projectDatasetDto.rowFilter.rowMin : 0
       };
       const currColumnView = await this.columnsService.getColumnView(getColumnViewDto);
-      // 2. need to handle column type filter HANDLE HERE, throw an error if there is a conflict between the column ID and the type filter
-      if (!projectDatasetDto.useDataTypeFilter || projectDatasetDto.dataTypeFilters.includes(currColumnView.kind)) {
-        columns.push(currColumnView.name);
-        columnIds[currColumnView.name] = currColumnView.id;
+      // 2. need to handle column type filter HANDLE HERE
+      columns.push(currColumnView.name);
+      columnIds[currColumnView.name] = currColumnView.id;
+      metaData[currColumnView.name] = currColumnView.summary;
+
+      switch (currColumnView.kind) {
+        case 'STRING':
+          currColumnView.stringData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+
+            rows[i][currColumnView.name] = entry.value!;
+          });
+          break;
+        case 'BOOLEAN':
+          currColumnView.booleanData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][currColumnView.name] = entry.value!;
+          });
+          break;
+        case 'INT':
+          currColumnView.intData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][currColumnView.name] = entry.value!;
+          });
+          break;
+        case 'FLOAT':
+          currColumnView.floatData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][currColumnView.name] = entry.value!;
+          });
+          break;
+        case 'ENUM':
+          currColumnView.enumData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][currColumnView.name] = entry.value!;
+          });
+          break;
+        case 'DATETIME':
+          currColumnView.datetimeData.map((entry, i) => {
+            if (!rows[i]) {
+              rows[i] = {};
+            }
+            rows[i][currColumnView.name] = entry.value!.toDateString()!;
+          });
+          break;
       }
     }
 
-    const tabularData = await this.tabularDataModel.findUnique({
-      include: {
-        columns: {
-          where: {
-            id: { in: Object.values(columnIds) }
-          }
-        }
-      },
-      where: {
-        datasetId: projectDatasetDto.datasetId
-      }
-    });
-
-    if (!tabularData) {
-      throw new NotFoundException(`Cannot find tabular data with id ${projectDatasetDto.datasetId}`);
-    }
-
-    // we can first get all the columns using the row filter
-    // metadata needs to be recalculated for columns that uses trim and hash
-
-    const dataView: TabularDatasetView = {
+    const dataView: ProjectTabularDatasetView = {
       columnIds,
       columns,
       metadata: metaData,
-      primaryKeys: tabularData.primaryKeys,
       rows,
-      totalNumberOfColumns: tabularData.columns.length,
+      totalNumberOfColumns: columns.length,
       totalNumberOfRows: numberOfRows
     };
 

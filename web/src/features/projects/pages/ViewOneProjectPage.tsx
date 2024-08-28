@@ -131,6 +131,7 @@ const ViewOneProjectPage = () => {
                                 createdAt={datasetInfo.createdAt}
                                 datasetId={datasetInfo.id}
                                 description={datasetInfo.description}
+                                isManager={isManager}
                                 license={datasetInfo.license}
                                 name={datasetInfo.name}
                                 projectId={project.id}

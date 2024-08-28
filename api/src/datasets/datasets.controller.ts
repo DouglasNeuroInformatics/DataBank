@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-classes */
-import type { DatasetViewPaginationDto, EditDatasetInfoDto, ProjectDatasetDto } from '@databank/types';
+import type { DatasetViewPaginationDto, EditDatasetInfoDto } from '@databank/types';
 import { CurrentUser, ParseObjectIdPipe } from '@douglasneuroinformatics/libnest/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -100,16 +100,16 @@ export class DatasetsController {
     );
   }
 
-  @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
-  @Post('/project')
-  @RouteAccess({ role: 'STANDARD' })
-  getProjectDatasetViewById(
-    @Body('rowPaginationDto') rowPaginationDto: DatasetViewPaginationDto,
-    @Body('columnPaginationDto') columnPaginationDto: DatasetViewPaginationDto,
-    @Body('projectDatasetDto') projectDatasetDto: ProjectDatasetDto
-  ) {
-    return this.datasetsService.getProjectDatasetViewById(projectDatasetDto, rowPaginationDto, columnPaginationDto);
-  }
+  // @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
+  // @Post('/project/:projectId/:datasetId')
+  // @RouteAccess({ role: 'STANDARD' })
+  // getProjectDatasetViewById(
+  //   @Body('rowPaginationDto') rowPaginationDto: DatasetViewPaginationDto,
+  //   @Body('columnPaginationDto') columnPaginationDto: DatasetViewPaginationDto,
+  //   @Body('projectDatasetDto') projectDatasetDto: ProjectDatasetDto
+  // ) {
+  //   return this.datasetsService.getProjectDatasetViewById(projectDatasetDto, rowPaginationDto, columnPaginationDto);
+  // }
 
   @Delete('managers/:id/:managerIdToRemove')
   @RouteAccess({ role: 'STANDARD' })

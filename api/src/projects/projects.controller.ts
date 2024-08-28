@@ -1,4 +1,4 @@
-import type { ProjectDatasetDto } from '@databank/types';
+import type { DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/types';
 import { CurrentUser } from '@douglasneuroinformatics/libnest/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -28,18 +28,11 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Add a User to a Project' })
   @Post('add-user/:id')
   @RouteAccess({ role: 'STANDARD' })
-  addProjectDataset(
+  addUserToProject(
     @CurrentUser('id') currentUserId: string,
     @Param('id') projectId: string,
-    @Body('projectDatasetDto') projectDatasetDto: ProjectDatasetDto
+    @Body('newUserEmail') newUserEmail: string
   ) {
-    return this.projectsService.addDataset(currentUserId, projectId, projectDatasetDto);
-  }
-
-  @ApiOperation({ summary: 'Add a User to a Project' })
-  @Post('add-user/:id')
-  @RouteAccess({ role: 'STANDARD' })
-  addUserToProject(@CurrentUser('id') currentUserId: string, @Param('id') projectId: string, newUserEmail: string) {
     return this.projectsService.addUser(currentUserId, projectId, newUserEmail);
   }
 
@@ -62,6 +55,18 @@ export class ProjectsController {
   @RouteAccess({ role: 'STANDARD' })
   getAllProjects(@CurrentUser('id') currentUserId: string) {
     return this.projectsService.getAllProjects(currentUserId);
+  }
+
+  @ApiOperation({ summary: 'Add a User to a Project' })
+  @Post('dataset/:projectId/:datasetId')
+  @RouteAccess({ role: 'STANDARD' })
+  getOneProjectDatasetView(
+    @Param('projectId') projectId: string,
+    @Param('datasetId') datasetId: string,
+    @Body('rowPaginationDto') rowPaginationDto: DatasetViewPaginationDto,
+    @Body('columnPaginationDto') columnPaginationDto: DatasetViewPaginationDto
+  ) {
+    return this.projectsService.getOneProjectDatasetView(projectId, datasetId, rowPaginationDto, columnPaginationDto);
   }
 
   @ApiOperation({ summary: 'Get One Project by ID' })
