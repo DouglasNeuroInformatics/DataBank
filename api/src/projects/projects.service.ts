@@ -162,14 +162,27 @@ export class ProjectsService {
       throw new NotFoundException(`Project with id ${projectId} cannot be found`);
     }
     const projectDatasetsInfo: DatasetInfo[] = [];
+    const datasetIdToRemove: string[] = [];
     for (let projectDataset of project.datasets) {
       const projectDatasetInfo = await this.datasetService.getById(projectDataset.datasetId);
       if (!projectDatasetInfo) {
-        throw new NotFoundException('Project dataset Information NOT found!');
+        datasetIdToRemove.push(projectDataset.datasetId);
       }
-
-      projectDatasetsInfo.push(projectDatasetInfo);
+      projectDatasetsInfo.push(projectDatasetInfo!);
     }
+
+    const newProjectDatasets = project.datasets.filter((dataset) => {
+      return !datasetIdToRemove.includes(dataset.datasetId);
+    });
+
+    await this.projectModel.update({
+      data: {
+        datasets: newProjectDatasets
+      },
+      where: {
+        id: projectId
+      }
+    });
 
     return projectDatasetsInfo;
   }

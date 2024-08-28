@@ -287,7 +287,7 @@ export class TabularDataService {
             count: col.summary.count,
             kind: 'FLOAT',
             max: col.summary.floatSummary?.max,
-            mean: col.summary.intSummary?.mean,
+            mean: col.summary.floatSummary?.mean,
             median: col.summary.floatSummary?.median,
             min: col.summary.floatSummary?.min,
             nullCount: col.summary.nullCount,

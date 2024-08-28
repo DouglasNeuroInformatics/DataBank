@@ -41,6 +41,7 @@ export const ConfirmEmailPage = () => {
     const response = await axios.post<AuthPayload>('/v1/auth/verify-account', { code });
     notifications.addNotification({ type: 'success' });
     auth.setAccessToken(response.data.accessToken);
+    navigate('/portal/dashboard');
   };
 
   return seconds ? (
