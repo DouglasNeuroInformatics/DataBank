@@ -56,7 +56,7 @@ const ManageProjectUsersPage = () => {
         {userIds.map((userId, i) => {
           return (
             <li key={i}>
-              <UserCard projectId={projectId} userId={userId} />
+              <UserCard projectId={projectId} userId={userId} userNumber={userIds.length} />
             </li>
           );
         })}

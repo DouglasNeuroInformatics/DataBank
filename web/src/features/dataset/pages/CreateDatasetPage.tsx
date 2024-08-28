@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import React, { useCallback, useState } from 'react';
 
-import { Button, Form } from '@douglasneuroinformatics/libui/components';
+import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -162,9 +162,19 @@ const CreateDatasetPage = () => {
         <LoadingFallback />
       ) : (
         <>
-          <div {...getRootProps()}>
+          <div {...getRootProps()} className="flex-col text-center justify-center">
             <input {...getInputProps()} />
-            {isDragActive ? <p>Drop the file here ...</p> : <p>Drag and drop the file here, or click to select file</p>}
+            {isDragActive ? (
+              <Heading variant="h3">Drop the file here ...</Heading>
+            ) : (
+              <>
+                <Heading variant="h3">Drag and drop the file here, or click to select file</Heading>
+                <br />
+                <br />
+                <Heading variant="h5">Only CSV or TSV file is allowed.</Heading>
+                <Heading variant="h5">Maximun file size: 1 GB</Heading>
+              </>
+            )}
           </div>
           <div className="flex gap-2">
             <Button

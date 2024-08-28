@@ -13,9 +13,10 @@ import { useAuthStore } from '@/stores/auth-store';
 type UserCardProps = {
   projectId: string;
   userId: string;
+  userNumber: number;
 };
 
-const UserCard = ({ projectId, userId }: UserCardProps) => {
+const UserCard = ({ projectId, userId, userNumber }: UserCardProps) => {
   const { t } = useTranslation('common');
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ const UserCard = ({ projectId, userId }: UserCardProps) => {
             </ul>
           </Card.Content>
           <Card.Footer className="flex justify-between">
-            <Button variant={'primary'} onClick={() => removeManager(userId)}>
+            <Button disabled={userNumber == 1} variant={'primary'} onClick={() => removeManager(userId)}>
               {t('removeUser')}
             </Button>
           </Card.Footer>
