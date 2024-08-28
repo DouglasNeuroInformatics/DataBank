@@ -100,16 +100,27 @@ export class DatasetsController {
     );
   }
 
-  // @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
-  // @Post('/project/:projectId/:datasetId')
-  // @RouteAccess({ role: 'STANDARD' })
-  // getProjectDatasetViewById(
-  //   @Body('rowPaginationDto') rowPaginationDto: DatasetViewPaginationDto,
-  //   @Body('columnPaginationDto') columnPaginationDto: DatasetViewPaginationDto,
-  //   @Body('projectDatasetDto') projectDatasetDto: ProjectDatasetDto
-  // ) {
-  //   return this.datasetsService.getProjectDatasetViewById(projectDatasetDto, rowPaginationDto, columnPaginationDto);
-  // }
+  @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
+  @Get('/download-data/:id/:format')
+  @RouteAccess({ role: 'STANDARD' })
+  downloadDataById(
+    @Param('id') datasetId: string,
+    @CurrentUser('id') currentUserId: string,
+    @Param('format') format: 'CSV' | 'TSV'
+  ) {
+    return this.datasetsService.downloadDataById(datasetId, currentUserId, format);
+  }
+
+  @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
+  @Get('/download-metadata/:id/:format')
+  @RouteAccess({ role: 'STANDARD' })
+  downloadMetadataById(
+    @Param('id') datasetId: string,
+    @CurrentUser('id') currentUserId: string,
+    @Param('format') format: 'CSV' | 'TSV'
+  ) {
+    return this.datasetsService.downloadMetadataById(datasetId, currentUserId, format);
+  }
 
   @Delete('managers/:id/:managerIdToRemove')
   @RouteAccess({ role: 'STANDARD' })
