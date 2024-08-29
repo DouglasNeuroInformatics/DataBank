@@ -1,10 +1,10 @@
 {
   "name": "@databank/types",
-  "version": "0.0.0",
-  "types": "index.d.ts",
   "type": "module",
+  "version": "0.0.0",
   "private": true,
   "license": "AGPL-3.0",
+  "types": "index.d.ts",
   "dependencies": {
     "type-fest": "^4.3.3"
   }

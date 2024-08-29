@@ -3,7 +3,7 @@
   "globalDependencies": [".env", "jsconfig.json"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "^db:generate"],
+      "dependsOn": ["db:generate"],
       "outputs": ["dist/**"]
     },
     "db:generate": {
@@ -11,13 +11,15 @@
     },
     "dev": {
       "cache": false,
-      "dependsOn": ["^build", "^db:generate"],
+      "dependsOn": ["db:generate"],
       "persistent": true
     },
     "format": {},
     "lint": {
-      "dependsOn": ["^build", "^db:generate"]
+      "dependsOn": ["db:generate"]
     },
-    "test": {}
+    "test": {
+      "dependsOn": ["db:generate"]
+    }
   }
 }
