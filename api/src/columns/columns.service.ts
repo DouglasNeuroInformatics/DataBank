@@ -225,7 +225,6 @@ export class ColumnsService {
     const columnView = await this.getById(getColumnViewDto.columnId);
     // store column data in a polars series according to the type
     let currSeries = await this.columnIdToSeries(getColumnViewDto.columnId);
-
     // check if there is a row max and min bound
     if (getColumnViewDto.rowMax && getColumnViewDto.rowMin) {
       currSeries = currSeries.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax - getColumnViewDto.rowMin + 1);
@@ -234,21 +233,22 @@ export class ColumnsService {
     } else if (getColumnViewDto.rowMax && !getColumnViewDto.rowMin) {
       currSeries = currSeries.slice(0, getColumnViewDto.rowMax);
     }
-
     // check for hash, do the hashing
     if (getColumnViewDto.hash) {
-      currSeries.cast(pl.String);
+      currSeries = currSeries.cast(pl.String);
       if (getColumnViewDto.hash.salt) {
         const saltArr: string[] = [];
         for (let i = 0; i < currSeries.len(); i++) {
           saltArr.push(getColumnViewDto.hash.salt);
         }
-        pl.concatString({
-          exprs: [pl.col(currSeries), pl.col(saltArr)],
-          sep: ''
-        });
+        currSeries = pl.Series(
+          currSeries.toArray().map((entry) => {
+            return entry + getColumnViewDto.hash?.salt!;
+          })
+        );
       }
-      currSeries = currSeries.hash();
+
+      currSeries = currSeries.hash().cast(pl.String);
       if (getColumnViewDto.hash.length && getColumnViewDto.hash.length >= 0) {
         currSeries = currSeries.str.slice(0, getColumnViewDto.hash.length);
       }
