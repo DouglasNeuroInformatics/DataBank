@@ -94,7 +94,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
             setupConfig: {
               userVerification: {
                 kind: 'REGEX_EMAIL',
-                regex: data.verificationRegex
+                emailRegex: data.verificationRegex
               }
             }
           });
