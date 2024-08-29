@@ -190,6 +190,7 @@ export class TabularDataService {
 
   async getViewById(
     tabularDataId: string,
+    userStatus: PermissionLevel,
     rowPagination: DatasetViewPaginationDto,
     columnPagination: DatasetViewPaginationDto
   ) {
@@ -204,6 +205,31 @@ export class TabularDataService {
 
     if (!tabularData) {
       throw new NotFoundException('No tabular data found!');
+    }
+
+    const columnIdsModifyData: string[] = [];
+    const columnIdsModifyMetadata: string[] = [];
+
+    if (userStatus === 'PUBLIC') {
+      throw new ForbiddenException('User should login first!');
+    } else if (userStatus === 'VERIFIED') {
+      tabularData.columns.forEach((col) => {
+        if (col.dataPermission === 'MANAGER') {
+          columnIdsModifyData.push(col.id);
+        }
+        if (col.summaryPermission === 'MANAGER') {
+          columnIdsModifyMetadata.push(col.id);
+        }
+      });
+    } else if (userStatus === 'LOGIN') {
+      tabularData.columns.forEach((col) => {
+        if (col.dataPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
+          columnIdsModifyData.push(col.id);
+        }
+        if (col.summaryPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
+          columnIdsModifyMetadata.push(col.id);
+        }
+      });
     }
 
     let columnIds: { [key: string]: string } = {};
@@ -237,94 +263,186 @@ export class TabularDataService {
               rows[i] = {};
             }
 
-            rows[i][col.name] = entry.value;
+            if (columnIdsModifyData.includes(col.id)) {
+              rows[i][col.name] = 'N/A';
+            } else {
+              rows[i][col.name] = entry.value;
+            }
           });
 
-          metaData[col.name] = {
-            count: col.summary.count,
-            kind: 'STRING',
-            nullCount: col.summary.nullCount
-          };
+          if (columnIdsModifyMetadata.includes(col.id)) {
+            metaData[col.name] = {
+              count: 0,
+              kind: 'STRING',
+              nullCount: 0
+            };
+          } else {
+            metaData[col.name] = {
+              count: col.summary.count,
+              kind: 'STRING',
+              nullCount: col.summary.nullCount
+            };
+          }
           break;
         case 'BOOLEAN':
           col.booleanData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
-            rows[i][col.name] = entry.value;
+            if (columnIdsModifyData.includes(col.id)) {
+              rows[i][col.name] = 'N/A';
+            } else {
+              rows[i][col.name] = entry.value;
+            }
           });
-          metaData[col.name] = {
-            count: col.summary.count,
-            kind: 'BOOLEAN',
-            nullCount: col.summary.nullCount,
-            // TODO: find the true count
-            trueCount: 0
-          };
+
+          if (columnIdsModifyMetadata.includes(col.id)) {
+            metaData[col.name] = {
+              count: 0,
+              kind: 'BOOLEAN',
+              nullCount: 0,
+              trueCount: 0
+            };
+          } else {
+            metaData[col.name] = {
+              count: col.summary.count,
+              kind: 'BOOLEAN',
+              nullCount: col.summary.nullCount,
+              // BUG: trueCount doesn't work
+              // trueCount: col.summary.enumSummary?.distribution
+              trueCount: 0
+            };
+          }
           break;
         case 'INT':
           col.intData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
-            rows[i][col.name] = entry.value;
+            if (columnIdsModifyData.includes(col.id)) {
+              rows[i][col.name] = 'N/A';
+            } else {
+              rows[i][col.name] = entry.value;
+            }
           });
-          metaData[col.name] = {
-            count: col.summary.count,
-            kind: 'INT',
-            max: col.summary.intSummary?.max,
-            mean: col.summary.intSummary?.mean,
-            median: col.summary.intSummary?.median,
-            min: col.summary.intSummary?.min,
-            mode: col.summary.intSummary?.mode,
-            nullCount: col.summary.nullCount,
-            std: col.summary.intSummary?.std
-          };
+          if (columnIdsModifyMetadata.includes(col.id)) {
+            metaData[col.name] = {
+              count: 0,
+              kind: 'INT',
+              max: 0,
+              mean: 0,
+              median: 0,
+              min: 0,
+              mode: 0,
+              nullCount: 0,
+              std: 0
+            };
+          } else {
+            metaData[col.name] = {
+              count: col.summary.count,
+              kind: 'INT',
+              max: col.summary.intSummary?.max,
+              mean: col.summary.intSummary?.mean,
+              median: col.summary.intSummary?.median,
+              min: col.summary.intSummary?.min,
+              mode: col.summary.intSummary?.mode,
+              nullCount: col.summary.nullCount,
+              std: col.summary.intSummary?.std
+            };
+          }
           break;
         case 'FLOAT':
           col.floatData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
-            rows[i][col.name] = entry.value;
+            if (columnIdsModifyData.includes(col.id)) {
+              rows[i][col.name] = 'N/A';
+            } else {
+              rows[i][col.name] = entry.value;
+            }
           });
-          metaData[col.name] = {
-            count: col.summary.count,
-            kind: 'FLOAT',
-            max: col.summary.floatSummary?.max,
-            mean: col.summary.floatSummary?.mean,
-            median: col.summary.floatSummary?.median,
-            min: col.summary.floatSummary?.min,
-            nullCount: col.summary.nullCount,
-            std: col.summary.floatSummary?.std
-          };
+
+          if (columnIdsModifyMetadata.includes(col.id)) {
+            metaData[col.name] = {
+              count: 0,
+              kind: 'FLOAT',
+              max: 0,
+              mean: 0,
+              median: 0,
+              min: 0,
+              nullCount: 0,
+              std: 0
+            };
+          } else {
+            metaData[col.name] = {
+              count: col.summary.count,
+              kind: 'FLOAT',
+              max: col.summary.floatSummary?.max,
+              mean: col.summary.floatSummary?.mean,
+              median: col.summary.floatSummary?.median,
+              min: col.summary.floatSummary?.min,
+              nullCount: col.summary.nullCount,
+              std: col.summary.floatSummary?.std
+            };
+          }
           break;
         case 'ENUM':
           col.enumData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
-            rows[i][col.name] = entry.value;
+
+            if (columnIdsModifyData.includes(col.id)) {
+              rows[i][col.name] = 'N/A';
+            } else {
+              rows[i][col.name] = entry.value;
+            }
           });
-          metaData[col.name] = {
-            count: col.summary.count,
-            kind: 'ENUM',
-            nullCount: col.summary.nullCount
-          };
+
+          if (columnIdsModifyMetadata.includes(col.id)) {
+            metaData[col.name] = {
+              count: 0,
+              kind: 'ENUM',
+              nullCount: 0
+            };
+          } else {
+            metaData[col.name] = {
+              count: col.summary.count,
+              kind: 'ENUM',
+              nullCount: col.summary.nullCount
+            };
+          }
           break;
         case 'DATETIME':
           col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
-            rows[i][col.name] = entry.value?.toDateString() ?? null;
+            if (columnIdsModifyData.includes(col.id)) {
+              rows[i][col.name] = 'N/A';
+            } else {
+              rows[i][col.name] = entry.value?.toISOString() ?? null;
+            }
           });
-          metaData[col.name] = {
-            count: col.summary.count,
-            kind: 'DATETIME',
-            max: col.summary.datetimeSummary?.max ? col.summary.datetimeSummary?.max : new Date(),
-            min: col.summary.datetimeSummary?.min ? col.summary.datetimeSummary?.min : new Date(),
-            nullCount: col.summary.nullCount
-          };
+
+          if (columnIdsModifyMetadata.includes(col.id)) {
+            metaData[col.name] = {
+              count: 0,
+              kind: 'DATETIME',
+              max: new Date(0),
+              min: new Date(0),
+              nullCount: 0
+            };
+          } else {
+            metaData[col.name] = {
+              count: col.summary.count,
+              kind: 'DATETIME',
+              max: col.summary.datetimeSummary?.max ? col.summary.datetimeSummary?.max : new Date(),
+              min: col.summary.datetimeSummary?.min ? col.summary.datetimeSummary?.min : new Date(),
+              nullCount: col.summary.nullCount
+            };
+          }
           break;
       }
     }

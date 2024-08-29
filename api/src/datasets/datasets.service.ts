@@ -3,7 +3,8 @@ import type {
   DatasetCardProps,
   DatasetViewPaginationDto,
   EditDatasetInfoDto,
-  ProjectDatasetDto
+  ProjectDatasetDto,
+  TabularDatasetView
 } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
@@ -363,6 +364,155 @@ export class DatasetsService {
     return metadataRowsString;
   }
 
+  // async downloadProjectDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
+  //   if (!currentUserId) {
+  //     //
+  //   }
+
+  //   const dataset = await this.datasetModel.findUnique({
+  //     include: {
+  //       tabularData: {
+  //         include: {
+  //           columns: true
+  //         }
+  //       }
+  //     },
+  //     where: {
+  //       id: datasetId
+  //     }
+  //   });
+
+  //   if (!dataset) {
+  //     throw new NotFoundException();
+  //   }
+
+  //   if (!dataset.tabularData?.id) {
+  //     throw new NotFoundException('No such tabular data available!');
+  //   }
+
+  //   const colNumber = dataset.tabularData.columns.length;
+
+  //   if (!dataset.tabularData.columns[0]?.id) {
+  //     throw new NotFoundException('No columns found!');
+  //   }
+  //   const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
+
+  //   const datasetView = await this.tabularDataService.getViewById(
+  //     dataset.tabularData.id,
+  //     {
+  //       currentPage: 1,
+  //       itemsPerPage: rowNumber
+  //     },
+  //     {
+  //       currentPage: 1,
+  //       itemsPerPage: colNumber
+  //     }
+  //   );
+
+  //   const delimiter = format === 'CSV' ? ',' : '\t';
+  //   let resultString = datasetView.columns.join(delimiter) + '\n';
+  //   for (let row of datasetView.rows) {
+  //     resultString += Object.values(row).join(delimiter) + '\n';
+  //   }
+
+  //   return resultString;
+  // }
+
+  // async downloadProjectMetadataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
+  //   if (!currentUserId) {
+  //     //
+  //   }
+
+  //   const dataset = await this.datasetModel.findUnique({
+  //     include: {
+  //       tabularData: {
+  //         include: {
+  //           columns: true
+  //         }
+  //       }
+  //     },
+  //     where: {
+  //       id: datasetId
+  //     }
+  //   });
+
+  //   if (!dataset) {
+  //     throw new NotFoundException();
+  //   }
+
+  //   if (!dataset.tabularData?.id) {
+  //     throw new NotFoundException('No such tabular data available!');
+  //   }
+
+  //   const colNumber = dataset.tabularData.columns.length;
+
+  //   if (!dataset.tabularData.columns[0]?.id) {
+  //     throw new NotFoundException('No columns found!');
+  //   }
+  //   const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
+
+  //   const datasetView = await this.tabularDataService.getViewById(
+  //     dataset.tabularData.id,
+  //     {
+  //       currentPage: 1,
+  //       itemsPerPage: rowNumber
+  //     },
+  //     {
+  //       currentPage: 1,
+  //       itemsPerPage: colNumber
+  //     }
+  //   );
+
+  //   const delimiter = format === 'CSV' ? ',' : '\t';
+
+  //   const metaDataHeader = [
+  //     'column_name',
+  //     'column_type',
+  //     'nullable',
+  //     'count',
+  //     'nullCount',
+  //     'max',
+  //     'min',
+  //     'mean',
+  //     'median',
+  //     'mode',
+  //     'std',
+  //     'distribution'
+  //   ];
+
+  //   let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
+  //   for (let columnName of Object.keys(datasetView.metadata)) {
+  //     metadataRowsString +=
+  //       columnName +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.kind +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.nullable +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.count +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.nullCount +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.max +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.min +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.mean +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.median +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.mode +
+  //       delimiter +
+  //       datasetView.metadata[columnName]?.std +
+  //       delimiter +
+  //       JSON.stringify(datasetView.metadata[columnName]?.distribution) +
+  //       delimiter +
+  //       '\n';
+  //   }
+
+  //   return metadataRowsString;
+  // }
+
   async editDatasetInfo(datasetId: string, managerId: string, editDatasetInfoDto: EditDatasetInfoDto) {
     const dataset = await this.canModifyDataset(datasetId, managerId);
 
@@ -583,7 +733,18 @@ export class DatasetsService {
       throw new NotFoundException();
     }
 
-    // TODO: change the logic below so user with diff status can see the according view
+    const currUser = await this.usersService.findById(currentUserId);
+    let userStatus: PermissionLevel;
+    if (dataset.managerIds.includes(currentUserId)) {
+      userStatus = 'MANAGER';
+    } else if (currUser.verifiedAt) {
+      userStatus = 'VERIFIED';
+    } else if (currUser.confirmedAt) {
+      userStatus = 'LOGIN';
+    } else {
+      throw new ForbiddenException('Unexpected user status!');
+    }
+
     if (!dataset.isReadyToShare && !dataset.managerIds.includes(currentUserId)) {
       throw new ForbiddenException('The dataset is not ready for share!');
     }
@@ -591,14 +752,40 @@ export class DatasetsService {
     if (!dataset.tabularData?.id) {
       throw new NotFoundException('No such tabular data available!');
     }
-    const datasetView = await this.tabularDataService.getViewById(
-      dataset.tabularData.id,
-      rowPaginationDto,
-      columnPaginationDto
-    );
+    let datasetView: TabularDatasetView;
+    const emptyDatasetView = {
+      columnIds: {},
+      columns: [],
+      metadata: {},
+      primaryKeys: [],
+      rows: [],
+      totalNumberOfColumns: 0,
+      totalNumberOfRows: 0
+    };
+
     // the frontend search function should allow the user to fill a form
     // according to the form data (filter constrains), the backend should find
     // rows and columns
+
+    if (userStatus === 'MANAGER') {
+      datasetView = await this.tabularDataService.getViewById(
+        dataset.tabularData.id,
+        userStatus,
+        rowPaginationDto,
+        columnPaginationDto
+      );
+    } else if (dataset.permission === 'MANAGER') {
+      datasetView = emptyDatasetView;
+    } else if (dataset.permission === 'VERIFIED' && userStatus !== 'VERIFIED') {
+      datasetView = emptyDatasetView;
+    } else {
+      datasetView = await this.tabularDataService.getViewById(
+        dataset.tabularData.id,
+        userStatus,
+        rowPaginationDto,
+        columnPaginationDto
+      );
+    }
 
     return {
       createdAt: dataset.createdAt,
