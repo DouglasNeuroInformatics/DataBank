@@ -205,39 +205,38 @@ const ViewOneDatasetPage = () => {
                 </Button>
               )}
 
-              <Button className="m-2" variant={'secondary'}>
-                <DropdownMenu>
-                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+                  <Button variant="secondary">
                     {t('downloadDataset')}
                     <ChevronDownIcon className="size-[1rem]" />
-                  </DropdownMenu.Trigger>
-                  <DropdownMenu.Content className="w-48">
-                    <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
-                      {t('downloadTsv')}
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
-                      {t('downloadCsv')}
-                    </DropdownMenu.Item>
-                  </DropdownMenu.Content>
-                </DropdownMenu>
-              </Button>
-
-              <Button className="m-2" variant={'secondary'}>
-                <DropdownMenu>
-                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content className="w-48">
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
+                    {t('downloadTsv')}
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
+                    {t('downloadCsv')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+                  <Button variant="secondary">
                     {t('downloadMetadata')}
                     <ChevronDownIcon className="size-[1rem]" />
-                  </DropdownMenu.Trigger>
-                  <DropdownMenu.Content className="w-48">
-                    <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
-                      {t('downloadTsv')}
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
-                      {t('downloadCsv')}
-                    </DropdownMenu.Item>
-                  </DropdownMenu.Content>
-                </DropdownMenu>
-              </Button>
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content className="w-48">
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
+                    {t('downloadTsv')}
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
+                    {t('downloadCsv')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
             </>
           )}
         </Card.Footer>
