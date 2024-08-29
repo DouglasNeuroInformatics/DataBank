@@ -1,4 +1,6 @@
-import { ThemeToggle } from '@douglasneuroinformatics/ui';
+import React from 'react';
+
+import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { Link, NavLink } from 'react-router-dom';
 
 import { Logo } from '@/components';
@@ -7,10 +9,11 @@ import { UserDropup } from './UserDropup';
 import { type NavItem } from './types';
 
 export type DesktopSidebarProps = {
+  isLogIn: boolean;
   navigation: NavItem[];
 };
 
-export const DesktopSidebar = ({ navigation }: DesktopSidebarProps) => {
+export const DesktopSidebar = ({ isLogIn, navigation }: DesktopSidebarProps) => {
   return (
     <div className="hidden h-full w-20 flex-col bg-slate-800 p-2 text-slate-100 lg:flex">
       <div className="flex-grow">
@@ -32,7 +35,8 @@ export const DesktopSidebar = ({ navigation }: DesktopSidebarProps) => {
       </div>
       <div className="flex flex-shrink flex-col items-center space-y-3">
         <ThemeToggle className="hover:backdrop-brightness-150" />
-        <UserDropup />
+        <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
+        {isLogIn && <UserDropup />}
       </div>
     </div>
   );

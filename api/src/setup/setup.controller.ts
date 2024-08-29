@@ -3,8 +3,9 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
-import { SetupDto } from './dto/setup.dto';
-import { SetupService } from './setup.service';
+import { SetupService } from './setup.service.js';
+
+import type { SetupDto } from './zod/setup.js';
 
 @ApiTags('Setup')
 @Controller({ path: 'setup' })

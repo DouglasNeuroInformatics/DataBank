@@ -9,7 +9,7 @@ import { useAuthStore } from '@/stores/auth-store';
 
 export const UserDropup = () => {
   const auth = useAuthStore();
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <Menu as="div" className="relative p-2">
       <Menu.Button>
@@ -29,17 +29,6 @@ export const UserDropup = () => {
             <Link className="block w-full p-2 first-letter:capitalize hover:bg-slate-700" to="/portal/user">
               {t('preferences')}
             </Link>
-          </Menu.Item>
-          <Menu.Item>
-            <button
-              className="block w-full p-2 text-left first-letter:capitalize hover:bg-slate-700"
-              type="button"
-              onClick={() => {
-                void i18n.changeLanguage(i18n.resolvedLanguage === 'en' ? 'fr' : 'en');
-              }}
-            >
-              {i18n.resolvedLanguage === 'en' ? 'Français' : 'English'}
-            </button>
           </Menu.Item>
           <Menu.Item>
             <button

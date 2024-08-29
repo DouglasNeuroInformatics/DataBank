@@ -1,22 +1,23 @@
 import { useState } from 'react';
+import React from 'react';
 
-import { ThemeToggle } from '@douglasneuroinformatics/ui';
+import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Logo } from '@/components';
 
 import { Slider } from '../Slider';
+import { UserDropup } from './UserDropup';
 import { type NavItem } from './types';
 
 export type MobileNavbarProps = {
+  isLogIn: boolean;
   navigation: NavItem[];
 };
 
-export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
+export const MobileNavbar = ({ isLogIn, navigation }: MobileNavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { i18n } = useTranslation();
 
   return (
     <>
@@ -50,17 +51,10 @@ export const MobileNavbar = ({ navigation }: MobileNavbarProps) => {
               </Link>
             ))}
           </nav>
-          <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
-            <button
-              className="rounded-md p-2 font-medium hover:backdrop-brightness-95 dark:hover:backdrop-brightness-150"
-              type="button"
-              onClick={() => {
-                void i18n.changeLanguage(i18n.resolvedLanguage === 'en' ? 'fr' : 'en');
-              }}
-            >
-              {i18n.resolvedLanguage === 'en' ? 'Français' : 'English'}
-            </button>
-            <ThemeToggle />
+          <div className="flex space-x-3 text-slate-600 dark:text-slate-300">
+            <ThemeToggle className="hover:backdrop-brightness-150" />
+            <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
+            {isLogIn && <UserDropup />}
           </div>
         </div>
       </Slider>

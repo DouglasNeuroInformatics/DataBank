@@ -1,68 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
-import type { SetupOptions, SetupState } from '@databank/types';
-import { FormPageWrapper, useNotificationsStore } from '@douglasneuroinformatics/ui';
-import axios from 'axios';
-import { useTranslation } from 'react-i18next';
-import { match } from 'ts-pattern';
+import { useSetupState } from '@/hooks/useSetupState';
 
-import { SetupForm } from '../components/SetupForm';
+import { useCreateSetupState } from '../hooks/useCreateSetupState';
+import { SetupLoadingPage } from '../pages/SetupLoadingPage';
+import { SetupPage } from '../pages/SetupPage';
 
 export const SetupProvider = ({ children }: { children: React.ReactNode }) => {
-  const { t } = useTranslation();
-  const notifications = useNotificationsStore();
-
-  const [state, setState] = useState<SetupState>(() => {
-    const savedSetup = window.localStorage.getItem('databankSetup');
-    if (!savedSetup) {
-      return { isSetup: null };
-    }
-    return JSON.parse(savedSetup) as SetupState;
-  });
-
-  const fetchSetupState = async () => {
-    const response = await axios.get<SetupState>('/v1/setup');
-    setState(response.data);
-  };
-
-  const handleSubmit = async (data: SetupOptions) => {
-    try {
-      await axios.post('/v1/setup', data);
-      setState({ isSetup: true });
-      notifications.addNotification({ type: 'success' });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const setupStateQuery = useSetupState();
+  const createSetupStateMutation = useCreateSetupState();
 
   useEffect(() => {
-    window.localStorage.setItem('databankSetup', JSON.stringify(state));
-    if (state.isSetup === null) {
-      fetchSetupState().catch(console.error);
-    } else if (!state.isSetup) {
+    if (!setupStateQuery.data) {
       window.history.replaceState({}, '', '/setup');
     }
-  }, [state]);
+  }, [setupStateQuery.data]);
 
-  return match(state)
-    .with({ isSetup: null }, () => (
-      <div>
-        <p>Loading/Chargement...</p>
-      </div>
-    ))
-    .with({ isSetup: false }, () => (
-      <FormPageWrapper
-        languageToggle={{
-          dropdownDirection: 'up',
-          options: ['en', 'fr']
-        }}
-        logo="/logo.png"
-        title={t('setup')}
-        widthMultiplier={1.5}
-      >
-        <SetupForm onSubmit={(data) => void handleSubmit(data)} />
-      </FormPageWrapper>
-    ))
-    .with({ isSetup: true }, () => children)
-    .exhaustive();
+  if (setupStateQuery.data?.isSetup) {
+    return children;
+  } else if (createSetupStateMutation.isPending) {
+    return <SetupLoadingPage subtitle="Setup Loading Subtitle" title="Setup Loading Title" />;
+  }
+
+  return (
+    <SetupPage
+      onSubmit={(SetupDto) => {
+        createSetupStateMutation.mutate(SetupDto);
+      }}
+    />
+  );
 };

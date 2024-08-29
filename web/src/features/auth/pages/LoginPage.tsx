@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import React from 'react';
 
 import type { AuthPayload, LoginCredentials } from '@databank/types';
 import axios from 'axios';
@@ -13,11 +14,17 @@ import { LoginForm } from '../components/LoginForm';
 export const LoginPage = () => {
   const auth = useAuthStore();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
+  // depends on the setup and auth.currentUser.confirmedAt
+  // 1. if setup is manual and auth.accesstoken then go to dashboard
+  // 2. if setup is confirmEmail
+  // 3. if setup is emailRegex
   useEffect(() => {
-    if (auth.accessToken) {
+    if (auth.accessToken && auth.currentUser?.confirmedAt) {
       navigate('/portal/dashboard');
+    } else if (auth.accessToken) {
+      navigate('/auth/confirm-email-code');
     }
   }, [auth.accessToken]);
 

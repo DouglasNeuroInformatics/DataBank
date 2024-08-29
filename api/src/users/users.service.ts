@@ -1,44 +1,119 @@
-import { CryptoService } from '@douglasneuroinformatics/nestjs/modules';
-import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { type ConfirmEmailInfo, type User } from '@prisma/client';
 import type { SetOptional } from 'type-fest';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { User, type UserDocument } from './schemas/user.schema';
+import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
+import type { Model } from '@/prisma/prisma.types';
+
+import type { CreateUserDto, UpdateUserDto } from './zod/user.js';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel('User') private readonly userModel: Model<'User'>,
     private readonly cryptoService: CryptoService
   ) {}
 
   /** Insert a new user into the database */
-  async createUser({ email, password, ...rest }: CreateUserDto): Promise<Omit<UserDocument, 'hashedPassword'>> {
-    const exists = await this.userModel.exists({ email });
-    if (exists) {
-      throw new ConflictException(`User with provided email already exists: ${email}`);
+  async createUser({
+    email,
+    firstName,
+    lastName,
+    password,
+    ...rest
+  }: CreateUserDto): Promise<Omit<User, 'hashedPassword'>> {
+    const userExists = await this.findByEmail(email);
+    if (userExists) {
+      throw new ConflictException(`User with the provided email already exists: ${email}`);
     }
     const hashedPassword = await this.cryptoService.hashPassword(password);
     const createdUser = await this.userModel.create({
-      email,
-      hashedPassword,
-      ...rest
+      data: {
+        email,
+        firstName,
+        hashedPassword,
+        lastName,
+        ...rest
+      }
     });
 
-    const returnedUser: SetOptional<UserDocument, 'hashedPassword'> = createdUser;
+    const returnedUser: SetOptional<User, 'hashedPassword'> = createdUser;
     delete returnedUser.hashedPassword;
     return returnedUser;
   }
 
   /** Return the user with the provided email, or null if no such user exists */
-  findByEmail(email: string) {
-    return this.userModel.findOne({ email });
+  async findByEmail(email: string) {
+    const user = await this.userModel.findUnique({
+      where: {
+        email: email
+      }
+    });
+    return user;
+  }
+
+  async findById(userId: string) {
+    const user = await this.userModel.findUnique({
+      where: {
+        id: userId
+      }
+    });
+    if (!user) {
+      throw new NotFoundException('User with id ' + userId + ' is not found!');
+    }
+    return user;
+  }
+
+  async findManyByDatasetId(datasetId: string) {
+    const users = await this.userModel.findMany({
+      where: {
+        datasetId: {
+          has: datasetId
+        }
+      }
+    });
+    return users;
   }
 
   /** Get all users in the database */
-  getAll() {
-    return this.userModel.find();
+  async getAll(): Promise<User[]> {
+    return await this.userModel.findMany();
+  }
+
+  async isOwnerOfDatasets(userId: string) {
+    const user = await this.findById(userId);
+    return user.datasetId.length > 0 ? true : false;
+  }
+
+  async setVerified(email: string) {
+    return await this.userModel.update({
+      data: {
+        verifiedAt: new Date()
+      },
+      where: {
+        email
+      }
+    });
+  }
+
+  async updateConfirmEmailInfo(email: string, confirmEmailInfo: ConfirmEmailInfo | null) {
+    return await this.userModel.update({
+      data: {
+        confirmEmailInfo
+      },
+      where: {
+        email
+      }
+    });
+  }
+
+  updateUser(userId: string, updateUserDto: UpdateUserDto) {
+    return this.userModel.update({
+      data: updateUserDto,
+      where: {
+        id: userId
+      }
+    });
   }
 }

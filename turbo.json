@@ -1,16 +1,23 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "globalDependencies": [".env", "jsconfig.json"],
+  "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^db:generate"],
       "outputs": ["dist/**"]
+    },
+    "db:generate": {
+      "cache": false
     },
     "dev": {
       "cache": false,
+      "dependsOn": ["^build", "^db:generate"],
       "persistent": true
     },
     "format": {},
-    "lint": {},
+    "lint": {
+      "dependsOn": ["^build", "^db:generate"]
+    },
     "test": {}
   }
 }

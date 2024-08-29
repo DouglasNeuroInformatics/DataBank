@@ -1,11 +1,9 @@
-import { beforeEach, describe, expect, it } from 'bun:test';
-
-import { createMock } from '@douglasneuroinformatics/nestjs/testing';
+import { MockFactory } from '@douglasneuroinformatics/libnest/testing';
 import { Test } from '@nestjs/testing';
-// import { Types } from 'mongoose';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { SetupController } from '../setup.controller';
-import { SetupService } from '../setup.service';
+import { SetupController } from '../setup.controller.js';
+import { SetupService } from '../setup.service.js';
 
 describe('SetupController', () => {
   let setupController: SetupController;
@@ -13,12 +11,7 @@ describe('SetupController', () => {
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [SetupController],
-      providers: [
-        {
-          provide: SetupService,
-          useValue: createMock(SetupService)
-        }
-      ]
+      providers: [MockFactory.createForService(SetupService)]
     }).compile();
     setupController = moduleRef.get(SetupController);
   });

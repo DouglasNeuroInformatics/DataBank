@@ -129,7 +129,10 @@ dist
 .pnp.*
 
 # config
-.env
+**/.env
 
 # turbo
 .turbo
+
+# data
+**/data/

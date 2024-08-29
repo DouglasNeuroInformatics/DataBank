@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import React from 'react';
 
-import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/ui';
+import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { Bars3Icon } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
@@ -10,7 +11,7 @@ import { Link } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
 
 export const LandingHeader = () => {
-  const { i18n, t } = useTranslation();
+  const { i18n, t } = useTranslation('common');
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (
@@ -22,7 +23,9 @@ export const LandingHeader = () => {
         transition={{ duration: 0.5 }}
       >
         <div className="container flex flex-wrap items-center bg-inherit py-2">
-          <Logo className="m-2 mr-10 hidden h-10 w-auto md:block" />
+          <Link className="flex items-center justify-center" to="/">
+            <Logo className="m-2 mr-10 hidden h-10 w-auto md:block" />
+          </Link>
           <button
             className="m-2 md:hidden"
             type="button"
@@ -34,13 +37,13 @@ export const LandingHeader = () => {
           </button>
           <div className="flex flex-grow justify-end gap-3 bg-inherit md:order-last">
             <ThemeToggle />
-            <LanguageToggle options={['en', 'fr']} />
+            <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
           </div>
           <nav
             className={clsx(
               'flex max-h-0 w-full flex-col overflow-hidden transition-[max-height] duration-300 md:max-h-fit md:w-auto md:flex-row md:items-center md:space-x-6',
               {
-                'max-h-24': isMobileNavOpen
+                'max-h-40': isMobileNavOpen
               }
             )}
           >
@@ -61,6 +64,15 @@ export const LandingHeader = () => {
               to="/auth/create-account"
             >
               {t('createAccount')}
+            </Link>
+            <Link
+              className={clsx(
+                'block p-3 font-medium',
+                i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
+              )}
+              to="/public/datasets"
+            >
+              {t('viewPublicDatasets')}
             </Link>
           </nav>
         </div>

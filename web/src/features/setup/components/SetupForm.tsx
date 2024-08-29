@@ -1,85 +1,76 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import type { SetupOptions } from '@databank/types';
-import { Form } from '@douglasneuroinformatics/ui';
+import React from 'react';
+
+import type { SetupDto } from '@databank/types';
+import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from 'react-i18next';
-import type { MergeDeep } from 'type-fest';
 import { z } from 'zod';
 
-type SetupData = MergeDeep<
-  SetupOptions['admin'],
-  {
-    verificationRegex?: string;
-    verificationType: SetupOptions['setupConfig']['verificationInfo']['kind'];
-  }
->;
-
 type SetupFormProps = {
-  onSubmit: (data: SetupOptions) => void;
+  onSubmit: (data: SetupDto) => void;
 };
 
-// Matches string with 8 or more characters, minimum one upper case, lowercase, and number
-const isStrongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-
 export const SetupForm = ({ onSubmit }: SetupFormProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
-    <Form<SetupData>
+    <Form
       content={[
         {
-          description: t('setup.admin.description'),
+          description: t('setupAdminDescription'),
           fields: {
             email: {
-              kind: 'text',
+              kind: 'string',
               label: t('email'),
-              variant: 'short'
+              variant: 'input'
             },
             firstName: {
-              kind: 'text',
+              kind: 'string',
               label: t('firstName'),
-              variant: 'short'
+              variant: 'input'
             },
             lastName: {
-              kind: 'text',
+              kind: 'string',
               label: t('lastName'),
-              variant: 'short'
+              variant: 'input'
             },
             password: {
-              kind: 'text',
+              kind: 'string',
               label: t('password'),
               variant: 'password'
             }
           },
-          title: t('setup.admin.title')
+          title: t('setupAdminTitle')
         },
         {
-          description: 'Admin selects the method for user verification',
+          description: t('verificationSectionDescription'),
           fields: {
             verificationType: {
-              kind: 'options',
-              label: 'Verification Method',
+              kind: 'string',
+              variant: 'select',
+              label: t('verificationMethods'),
               options: {
-                MANUAL_VERIFICATION: 'Manually verify users by the admin',
-                VERIFICATION_UPON_CONFIRM_EMAIL: 'Automatically verify users when they confirm their emails',
-                VERIFICATION_WITH_REGEX: 'Verify users by matching their emails with a predefined regex'
+                MANUAL: t('manualVerification'),
+                CONFIRM_EMAIL: t('verifyWhenConfirmEmail'),
+                REGEX_EMAIL: t('verifyWithEmailRegex')
               }
             },
             verificationRegex: {
               deps: ['verificationType'],
               kind: 'dynamic',
               render: (data) => {
-                if (data?.verificationType === 'VERIFICATION_WITH_REGEX') {
+                if (data?.verificationType === 'REGEX_EMAIL') {
                   return {
-                    kind: 'text',
-                    label: 'Regular expression',
-                    variant: 'short'
+                    kind: 'string',
+                    label: t('regularExpression'),
+                    variant: 'input'
                   };
                 }
                 return null;
               }
             }
           },
-          title: 'User Verification Options'
+          title: t('verificationSectionTitle')
         }
       ]}
       submitBtnLabel={t('submit')}
@@ -87,9 +78,9 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
         email: z.string().regex(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/),
         firstName: z.string().min(1),
         lastName: z.string().min(1),
-        password: z.string().regex(isStrongPassword),
+        password: z.string().min(1),
         verificationRegex: z.string().optional(),
-        verificationType: z.enum(['VERIFICATION_WITH_REGEX', 'VERIFICATION_UPON_CONFIRM_EMAIL', 'MANUAL_VERIFICATION'])
+        verificationType: z.enum(['REGEX_EMAIL', 'CONFIRM_EMAIL', 'MANUAL'])
       })}
       onSubmit={(data) => {
         if (data.verificationRegex) {
@@ -101,16 +92,13 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               password: data.password
             },
             setupConfig: {
-              verificationInfo: {
-                kind: data.verificationType,
+              userVerification: {
+                kind: 'REGEX_EMAIL',
                 regex: data.verificationRegex
               }
             }
           });
-        } else if (
-          data.verificationType === 'MANUAL_VERIFICATION' ||
-          data.verificationType === 'VERIFICATION_UPON_CONFIRM_EMAIL'
-        ) {
+        } else if (data.verificationType === 'MANUAL' || data.verificationType === 'CONFIRM_EMAIL') {
           onSubmit({
             admin: {
               email: data.email,
@@ -119,7 +107,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               password: data.password
             },
             setupConfig: {
-              verificationInfo: {
+              userVerification: {
                 kind: data.verificationType
               }
             }

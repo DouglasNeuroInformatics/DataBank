@@ -1,16 +1,19 @@
-import { LoggerMiddleware } from '@douglasneuroinformatics/nestjs/core';
-import { CryptoModule, DatabaseModule } from '@douglasneuroinformatics/nestjs/modules';
+import { CryptoModule, LoggingModule } from '@douglasneuroinformatics/libnest/modules';
 import { type MiddlewareConsumer, Module, type NestModule, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-import { AuthModule } from './auth/auth.module';
-import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware';
-import { DatasetsModule } from './datasets/datasets.module';
-import { I18nModule } from './i18n/i18n.module';
-import { SetupModule } from './setup/setup.module';
-import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module.js';
+import { ColumnsModule } from './columns/columns.module.js';
+import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware.js';
+import { DatasetsModule } from './datasets/datasets.module.js';
+import { I18nModule } from './i18n/i18n.module.js';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { ProjectsModule } from './projects/projects.module';
+import { SetupModule } from './setup/setup.module.js';
+import { TabularDataModule } from './tabular-data/tabular-data.module';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [
@@ -25,18 +28,11 @@ import { UsersModule } from './users/users.module';
         secretKey: configService.getOrThrow('SECRET_KEY')
       })
     }),
-    DatabaseModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        const env = configService.getOrThrow<string>('NODE_ENV');
-        return {
-          dbName: `databank-${env}`,
-          mongoUri: configService.getOrThrow<string>('MONGO_URI')
-        };
-      }
-    }),
     DatasetsModule,
     I18nModule,
+    LoggingModule.forRoot({
+      debug: true
+    }),
     SetupModule,
     ThrottlerModule.forRoot([
       {
@@ -44,7 +40,11 @@ import { UsersModule } from './users/users.module';
         ttl: 60000
       }
     ]),
-    UsersModule
+    UsersModule,
+    PrismaModule.forRoot(),
+    ProjectsModule,
+    ColumnsModule,
+    TabularDataModule
   ],
   providers: [
     {
@@ -59,6 +59,6 @@ import { UsersModule } from './users/users.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AcceptLanguageMiddleware, LoggerMiddleware).forRoutes('*');
+    consumer.apply(AcceptLanguageMiddleware).forRoutes('*');
   }
 }

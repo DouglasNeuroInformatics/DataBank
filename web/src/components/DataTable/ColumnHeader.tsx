@@ -13,7 +13,7 @@ export type ColumnHeaderProps = {
 };
 
 export const ColumnHeader = (props: ColumnHeaderProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <Menu as="div" className="relative">
       <Menu.Button

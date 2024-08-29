@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import React from 'react';
 
 import type { DatasetEntry, TDataset } from '@databank/types';
 import type { NullableFormDataType } from '@douglasneuroinformatics/form-types';
@@ -19,7 +20,7 @@ export type DatasetFormProps = {
 };
 
 export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const initialValues: NullableFormDataType<DatasetFormData> = useMemo(() => {
     return {
@@ -42,17 +43,17 @@ export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => 
           fieldset: {
             description: {
               kind: 'text',
-              label: t('description'),
+              label: t('columnDescription'),
               variant: 'long'
             },
             name: {
               kind: 'text',
-              label: t('name'),
+              label: t('columnName'),
               variant: 'short'
             },
             nullable: {
               kind: 'binary',
-              label: t('nullable'),
+              label: t('columnNullable'),
               options: {
                 f: t('no'),
                 t: t('yes')
@@ -74,12 +75,12 @@ export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => 
         },
         description: {
           kind: 'text',
-          label: t('description'),
+          label: t('datasetDescription'),
           variant: 'long'
         },
         license: {
           kind: 'options',
-          label: t('license'),
+          label: t('datasetLicense'),
           options: {
             OTHER: t('other'),
             PUBLIC_DOMAIN: t('publicDomain')
@@ -87,7 +88,7 @@ export const DatasetForm = ({ inferredColumns, onSubmit }: DatasetFormProps) => 
         },
         name: {
           kind: 'text',
-          label: t('name'),
+          label: t('datasetName'),
           variant: 'short'
         }
       }}

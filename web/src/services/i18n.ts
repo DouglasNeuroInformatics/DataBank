@@ -1,27 +1,10 @@
-import type { Locale } from '@databank/types';
-import { i18n as i18nLib } from '@douglasneuroinformatics/ui';
-import i18n from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import Backend from 'i18next-http-backend';
-import { initReactI18next } from 'react-i18next';
+import { i18n } from '@douglasneuroinformatics/libui/i18n';
 
-void i18n
-  .use(Backend)
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    debug: false,
-    defaultNS: 'translation',
-    fallbackLng: 'en' satisfies Locale,
-    interpolation: {
-      escapeValue: false
-    },
-    returnObjects: true,
-    supportedLngs: ['en', 'fr'] satisfies Locale[]
-  });
+import common from '../translations/common.json';
 
-i18n.on('languageChanged', (lang) => {
-  i18nLib.changeLanguage(lang).catch(console.error);
-});
+i18n.setDefaultNamespace('common');
+i18n.addPreInitTranslations({ common });
+
+await i18n.init();
 
 export default i18n;

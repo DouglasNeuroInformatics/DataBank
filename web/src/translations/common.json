@@ -1,0 +1,514 @@
+{
+  "platformName": {
+    "en": "Open Data Bank",
+    "fr": "Banque de données ouverte"
+  },
+  "platformDescription": {
+    "en": "Welcome to Open Data Bank, your gateway to a vast repository of clinical research data! Designed specifically for clinical research scientists, Open Data Bank revolutionizes the way data is shared and accessed in the pursuit of medical breakthroughs. Our platform offers a seamless and secure environment for researchers to upload, store, and share their datasets with colleagues and collaborators worldwide. With cutting-edge technology and robust privacy controls, researchers can confidently contribute their valuable data while maintaining control over access permissions. Open Data Bank isn't just a storage solution; it's a collaborative hub where scientists can discover, analyze, and build upon each other's work. Whether you're investigating new treatments, studying disease patterns, or conducting epidemiological research, our platform provides the tools and resources you need to accelerate your discoveries. Join the global community of researchers who are accelerating scientific progress through open data sharing. Experience the power of collaboration with Open Data Bank today.",
+    "fr": "Bienvenue dans Open Data Bank, votre passerelle vers un vaste référentiel de données de recherche clinique ! Conçue spécifiquement pour les scientifiques en recherche clinique, Open Data Bank révolutionne la manière dont les données sont partagées et accessibles dans le cadre de percées médicales. Notre plateforme offre un environnement transparent et sécurisé permettant aux chercheurs de télécharger, stocker et partager leurs ensembles de données avec des collègues et collaborateurs du monde entier. Grâce à une technologie de pointe et à des contrôles de confidentialité robustes, les chercheurs peuvent partager en toute confiance leurs précieuses données tout en gardant le contrôle des autorisations d'accès. Open Data Bank n'est pas seulement une solution de stockage ; c'est un centre de collaboration où les scientifiques peuvent découvrir, analyser et s'appuyer sur les travaux de chacun. Que vous recherchiez de nouveaux traitements, étudiiez des modèles de maladies ou meniez des recherches épidémiologiques, notre plateforme fournit les outils et les ressources dont vous avez besoin pour accélérer vos découvertes. Rejoignez la communauté mondiale des chercheurs qui accélèrent le progrès scientifique grâce au partage de données ouvertes. Découvrez dès aujourd’hui la puissance de la collaboration avec Open Data Bank."
+  },
+  "getStarted": {
+    "en": "Get started",
+    "fr": "Commencer"
+  },
+  "learnMore": {
+    "en": "Learn more",
+    "fr": "En savoir plus"
+  },
+  "viewDatasets": {
+    "en": "View Datasets",
+    "fr": "Voir les ensembles de données"
+  },
+  "home": {
+    "en": "Home Page",
+    "fr": "page d'accueil"
+  },
+  "login": {
+    "en": "Login",
+    "fr": "Connexion"
+  },
+  "manageDataset": {
+    "en": "Manage Dataset",
+    "fr": "Gérer l'ensemble de données"
+  },
+  "selectDataset": {
+    "en": "Select Dataset",
+    "fr": "Sélectionner l'ensemble de données"
+  },
+  "viewDataset": {
+    "en": "View Dataset",
+    "fr": "Voir l'ensemble de données"
+  },
+  "manageDatasetManagers": {
+    "en": "Manage Dataset Managers",
+    "fr": "Gérer les gestionnaires de jeux de données"
+  },
+  "newManagerEmail": {
+    "en": "New Manage Email: ",
+    "fr": "Nouvel e-mail du gestionnaire :"
+  },
+  "managerName": {
+    "en": "Manager Name: ",
+    "fr": "Nom du gestionnaire :"
+  },
+  "managerEmail": {
+    "en": "Manager Email: ",
+    "fr": "E-mail du gestionnaire :"
+  },
+  "delete": {
+    "en": "Delete",
+    "fr": "Supprimer"
+  },
+  "publicDatasets": {
+    "en": "Public Datasets",
+    "fr": "Ensembles de données publics"
+  },
+  "createAccount": {
+    "en": "Create Account",
+    "fr": "Créer un compte"
+  },
+  "viewPublicDatasets": {
+    "en": "View Public Datasets",
+    "fr": "afficher les ensembles de données publics"
+  },
+  "verifyAccount": {
+    "en": "Verify Account",
+    "fr": "Vérifier le compte"
+  },
+  "verificationMethods": {
+    "en": "Verification Methods",
+    "fr": "Méthodes de vérification"
+  },
+  "manualVerification": {
+    "en": "Manual Verification",
+    "fr": "Vérification manuelle"
+  },
+  "verifyWhenConfirmEmail": {
+    "en": "Verify When Confirming Email",
+    "fr": "Vérifier lors de la confirmation de l'email"
+  },
+  "verifyWithEmailRegex": {
+    "en": "Verify With Email Regex",
+    "fr": "Vérifier avec Regex de l'email"
+  },
+  "verificationSectionTitle": {
+    "en": "User Verification Options",
+    "fr": "Options de vérification de l'utilisateur"
+  },
+  "verificationSectionDescription": {
+    "en": "Admin selects the method for user verification",
+    "fr": "L'administrateur sélectionne la méthode de vérification de l'utilisateur"
+  },
+  "regularExpression": {
+    "en": "Regular Expression",
+    "fr": "Expression Régulière"
+  },
+  "pleaseSignIn": {
+    "en": "Please sign in",
+    "fr": "Veuillez vous connecter"
+  },
+  "accountCreated": {
+    "en": "Account Created",
+    "fr": "Compte créé"
+  },
+  "invalidCodeFormat": {
+    "en": "Invalid code format",
+    "fr": "Format de code invalide"
+  },
+  "timeRemaining": {
+    "en": "Time Remaining",
+    "fr": "Temps restant"
+  },
+  "email": {
+    "en": "Email",
+    "fr": "Email"
+  },
+  "firstName": {
+    "en": "First Name",
+    "fr": "Prénom"
+  },
+  "lastName": {
+    "en": "Last Name",
+    "fr": "Nom de famille"
+  },
+  "password": {
+    "en": "Password",
+    "fr": "Mot de passe"
+  },
+  "submit": {
+    "en": "Submit",
+    "fr": "Soumettre"
+  },
+  "schemaValidationFailed": {
+    "en": "Schema Validation Failed",
+    "fr": "Échec de la validation du schéma"
+  },
+  "viewProjects": {
+    "en": "View Projects",
+    "fr": "voir les projets"
+  },
+  "projectName": {
+    "en": "Project Name",
+    "fr": "Nom du Projet"
+  },
+  "manageProjectUsers": {
+    "en": "Manage Project Users",
+    "fr": "Gérer les utilisateurs du projet"
+  },
+  "projectDescription": {
+    "en": "Project Description",
+    "fr": "Description du Projet"
+  },
+  "projectExternalId": {
+    "en": "Project External ID",
+    "fr": "ID Externe du Projet"
+  },
+  "projectExpiry": {
+    "en": "Project Expiry",
+    "fr": "Expiration du Projet"
+  },
+  "projectDatasets": {
+    "en": "Project Datasets",
+    "fr": "Ensembles de données du projet"
+  },
+  "projectDataset": {
+    "en": "Project Dataset",
+    "fr": "Ensemble de données du projet"
+  },
+  "viewProjectDataset": {
+    "en": "View Project Dataset",
+    "fr": "Ensemble de données du projet"
+  },
+  "manageProjectDataset": {
+    "en": "Manage Project Dataset",
+    "fr": "Ensemble de données du projet"
+  },
+  "datasetsAvailableToAdd": {
+    "en": "Datasets Available To Add",
+    "fr": "Ensembles de données disponibles pour l'ajout"
+  },
+  "userFirstName": {
+    "en": "User First Name: ",
+    "fr": "Prénom de l'utilisateur : "
+  },
+  "userLastName": {
+    "en": "User Last Name: ",
+    "fr": "Nom de l'utilisateur : "
+  },
+  "userEmail": {
+    "en": "User Email: ",
+    "fr": "Email de l'utilisateur : "
+  },
+  "paginationPrevious": {
+    "en": "Previous",
+    "fr": "Précédente"
+  },
+  "paginationNext": {
+    "en": "Next",
+    "fr": "Suivante"
+  },
+  "datasetName": {
+    "en": "Dataset Name",
+    "fr": "Nom de l'ensemble de données"
+  },
+  "datasetDescription": {
+    "en": "Dataset Description",
+    "fr": "Description de l'ensemble de données"
+  },
+  "datasetLicense": {
+    "en": "Dataset License",
+    "fr": "Licence de l'ensemble de données"
+  },
+  "publicDomain": {
+    "en": "Public Domain",
+    "fr": "Domaine public"
+  },
+  "other": {
+    "en": "Other",
+    "fr": "Autre"
+  },
+  "datasetNullable": {
+    "en": "Dataset Nullable",
+    "fr": "Ensemble de données nullable"
+  },
+  "yes": {
+    "en": "Yes",
+    "fr": "Oui"
+  },
+  "no": {
+    "en": "No",
+    "fr": "Non"
+  },
+  "back": {
+    "en": "Back",
+    "fr": "Retourner"
+  },
+  "confirm": {
+    "en": "Confirm",
+    "fr": "Confirmer"
+  },
+  "confirmCreateBaseDataset": {
+    "en": "Please confirm that you want to create a BASE dataset without any files",
+    "fr": "Veuillez confirmer que vous souhaitez créer un ensemble de données BASE sans aucun fichier."
+  },
+  "datasets": {
+    "en": "Datasets",
+    "fr": "ensembles de données"
+  },
+  "datasetType": {
+    "en": "Dataset Type",
+    "fr": "Type d'ensemble de données"
+  },
+  "primaryKeys": {
+    "en": "Primary keys (use , as the delimiter)",
+    "fr": "Clés primaires (utilisez , comme délimiteur)"
+  },
+  "createDatasetSuccess": {
+    "en": "successfully created dataset",
+    "fr": "ensemble de données créé avec succès"
+  },
+  "unexpectedValue": {
+    "en": "Unexpected Value",
+    "fr": "Valeur inattendue"
+  },
+  "unexpectedError": {
+    "en": "Unexpected Error",
+    "fr": "Erreur inattendue"
+  },
+  "maxFileSizeError": {
+    "en": "Max File Size Error",
+    "fr": "Erreur de taille de fichier maximale"
+  },
+  "fileParseError": {
+    "en": "File Parse Error",
+    "fr": "Erreur d'analyse de fichier"
+  },
+  "invalidEmptyColumnError": {
+    "en": "Invalid Empty Column Error",
+    "fr": "Erreur de colonne vide invalide"
+  },
+  "invalidColumnNameError": {
+    "en": "Invalid Column Name Error",
+    "fr": "Erreur de nom de colonne invalide"
+  },
+  "reset": {
+    "en": "Reset",
+    "fr": "Réinitialiser"
+  },
+  "columnDescription": {
+    "en": "Column Description",
+    "fr": "Description de la colonne"
+  },
+  "columnName": {
+    "en": "Column Name",
+    "fr": "Nom de la colonne"
+  },
+  "columnNullable": {
+    "en": "Column Nullable",
+    "fr": "Colonne nullable"
+  },
+  "dataType": {
+    "en": "Data Type",
+    "fr": "Type de données"
+  },
+  "float": {
+    "en": "Float",
+    "fr": "Nombre flottant"
+  },
+  "integer": {
+    "en": "Integer",
+    "fr": "Entier"
+  },
+  "string": {
+    "en": "String",
+    "fr": "Chaîne de caractères"
+  },
+  "column": {
+    "en": "Column",
+    "fr": "Colonne"
+  },
+  "releaseToUpload": {
+    "en": "Release to Upload",
+    "fr": "Relâchez pour télécharger"
+  },
+  "dropHere": {
+    "en": "Drop Here",
+    "fr": "Déposez ici"
+  },
+  "invalidFileError": {
+    "en": "Invalid File Error",
+    "fr": "Erreur de fichier invalide"
+  },
+  "timeUnit.year": {
+    "en": "Year",
+    "fr": "Année"
+  },
+  "timeUnit.month": {
+    "en": "Month",
+    "fr": "Mois"
+  },
+  "timeUnit.day": {
+    "en": "Day",
+    "fr": "Jour"
+  },
+  "timeUnit.hour": {
+    "en": "Hour",
+    "fr": "Heure"
+  },
+  "timeUnit.minute": {
+    "en": "Minute",
+    "fr": "Minute"
+  },
+  "timeUnit.second": {
+    "en": "Second",
+    "fr": "Seconde"
+  },
+  "dashboard": {
+    "en": "Dashboard",
+    "fr": "Tableau de bord"
+  },
+  "recentActivity": {
+    "en": "Recent Activity",
+    "fr": "Activité récente"
+  },
+  "addRows": {
+    "en": "Add Rows",
+    "fr": "Ajouter des lignes"
+  },
+  "download": {
+    "en": "Download",
+    "fr": "Télécharger"
+  },
+  "deleteDataset": {
+    "en": "Delete Dataset",
+    "fr": "Supprimer l'ensemble de données"
+  },
+  "addManager": {
+    "en": "Add Manager",
+    "fr": "Ajouter un gestionnaire"
+  },
+  "removeManager": {
+    "en": "Remove Manager",
+    "fr": "Supprimer un gestionnaire"
+  },
+  "editDatasetInfo": {
+    "en": "Edit Dataset Information",
+    "fr": "Modifier les informations du jeu de données"
+  },
+  "setDatasetSharable": {
+    "en": "Set Dataset Sharable",
+    "fr": "Rendre le jeu de données partageable"
+  },
+  "downloadDataset": {
+    "en": "Download Dataset",
+    "fr": "Télécharger le jeu de données"
+  },
+  "downloadTsv": {
+    "en": "Download TSV",
+    "fr": "Télécharger TSV"
+  },
+  "downloadCsv": {
+    "en": "Download CSV",
+    "fr": "Télécharger CSV"
+  },
+  "downloadMetadata": {
+    "en": "Download Metadata",
+    "fr": "Télécharger les métadonnées"
+  },
+  "createdAt": {
+    "en": "Created At",
+    "fr": "Créé le"
+  },
+  "updatedAt": {
+    "en": "Updated At",
+    "fr": "Mis à jour le"
+  },
+  "datasetPrimaryKeys": {
+    "en": "Primary keys",
+    "fr": "Clés primaires"
+  },
+  "setColumnPermission": {
+    "en": "Set Data Permission",
+    "fr": "Définir le permission des données"
+  },
+  "setColumnMetadataPermission": {
+    "en": "Set Metadata Permission",
+    "fr": "Définir le permission des métadonnées"
+  },
+  "toggleColumnNullable": {
+    "en": "Toggle Nullable",
+    "fr": "Activer/désactiver la nullité"
+  },
+  "changeColumnType": {
+    "en": "Change Data Type",
+    "fr": "Changer le type de données"
+  },
+  "deleteColumn": {
+    "en": "Delete Column",
+    "fr": "Supprimer la colonne"
+  },
+  "columnPagination": {
+    "en": "Column Page",
+    "fr": "Page de colonne"
+  },
+  "rowPagination": {
+    "en": "Row Page",
+    "fr": "Page de rangée"
+  },
+  "columnsPerPage": {
+    "en": "Columns Per Page",
+    "fr": "Colonnes par page"
+  },
+  "rowsPerPage": {
+    "en": "Rows Per Page",
+    "fr": "Lignes par page"
+  },
+  "more": {
+    "en": "More",
+    "fr": "Plus"
+  },
+  "manageDatasets": {
+    "en": "Manage Datasets",
+    "fr": "Gérer les ensembles de données"
+  },
+  "noResultsFound": {
+    "en": "No Results Found",
+    "fr": "Aucun résultat trouvé"
+  },
+  "projects": {
+    "en": "Projects",
+    "fr": "Projets"
+  },
+  "addUser": {
+    "en": "Add User",
+    "fr": "Ajouter un utilisateur"
+  },
+  "removeUser": {
+    "en": "Remove User",
+    "fr": "Supprimer un utilisateur"
+  },
+  "deleteProject": {
+    "en": "Delete Project",
+    "fr": "Supprimer le projet"
+  },
+  "setupAdminDescription": {
+    "en": "Setup Admin Description",
+    "fr": "Description de configuration administrateur"
+  },
+  "setupAdminTitle": {
+    "en": "Setup Admin Title",
+    "fr": "Titre de configuration administrateur"
+  },
+  "setupPageTitle": {
+    "en": "Setup Page Title",
+    "fr": "Titre de la page de configuration"
+  },
+  "logout": {
+    "en": "Logout",
+    "fr": "Se déconnecter"
+  },
+  "preferences": {
+    "en": "Preferences",
+    "fr": "Préférences"
+  }
+}

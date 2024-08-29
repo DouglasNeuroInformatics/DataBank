@@ -1,0 +1,281 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  // url      = env("DATABASE_URL")
+  url      = "mongodb://localhost:27017/databank-dev-mongo-1"
+}
+
+// ---------------- Auth ----------------
+type ConfirmEmailInfo {
+  expiryAt         DateTime
+  attemptsMade     Int      @default(0)
+  confirmEmailCode Int
+}
+
+// ---------------- User ----------------
+model User {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  email String @unique()
+
+  firstName String
+
+  lastName String
+
+  hashedPassword String
+
+  role UserRole @default(STANDARD)
+
+  createdAt DateTime @default(now()) @db.Date
+
+  confirmEmailInfo ConfirmEmailInfo?
+
+  // /** The timestamp when the user confirmed their email */
+  confirmedAt DateTime?
+
+  verifiedAt DateTime?
+  dataset    Dataset[] @relation(fields: [datasetId], references: [id])
+  datasetId  String[]  @db.ObjectId
+}
+
+enum UserRole {
+  ADMIN
+  STANDARD
+}
+
+// ---------------- Dataset ----------------
+model Dataset {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  description    String?
+  createdAt      DateTime        @default(now()) @db.Date
+  updatedAt      DateTime        @default(now()) @updatedAt @db.Date
+  license        DatasetLicense  @default(PUBLIC)
+  managers       User[]          @relation(fields: [managerIds], references: [id])
+  managerIds     String[]        @db.ObjectId
+  datasetType    DatasetType
+  permission     PermissionLevel
+  isReadyToShare Boolean
+  tabularData    TabularData?
+  // binaryData       BinaryData?
+}
+
+enum DatasetLicense {
+  PUBLIC
+  OTHER
+}
+
+enum DatasetType {
+  BASE
+  TABULAR
+  BINARY
+}
+
+// type BinaryData {
+//   // to-do
+// }
+
+// Tabular dataset
+model TabularData {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  // should be keys in the data object
+  primaryKeys String[]
+  columns     TabularColumn[]
+  dataset     Dataset         @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  datasetId   String          @unique @db.ObjectId
+}
+
+model TabularColumn {
+  id                       String                    @id @default(auto()) @map("_id") @db.ObjectId
+  name                     String
+  description              String?
+  kind                     ColumnType
+  nullable                 Boolean
+  summaryPermission        PermissionLevel
+  summary                  ColumnSummary
+  dataPermission           PermissionLevel
+  tabularData              TabularData               @relation(fields: [tabularDataId], references: [id], onDelete: Cascade)
+  tabularDataId            String                    @db.ObjectId()
+  // store the actual data in a pl.series(array) depending on the type of the column
+  stringData               StringEntry[]
+  intData                  IntEntry[]
+  floatData                FloatEntry[]
+  enumData                 StringEntry[]
+  datetimeData             DateTimeEntry[]
+  booleanData              BooleanEntry[]
+  // column validation
+  stringColumnValidation   StringColumnValidation?
+  numericColumnValidation  NumericColumnValidation?
+  enumColumnValidation     EnumColumnValidation?
+  datetimeColumnValidation DatetimeColumnValidation?
+}
+
+type StringEntry {
+  value String?
+}
+
+type IntEntry {
+  value Int?
+}
+
+type FloatEntry {
+  value Float?
+}
+
+type EnumEntry {
+  value String?
+}
+
+type DateTimeEntry {
+  value DateTime?
+}
+
+type BooleanEntry {
+  value Boolean?
+}
+
+enum ColumnType {
+  BOOLEAN
+  STRING
+  INT
+  FLOAT
+  ENUM
+  DATETIME
+}
+
+enum PermissionLevel {
+  PUBLIC
+  LOGIN
+  VERIFIED
+  MANAGER
+}
+
+// column summary
+type ColumnSummary {
+  count           Int
+  nullCount       Int
+  intSummary      IntColumnSummary?
+  floatSummary    FloatColumnSummary?
+  enumSummary     EnumColumnSummary?
+  datetimeSummary DateTimeColumnSummary?
+}
+
+type IntColumnSummary {
+  max    Int
+  min    Int
+  mean   Float
+  median Float
+  mode   Int
+  std    Float
+}
+
+type FloatColumnSummary {
+  max    Float
+  min    Float
+  mean   Float
+  median Float
+  std    Float
+}
+
+type EnumColumnSummary {
+  distribution Json
+}
+
+type DateTimeColumnSummary {
+  max DateTime
+  min DateTime
+}
+
+// column validation
+type StringColumnValidation {
+  minLength Int?
+  maxLength Int?
+  regex     String?
+}
+
+type NumericColumnValidation {
+  min Float?
+  max Float?
+}
+
+type EnumColumnValidation {
+  allowedValues String[]
+}
+
+type DatetimeColumnValidation {
+  min DateTime?
+  max DateTime?
+}
+
+// ---------------- Setup ----------------
+model Setup {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime    @default(now()) @db.Date
+  updatedAt   DateTime    @default(now()) @updatedAt @db.Date
+  setupConfig SetupConfig
+}
+
+type SetupConfig {
+  userVerification UserVerification
+}
+
+type UserVerification {
+  kind       VerificationMethod
+  emailRegex String?
+}
+
+enum VerificationMethod {
+  MANUAL
+  CONFIRM_EMAIL
+  REGEX_EMAIL
+}
+
+// ---------------- Project ----------------
+model Project {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+  externalId  String?
+  name        String
+  description String?
+  userIds     String[]
+  createdAt   DateTime         @default(now()) @db.Date
+  updatedAt   DateTime         @default(now()) @updatedAt @db.Date
+  expiry      DateTime
+  // Each project dataset should contain filters on columns 
+  datasets    ProjectDataset[]
+}
+
+type ProjectDataset {
+  useRowFilter      Boolean
+  useDataTypeFilter Boolean
+  rowFilter         ProjectRowFilter?
+  dataTypeFilters   ColumnType[]
+  datasetId         String
+  columns           ProjectColumn[]
+}
+
+type ProjectRowFilter {
+  rowMin Int?
+  rowMax Int?
+}
+
+type ProjectColumn {
+  columnId String
+  hash     ProjectColumnHash?
+  trim     ProjectColumnTrim?
+}
+
+type ProjectColumnHash {
+  salt   String
+  length Int?
+}
+
+type ProjectColumnTrim {
+  start Int?
+  end   Int?
+}

@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import url from 'node:url';
 
 import type { Locale } from '@databank/types';
 import { Injectable } from '@nestjs/common';
@@ -9,9 +8,6 @@ import type { MergeDeep } from 'type-fest';
 
 import type en from './translations/en.json';
 import type fr from './translations/fr.json';
-
-const __filename = url.fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 type Path<T extends object, K extends string = Extract<keyof T, string>> = K extends keyof T
   ? T[K] extends object
@@ -42,7 +38,7 @@ export class I18nService {
   }
 
   loadTranslations(locale: Locale) {
-    const filepath = path.resolve(__dirname, 'translations', `${locale}.json`);
+    const filepath = path.resolve(import.meta.dirname, 'translations', `${locale}.json`);
     return JSON.parse(fs.readFileSync(filepath, 'utf-8')) as Translations;
   }
 

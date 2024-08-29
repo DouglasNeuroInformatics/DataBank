@@ -1,0 +1,266 @@
+---
+title: Development
+slug: en/tutorials/development
+sidebar:
+  order: 0
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This tutorial describes the procedure to run Open Data Bank on your local system in development mode. For information on how to deploy Open Data Dank in production, please refer to our [deployment guide](/deployment/).
+
+### System Prerequisites
+
+This setup is designed for Unix-like operating systems and has been tested on MacOS and Linux. We do not support running Open Data Dank on Windows. For Windows users, we recommend using [WSL](https://learn.microsoft.com/en-us/windows/wsl/install).
+
+#### Required Packages
+
+<Tabs>
+
+<TabItem label="MacOS">
+  First, make sure that [homebrew](https://brew.sh/) is installed on your system. This will also ensure that the Xcode
+  Command Line Tools are available. Then, install the following packages:
+  
+  ```sh
+  brew install bash jq 
+  ```
+
+</TabItem>
+<TabItem label="Ubuntu">
+  Please ensure that the following packages are installed:
+
+```sh
+apt-get install build-essential jq
+```
+
+</TabItem>
+<TabItem label="Arch Linux">
+  Please ensure that the following packages are installed:
+
+```sh
+pacman -S base-devel curl git jq
+```
+
+</TabItem>
+
+</Tabs>
+
+### Git Setup
+
+We use Git for version control and host our source code on GitHub. Please fork [our repository](https://github.com/DouglasNeuroInformatics/DataDank) and clone your fork:
+
+```sh
+# Replace 'DouglasNeuroinformatics' with your GitHub username
+git clone https://github.com/DouglasNeuroInformatics/DataDank
+```
+
+Next, navigate to the root of the repository:
+
+```sh
+cd DataDank
+```
+
+### Configuration
+
+All of the required configuration is stored in the file `.env`, which can be generated from `.env.template` using the following script:
+
+```sh
+./scripts/generate-env.sh && source .env
+```
+
+### System Dependencies
+
+Now, in order to run the code, we need to install some additional system dependencies (i.e., a JavaScript runtime and database).
+
+#### Node.js
+
+We use [Node Version Manager](https://github.com/nvm-sh/nvm) (nvm) to manage the supported Node version. Please follow the installation instructions to install nvm on your system. Then, install the current Node version with the following command:
+
+```sh
+nvm install $(cat .nvmrc)
+```
+
+Once installed, enable the `pnpm` package manager:
+
+```sh
+corepack enable
+```
+
+:::note
+This is not the only way to manage Node versions. If you have another preferred method, feel free to use it. However, we strongly recommend against using a system installation of Node.
+:::
+
+#### MongoDB
+
+Now, you need to setup a [MongoDB](https://www.mongodb.com/docs/) instance. There are several ways you can do this. Please follow the guide for your prefered method:
+
+<Tabs>
+  <TabItem label="Docker (Recommended)">
+		First, make sure that Docker and Docker Compose are installed on your system (for installation instructions, please refer to the [official documentation](https://docs.docker.com/engine/install/)).
+    Then, launch the MongoDB container:
+
+    ```sh
+    docker compose -f docker-compose.dev.yaml up -d
+    ```
+
+    Once the container is running, we need to create a replication set, as is [required by Prisma](https://github.com/prisma/prisma/issues/8266). This can be done with the following command:
+
+    ```sh
+    docker compose -f docker-compose.dev.yaml exec mongo mongosh --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]});"
+    ```
+
+    </TabItem>
+
+  <TabItem label="System Install (MacOS)">
+
+:::caution
+These instructions assume you are using a Mac with Apple Silicon. For older, Intel-based Macs, make sure to adjust the paths as needed (e.g., homebrew is likely installed in `/usr/local` rather than in `/opt/homebrew`).
+:::
+
+    First, install MongoDB using Homebrew:
+
+    ```sh
+    brew tap mongodb/brew
+    brew update
+    brew install mongodb-community@7.0
+    ```
+
+    Then, open `/opt/homebrew/etc/mongod.conf` and make the following changes:
+
+    ```yaml
+    systemLog:
+      destination: file
+      path: /opt/homebrew/var/log/mongodb/mongo.log
+      logAppend: true
+    storage:
+      dbPath: /opt/homebrew/var/mongodb
+    net:
+      bindIp: 127.0.0.1, ::1
+      ipv6: true
+    replication:
+      replSetName: rs0
+    ```
+
+    Next, run MongoDB as a MacOS service:
+
+    ```sh
+    brew services start mongodb-community@7.0
+    ```
+
+    Finally, initiate the replication set:
+
+
+    ```sh
+    mongosh --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]});"
+    ```
+
+  </TabItem>
+</Tabs>
+
+### Runtime Dependencies
+
+Next, install runtime dependencies:
+
+```sh
+pnpm install
+```
+
+### Run Dev Server
+
+Now, you should be able to start the development server, which is configured with hot module replacement.
+
+```shell
+pnpm dev
+```
+
+Navigate to [http://localhost:3000](http://localhost:3000) and you should be greeted with a setup screen. Follow the instructions to create the first admin user and seed the database.
+
+### How to use the i18n object from @DouglasNeuroInformatics/libui
+
+1. In `vite.config.js`, we don't need to add the `translation()` plugin
+
+```typescript
+export default defineConfig(() => ({
+  plugins: [
+    react(),
+    importMetaEnv.vite({
+      example: path.resolve(import.meta.dirname, '.env.public')
+    })
+    // translation()              this line is removed
+  ]
+}));
+```
+
+2. In the application, `web` in this repo, in the `src/services/i18n.ts`, add the following code:
+
+```typescript
+import { i18n } from '@douglasneuroinformatics/libui/i18n';
+
+import common from '../translations/common.json';
+
+i18n.setDefaultNamespace('common');
+i18n.addPreInitTranslations({ common });
+
+await i18n.init();
+
+export default i18n;
+```
+
+- this code imports the i18n object from the `@DouglasNeuroInformatics/libui` library
+- import the json file with the translations and add the translations to the i18n object
+structure of the translations file
+
+  :
+
+```json
+{
+  "hello": {
+    "en": "Hello",
+    "fr": "Bonjour"
+  }
+}
+```
+
+3. In the application's folder, locate/create `typings/i18next.d.ts`
+
+```typescript
+import type { TranslatedResource } from '@douglasneuroinformatics/libui/i18n';
+
+import common from '../translations/common.json';
+
+import 'i18next';
+
+declare module 'i18next' {
+  // Extend CustomTypeOptions
+  interface CustomTypeOptions {
+    // custom namespace type, if you changed it
+    defaultNS: 'common';
+    // custom resources type
+    resources: {
+      common: TranslatedResource<typeof common>;
+    };
+    // other
+  }
+}
+```
+
+4. Finally, in a react component that uses the translation function `Hero.tsx` for example
+
+```typescript
+import {useTranslation} from 'react-i18next'
+
+const {t} = useTranslation('common'); // inside the useTranslation hook, use the name space defined above
+
+<h1> {t('hello')} </h1>
+```
+
+5. In `App.tsx`, `import './services/i18n.ts'`
+
+### How to update pnpm with corepack
+
+### How to update turbo with pnpm
+
+### How to access MongoDB shell in a docker container
+
+`docker exec -it <NAME_OF_DB> mongosh`
+See [MongoDB Cheetsheet](https://www.mongodb.com/developer/products/mongodb/cheat-sheet)

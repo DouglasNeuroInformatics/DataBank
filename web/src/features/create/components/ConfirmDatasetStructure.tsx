@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Button, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import { useTranslation } from 'react-i18next';
 import { match } from 'ts-pattern';
@@ -8,7 +10,7 @@ import { useValidationSchema } from '@/hooks/useValidationSchema';
 import { type DatasetFormData } from './DatasetForm';
 
 const DatasetStructureItem = (props: { label: string; value: string }) => {
-  const { i18n } = useTranslation();
+  const { i18n } = useTranslation('common');
   const separator = i18n.resolvedLanguage === 'fr' ? ' : ' : ': ';
   return (
     <div>
@@ -17,9 +19,9 @@ const DatasetStructureItem = (props: { label: string; value: string }) => {
   );
 };
 
-export type CreateDatasetData = DatasetFormData & {
-  data: Record<string, number | string>[];
-};
+export type CreateDatasetData = {
+  data: { [key: string]: number | string }[];
+} & DatasetFormData;
 
 export type ConfirmDatasetStructureProps = {
   dataset: CreateDatasetData;
@@ -28,7 +30,7 @@ export type ConfirmDatasetStructureProps = {
 
 export const ConfirmDatasetStructure = ({ dataset, onSubmit }: ConfirmDatasetStructureProps) => {
   const notifications = useNotificationsStore();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const validationSchema = useValidationSchema(dataset);
 
@@ -66,8 +68,8 @@ export const ConfirmDatasetStructure = ({ dataset, onSubmit }: ConfirmDatasetStr
         {dataset.columns.map((column) => (
           <div className="my-3 flex flex-col" key={column.name}>
             <h4 className="italic">{column.name}</h4>
-            <DatasetStructureItem label={t('description')} value={column.description} />
-            <DatasetStructureItem label={t('nullable')} value={column.nullable ? t('yes') : t('no')} />
+            <DatasetStructureItem label={t('datasetDescription')} value={column.description} />
+            <DatasetStructureItem label={t('datasetNullable')} value={column.nullable ? t('yes') : t('no')} />
           </div>
         ))}
       </div>

@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import React from 'react';
 
 import { type DatasetColumnType } from '@databank/types';
 import { Button, useNotificationsStore } from '@douglasneuroinformatics/ui';
@@ -9,6 +10,7 @@ import { P, match } from 'ts-pattern';
 import { type Simplify } from 'type-fest';
 import { ZodError, z } from 'zod';
 
+import { LoadingFallback } from '@/components';
 import { AnimatedCheckIcon } from '@/components/AnimatedCheckIcon';
 
 import { Dropzone } from './Dropzone';
@@ -68,7 +70,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
   // const [result, setResult] = useState<DropzoneResult | { isProcessing: boolean } | null>(null);
   const [result, setResult] = useState<DropzoneResult | null>(null);
   const notifications = useNotificationsStore();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   /** Function to validate the structure of the parsed data and infer types */
   const validate = useCallback(async (parsedData: unknown) => {
@@ -166,7 +168,7 @@ export const DatasetDropzone = ({ maxFileSize = 10485760, onSubmit }: DatasetDro
 
   const [element, key] = match(result)
     .with(P.nullish, () => [<Dropzone file={file} key="upload" setFile={setFile} />, 'upload'] as const)
-    // .with({ isProcessing: P.boolean }, () => [<SuspenseFallback key="loading" />, 'loading'] as const)
+    .with({ isProcessing: P.boolean }, () => [<LoadingFallback key="loading" />, 'loading'] as const)
     .with(
       { columns: P.any, data: P.any },
       (result) =>

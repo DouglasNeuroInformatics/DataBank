@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
+import React from 'react';
 
-import { FolderArrowDownIcon, FolderMinusIcon, FolderPlusIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { CircleStackIcon, ClipboardDocumentListIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 
@@ -9,8 +10,7 @@ import { MobileNavbar } from './MobileNavbar';
 import { type NavItem } from './types';
 
 export const Layout = () => {
-  const { i18n, t } = useTranslation();
-
+  const { i18n, t } = useTranslation('common');
   const navigation: NavItem[] = useMemo(
     () => [
       {
@@ -19,19 +19,14 @@ export const Layout = () => {
         label: t('dashboard')
       },
       {
-        href: '/portal/create',
-        icon: FolderPlusIcon,
-        label: t('createDataset')
+        href: '/portal/datasets',
+        icon: CircleStackIcon,
+        label: t('viewDatasets')
       },
       {
-        href: '/portal/manage',
-        icon: FolderMinusIcon,
-        label: t('manageDatasets')
-      },
-      {
-        href: '/portal/shared',
-        icon: FolderArrowDownIcon,
-        label: t('sharedDatasets')
+        href: '/portal/projects',
+        icon: ClipboardDocumentListIcon,
+        label: t('viewProjects')
       }
     ],
     [i18n.resolvedLanguage]
@@ -39,8 +34,8 @@ export const Layout = () => {
 
   return (
     <div className="flex h-screen flex-col lg:flex-row">
-      <DesktopSidebar navigation={navigation} />
-      <MobileNavbar navigation={navigation} />
+      <DesktopSidebar isLogIn={true} navigation={navigation} />
+      <MobileNavbar isLogIn={true} navigation={navigation} />
       <main className="h-full w-full flex-1 overflow-hidden">
         <div className="mx-auto h-full w-full max-w-screen-2xl overflow-auto px-3 pb-3 sm:px-6 md:px-12 xl:px-24">
           <Outlet />

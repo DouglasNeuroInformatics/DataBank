@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React from 'react';
 
-import type { TDataset } from '@databank/types';
 import { Button, Modal, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ export const DataTable = <T extends TDataset>({ dataset, revalidate }: { dataset
   const [columnWidth, setColumnWidth] = useState<number>();
   const [columnToDelete, setColumnToDelete] = useState<null | string>(null);
   const [columnToEdit, setColumnToEdit] = useState<null | string>(null);
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const deleteColumn = (columnName: string) => {
     axios

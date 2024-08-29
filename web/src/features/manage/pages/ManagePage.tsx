@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 
-import type { DatasetInfo } from '@databank/types';
 import { SearchBar } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { SuspenseFallback } from '@/components';
+import { LoadingFallback } from '@/components';
 import { DatasetCard } from '@/components/DatasetCard';
 import { Heading } from '@/components/Heading';
 import { useAuthStore } from '@/stores/auth-store';
@@ -14,7 +14,7 @@ import { useAuthStore } from '@/stores/auth-store';
 export const ManagePage = () => {
   const auth = useAuthStore();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const [availableDatasets, setAvailableDatasets] = useState<DatasetInfo[]>();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -47,7 +47,7 @@ export const ManagePage = () => {
       />
       <div className="overflow-hidden">
         {filteredDatasets === null ? (
-          <SuspenseFallback />
+          <LoadingFallback />
         ) : filteredDatasets.length === 0 ? (
           <div>
             <p>{t('noResultsFound')}</p>

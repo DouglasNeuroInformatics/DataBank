@@ -1,4 +1,6 @@
-import { Button } from '@douglasneuroinformatics/ui';
+import React from 'react';
+
+import { Button } from '@douglasneuroinformatics/libui/components';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +9,7 @@ import { HeroIcon } from './HeroIcon';
 
 export const Hero = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   return (
     <section className="flex gap-5 text-center xl:text-left">
       <motion.div
@@ -30,7 +32,14 @@ export const Hero = () => {
               navigate('/auth/create-account');
             }}
           />
-          <Button label={t('learnMore')} type="button" variant="secondary" />
+          <Button
+            label={t('learnMore')}
+            type="button"
+            variant="secondary"
+            onClick={() => {
+              navigate('/auth/login');
+            }}
+          />
         </div>
       </motion.div>
       <motion.div

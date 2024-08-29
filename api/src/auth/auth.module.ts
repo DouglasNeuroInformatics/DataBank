@@ -8,9 +8,9 @@ import { MailModule } from '@/mail/mail.module';
 import { SetupModule } from '@/setup/setup.module';
 import { UsersModule } from '@/users/users.module';
 
-import { AuthController } from './auth.controller';
-import { AuthGuard } from './auth.guard';
-import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller.js';
+import { AuthGuard } from './auth.guard.js';
+import { AuthService } from './auth.service.js';
 
 @Module({
   controllers: [AuthController],
@@ -35,4 +35,4 @@ import { AuthService } from './auth.service';
     }
   ]
 })
-export class AuthModule {}
+export class AuthModule { }

@@ -1,9 +1,11 @@
+import React from 'react';
+
 import { Button, Dropdown, useNotificationsStore } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { SuspenseFallback } from '@/components';
+import { LoadingFallback } from '@/components';
 import { DataTable } from '@/components/DataTable';
 import { Heading } from '@/components/Heading';
 import { useDataset } from '@/hooks/useDataset';
@@ -13,7 +15,7 @@ export const ManageDatasetPage = () => {
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
   const { dataset, download, revalidate } = useDataset(params.id!);
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   return dataset ? (
     <div className="flex h-full w-full flex-col">
@@ -60,6 +62,6 @@ export const ManageDatasetPage = () => {
       </div>
     </div>
   ) : (
-    <SuspenseFallback />
+    <LoadingFallback />
   );
 };

@@ -15,7 +15,7 @@ import { DatasetForm, type DatasetFormData } from '../components/DatasetForm';
 
 export const CreateDatasetPage = () => {
   const notifications = useNotificationsStore();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const [state, setState] = useState<{
     formData?: DatasetFormData;
     status: 'CONFIRM' | 'FORM' | 'UPLOAD';
