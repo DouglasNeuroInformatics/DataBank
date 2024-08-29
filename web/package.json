@@ -1,12 +1,12 @@
 {
   "name": "@databank/web",
+  "type": "module",
   "version": "0.0.0",
   "private": true,
   "license": "AGPL-3.0",
-  "type": "module",
   "scripts": {
     "build": "tsc && cross-env NODE_ENV=production pnpm exec vite build",
-    "dev": "pnpm vite",
+    "dev": "env-cmd -f ../.env pnpm vite",
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src",
     "preview": "vite preview",

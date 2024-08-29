@@ -11,12 +11,12 @@ export const SetupProvider = ({ children }: { children: React.ReactNode }) => {
   const createSetupStateMutation = useCreateSetupState();
 
   useEffect(() => {
-    if (!setupStateQuery.data) {
+    if (setupStateQuery.data?.isSetup === false) {
       window.history.replaceState({}, '', '/setup');
     }
   }, [setupStateQuery.data]);
 
-  if (setupStateQuery.data?.isSetup) {
+  if (setupStateQuery.data?.isSetup !== false) {
     return children;
   } else if (createSetupStateMutation.isPending) {
     return <SetupLoadingPage subtitle="Setup Loading Subtitle" title="Setup Loading Title" />;

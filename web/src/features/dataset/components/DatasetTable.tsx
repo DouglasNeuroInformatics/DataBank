@@ -1,99 +1,69 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import React from 'react';
 
-import type { TabularDataset } from '@databank/types';
-import { ActionDropdown, Button } from '@douglasneuroinformatics/libui/components';
+import type { PermissionLevel, TabularDataset } from '@databank/types';
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
-import { HoverCard } from '@douglasneuroinformatics/libui/components';
 import { Table } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 
 export type DatasetTableProps = { isManager: boolean } & TabularDataset;
 
 const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const { t } = useTranslation('common');
-  const navigate = useNavigate();
   const notifications = useNotificationsStore();
+  const queryClient = useQueryClient();
 
-  const handleSetColumnMetadataPermissionLevel = (
-    columnId: string,
-    newPermissionLevel: 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED'
-  ) => {
-    axios
-      .patch(`/v1/columns/metadata-permission/${columnId}`, {
-        newPermissionLevel
-      })
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been modified`,
-          type: 'success'
-        });
-        navigate(0);
-      })
-      .catch(console.error);
+  const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
+    await axios.patch(`/v1/columns/metadata-permission/${columnId}`, {
+      newPermissionLevel
+    });
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been modified`,
+      type: 'success'
+    });
   };
 
-  const handleSetColumnDataPermissionLevel = (
-    columnId: string,
-    newPermissionLevel: 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED'
-  ) => {
-    axios
-      .patch(`/v1/columns/data-permission/${columnId}`, {
-        newPermissionLevel
-      })
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been modified`,
-          type: 'success'
-        });
-        navigate(0);
-      })
-      .catch(console.error);
+  const handleSetColumnDataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
+    await axios.patch(`/v1/columns/data-permission/${columnId}`, {
+      newPermissionLevel
+    });
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been modified`,
+      type: 'success'
+    });
   };
 
-  const handleToggleColumnNullable = (columnId: string) => {
-    axios
-      .patch(`/v1/columns/nullable/${columnId}`)
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been modified`,
-          type: 'success'
-        });
-        navigate(-1);
-      })
-      .catch(console.error);
+  const handleToggleColumnNullable = async (columnId: string) => {
+    await axios.patch(`/v1/columns/nullable/${columnId}`);
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been modified`,
+      type: 'success'
+    });
   };
 
-  const handleChangeColumnType = (columnId: string, type: string) => {
-    axios
-      .patch(`/v1/columns/type/${columnId}`, {
-        type
-      })
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been modified`,
-          type: 'success'
-        });
-        navigate(0);
-      })
-      .catch(console.error);
+  const handleChangeColumnType = async (columnId: string, type: string) => {
+    await axios.patch(`/v1/columns/type/${columnId}`, { type });
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been modified`,
+      type: 'success'
+    });
   };
 
-  const handleDeleteColumn = (columnId: string) => {
-    axios
-      .delete(`/v1/columns/${columnId}`)
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been deleted`,
-          type: 'success'
-        });
-        navigate(`/portal/datasets`);
-      })
-      .catch(console.error);
+  const handleDeleteColumn = async (columnId: string) => {
+    await axios.delete(`/v1/columns/${columnId}`);
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been deleted`,
+      type: 'success'
+    });
   };
 
   return (
@@ -104,103 +74,135 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
             {tabularDataset.columns.map((column, i) => (
               <Table.Head className="whitespace-nowrap text-foreground" key={i}>
                 <DropdownMenu>
-                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
+                  <DropdownMenu.Trigger
+                    className="flex items-center justify-between gap-3"
+                    disabled={!tabularDataset.isManager}
+                  >
                     <span>{column}</span>
                     <ChevronDownIcon />
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Content className="w-56">
                     <DropdownMenu.Label>{column}</DropdownMenu.Label>
-                    <DropdownMenu.Separator />
-                    <DropdownMenu.Group>
-                      {tabularDataset.isManager && (
-                        <>
-                          <DropdownMenu.Item>
-                            <ActionDropdown
-                              options={['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED']}
-                              title={t('setColumnPermission')}
-                              widthFull={true}
-                              onSelection={(options) =>
-                                handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, options)
-                              }
-                            />
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item>
-                            <ActionDropdown
-                              options={['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED']}
-                              title={t('setColumnMetadataPermission')}
-                              widthFull={true}
-                              onSelection={(options) =>
-                                handleSetColumnMetadataPermissionLevel(tabularDataset.columnIds[column]!, options)
-                              }
-                            />
-                          </DropdownMenu.Item>
+                    {tabularDataset.isManager && (
+                      <>
+                        <DropdownMenu.Group>
                           <DropdownMenu.Item
-                            onClick={() => handleToggleColumnNullable(tabularDataset.columnIds[column]!)}
+                            onClick={() => void handleToggleColumnNullable(tabularDataset.columnIds[column]!)}
                           >
                             {t('toggleColumnNullable')}
+                            <DropdownMenu.Shortcut>
+                              <QuestionMarkCircleIcon height={14} width={14} />
+                            </DropdownMenu.Shortcut>
                           </DropdownMenu.Item>
-                          <DropdownMenu.Item>
-                            <ActionDropdown
-                              options={['INT', 'FLOAT', 'String', 'BOOLEAN', 'DATETIME', 'ENUM'].filter(
-                                (x) => x !== tabularDataset.metadata[column]?.kind
-                              )}
-                              title={t('changeColumnType')}
-                              widthFull={true}
-                              onSelection={(options) =>
-                                handleChangeColumnType(tabularDataset.columnIds[column]!, options)
-                              }
-                            />
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item onClick={() => handleDeleteColumn(tabularDataset.columnIds[column]!)}>
+                          <DropdownMenu.Item onClick={() => void handleDeleteColumn(tabularDataset.columnIds[column]!)}>
                             {t('deleteColumn')}
+                            <DropdownMenu.Shortcut>
+                              <TrashIcon height={14} width={14} />
+                            </DropdownMenu.Shortcut>
                           </DropdownMenu.Item>
-                          <DropdownMenu.Separator />
-                        </>
-                      )}
-
-                      <DropdownMenu.Item>
-                        <HoverCard>
-                          <HoverCard.Trigger asChild>
-                            <Button variant={'link'}>Metadata</Button>
-                          </HoverCard.Trigger>
-                          <HoverCard.Content className="w-80">
-                            <div className="flex justify-between space-x-4">
-                              <div className="space-y-1">
-                                <h4 className="text-sm font-semibold">{`Data Type: ${tabularDataset.metadata[column]?.kind}`}</h4>
-                                <h4 className="text-sm font-semibold">{`Null Count: ${tabularDataset.metadata[column]?.nullCount}`}</h4>
-                                <h4 className="text-sm font-semibold">{`Count: ${tabularDataset.metadata[column]?.count}`}</h4>
+                        </DropdownMenu.Group>
+                        <DropdownMenu.Group>
+                          <DropdownMenu.Sub>
+                            <DropdownMenu.SubTrigger>{t('setColumnPermission')}</DropdownMenu.SubTrigger>
+                            <DropdownMenu.Portal>
+                              <DropdownMenu.SubContent>
+                                {(['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED'] as const).map((option) => (
+                                  <DropdownMenu.Item
+                                    key={option}
+                                    onClick={() =>
+                                      void handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, option)
+                                    }
+                                  >
+                                    {option}
+                                  </DropdownMenu.Item>
+                                ))}
+                              </DropdownMenu.SubContent>
+                            </DropdownMenu.Portal>
+                          </DropdownMenu.Sub>
+                          <DropdownMenu.Sub>
+                            <DropdownMenu.SubTrigger>{t('setColumnMetadataPermission')}</DropdownMenu.SubTrigger>
+                            <DropdownMenu.Portal>
+                              <DropdownMenu.SubContent>
+                                {(['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED'] as const).map((option) => (
+                                  <DropdownMenu.Item
+                                    key={option}
+                                    onClick={() =>
+                                      void handleSetColumnMetadataPermissionLevel(
+                                        tabularDataset.columnIds[column]!,
+                                        option
+                                      )
+                                    }
+                                  >
+                                    {option}
+                                  </DropdownMenu.Item>
+                                ))}
+                              </DropdownMenu.SubContent>
+                            </DropdownMenu.Portal>
+                          </DropdownMenu.Sub>
+                          <DropdownMenu.Sub>
+                            <DropdownMenu.SubTrigger>{t('changeColumnType')}</DropdownMenu.SubTrigger>
+                            <DropdownMenu.Portal>
+                              <DropdownMenu.SubContent>
+                                {(['INT', 'FLOAT', 'STRING', 'BOOLEAN', 'DATETIME', 'ENUM'] as const)
+                                  .filter((x) => x !== tabularDataset.metadata[column]?.kind)
+                                  .map((option) => (
+                                    <DropdownMenu.Item
+                                      key={option}
+                                      onClick={() =>
+                                        void handleChangeColumnType(tabularDataset.columnIds[column]!, option)
+                                      }
+                                    >
+                                      {option}
+                                    </DropdownMenu.Item>
+                                  ))}
+                              </DropdownMenu.SubContent>
+                            </DropdownMenu.Portal>
+                          </DropdownMenu.Sub>
+                        </DropdownMenu.Group>
+                      </>
+                    )}
+                    <DropdownMenu.Group>
+                      <DropdownMenu.Sub>
+                        <DropdownMenu.SubTrigger>Metadata</DropdownMenu.SubTrigger>
+                        <DropdownMenu.Portal>
+                          <DropdownMenu.SubContent>
+                            <div className="flex justify-between space-x-4 p-2">
+                              <div className="space-y-2 text-sm font-medium">
+                                <h4>{`Data Type: ${tabularDataset.metadata[column]?.kind}`}</h4>
+                                <h4>{`Null Count: ${tabularDataset.metadata[column]?.nullCount}`}</h4>
+                                <h4>{`Count: ${tabularDataset.metadata[column]?.count}`}</h4>
                                 {(tabularDataset.metadata[column]?.min ||
                                   tabularDataset.metadata[column]?.min === 0) && (
-                                  <h4 className="text-sm font-semibold">{`Min: ${tabularDataset.metadata[column]?.min}`}</h4>
+                                  <h4>{`Min: ${tabularDataset.metadata[column]?.min}`}</h4>
                                 )}
                                 {(tabularDataset.metadata[column]?.max ||
                                   tabularDataset.metadata[column]?.max === 0) && (
-                                  <h4 className="text-sm font-semibold">{`Max: ${tabularDataset.metadata[column]?.max}`}</h4>
+                                  <h4>{`Max: ${tabularDataset.metadata[column]?.max}`}</h4>
                                 )}
                                 {(tabularDataset.metadata[column]?.mean ||
                                   tabularDataset.metadata[column]?.mean === 0) && (
-                                  <h4 className="text-sm font-semibold">{`Mean: ${tabularDataset.metadata[column]?.mean}`}</h4>
+                                  <h4>{`Mean: ${tabularDataset.metadata[column]?.mean}`}</h4>
                                 )}
                                 {(tabularDataset.metadata[column]?.median ||
                                   tabularDataset.metadata[column]?.median === 0) && (
-                                  <h4 className="text-sm font-semibold">{`Median: ${tabularDataset.metadata[column]?.median}`}</h4>
+                                  <h4>{`Median: ${tabularDataset.metadata[column]?.median}`}</h4>
                                 )}
                                 {(tabularDataset.metadata[column]?.mode ||
                                   tabularDataset.metadata[column]?.mode === 0) && (
-                                  <h4 className="text-sm font-semibold">{`Mode: ${tabularDataset.metadata[column]?.mode}`}</h4>
+                                  <h4>{`Mode: ${tabularDataset.metadata[column]?.mode}`}</h4>
                                 )}
                                 {(tabularDataset.metadata[column]?.std ||
                                   tabularDataset.metadata[column]?.std === 0) && (
-                                  <h4 className="text-sm font-semibold">{`Standard deviation: ${tabularDataset.metadata[column]?.std}`}</h4>
+                                  <h4>{`Standard deviation: ${tabularDataset.metadata[column]?.std}`}</h4>
                                 )}
                                 {tabularDataset.metadata[column]?.distribution && (
-                                  <h4 className="text-sm font-semibold">{`Distribution: ${JSON.stringify(tabularDataset.metadata[column]?.distribution)}`}</h4>
+                                  <h4>{`Distribution: ${JSON.stringify(tabularDataset.metadata[column]?.distribution)}`}</h4>
                                 )}
                               </div>
                             </div>
-                          </HoverCard.Content>
-                        </HoverCard>
-                      </DropdownMenu.Item>
+                          </DropdownMenu.SubContent>
+                        </DropdownMenu.Portal>
+                      </DropdownMenu.Sub>
                     </DropdownMenu.Group>
                   </DropdownMenu.Content>
                 </DropdownMenu>

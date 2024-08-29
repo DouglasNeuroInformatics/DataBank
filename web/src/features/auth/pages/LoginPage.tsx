@@ -33,6 +33,15 @@ export const LoginPage = () => {
     auth.setAccessToken(response.data.accessToken);
   };
 
+  useEffect(() => {
+    if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH === 'true') {
+      void login({
+        email: import.meta.env.VITE_DEV_EMAIL!,
+        password: import.meta.env.VITE_DEV_PASSWORD!
+      });
+    }
+  }, []);
+
   return (
     <AuthLayout title={t('login')}>
       <LoginForm onSubmit={(data) => void login(data)} />

@@ -1,10 +1,11 @@
 /* eslint-disable perfectionist/sort-objects */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
@@ -19,8 +20,7 @@ const ViewOneDatasetPage = () => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
-  const params = useParams();
-  const [dataset, setDataset] = useState<TabularDataset | null>(null);
+  const params = useParams<'datasetId'>();
   const download = useDownload();
   const { currentUser } = useAuthStore();
 
@@ -34,22 +34,19 @@ const ViewOneDatasetPage = () => {
     itemsPerPage: 10
   });
 
-  useEffect(() => {
-    const fetchDataset = () => {
-      axios
-        .post<TabularDataset>(`/v1/datasets/${params.datasetId}`, {
-          columnPaginationDto,
-          rowPaginationDto
-        })
-        .then((response) => {
-          setDataset(response.data);
-        })
-        .catch(console.error);
-    };
-    void fetchDataset();
-  }, [columnPaginationDto, rowPaginationDto]);
+  const datasetQuery = useQuery({
+    queryFn: async () => {
+      const response = await axios.post<TabularDataset>(`/v1/datasets/${params.datasetId}`, {
+        columnPaginationDto,
+        rowPaginationDto
+      });
+      return response.data;
+    },
+    queryKey: ['dataset-query', params.datasetId, columnPaginationDto, rowPaginationDto]
+  });
 
-  const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
+  const dataset = datasetQuery.data;
+  const isManager = Boolean(datasetQuery.data?.managerIds.includes(currentUser!.id));
 
   const deleteDataset = (datasetId: string) => {
     axios
@@ -205,39 +202,38 @@ const ViewOneDatasetPage = () => {
                 </Button>
               )}
 
-              <Button className="m-2" variant={'secondary'}>
-                <DropdownMenu>
-                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+                  <Button variant="secondary">
                     {t('downloadDataset')}
                     <ChevronDownIcon className="size-[1rem]" />
-                  </DropdownMenu.Trigger>
-                  <DropdownMenu.Content className="w-48">
-                    <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
-                      {t('downloadTsv')}
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
-                      {t('downloadCsv')}
-                    </DropdownMenu.Item>
-                  </DropdownMenu.Content>
-                </DropdownMenu>
-              </Button>
-
-              <Button className="m-2" variant={'secondary'}>
-                <DropdownMenu>
-                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content className="w-48">
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
+                    {t('downloadTsv')}
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
+                    {t('downloadCsv')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+                  <Button variant="secondary">
                     {t('downloadMetadata')}
                     <ChevronDownIcon className="size-[1rem]" />
-                  </DropdownMenu.Trigger>
-                  <DropdownMenu.Content className="w-48">
-                    <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
-                      {t('downloadTsv')}
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
-                      {t('downloadCsv')}
-                    </DropdownMenu.Item>
-                  </DropdownMenu.Content>
-                </DropdownMenu>
-              </Button>
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content className="w-48">
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
+                    {t('downloadTsv')}
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
+                    {t('downloadCsv')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
             </>
           )}
         </Card.Footer>
