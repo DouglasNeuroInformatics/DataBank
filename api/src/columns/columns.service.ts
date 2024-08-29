@@ -237,9 +237,20 @@ export class ColumnsService {
 
     // check for hash, do the hashing
     if (getColumnViewDto.hash) {
+      currSeries.cast(pl.String);
+      if (getColumnViewDto.hash.salt) {
+        const saltArr: string[] = [];
+        for (let i = 0; i < currSeries.len(); i++) {
+          saltArr.push(getColumnViewDto.hash.salt);
+        }
+        pl.concatString({
+          exprs: [pl.col(currSeries), pl.col(saltArr)],
+          sep: ''
+        });
+      }
       currSeries = currSeries.hash();
       if (getColumnViewDto.hash.length && getColumnViewDto.hash.length >= 0) {
-        currSeries = currSeries.slice(0, getColumnViewDto.hash.length);
+        currSeries = currSeries.str.slice(0, getColumnViewDto.hash.length);
       }
       currSeries.cast(pl.String);
       columnView.kind = 'STRING';
@@ -253,6 +264,10 @@ export class ColumnsService {
           getColumnViewDto.trim.start,
           getColumnViewDto.trim.end - getColumnViewDto.trim.start + 1
         );
+      } else if (getColumnViewDto.trim.start && !getColumnViewDto.trim.end) {
+        currSeries = currSeries.str.slice(getColumnViewDto.trim.start);
+      } else if (!getColumnViewDto.trim.start && getColumnViewDto.trim.end) {
+        currSeries = currSeries.str.slice(0, getColumnViewDto.trim.end + 1);
       }
     }
     // recalculate the summary for the column
