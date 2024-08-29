@@ -98,16 +98,20 @@ export class TabularDataService {
 
   async getProjectDatasetView(
     projectDatasetDto: ProjectDatasetDto,
-    _rowPagination: DatasetViewPaginationDto,
-    _columnPagination: DatasetViewPaginationDto
+    rowPagination: DatasetViewPaginationDto,
+    columnPagination: DatasetViewPaginationDto
   ) {
     const columnIds: { [key: string]: string } = {};
     const columns: string[] = [];
     const metaData: { [key: string]: any } = {};
     const rows: { [key: string]: boolean | number | string }[] = [];
-    const numberOfRows = 10;
 
-    for (let col of projectDatasetDto.columns) {
+    const rowStart = (rowPagination.currentPage - 1) * rowPagination.itemsPerPage;
+    const rowEnd = rowPagination.currentPage * rowPagination.itemsPerPage;
+    const columnStart = (columnPagination.currentPage - 1) * columnPagination.itemsPerPage;
+    const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage;
+
+    for (let col of projectDatasetDto.columns.slice(columnStart, columnEnd)) {
       const getColumnViewDto: GetColumnViewDto = {
         ...col,
         rowMax: projectDatasetDto.rowFilter ? projectDatasetDto.rowFilter.rowMax : null,
@@ -176,9 +180,9 @@ export class TabularDataService {
       columnIds,
       columns,
       metadata: metaData,
-      rows,
-      totalNumberOfColumns: columns.length,
-      totalNumberOfRows: numberOfRows
+      rows: rows.slice(rowStart, rowEnd),
+      totalNumberOfColumns: projectDatasetDto.columns.length,
+      totalNumberOfRows: rows.length
     };
 
     return dataView;
@@ -211,24 +215,24 @@ export class TabularDataService {
     }
 
     const rowStart = (rowPagination.currentPage - 1) * rowPagination.itemsPerPage;
-    const rowEnd = rowPagination.currentPage * rowPagination.itemsPerPage - 1;
+    const rowEnd = rowPagination.currentPage * rowPagination.itemsPerPage;
     const numberOfRows = await this.columnsService.getLengthById(tabularData.columns[0]?.id);
     const columnStart = (columnPagination.currentPage - 1) * columnPagination.itemsPerPage;
-    const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage - 1;
+    const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage;
 
-    for (let i = rowStart; i < rowEnd + 1; i++) {
+    for (let i = rowStart; i < rowEnd; i++) {
       rows.push({});
     }
 
     let metaData: { [key: string]: ColumnSummary } = {};
 
-    for (let col of tabularData.columns.slice(columnStart, columnEnd + 1)) {
+    for (let col of tabularData.columns.slice(columnStart, columnEnd)) {
       columnIds[col.name] = col.id;
       columns.push(col.name);
 
       switch (col.kind) {
         case 'STRING':
-          col.stringData.slice(rowStart, rowEnd + 1).map((entry, i) => {
+          col.stringData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
@@ -243,7 +247,7 @@ export class TabularDataService {
           };
           break;
         case 'BOOLEAN':
-          col.booleanData.slice(rowStart, rowEnd + 1).map((entry, i) => {
+          col.booleanData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
@@ -258,7 +262,7 @@ export class TabularDataService {
           };
           break;
         case 'INT':
-          col.intData.slice(rowStart, rowEnd + 1).map((entry, i) => {
+          col.intData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
@@ -277,7 +281,7 @@ export class TabularDataService {
           };
           break;
         case 'FLOAT':
-          col.floatData.slice(rowStart, rowEnd + 1).map((entry, i) => {
+          col.floatData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
@@ -295,7 +299,7 @@ export class TabularDataService {
           };
           break;
         case 'ENUM':
-          col.enumData.slice(rowStart, rowEnd + 1).map((entry, i) => {
+          col.enumData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }
@@ -308,7 +312,7 @@ export class TabularDataService {
           };
           break;
         case 'DATETIME':
-          col.datetimeData.slice(rowStart, rowEnd + 1).map((entry, i) => {
+          col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
             if (!rows[i]) {
               rows[i] = {};
             }

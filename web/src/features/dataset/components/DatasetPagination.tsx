@@ -86,7 +86,7 @@ export const DatasetPagination = ({
           ></ActionDropdown>
         </div>
 
-        <p>{`${currentPage}`}</p>
+        <p>{`${currentPage} / total: ${totalNumberOfPage}`}</p>
         <Button
           disabled={currentPage === totalNumberOfPage}
           type="button"
