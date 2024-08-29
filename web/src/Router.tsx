@@ -1,9 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
-import { useEffect } from 'react';
+
 import React from 'react';
 
-import type { AuthPayload } from '@databank/types';
-import axios from 'axios';
 import { BrowserRouter, type RouteObject, useRoutes } from 'react-router-dom';
 
 import { Layout } from './components';
@@ -75,24 +73,9 @@ const AppRoutes = () => {
    * the app to bypass auth, then a post request will be send to the backend to
    * fake the creation of a user and get back an access token
    */
-  const { accessToken, setAccessToken } = useAuthStore();
-
-  useEffect(() => {
-    if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH === 'true') {
-      axios
-        .post<AuthPayload>('/v1/auth/login', {
-          email: import.meta.env.VITE_DEV_EMAIL,
-          password: import.meta.env.VITE_DEV_PASSWORD
-        })
-        .then((response) => {
-          setAccessToken(response.data.accessToken);
-        })
-        .catch(console.error);
-    }
-  }, []);
+  const { accessToken } = useAuthStore();
 
   return useRoutes(accessToken ? protectedRoutes : publicRoutes);
-  // return useRoutes(protectedRoutes);
 };
 
 export const Router = () => {
