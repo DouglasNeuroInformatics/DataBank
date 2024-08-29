@@ -243,7 +243,8 @@ export class ColumnsService {
         }
         currSeries = pl.Series(
           currSeries.toArray().map((entry) => {
-            return entry + getColumnViewDto.hash?.salt!;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            return entry + getColumnViewDto.hash?.salt;
           })
         );
       }

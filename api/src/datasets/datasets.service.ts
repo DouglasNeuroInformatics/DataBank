@@ -250,6 +250,7 @@ export class DatasetsService {
 
     const datasetView = await this.tabularDataService.getViewById(
       dataset.tabularData.id,
+      'MANAGER',
       {
         currentPage: 1,
         itemsPerPage: rowNumber
@@ -270,9 +271,7 @@ export class DatasetsService {
   }
 
   async downloadMetadataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
-    if (!currentUserId) {
-      //
-    }
+    void this.usersService.findById(currentUserId);
 
     const dataset = await this.datasetModel.findUnique({
       include: {
@@ -304,6 +303,7 @@ export class DatasetsService {
 
     const datasetView = await this.tabularDataService.getViewById(
       dataset.tabularData.id,
+      'MANAGER',
       {
         currentPage: 1,
         itemsPerPage: rowNumber
