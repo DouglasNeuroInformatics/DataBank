@@ -6,6 +6,7 @@ import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { Table } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
@@ -14,71 +15,55 @@ export type DatasetTableProps = { isManager: boolean } & TabularDataset;
 const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const { t } = useTranslation('common');
   const notifications = useNotificationsStore();
+  const queryClient = useQueryClient();
 
-  const handleSetColumnMetadataPermissionLevel = (columnId: string, newPermissionLevel: PermissionLevel) => {
-    axios
-      .patch(`/v1/columns/metadata-permission/${columnId}`, {
-        newPermissionLevel
-      })
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been modified`,
-          type: 'success'
-        });
-      })
-      .catch(console.error);
+  const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
+    await axios.patch(`/v1/columns/metadata-permission/${columnId}`, {
+      newPermissionLevel
+    });
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been modified`,
+      type: 'success'
+    });
   };
 
-  const handleSetColumnDataPermissionLevel = (columnId: string, newPermissionLevel: PermissionLevel) => {
-    axios
-      .patch(`/v1/columns/data-permission/${columnId}`, {
-        newPermissionLevel
-      })
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been modified`,
-          type: 'success'
-        });
-      })
-      .catch(console.error);
+  const handleSetColumnDataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
+    await axios.patch(`/v1/columns/data-permission/${columnId}`, {
+      newPermissionLevel
+    });
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been modified`,
+      type: 'success'
+    });
   };
 
-  const handleToggleColumnNullable = (columnId: string) => {
-    axios
-      .patch(`/v1/columns/nullable/${columnId}`)
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been modified`,
-          type: 'success'
-        });
-      })
-      .catch(console.error);
+  const handleToggleColumnNullable = async (columnId: string) => {
+    await axios.patch(`/v1/columns/nullable/${columnId}`);
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been modified`,
+      type: 'success'
+    });
   };
 
-  const handleChangeColumnType = (columnId: string, type: string) => {
-    axios
-      .patch(`/v1/columns/type/${columnId}`, {
-        type
-      })
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been modified`,
-          type: 'success'
-        });
-      })
-      .catch(console.error);
+  const handleChangeColumnType = async (columnId: string, type: string) => {
+    await axios.patch(`/v1/columns/type/${columnId}`, { type });
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been modified`,
+      type: 'success'
+    });
   };
 
-  const handleDeleteColumn = (columnId: string) => {
-    axios
-      .delete(`/v1/columns/${columnId}`)
-      .then(() => {
-        notifications.addNotification({
-          message: `Column with Id ${columnId} has been deleted`,
-          type: 'success'
-        });
-      })
-      .catch(console.error);
+  const handleDeleteColumn = async (columnId: string) => {
+    await axios.delete(`/v1/columns/${columnId}`);
+    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    notifications.addNotification({
+      message: `Column with Id ${columnId} has been deleted`,
+      type: 'success'
+    });
   };
 
   return (
@@ -102,14 +87,14 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                       <>
                         <DropdownMenu.Group>
                           <DropdownMenu.Item
-                            onClick={() => handleToggleColumnNullable(tabularDataset.columnIds[column]!)}
+                            onClick={() => void handleToggleColumnNullable(tabularDataset.columnIds[column]!)}
                           >
                             {t('toggleColumnNullable')}
                             <DropdownMenu.Shortcut>
                               <QuestionMarkCircleIcon height={14} width={14} />
                             </DropdownMenu.Shortcut>
                           </DropdownMenu.Item>
-                          <DropdownMenu.Item onClick={() => handleDeleteColumn(tabularDataset.columnIds[column]!)}>
+                          <DropdownMenu.Item onClick={() => void handleDeleteColumn(tabularDataset.columnIds[column]!)}>
                             {t('deleteColumn')}
                             <DropdownMenu.Shortcut>
                               <TrashIcon height={14} width={14} />
@@ -125,7 +110,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                   <DropdownMenu.Item
                                     key={option}
                                     onClick={() =>
-                                      handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, option)
+                                      void handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, option)
                                     }
                                   >
                                     {option}
@@ -142,7 +127,10 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                   <DropdownMenu.Item
                                     key={option}
                                     onClick={() =>
-                                      handleSetColumnMetadataPermissionLevel(tabularDataset.columnIds[column]!, option)
+                                      void handleSetColumnMetadataPermissionLevel(
+                                        tabularDataset.columnIds[column]!,
+                                        option
+                                      )
                                     }
                                   >
                                     {option}
@@ -160,7 +148,9 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                   .map((option) => (
                                     <DropdownMenu.Item
                                       key={option}
-                                      onClick={() => handleChangeColumnType(tabularDataset.columnIds[column]!, option)}
+                                      onClick={() =>
+                                        void handleChangeColumnType(tabularDataset.columnIds[column]!, option)
+                                      }
                                     >
                                       {option}
                                     </DropdownMenu.Item>
