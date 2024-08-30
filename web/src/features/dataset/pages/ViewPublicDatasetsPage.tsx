@@ -66,7 +66,7 @@ const ViewPublicDatasetsPage = () => {
   );
 };
 
-export const viewPublicDatasetsRoute: RouteObject = {
+export const ViewPublicDatasetsRoute: RouteObject = {
   path: 'datasets',
   element: <ViewPublicDatasetsPage />
 };

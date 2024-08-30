@@ -210,9 +210,7 @@ export class TabularDataService {
     const columnIdsModifyData: string[] = [];
     const columnIdsModifyMetadata: string[] = [];
 
-    if (userStatus === 'PUBLIC') {
-      throw new ForbiddenException('User should login first!');
-    } else if (userStatus === 'VERIFIED') {
+    if (userStatus === 'VERIFIED') {
       tabularData.columns.forEach((col) => {
         if (col.dataPermission === 'MANAGER') {
           columnIdsModifyData.push(col.id);
@@ -227,6 +225,19 @@ export class TabularDataService {
           columnIdsModifyData.push(col.id);
         }
         if (col.summaryPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
+          columnIdsModifyMetadata.push(col.id);
+        }
+      });
+    } else if (userStatus === 'PUBLIC') {
+      tabularData.columns.forEach((col) => {
+        if (col.dataPermission === 'MANAGER' || col.dataPermission === 'LOGIN' || col.dataPermission === 'VERIFIED') {
+          columnIdsModifyData.push(col.id);
+        }
+        if (
+          col.summaryPermission === 'MANAGER' ||
+          col.summaryPermission === 'VERIFIED' ||
+          col.summaryPermission === 'LOGIN'
+        ) {
           columnIdsModifyMetadata.push(col.id);
         }
       });
@@ -264,7 +275,7 @@ export class TabularDataService {
             }
 
             if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'N/A';
+              rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
@@ -290,7 +301,7 @@ export class TabularDataService {
               rows[i] = {};
             }
             if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'N/A';
+              rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
@@ -320,7 +331,7 @@ export class TabularDataService {
               rows[i] = {};
             }
             if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'N/A';
+              rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
@@ -357,7 +368,7 @@ export class TabularDataService {
               rows[i] = {};
             }
             if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'N/A';
+              rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
@@ -394,7 +405,7 @@ export class TabularDataService {
             }
 
             if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'N/A';
+              rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
@@ -420,7 +431,7 @@ export class TabularDataService {
               rows[i] = {};
             }
             if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'N/A';
+              rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value?.toISOString() ?? null;
             }

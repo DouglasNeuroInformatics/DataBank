@@ -216,10 +216,6 @@ export class DatasetsService {
   }
 
   async downloadDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
-    if (!currentUserId) {
-      //
-    }
-
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: {
@@ -271,8 +267,6 @@ export class DatasetsService {
   }
 
   async downloadMetadataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
-    void this.usersService.findById(currentUserId);
-
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: {
@@ -364,6 +358,148 @@ export class DatasetsService {
     return metadataRowsString;
   }
 
+  async downloadPublicDataById(datasetId: string, format: 'CSV' | 'TSV') {
+    const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: {
+          include: {
+            columns: true
+          }
+        }
+      },
+      where: {
+        id: datasetId
+      }
+    });
+
+    if (!dataset || dataset.permission !== 'PUBLIC') {
+      throw new NotFoundException('No such public dataset is found!');
+    }
+
+    if (!dataset.tabularData?.id) {
+      throw new NotFoundException('No such tabular data available!');
+    }
+
+    const colNumber = dataset.tabularData.columns.length;
+
+    if (!dataset.tabularData.columns[0]?.id) {
+      throw new NotFoundException('No columns found!');
+    }
+    const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
+
+    const datasetView = await this.tabularDataService.getViewById(
+      dataset.tabularData.id,
+      'PUBLIC',
+      {
+        currentPage: 1,
+        itemsPerPage: rowNumber
+      },
+      {
+        currentPage: 1,
+        itemsPerPage: colNumber
+      }
+    );
+
+    const delimiter = format === 'CSV' ? ',' : '\t';
+    let resultString = datasetView.columns.join(delimiter) + '\n';
+    for (let row of datasetView.rows) {
+      resultString += Object.values(row).join(delimiter) + '\n';
+    }
+
+    return resultString;
+  }
+
+  async downloadPublicMetadataById(datasetId: string, format: 'CSV' | 'TSV') {
+    const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: {
+          include: {
+            columns: true
+          }
+        }
+      },
+      where: {
+        id: datasetId
+      }
+    });
+
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+
+    if (!dataset.tabularData?.id) {
+      throw new NotFoundException('No such tabular data available!');
+    }
+
+    const colNumber = dataset.tabularData.columns.length;
+
+    if (!dataset.tabularData.columns[0]?.id) {
+      throw new NotFoundException('No columns found!');
+    }
+    const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
+
+    const datasetView = await this.tabularDataService.getViewById(
+      dataset.tabularData.id,
+      'PUBLIC',
+      {
+        currentPage: 1,
+        itemsPerPage: rowNumber
+      },
+      {
+        currentPage: 1,
+        itemsPerPage: colNumber
+      }
+    );
+
+    const delimiter = format === 'CSV' ? ',' : '\t';
+
+    const metaDataHeader = [
+      'column_name',
+      'column_type',
+      'nullable',
+      'count',
+      'nullCount',
+      'max',
+      'min',
+      'mean',
+      'median',
+      'mode',
+      'std',
+      'distribution'
+    ];
+
+    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
+    for (let columnName of Object.keys(datasetView.metadata)) {
+      metadataRowsString +=
+        columnName +
+        delimiter +
+        datasetView.metadata[columnName]?.kind +
+        delimiter +
+        datasetView.metadata[columnName]?.nullable +
+        delimiter +
+        datasetView.metadata[columnName]?.count +
+        delimiter +
+        datasetView.metadata[columnName]?.nullCount +
+        delimiter +
+        datasetView.metadata[columnName]?.max +
+        delimiter +
+        datasetView.metadata[columnName]?.min +
+        delimiter +
+        datasetView.metadata[columnName]?.mean +
+        delimiter +
+        datasetView.metadata[columnName]?.median +
+        delimiter +
+        datasetView.metadata[columnName]?.mode +
+        delimiter +
+        datasetView.metadata[columnName]?.std +
+        delimiter +
+        JSON.stringify(datasetView.metadata[columnName]?.distribution) +
+        delimiter +
+        '\n';
+    }
+
+    return metadataRowsString;
+  }
   // async downloadProjectDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
   //   if (!currentUserId) {
   //     //
@@ -624,6 +760,7 @@ export class DatasetsService {
     }
     const datasetView = await this.tabularDataService.getViewById(
       dataset.tabularData.id,
+      'PUBLIC',
       rowPaginationDto,
       columnPaginationDto
     );

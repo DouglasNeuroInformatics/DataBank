@@ -16,6 +16,7 @@ import type { CreateTabularDatasetDto } from './zod/dataset.js';
 export class DatasetsController {
   constructor(private readonly datasetsService: DatasetsService) {}
 
+  @ApiOperation({ summary: 'Add Manager to Dataset' })
   @Patch('managers/:id/:managerEmailToAdd')
   @RouteAccess({ role: 'STANDARD' })
   addManager(
@@ -38,20 +39,21 @@ export class DatasetsController {
     return this.datasetsService.createDataset(createTabularDatasetDto, file, managerId);
   }
 
+  @ApiOperation({ summary: 'Delete Dataset' })
   @Delete(':id')
   @RouteAccess({ role: 'STANDARD' })
   deleteDataset(@Param('id', ParseObjectIdPipe) datasetId: string, @CurrentUser('id') currentUserId: string) {
     return this.datasetsService.deleteDataset(datasetId, currentUserId);
   }
 
-  @ApiOperation({ summary: 'Get Public Datasets' })
+  @ApiOperation({ summary: 'Get all Public Datasets' })
   @RouteAccess('public')
   @Get('public')
   getPublic() {
     return this.datasetsService.getPublic();
   }
 
-  @ApiOperation({ summary: 'Get Public Datasets' })
+  @ApiOperation({ summary: 'Get One Public Dataset by Id' })
   @RouteAccess('public')
   @Post('public/:id')
   getOnePublicById(
@@ -62,6 +64,20 @@ export class DatasetsController {
     return this.datasetsService.getOnePublicById(datasetId, rowPaginationDto, columnPaginationDto);
   }
 
+  @ApiOperation({ summary: 'Download Public Dataset Data' })
+  @Get('public/download-data/:id/:format')
+  @RouteAccess('public')
+  downloadPublicDataById(@Param('id') datasetId: string, @Param('format') format: 'CSV' | 'TSV') {
+    return this.datasetsService.downloadPublicDataById(datasetId, format);
+  }
+
+  @ApiOperation({ summary: 'Download Public Dataset Metadata' })
+  @Get('public/download-metadata/:id/:format')
+  @RouteAccess('public')
+  downloadPublicMetadataById(@Param('id') datasetId: string, @Param('format') format: 'CSV' | 'TSV') {
+    return this.datasetsService.downloadPublicMetadataById(datasetId, format);
+  }
+
   @ApiOperation({ summary: 'Get All Available Datasets' })
   @Get()
   @RouteAccess({ role: 'STANDARD' })
@@ -69,7 +85,7 @@ export class DatasetsController {
     return this.datasetsService.getAvailable(currentUserId);
   }
 
-  @ApiOperation({ summary: 'Get All Available Datasets Own By the Current Manager' })
+  @ApiOperation({ summary: 'Get All Available Datasets Owned By the Current Manager' })
   @Get('owned-by')
   @RouteAccess({ role: 'STANDARD' })
   getAllByManagerId(@CurrentUser('id') currentUserId: string) {
@@ -83,7 +99,7 @@ export class DatasetsController {
     return this.datasetsService.getColumnsById(datasetId, currentUserId);
   }
 
-  @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
+  @ApiOperation({ summary: 'Get the View of a Dataset' })
   @Post(':id')
   @RouteAccess({ role: 'STANDARD' })
   getViewById(
@@ -100,7 +116,7 @@ export class DatasetsController {
     );
   }
 
-  @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
+  @ApiOperation({ summary: 'Download Dataset Data' })
   @Get('/download-data/:id/:format')
   @RouteAccess({ role: 'STANDARD' })
   downloadDataById(
@@ -111,7 +127,7 @@ export class DatasetsController {
     return this.datasetsService.downloadDataById(datasetId, currentUserId, format);
   }
 
-  @ApiOperation({ summary: 'Get All Info and Data for Dataset' })
+  @ApiOperation({ summary: 'Download Dataset Metadata' })
   @Get('/download-metadata/:id/:format')
   @RouteAccess({ role: 'STANDARD' })
   downloadMetadataById(
@@ -122,6 +138,7 @@ export class DatasetsController {
     return this.datasetsService.downloadMetadataById(datasetId, currentUserId, format);
   }
 
+  @ApiOperation({ summary: 'Remove Manager from Dataset' })
   @Delete('managers/:id/:managerIdToRemove')
   @RouteAccess({ role: 'STANDARD' })
   removeManager(
@@ -132,12 +149,14 @@ export class DatasetsController {
     return this.datasetsService.removeManager(datasetId, managerId, managerIdToRemove);
   }
 
+  @ApiOperation({ summary: 'Set Dataset Ready to Share' })
   @Patch('share/:id')
   @RouteAccess({ role: 'STANDARD' })
   setReadyToShare(@Param('id') datasetId: string, @CurrentUser('id') managerId: string) {
     return this.datasetsService.setReadyToShare(datasetId, managerId);
   }
 
+  @ApiOperation({ summary: 'Edit Dataset Information' })
   @Patch('info/:id')
   @RouteAccess({ role: 'STANDARD' })
   editDatasetInfo(

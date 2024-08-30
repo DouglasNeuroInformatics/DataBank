@@ -74,10 +74,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
             {tabularDataset.columns.map((column, i) => (
               <Table.Head className="whitespace-nowrap text-foreground" key={i}>
                 <DropdownMenu>
-                  <DropdownMenu.Trigger
-                    className="flex items-center justify-between gap-3"
-                    disabled={!tabularDataset.isManager}
-                  >
+                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
                     <span>{column}</span>
                     <ChevronDownIcon />
                   </DropdownMenu.Trigger>
