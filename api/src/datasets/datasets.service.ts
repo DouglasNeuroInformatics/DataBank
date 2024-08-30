@@ -216,6 +216,8 @@ export class DatasetsService {
   }
 
   async downloadDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
+    const userStatus = await this.getUserStatusById(currentUserId, datasetId);
+
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: {
@@ -246,7 +248,7 @@ export class DatasetsService {
 
     const datasetView = await this.tabularDataService.getViewById(
       dataset.tabularData.id,
-      'MANAGER',
+      userStatus,
       {
         currentPage: 1,
         itemsPerPage: rowNumber
@@ -257,16 +259,12 @@ export class DatasetsService {
       }
     );
 
-    const delimiter = format === 'CSV' ? ',' : '\t';
-    let resultString = datasetView.columns.join(delimiter) + '\n';
-    for (let row of datasetView.rows) {
-      resultString += Object.values(row).join(delimiter) + '\n';
-    }
-
-    return resultString;
+    return this.formatDataDownloadString(format, datasetView);
   }
 
   async downloadMetadataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
+    const userStatus = await this.getUserStatusById(currentUserId, datasetId);
+
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: {
@@ -297,7 +295,7 @@ export class DatasetsService {
 
     const datasetView = await this.tabularDataService.getViewById(
       dataset.tabularData.id,
-      'MANAGER',
+      userStatus,
       {
         currentPage: 1,
         itemsPerPage: rowNumber
@@ -308,54 +306,7 @@ export class DatasetsService {
       }
     );
 
-    const delimiter = format === 'CSV' ? ',' : '\t';
-
-    const metaDataHeader = [
-      'column_name',
-      'column_type',
-      'nullable',
-      'count',
-      'nullCount',
-      'max',
-      'min',
-      'mean',
-      'median',
-      'mode',
-      'std',
-      'distribution'
-    ];
-
-    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-    for (let columnName of Object.keys(datasetView.metadata)) {
-      metadataRowsString +=
-        columnName +
-        delimiter +
-        datasetView.metadata[columnName]?.kind +
-        delimiter +
-        datasetView.metadata[columnName]?.nullable +
-        delimiter +
-        datasetView.metadata[columnName]?.count +
-        delimiter +
-        datasetView.metadata[columnName]?.nullCount +
-        delimiter +
-        datasetView.metadata[columnName]?.max +
-        delimiter +
-        datasetView.metadata[columnName]?.min +
-        delimiter +
-        datasetView.metadata[columnName]?.mean +
-        delimiter +
-        datasetView.metadata[columnName]?.median +
-        delimiter +
-        datasetView.metadata[columnName]?.mode +
-        delimiter +
-        datasetView.metadata[columnName]?.std +
-        delimiter +
-        JSON.stringify(datasetView.metadata[columnName]?.distribution) +
-        delimiter +
-        '\n';
-    }
-
-    return metadataRowsString;
+    return this.formatMetadataDownloadString(format, datasetView);
   }
 
   async downloadPublicDataById(datasetId: string, format: 'CSV' | 'TSV') {
@@ -400,13 +351,7 @@ export class DatasetsService {
       }
     );
 
-    const delimiter = format === 'CSV' ? ',' : '\t';
-    let resultString = datasetView.columns.join(delimiter) + '\n';
-    for (let row of datasetView.rows) {
-      resultString += Object.values(row).join(delimiter) + '\n';
-    }
-
-    return resultString;
+    return this.formatDataDownloadString(format, datasetView);
   }
 
   async downloadPublicMetadataById(datasetId: string, format: 'CSV' | 'TSV') {
@@ -451,203 +396,8 @@ export class DatasetsService {
       }
     );
 
-    const delimiter = format === 'CSV' ? ',' : '\t';
-
-    const metaDataHeader = [
-      'column_name',
-      'column_type',
-      'nullable',
-      'count',
-      'nullCount',
-      'max',
-      'min',
-      'mean',
-      'median',
-      'mode',
-      'std',
-      'distribution'
-    ];
-
-    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-    for (let columnName of Object.keys(datasetView.metadata)) {
-      metadataRowsString +=
-        columnName +
-        delimiter +
-        datasetView.metadata[columnName]?.kind +
-        delimiter +
-        datasetView.metadata[columnName]?.nullable +
-        delimiter +
-        datasetView.metadata[columnName]?.count +
-        delimiter +
-        datasetView.metadata[columnName]?.nullCount +
-        delimiter +
-        datasetView.metadata[columnName]?.max +
-        delimiter +
-        datasetView.metadata[columnName]?.min +
-        delimiter +
-        datasetView.metadata[columnName]?.mean +
-        delimiter +
-        datasetView.metadata[columnName]?.median +
-        delimiter +
-        datasetView.metadata[columnName]?.mode +
-        delimiter +
-        datasetView.metadata[columnName]?.std +
-        delimiter +
-        JSON.stringify(datasetView.metadata[columnName]?.distribution) +
-        delimiter +
-        '\n';
-    }
-
-    return metadataRowsString;
+    return this.formatMetadataDownloadString(format, datasetView);
   }
-  // async downloadProjectDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
-  //   if (!currentUserId) {
-  //     //
-  //   }
-
-  //   const dataset = await this.datasetModel.findUnique({
-  //     include: {
-  //       tabularData: {
-  //         include: {
-  //           columns: true
-  //         }
-  //       }
-  //     },
-  //     where: {
-  //       id: datasetId
-  //     }
-  //   });
-
-  //   if (!dataset) {
-  //     throw new NotFoundException();
-  //   }
-
-  //   if (!dataset.tabularData?.id) {
-  //     throw new NotFoundException('No such tabular data available!');
-  //   }
-
-  //   const colNumber = dataset.tabularData.columns.length;
-
-  //   if (!dataset.tabularData.columns[0]?.id) {
-  //     throw new NotFoundException('No columns found!');
-  //   }
-  //   const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
-
-  //   const datasetView = await this.tabularDataService.getViewById(
-  //     dataset.tabularData.id,
-  //     {
-  //       currentPage: 1,
-  //       itemsPerPage: rowNumber
-  //     },
-  //     {
-  //       currentPage: 1,
-  //       itemsPerPage: colNumber
-  //     }
-  //   );
-
-  //   const delimiter = format === 'CSV' ? ',' : '\t';
-  //   let resultString = datasetView.columns.join(delimiter) + '\n';
-  //   for (let row of datasetView.rows) {
-  //     resultString += Object.values(row).join(delimiter) + '\n';
-  //   }
-
-  //   return resultString;
-  // }
-
-  // async downloadProjectMetadataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
-  //   if (!currentUserId) {
-  //     //
-  //   }
-
-  //   const dataset = await this.datasetModel.findUnique({
-  //     include: {
-  //       tabularData: {
-  //         include: {
-  //           columns: true
-  //         }
-  //       }
-  //     },
-  //     where: {
-  //       id: datasetId
-  //     }
-  //   });
-
-  //   if (!dataset) {
-  //     throw new NotFoundException();
-  //   }
-
-  //   if (!dataset.tabularData?.id) {
-  //     throw new NotFoundException('No such tabular data available!');
-  //   }
-
-  //   const colNumber = dataset.tabularData.columns.length;
-
-  //   if (!dataset.tabularData.columns[0]?.id) {
-  //     throw new NotFoundException('No columns found!');
-  //   }
-  //   const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
-
-  //   const datasetView = await this.tabularDataService.getViewById(
-  //     dataset.tabularData.id,
-  //     {
-  //       currentPage: 1,
-  //       itemsPerPage: rowNumber
-  //     },
-  //     {
-  //       currentPage: 1,
-  //       itemsPerPage: colNumber
-  //     }
-  //   );
-
-  //   const delimiter = format === 'CSV' ? ',' : '\t';
-
-  //   const metaDataHeader = [
-  //     'column_name',
-  //     'column_type',
-  //     'nullable',
-  //     'count',
-  //     'nullCount',
-  //     'max',
-  //     'min',
-  //     'mean',
-  //     'median',
-  //     'mode',
-  //     'std',
-  //     'distribution'
-  //   ];
-
-  //   let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-  //   for (let columnName of Object.keys(datasetView.metadata)) {
-  //     metadataRowsString +=
-  //       columnName +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.kind +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.nullable +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.count +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.nullCount +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.max +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.min +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.mean +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.median +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.mode +
-  //       delimiter +
-  //       datasetView.metadata[columnName]?.std +
-  //       delimiter +
-  //       JSON.stringify(datasetView.metadata[columnName]?.distribution) +
-  //       delimiter +
-  //       '\n';
-  //   }
-
-  //   return metadataRowsString;
-  // }
 
   async editDatasetInfo(datasetId: string, managerId: string, editDatasetInfoDto: EditDatasetInfoDto) {
     const dataset = await this.canModifyDataset(datasetId, managerId);
@@ -851,6 +601,28 @@ export class DatasetsService {
     return resDatasetsInfo;
   }
 
+  async getUserStatusById(userId: string, datasetId: string): Promise<PermissionLevel> {
+    const user = await this.usersService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User Not Found!');
+    }
+
+    const dataset = await this.datasetModel.findUnique({ where: { id: datasetId } });
+    if (!dataset) {
+      throw new NotFoundException('Dataset Not Found!');
+    }
+
+    if (dataset.managerIds.includes(userId)) {
+      return 'MANAGER';
+    } else if (user.verifiedAt) {
+      return 'VERIFIED';
+    } else if (user.confirmedAt) {
+      return 'LOGIN';
+    } else {
+      throw new ForbiddenException('Unexpected User Status!');
+    }
+  }
+
   async getViewById(
     datasetId: string,
     currentUserId: string,
@@ -983,5 +755,66 @@ export class DatasetsService {
       }
     });
     return await this.prisma.$transaction([updateDataset]);
+  }
+
+  private formatDataDownloadString(format: 'CSV' | 'TSV', datasetView: TabularDatasetView) {
+    const delimiter = format === 'CSV' ? ',' : '\t';
+    let resultString = datasetView.columns.join(delimiter) + '\n';
+    for (let row of datasetView.rows) {
+      resultString += Object.values(row).join(delimiter) + '\n';
+    }
+
+    return resultString;
+  }
+
+  private formatMetadataDownloadString(format: 'CSV' | 'TSV', datasetView: TabularDatasetView) {
+    const delimiter = format === 'CSV' ? ',' : '\t';
+
+    const metaDataHeader = [
+      'column_name',
+      'column_type',
+      'nullable',
+      'count',
+      'nullCount',
+      'max',
+      'min',
+      'mean',
+      'median',
+      'mode',
+      'std',
+      'distribution'
+    ];
+
+    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
+    for (let columnName of Object.keys(datasetView.metadata)) {
+      metadataRowsString +=
+        columnName +
+        delimiter +
+        datasetView.metadata[columnName]?.kind +
+        delimiter +
+        datasetView.metadata[columnName]?.nullable +
+        delimiter +
+        datasetView.metadata[columnName]?.count +
+        delimiter +
+        datasetView.metadata[columnName]?.nullCount +
+        delimiter +
+        datasetView.metadata[columnName]?.max +
+        delimiter +
+        datasetView.metadata[columnName]?.min +
+        delimiter +
+        datasetView.metadata[columnName]?.mean +
+        delimiter +
+        datasetView.metadata[columnName]?.median +
+        delimiter +
+        datasetView.metadata[columnName]?.mode +
+        delimiter +
+        datasetView.metadata[columnName]?.std +
+        delimiter +
+        JSON.stringify(datasetView.metadata[columnName]?.distribution) +
+        delimiter +
+        '\n';
+    }
+
+    return metadataRowsString;
   }
 }
