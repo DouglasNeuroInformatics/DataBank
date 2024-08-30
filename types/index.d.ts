@@ -90,8 +90,8 @@ export type TSetupConfig = {
 /** Verification */
 
 export type TVerificationWithRegex = {
+  emailRegex: string;
   kind: 'REGEX_EMAIL';
-  regex: string;
 };
 
 export type TVerificationUponConfirmEmail = {

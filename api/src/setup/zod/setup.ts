@@ -19,8 +19,8 @@ export const $ManualVerification = z.object({
 });
 
 export const $RegexEmailVerification = z.object({
-  kind: z.literal('REGEX_EMAIL'),
-  regex: z.string()
+  emailRegex: z.string(),
+  kind: z.literal('REGEX_EMAIL')
 });
 
 export const $ConfirmEmailVerification = z.object({
