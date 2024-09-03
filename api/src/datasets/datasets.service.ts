@@ -160,16 +160,24 @@ export class DatasetsService {
         permission: createTabularDatasetDto.permission
       }
     });
-
-    // prepare the primary keys array
-    if (createTabularDatasetDto.primaryKeys) {
-      const primaryKeysArray = createTabularDatasetDto.primaryKeys.split(',');
-      primaryKeysArray.map((x) => {
-        x.trim();
+    try {
+      // prepare the primary keys array
+      if (createTabularDatasetDto.primaryKeys) {
+        const primaryKeysArray = createTabularDatasetDto.primaryKeys.split(',');
+        primaryKeysArray.map((x) => {
+          x.trim();
+        });
+        await this.tabularDataService.create(df, dataset.id, primaryKeysArray);
+      } else {
+        await this.tabularDataService.create(df, dataset.id, []);
+      }
+    } catch {
+      await this.datasetModel.delete({
+        where: {
+          id: dataset.id
+        }
       });
-      await this.tabularDataService.create(df, dataset.id, primaryKeysArray);
-    } else {
-      await this.tabularDataService.create(df, dataset.id, []);
+      throw new ForbiddenException('Cannot create dataset!');
     }
 
     datasetIdArr.push(dataset.id);

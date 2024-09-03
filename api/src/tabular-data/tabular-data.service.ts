@@ -68,8 +68,18 @@ export class TabularDataService {
       }
     });
 
-    for (let col of df.getColumns()) {
-      await this.columnsService.createFromSeries(tabularData.id, col);
+    try {
+      for (let col of df.getColumns()) {
+        await this.columnsService.createFromSeries(tabularData.id, col);
+      }
+    } catch {
+      await this.columnsService.deleteByTabularDataId(tabularData.id);
+      await this.tabularDataModel.delete({
+        where: {
+          id: tabularData.id
+        }
+      });
+      throw new ForbiddenException('Cannot create Tabular Dataset!');
     }
 
     return tabularData;
