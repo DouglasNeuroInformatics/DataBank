@@ -39,6 +39,14 @@
     "en": "View Dataset",
     "fr": "Voir l'ensemble de données"
   },
+  "totalDatasets": {
+    "en": "Total Datasets",
+    "fr": "Total des ensembles de données"
+  },
+  "totalProjects": {
+    "en": "Total Projects",
+    "fr": "Total des projets"
+  },
   "manageDatasetManagers": {
     "en": "Manage Dataset Managers",
     "fr": "Gérer les gestionnaires de jeux de données"
@@ -366,6 +374,10 @@
   "dashboard": {
     "en": "Dashboard",
     "fr": "Tableau de bord"
+  },
+  "dashboardSummary": {
+    "en": "Dashboard Summary",
+    "fr": "Résumé du tableau de bord"
   },
   "recentActivity": {
     "en": "Recent Activity",

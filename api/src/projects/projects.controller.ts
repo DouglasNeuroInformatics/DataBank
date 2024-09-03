@@ -57,6 +57,13 @@ export class ProjectsController {
     return this.projectsService.getAllProjects(currentUserId);
   }
 
+  @ApiOperation({ summary: 'Get Dashboard Summary by User Id' })
+  @Get('dashboard-summary')
+  @RouteAccess({ role: 'STANDARD' })
+  getDashboardSummary(@CurrentUser('id') currentUserId: string) {
+    return this.projectsService.getDashboardSummary(currentUserId);
+  }
+
   @ApiOperation({ summary: 'Add a User to a Project' })
   @Post('dataset/:projectId/:datasetId')
   @RouteAccess({ role: 'STANDARD' })

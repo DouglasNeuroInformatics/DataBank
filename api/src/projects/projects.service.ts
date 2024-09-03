@@ -102,6 +102,23 @@ export class ProjectsService {
     });
   }
 
+  async getDashboardSummary(currentUserId: string) {
+    const projects = await this.projectModel.findMany({
+      where: {
+        userIds: {
+          has: currentUserId
+        }
+      }
+    });
+
+    const datasets = await this.datasetService.getAllByManagerId(currentUserId);
+
+    return {
+      datasetCounts: datasets.length,
+      projectCounts: projects.length
+    };
+  }
+
   async getOneProjectDatasetView(
     projectId: string,
     datasetId: string,
