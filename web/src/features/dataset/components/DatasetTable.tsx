@@ -18,7 +18,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const queryClient = useQueryClient();
 
   const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
-    await axios.patch(`/v1/columns/metadata-permission/${columnId}`, {
+    await axios.patch(`/v1/datasets/column-metadata-permission/${tabularDataset.id}/${columnId}`, {
       newPermissionLevel
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
@@ -29,7 +29,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   const handleSetColumnDataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
-    await axios.patch(`/v1/columns/data-permission/${columnId}`, {
+    await axios.patch(`/v1/datasets/column-data-permission/${tabularDataset.id}/${columnId}`, {
       newPermissionLevel
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
@@ -40,7 +40,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   const handleToggleColumnNullable = async (columnId: string) => {
-    await axios.patch(`/v1/columns/nullable/${columnId}`);
+    await axios.patch(`/v1/datasets/column-nullable/${tabularDataset.id}/${columnId}`);
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
       message: `Column with Id ${columnId} has been modified`,
@@ -49,7 +49,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   const handleChangeColumnType = async (columnId: string, type: string) => {
-    await axios.patch(`/v1/columns/type/${columnId}`, { type });
+    await axios.patch(`/v1/datasets/column-type/${tabularDataset.id}/${columnId}`, { type });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
       message: `Column with Id ${columnId} has been modified`,
@@ -58,7 +58,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   const handleDeleteColumn = async (columnId: string) => {
-    await axios.delete(`/v1/columns/${columnId}`);
+    await axios.delete(`/v1/datasets/column/${tabularDataset.id}/${columnId}`);
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
       message: `Column with Id ${columnId} has been deleted`,

@@ -83,17 +83,34 @@ export class DatasetsService {
     return dataset;
   }
 
-  changeColumnDataPermission(datasetId: string, columnId: string, userId: string, newPermissionLevel: PermissionLevel) {
-    //
-  }
-
-  changeColumnMetadataPermission(
+  async changeColumnDataPermission(
     datasetId: string,
     columnId: string,
     userId: string,
     newPermissionLevel: PermissionLevel
   ) {
-    //
+    const dataset = await this.canModifyDataset(datasetId, userId);
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return this.columnService.changeColumnDataPermission(columnId, newPermissionLevel);
+  }
+
+  async changeColumnMetadataPermission(
+    datasetId: string,
+    columnId: string,
+    userId: string,
+    newPermissionLevel: PermissionLevel
+  ) {
+    const dataset = await this.canModifyDataset(datasetId, userId);
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return this.columnService.changeColumnMetadataPermission(columnId, newPermissionLevel);
   }
 
   async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
@@ -209,8 +226,14 @@ export class DatasetsService {
     return dataset;
   }
 
-  deleteColumnById(datasetId: string, columnId: string, userId: string) {
-    //
+  async deleteColumnById(datasetId: string, columnId: string, userId: string) {
+    const dataset = await this.canModifyDataset(datasetId, userId);
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return await this.tabularDataService.deleteColumnById(dataset.tabularData.id, columnId);
   }
 
   async deleteDataset(datasetId: string, currentUserId: string) {
@@ -743,8 +766,14 @@ export class DatasetsService {
     };
   }
 
-  mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: ColumnDataType) {
-    //
+  async mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: ColumnDataType) {
+    const dataset = await this.canModifyDataset(datasetId, userId);
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return await this.columnService.mutateColumnType(columnId, columnType);
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
@@ -793,8 +822,14 @@ export class DatasetsService {
     return await this.prisma.$transaction([updateDataset]);
   }
 
-  toggleColumnNullable(datasetId: string, columnId: string, userId: string) {
-    //
+  async toggleColumnNullable(datasetId: string, columnId: string, userId: string) {
+    const dataset = await this.canModifyDataset(datasetId, userId);
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return this.columnService.toggleColumnNullable(columnId);
   }
 
   private formatDataDownloadString(format: 'CSV' | 'TSV', datasetView: TabularDatasetView) {

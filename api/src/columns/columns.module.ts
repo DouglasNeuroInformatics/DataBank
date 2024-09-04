@@ -5,11 +5,9 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaModule } from '@/prisma/prisma.module';
 // import { TabularDataModule } from '@/tabular-data/tabular-data.module';
 
-import { ColumnsController } from './columns.controller';
 import { ColumnsService } from './columns.service';
 
 @Module({
-  controllers: [ColumnsController],
   exports: [ColumnsService],
   imports: [PrismaModule.forFeature('TabularColumn'), PrismaClient],
   providers: [ColumnsService]

@@ -92,6 +92,19 @@ export class TabularDataService {
       }
     });
   }
+
+  async deleteColumnById(tabularDataId: string, columnId: string) {
+    await this.tabularDataModel.findUnique({
+      where: {
+        id: tabularDataId
+      }
+    });
+
+    // need logic here to handle primary key deletion
+
+    return this.columnsService.deleteById(columnId);
+  }
+
   async findById(tabularDataId: string) {
     const tabularData = await this.tabularDataModel.findUnique({
       where: {
