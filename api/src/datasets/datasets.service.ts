@@ -561,7 +561,18 @@ export class DatasetsService {
     }
 
     if (!dataset.tabularData?.id) {
-      throw new NotFoundException('No such tabular data available!');
+      return {
+        createdAt: dataset.createdAt,
+        datasetType: dataset.datasetType,
+        description: dataset.description,
+        id: dataset.id,
+        isReadyToShare: dataset.isReadyToShare,
+        license: dataset.license,
+        managerIds: dataset.managerIds,
+        name: dataset.name,
+        permission: dataset.permission,
+        updatedAt: dataset.updatedAt
+      };
     }
     const datasetView = await this.tabularDataService.getViewById(
       dataset.tabularData.id,
@@ -713,9 +724,6 @@ export class DatasetsService {
       throw new ForbiddenException('The dataset is not ready for share!');
     }
 
-    if (!dataset.tabularData?.id) {
-      throw new NotFoundException('No such tabular data available!');
-    }
     let datasetView: TabularDatasetView;
     const emptyDatasetView = {
       columnIds: {},
@@ -726,6 +734,22 @@ export class DatasetsService {
       totalNumberOfColumns: 0,
       totalNumberOfRows: 0
     };
+
+    if (!dataset.tabularData?.id) {
+      return {
+        createdAt: dataset.createdAt,
+        datasetType: dataset.datasetType,
+        description: dataset.description,
+        id: dataset.id,
+        isReadyToShare: dataset.isReadyToShare,
+        license: dataset.license,
+        managerIds: dataset.managerIds,
+        name: dataset.name,
+        permission: dataset.permission,
+        updatedAt: dataset.updatedAt,
+        ...emptyDatasetView
+      };
+    }
 
     // the frontend search function should allow the user to fill a form
     // according to the form data (filter constrains), the backend should find

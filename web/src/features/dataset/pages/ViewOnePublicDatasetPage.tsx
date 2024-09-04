@@ -69,102 +69,102 @@ const ViewOnePublicDatasetPage = () => {
         <Card.Header>
           <Card.Title>{`${t('datasetName')}: ${dataset.name}`}</Card.Title>
           <Card.Description>{`${t('datasetDescription')}: ${dataset.description}`}</Card.Description>
+          <Card.Description>{`${t('createdAt')} : ${dataset.createdAt.toString()}`}</Card.Description>
+          <Card.Description>{`${t('updatedAt')} : ${dataset.updatedAt.toString()}`}</Card.Description>
         </Card.Header>
-        <Card.Content>
-          <ul>
-            <li>
-              {t('createdAt')}
-              {`: ${dataset.createdAt.toString()}`}
-            </li>
-            <li>
-              {t('updatedAt')}
-              {`: ${dataset.updatedAt.toString()}`}
-            </li>
-            <li>{`${t('datasetLicense')}: ${dataset.license}`}</li>
-            <li>
-              {t('datasetPrimaryKeys')}
-              {': '}
-              {dataset.primaryKeys.map((pk, i) => {
-                return (
-                  <span className="m-2" key={i}>
-                    {pk}
-                  </span>
-                );
-              })}
-            </li>
-          </ul>
 
-          <DatasetPagination
-            currentPage={columnPaginationDto.currentPage}
-            itemsPerPage={columnPaginationDto.itemsPerPage}
-            kind={'COLUMN'}
-            setDatasetPagination={setColumnPaginationDto}
-            totalNumberOfItems={dataset.totalNumberOfColumns}
-          />
+        {dataset.datasetType === 'TABULAR' && (
+          <>
+            <Card.Content>
+              <ul>
+                <li>{`${t('datasetLicense')}: ${dataset.license}`}</li>
+                <li>
+                  {t('datasetPrimaryKeys')}
+                  {': '}
+                  {dataset.primaryKeys.map((pk, i) => {
+                    return (
+                      <span className="m-2" key={i}>
+                        {pk}
+                      </span>
+                    );
+                  })}
+                </li>
+              </ul>
 
-          <DatasetTable
-            columnIds={dataset.columnIds}
-            columns={dataset.columns}
-            createdAt={dataset.createdAt}
-            datasetType={dataset.datasetType}
-            description={dataset.description}
-            id={dataset.id}
-            isManager={false}
-            isReadyToShare={dataset.isReadyToShare}
-            license={dataset.license}
-            managerIds={dataset.managerIds}
-            metadata={dataset.metadata}
-            name={dataset.name}
-            permission={dataset.permission}
-            primaryKeys={dataset.primaryKeys}
-            rows={dataset.rows}
-            totalNumberOfColumns={dataset.columns.length}
-            totalNumberOfRows={dataset.totalNumberOfRows}
-            updatedAt={dataset.updatedAt}
-          />
+              <DatasetPagination
+                currentPage={columnPaginationDto.currentPage}
+                itemsPerPage={columnPaginationDto.itemsPerPage}
+                kind={'COLUMN'}
+                setDatasetPagination={setColumnPaginationDto}
+                totalNumberOfItems={dataset.totalNumberOfColumns}
+              />
 
-          <DatasetPagination
-            currentPage={rowPaginationDto.currentPage}
-            itemsPerPage={rowPaginationDto.itemsPerPage}
-            kind={'ROW'}
-            setDatasetPagination={setRowPaginationDto}
-            totalNumberOfItems={dataset.totalNumberOfRows}
-          />
-        </Card.Content>
-        <Card.Footer>
-          <DropdownMenu>
-            <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
-              <Button variant="secondary">
-                {t('downloadDataset')}
-                <ChevronDownIcon className="size-[1rem]" />
-              </Button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content className="w-48">
-              <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
-                {t('downloadTsv')}
-              </DropdownMenu.Item>
-              <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
-                {t('downloadCsv')}
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu>
-          <DropdownMenu>
-            <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
-              <Button variant="secondary">
-                {t('downloadMetadata')}
-                <ChevronDownIcon className="size-[1rem]" />
-              </Button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content className="w-48">
-              <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
-                {t('downloadTsv')}
-              </DropdownMenu.Item>
-              <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
-                {t('downloadCsv')}
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu>
-        </Card.Footer>
+              <DatasetTable
+                columnIds={dataset.columnIds}
+                columns={dataset.columns}
+                createdAt={dataset.createdAt}
+                datasetType={dataset.datasetType}
+                description={dataset.description}
+                id={dataset.id}
+                isManager={false}
+                isReadyToShare={dataset.isReadyToShare}
+                license={dataset.license}
+                managerIds={dataset.managerIds}
+                metadata={dataset.metadata}
+                name={dataset.name}
+                permission={dataset.permission}
+                primaryKeys={dataset.primaryKeys}
+                rows={dataset.rows}
+                totalNumberOfColumns={dataset.columns.length}
+                totalNumberOfRows={dataset.totalNumberOfRows}
+                updatedAt={dataset.updatedAt}
+              />
+
+              <DatasetPagination
+                currentPage={rowPaginationDto.currentPage}
+                itemsPerPage={rowPaginationDto.itemsPerPage}
+                kind={'ROW'}
+                setDatasetPagination={setRowPaginationDto}
+                totalNumberOfItems={dataset.totalNumberOfRows}
+              />
+            </Card.Content>
+
+            <Card.Footer>
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+                  <Button variant="secondary">
+                    {t('downloadDataset')}
+                    <ChevronDownIcon className="size-[1rem]" />
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content className="w-48">
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
+                    {t('downloadTsv')}
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
+                    {t('downloadCsv')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+                  <Button variant="secondary">
+                    {t('downloadMetadata')}
+                    <ChevronDownIcon className="size-[1rem]" />
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content className="w-48">
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
+                    {t('downloadTsv')}
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
+                    {t('downloadCsv')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
+            </Card.Footer>
+          </>
+        )}
       </Card>
     </>
   ) : (

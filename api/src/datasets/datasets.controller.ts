@@ -167,6 +167,7 @@ export class DatasetsController {
     return this.datasetsService.editDatasetInfo(datasetId, managerId, editDatasetInfoDto);
   }
 
+  @ApiOperation({ summary: 'Change Data Permission Level of a Column' })
   @Patch('/column-data-permission/:id/:columnId')
   @RouteAccess({ role: 'STANDARD' })
   changeColumnDataPermission(
@@ -178,6 +179,7 @@ export class DatasetsController {
     return this.datasetsService.changeColumnDataPermission(datasetId, columnId, userId, newPermissionLevel);
   }
 
+  @ApiOperation({ summary: 'Change Metadata Permission Level of a Column' })
   @Patch('/column-metadata-permission/:id/:columnId')
   @RouteAccess({ role: 'STANDARD' })
   changeColumnMetadataPermission(
@@ -189,6 +191,7 @@ export class DatasetsController {
     return this.datasetsService.changeColumnMetadataPermission(datasetId, columnId, userId, newPermissionLevel);
   }
 
+  @ApiOperation({ summary: 'Delete a Column' })
   @Delete('/column/:id/:columnId')
   @RouteAccess({ role: 'STANDARD' })
   deleteColumnById(
@@ -199,6 +202,7 @@ export class DatasetsController {
     return this.datasetsService.deleteColumnById(datasetId, columnId, userId);
   }
 
+  @ApiOperation({ summary: 'Change Data Type of a Column' })
   @Patch('/column-type/:id/:columnId')
   @RouteAccess({ role: 'STANDARD' })
   mutateColumnType(
@@ -210,6 +214,7 @@ export class DatasetsController {
     return this.datasetsService.mutateColumnType(datasetId, columnId, userId, columnType);
   }
 
+  @ApiOperation({ summary: 'Toggle Column Data Nullable' })
   @Patch('column-nullable/:id/:columnId')
   @RouteAccess({ role: 'STANDARD' })
   toggleColumnNullable(
