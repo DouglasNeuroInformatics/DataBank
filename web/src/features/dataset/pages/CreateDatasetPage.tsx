@@ -15,7 +15,7 @@ import { LoadingFallback } from '@/components';
 
 const $CreateDatasetFormValidation = z.object({
   description: z.string().optional(),
-  datasetType: z.enum(['BASE', 'BINARY', 'TABULAR']),
+  datasetType: z.enum(['BASE', 'TABULAR']),
   license: z.enum(['PUBLIC', 'OTHER']),
   name: z.string().min(1),
   primaryKeys: z.string().optional()
@@ -101,7 +101,7 @@ const CreateDatasetPage = () => {
                 label: t('datasetType'),
                 options: {
                   BASE: 'Base',
-                  BINARY: 'Binary',
+                  // BINARY: 'Binary',
                   TABULAR: 'Tabular'
                 },
                 variant: 'select'

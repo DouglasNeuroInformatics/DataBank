@@ -83,6 +83,19 @@ export class DatasetsService {
     return dataset;
   }
 
+  changeColumnDataPermission(datasetId: string, columnId: string, userId: string, newPermissionLevel: PermissionLevel) {
+    //
+  }
+
+  changeColumnMetadataPermission(
+    datasetId: string,
+    columnId: string,
+    userId: string,
+    newPermissionLevel: PermissionLevel
+  ) {
+    //
+  }
+
   async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
     const dataset = await this.canModifyDataset(datasetId, currentUserId);
 
@@ -196,6 +209,10 @@ export class DatasetsService {
     return dataset;
   }
 
+  deleteColumnById(datasetId: string, columnId: string, userId: string) {
+    //
+  }
+
   async deleteDataset(datasetId: string, currentUserId: string) {
     const dataset = await this.canModifyDataset(datasetId, currentUserId);
 
@@ -228,31 +245,6 @@ export class DatasetsService {
     }
 
     return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
-  }
-
-  changeColumnDataPermission(datasetId: string, columnId: string, userId: string, newPermissionLevel: PermissionLevel) {
-    //
-  }
-
-  changeColumnMetadataPermission(
-    datasetId: string,
-    columnId: string,
-    userId: string,
-    newPermissionLevel: PermissionLevel
-  ) {
-    //
-  }
-
-  deleteColumnById(datasetId: string, columnId: string, userId: string) {
-    //
-  }
-
-  mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: ColumnDataType) {
-    //
-  }
-
-  toggleColumnNullable(datasetId: string, columnId: string, userId: string) {
-    //
   }
 
   async downloadDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
@@ -751,6 +743,10 @@ export class DatasetsService {
     };
   }
 
+  mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: ColumnDataType) {
+    //
+  }
+
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
     const dataset = await this.canModifyDataset(datasetId, managerId);
 
@@ -795,6 +791,10 @@ export class DatasetsService {
       }
     });
     return await this.prisma.$transaction([updateDataset]);
+  }
+
+  toggleColumnNullable(datasetId: string, columnId: string, userId: string) {
+    //
   }
 
   private formatDataDownloadString(format: 'CSV' | 'TSV', datasetView: TabularDatasetView) {
