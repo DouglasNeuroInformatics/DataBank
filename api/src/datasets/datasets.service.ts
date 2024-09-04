@@ -1,5 +1,6 @@
 import type {
   AddProjectDatasetColumns,
+  ColumnDataType,
   DatasetCardProps,
   DatasetViewPaginationDto,
   EditDatasetInfoDto,
@@ -8,6 +9,7 @@ import type {
 } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
+import { inferSchema, initParser } from 'udsv';
 
 import { ColumnsService } from '@/columns/columns.service.js';
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
@@ -140,14 +142,19 @@ export class DatasetsService {
       csvString = file;
     } else {
       // file received through the network is stored in memory buffer which is converted to a string
-      csvString = file.buffer.toString().replaceAll('\t', ','); // polars has a bug parsing tsv, this is a hack for it to work
+      csvString = file.buffer.toString(); // polars has a bug parsing tsv, this is a hack for it to work
     }
+
+    let schema = inferSchema(csvString);
+    let parser = initParser(schema);
+    let typedObjs = parser.typedObjs(csvString);
 
     if (createTabularDatasetDto.isJSON.toLowerCase() === 'true') {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
     } else {
-      df = pl.readCSV(csvString, { tryParseDates: true });
+      // df = pl.readCSV(csvString, { tryParseDates: true });
+      df = pl.readJSON(JSON.stringify(typedObjs));
     }
 
     const dataset = await this.datasetModel.create({
@@ -221,6 +228,31 @@ export class DatasetsService {
     }
 
     return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
+  }
+
+  changeColumnDataPermission(datasetId: string, columnId: string, userId: string, newPermissionLevel: PermissionLevel) {
+    //
+  }
+
+  changeColumnMetadataPermission(
+    datasetId: string,
+    columnId: string,
+    userId: string,
+    newPermissionLevel: PermissionLevel
+  ) {
+    //
+  }
+
+  deleteColumnById(datasetId: string, columnId: string, userId: string) {
+    //
+  }
+
+  mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: ColumnDataType) {
+    //
+  }
+
+  toggleColumnNullable(datasetId: string, columnId: string, userId: string) {
+    //
   }
 
   async downloadDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {

@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-classes */
-import type { DatasetViewPaginationDto, EditDatasetInfoDto } from '@databank/types';
+import type { ColumnDataType, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevel } from '@databank/types';
 import { CurrentUser, ParseObjectIdPipe } from '@douglasneuroinformatics/libnest/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -167,13 +167,56 @@ export class DatasetsController {
     return this.datasetsService.editDatasetInfo(datasetId, managerId, editDatasetInfoDto);
   }
 
-  // @Patch(':id/:column')
-  // @RouteAccess({ role: 'STANDARD' })
-  // updateColumn(
-  //   @Body() dto: UpdateDatasetColumnDto,
-  //   @Param('id', ParseIdPipe) id: ObjectId,
-  //   @Param('column') column?: string
-  // ) {
-  //   return this.datasetsService.updateColumn(dto, id, column);
-  // }
+  @Patch('/column-data-permission/:id/:columnId')
+  @RouteAccess({ role: 'STANDARD' })
+  changeColumnDataPermission(
+    @Param('id') datasetId: string,
+    @Param('columnId') columnId: string,
+    @CurrentUser('id') userId: string,
+    @Body('newPermissionLevel') newPermissionLevel: PermissionLevel
+  ) {
+    return this.datasetsService.changeColumnDataPermission(datasetId, columnId, userId, newPermissionLevel);
+  }
+
+  @Patch('/column-metadata-permission/:id/:columnId')
+  @RouteAccess({ role: 'STANDARD' })
+  changeColumnMetadataPermission(
+    @Param('id') datasetId: string,
+    @Param('columnId') columnId: string,
+    @CurrentUser('id') userId: string,
+    @Body('newPermissionLevel') newPermissionLevel: PermissionLevel
+  ) {
+    return this.datasetsService.changeColumnMetadataPermission(datasetId, columnId, userId, newPermissionLevel);
+  }
+
+  @Delete('/column/:id/:columnId')
+  @RouteAccess({ role: 'STANDARD' })
+  deleteColumnById(
+    @Param('id') datasetId: string,
+    @Param('columnId') columnId: string,
+    @CurrentUser('id') userId: string
+  ) {
+    return this.datasetsService.deleteColumnById(datasetId, columnId, userId);
+  }
+
+  @Patch('/column-type/:id/:columnId')
+  @RouteAccess({ role: 'STANDARD' })
+  mutateColumnType(
+    @Param('id') datasetId: string,
+    @Param('columnId') columnId: string,
+    @CurrentUser('id') userId: string,
+    @Body('type') columnType: ColumnDataType
+  ) {
+    return this.datasetsService.mutateColumnType(datasetId, columnId, userId, columnType);
+  }
+
+  @Patch('column-nullable/:id/:columnId')
+  @RouteAccess({ role: 'STANDARD' })
+  toggleColumnNullable(
+    @Param('id') datasetId: string,
+    @Param('columnId') columnId: string,
+    @CurrentUser('id') userId: string
+  ) {
+    return this.datasetsService.toggleColumnNullable(datasetId, columnId, userId);
+  }
 }
