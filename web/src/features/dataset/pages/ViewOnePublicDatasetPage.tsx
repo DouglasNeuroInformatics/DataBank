@@ -1,11 +1,13 @@
 /* eslint-disable perfectionist/sort-objects */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDownload } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { type RouteObject, useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
@@ -14,8 +16,8 @@ import { DatasetPagination } from '../components/DatasetPagination';
 import DatasetTable from '../components/DatasetTable';
 
 const ViewOnePublicDatasetPage = () => {
-  const params = useParams();
-  const [dataset, setDataset] = useState<TabularDataset | null>(null);
+  const { t } = useTranslation('common');
+  const params = useParams<'datasetId'>();
   const download = useDownload();
 
   const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto>({
@@ -28,96 +30,70 @@ const ViewOnePublicDatasetPage = () => {
     itemsPerPage: 10
   });
 
-  useEffect(() => {
-    const fetchDataset = () => {
-      axios
-        .post<TabularDataset>(`/v1/datasets/public/${params.id}`, {
-          columnPaginationDto,
-          rowPaginationDto
-        })
-        .then((response) => {
-          setDataset(response.data);
-        })
-        .catch(console.error);
-    };
-    void fetchDataset();
-  }, [params.id, rowPaginationDto, columnPaginationDto]);
+  const datasetQuery = useQuery({
+    queryFn: async () => {
+      const response = await axios.post<TabularDataset>(`/v1/datasets/public/${params.datasetId}`, {
+        columnPaginationDto,
+        rowPaginationDto
+      });
+      return response.data;
+    },
+    queryKey: ['dataset-query', params.datasetId, columnPaginationDto, rowPaginationDto]
+  });
+
+  const dataset = datasetQuery.data;
 
   const handleDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
-    const delimiter = format === 'CSV' ? ',' : '\t';
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
-    let resultString = data.columns.join(delimiter) + '\n';
-    for (let row of data.rows) {
-      resultString += Object.values(row).join(delimiter) + '\n';
-    }
-
-    // axios request to get the data string for the entire dataset
-    // once the request is resolved, send it to the download function
-    void download(filename, resultString);
+    axios
+      .get<string>(`/v1/datasets/public/download-data/${data.id}/${format}`)
+      .then((response) => {
+        void download(filename, response.data);
+      })
+      .catch(console.error);
   };
 
   const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
-    const delimiter = format === 'CSV' ? ',' : '\t';
     const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
-
-    // axios request to get the meta data string for the entire dataset
-    // once the request is resolved, send it to the download function
-
-    const metaDataHeader = [
-      'column_name',
-      'column_type',
-      'nullable',
-      'count',
-      'nullCount',
-      'max',
-      'min',
-      'mean',
-      'median',
-      'mode',
-      'std',
-      'distribution'
-    ];
-
-    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-    for (let columnName of Object.keys(data.metadata)) {
-      metadataRowsString +=
-        columnName +
-        delimiter +
-        data.metadata[columnName]?.kind +
-        delimiter +
-        data.metadata[columnName]?.nullable +
-        delimiter +
-        data.metadata[columnName]?.count +
-        delimiter +
-        data.metadata[columnName]?.nullCount +
-        delimiter +
-        data.metadata[columnName]?.max +
-        delimiter +
-        data.metadata[columnName]?.min +
-        delimiter +
-        data.metadata[columnName]?.mean +
-        delimiter +
-        data.metadata[columnName]?.median +
-        delimiter +
-        data.metadata[columnName]?.mode +
-        delimiter +
-        data.metadata[columnName]?.std +
-        delimiter +
-        JSON.stringify(data.metadata[columnName]?.distribution) +
-        delimiter +
-        '\n';
-    }
-    void download(filename, metadataRowsString);
+    axios
+      .get<string>(`/v1/datasets/public/download-metadata/${data.id}/${format}`)
+      .then((response) => {
+        void download(filename, response.data);
+      })
+      .catch(console.error);
   };
 
   return dataset ? (
     <>
       <Card>
         <Card.Header>
-          <Card.Title>{dataset.name}</Card.Title>
-          <Card.Description>{dataset.description}</Card.Description>
+          <Card.Title>{`${t('datasetName')}: ${dataset.name}`}</Card.Title>
+          <Card.Description>{`${t('datasetDescription')}: ${dataset.description}`}</Card.Description>
         </Card.Header>
         <Card.Content>
+          <ul>
+            <li>
+              {t('createdAt')}
+              {`: ${dataset.createdAt.toString()}`}
+            </li>
+            <li>
+              {t('updatedAt')}
+              {`: ${dataset.updatedAt.toString()}`}
+            </li>
+            <li>{`${t('datasetLicense')}: ${dataset.license}`}</li>
+            <li>
+              {t('datasetPrimaryKeys')}
+              {': '}
+              {dataset.primaryKeys.map((pk, i) => {
+                return (
+                  <span className="m-2" key={i}>
+                    {pk}
+                  </span>
+                );
+              })}
+            </li>
+          </ul>
+
           <DatasetPagination
             currentPage={columnPaginationDto.currentPage}
             itemsPerPage={columnPaginationDto.itemsPerPage}
@@ -142,8 +118,8 @@ const ViewOnePublicDatasetPage = () => {
             permission={dataset.permission}
             primaryKeys={dataset.primaryKeys}
             rows={dataset.rows}
-            totalNumberOfColumns={0}
-            totalNumberOfRows={0}
+            totalNumberOfColumns={dataset.columns.length}
+            totalNumberOfRows={dataset.totalNumberOfRows}
             updatedAt={dataset.updatedAt}
           />
 
@@ -156,35 +132,38 @@ const ViewOnePublicDatasetPage = () => {
           />
         </Card.Content>
         <Card.Footer>
-          <Button className="m-2" variant={'secondary'}>
-            <DropdownMenu>
-              <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
-                Download Dataset
+          <DropdownMenu>
+            <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+              <Button variant="secondary">
+                {t('downloadDataset')}
                 <ChevronDownIcon className="size-[1rem]" />
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content className="w-48">
-                <DropdownMenu.Item onClick={() => handleDataDownload('TSV', dataset)}>Download TSV</DropdownMenu.Item>
-                <DropdownMenu.Item onClick={() => handleDataDownload('CSV', dataset)}>Download CSV</DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu>
-          </Button>
-
-          <Button className="m-2" variant={'secondary'}>
-            <DropdownMenu>
-              <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
-                Download Metadata
+              </Button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content className="w-48">
+              <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
+                {t('downloadTsv')}
+              </DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
+                {t('downloadCsv')}
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+              <Button variant="secondary">
+                {t('downloadMetadata')}
                 <ChevronDownIcon className="size-[1rem]" />
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content className="w-48">
-                <DropdownMenu.Item onClick={() => handleMetaDataDownload('TSV', dataset)}>
-                  Download TSV
-                </DropdownMenu.Item>
-                <DropdownMenu.Item onClick={() => handleMetaDataDownload('CSV', dataset)}>
-                  Download CSV
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu>
-          </Button>
+              </Button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content className="w-48">
+              <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
+                {t('downloadTsv')}
+              </DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
+                {t('downloadCsv')}
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu>
         </Card.Footer>
       </Card>
     </>
@@ -193,7 +172,7 @@ const ViewOnePublicDatasetPage = () => {
   );
 };
 
-export const viewOnePublicDatasetRoute: RouteObject = {
-  path: 'dataset/:id',
+export const ViewOnePublicDatasetRoute: RouteObject = {
+  path: 'dataset/:datasetId',
   element: <ViewOnePublicDatasetPage />
 };

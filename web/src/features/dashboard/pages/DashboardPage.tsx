@@ -1,64 +1,28 @@
 import React from 'react';
 
+import { Heading } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from 'react-i18next';
 import type { RouteObject } from 'react-router-dom';
 
-import { Heading } from '@/components/Heading';
+import { Summary } from '../components/Summary';
 
-import { ActivityCard } from '../components/ActivityCard';
-
-const ONE_DAY = 86400000;
-
-const items = [
-  {
-    activity: {
-      datasetName: 'Iris',
-      kind: 'UPDATED_DATASET'
-    },
-    fullName: 'Jane Doe',
-    timestamp: Date.now()
-  },
-  {
-    activity: {
-      datasetName: 'Iris',
-      kind: 'UPDATED_DATASET'
-    },
-    fullName: 'Jane Doe',
-    timestamp: Date.now() - ONE_DAY
-  },
-  {
-    activity: {
-      datasetName: 'Iris',
-      kind: 'UPDATED_DATASET'
-    },
-    fullName: 'Jane Doe',
-    timestamp: Date.now() - ONE_DAY * 2
-  },
-  {
-    activity: {
-      datasetName: 'Iris',
-      kind: 'CREATED_DATASET'
-    },
-    fullName: 'Jane Doe',
-    timestamp: Date.now() - ONE_DAY * 3
-  }
-] as const;
-
-export const DashboardPage = () => {
+const DashboardPage = () => {
   const { t } = useTranslation('common');
+
   return (
-    <div>
-      <Heading title={t('dashboard')} />
-      <div>
-        <h3 className="mb-1 text-lg font-medium">{t('recentActivity')}</h3>
-        <ul className="divide-y divide-slate-300 dark:divide-slate-600">
-          {items.map((item) => (
-            <li className="py-4" key={item.timestamp}>
-              <ActivityCard {...item} />
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="flex flex-grow flex-col justify-center text-center">
+      <Heading className="m-5" variant="h1">
+        {t('dashboard')}
+      </Heading>
+      <hr />
+      <section className="flex flex-grow flex-col gap-5">
+        <div className="flex w-full flex-col flex-wrap justify-between gap-3 md:flex-row md:items-center">
+          <Heading className="whitespace-nowrap m-3" variant="h3">
+            {t('dashboardSummary')}
+          </Heading>
+        </div>
+        <Summary />
+      </section>
     </div>
   );
 };
