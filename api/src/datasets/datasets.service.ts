@@ -198,8 +198,8 @@ export class DatasetsService {
       // prepare the primary keys array
       if (createTabularDatasetDto.primaryKeys) {
         const primaryKeysArray = createTabularDatasetDto.primaryKeys.split(',');
-        primaryKeysArray.map((x) => {
-          x.trim();
+        primaryKeysArray.map((primaryKey) => {
+          primaryKey.trim();
         });
         await this.tabularDataService.create(df, dataset.id, primaryKeysArray);
       } else {
