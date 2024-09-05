@@ -132,6 +132,10 @@ export class DatasetsService {
     return await this.tabularDataService.changeTabularColumnsMetadataPermission(datasetId, permissionLevel);
   }
 
+  async getColumnLengthById(columnId: string) {
+    return await this.columnService.getLengthById(columnId);
+  }
+
   async createDataset(
     createTabularDatasetDto: CreateTabularDatasetDto,
     file: Express.Multer.File | string,

@@ -50,6 +50,30 @@ export class ProjectsController {
     return this.projectsService.deleteProject(currentUserId, projectId);
   }
 
+  @ApiOperation({ summary: 'Download Project Dataset Data' })
+  @Get('/download-data/:projectId/:datasetId/:format')
+  @RouteAccess({ role: 'STANDARD' })
+  downloadProjectDatasetById(
+    @Param('projectId') projectId: string,
+    @Param('datasetId') datasetId: string,
+    @CurrentUser('id') currentUserId: string,
+    @Param('format') format: 'CSV' | 'TSV'
+  ) {
+    return this.projectsService.downloadDatasetById(projectId, datasetId, currentUserId, format);
+  }
+
+  @ApiOperation({ summary: 'Download Project Dataset Metadata' })
+  @Get('/download-metadata/:projectId/:datasetId/:format')
+  @RouteAccess({ role: 'STANDARD' })
+  downloadProjectDatasetMetadataById(
+    @Param('projectId') projectId: string,
+    @Param('datasetId') datasetId: string,
+    @CurrentUser('id') currentUserId: string,
+    @Param('format') format: 'CSV' | 'TSV'
+  ) {
+    return this.projectsService.downloadDatasetMetadataById(projectId, datasetId, currentUserId, format);
+  }
+
   @ApiOperation({ summary: 'Get All Available Projects' })
   @Get()
   @RouteAccess({ role: 'STANDARD' })
@@ -64,7 +88,7 @@ export class ProjectsController {
     return this.projectsService.getDashboardSummary(currentUserId);
   }
 
-  @ApiOperation({ summary: 'Add a User to a Project' })
+  @ApiOperation({ summary: 'Get One Project Dataset View' })
   @Post('dataset/:projectId/:datasetId')
   @RouteAccess({ role: 'STANDARD' })
   getOneProjectDatasetView(
@@ -119,7 +143,7 @@ export class ProjectsController {
     return this.projectsService.removeUser(currentUserId, projectId, userIdToRemove);
   }
 
-  @ApiOperation({ summary: 'Delete a Project' })
+  @ApiOperation({ summary: 'Update a Project' })
   @RouteAccess({ role: 'STANDARD' })
   @Patch('/update/:id')
   updateProject(

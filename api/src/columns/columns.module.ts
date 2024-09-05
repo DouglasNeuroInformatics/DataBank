@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
-// import { DatasetsModule } from '@/datasets/datasets.module';
 import { PrismaModule } from '@/prisma/prisma.module';
-// import { TabularDataModule } from '@/tabular-data/tabular-data.module';
 
 import { ColumnsService } from './columns.service';
 

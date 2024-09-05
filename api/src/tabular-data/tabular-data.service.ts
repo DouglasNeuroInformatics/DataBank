@@ -152,7 +152,6 @@ export class TabularDataService {
             if (!rows[i]) {
               rows[i] = {};
             }
-
             rows[i][currColumnView.name] = entry.value!;
           });
           break;
@@ -207,7 +206,6 @@ export class TabularDataService {
       totalNumberOfColumns: projectDatasetDto.columns.length,
       totalNumberOfRows: rows.length
     };
-
     return dataView;
   }
 
