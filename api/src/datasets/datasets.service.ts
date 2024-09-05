@@ -9,7 +9,6 @@ import type {
 } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
-import { inferSchema, initParser } from 'udsv';
 
 import { ColumnsService } from '@/columns/columns.service.js';
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
@@ -167,24 +166,22 @@ export class DatasetsService {
 
     let csvString: string;
     let df: DataFrame;
+    let separator = ',';
 
     if (typeof file === 'string') {
       csvString = file;
     } else {
       // file received through the network is stored in memory buffer which is converted to a string
+      separator = file.originalname.endsWith('.tsv') ? '\t' : ',';
       csvString = file.buffer.toString(); // polars has a bug parsing tsv, this is a hack for it to work
     }
-
-    let schema = inferSchema(csvString);
-    let parser = initParser(schema);
-    let typedObjs = parser.typedObjs(csvString);
 
     if (createTabularDatasetDto.isJSON.toLowerCase() === 'true') {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
     } else {
-      // df = pl.readCSV(csvString, { tryParseDates: true });
-      df = pl.readJSON(JSON.stringify(typedObjs));
+      df = pl.readCSV(csvString, { quoteChar: '"', sep: separator, tryParseDates: true });
+      // df = pl.readJSON(JSON.stringify(typedObjs));
     }
 
     const dataset = await this.datasetModel.create({
