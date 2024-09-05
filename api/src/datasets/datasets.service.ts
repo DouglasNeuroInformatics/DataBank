@@ -236,15 +236,7 @@ export class DatasetsService {
   async deleteDataset(datasetId: string, currentUserId: string) {
     const dataset = await this.canModifyDataset(datasetId, currentUserId);
 
-    if (!dataset.tabularData) {
-      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
-    }
-
-    const deleteTabularData = this.tabularDataService.deleteById(dataset.tabularData.id);
-
-    const deleteColumns = this.columnService.deleteByTabularDataId(dataset.tabularData.id);
-
-    const deleteTargetDataset = this.datasetModel.delete({
+    let deleteTargetDataset = this.datasetModel.delete({
       where: {
         id: dataset.id
       }
@@ -264,7 +256,16 @@ export class DatasetsService {
       );
     }
 
-    return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
+    if (dataset.datasetType === 'TABULAR') {
+      if (!dataset.tabularData) {
+        throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+      }
+      const deleteColumns = this.columnService.deleteByTabularDataId(dataset.tabularData.id);
+      const deleteTabularData = this.tabularDataService.deleteById(dataset.tabularData.id);
+      return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
+    }
+
+    return await this.prisma.$transaction([...updateManagers, deleteTargetDataset]);
   }
 
   async downloadDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
