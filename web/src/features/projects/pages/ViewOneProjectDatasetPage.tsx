@@ -51,15 +51,15 @@ const ViewOneProjectDatasetPage = () => {
 
   const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
 
-  const deleteDataset = (datasetId: string) => {
+  const deleteDataset = () => {
     axios
-      .delete(`/v1/datasets/${datasetId}`)
+      .delete(`/v1/projects/remove-dataset/${params.projectId}/${params.datasetId}`)
       .then(() => {
         notifications.addNotification({
           type: 'success',
-          message: `Dataset with Id ${datasetId} has been deleted`
+          message: `Dataset with Id ${params.datasetId} has been deleted`
         });
-        navigate('/portal/datasets');
+        navigate(-1);
       })
       .catch(console.error);
   };
@@ -139,7 +139,7 @@ const ViewOneProjectDatasetPage = () => {
           <Card.Description>{`${t('datasetDescription')}: ${dataset.description}`}</Card.Description>
           {isManager && (
             <div className="flex justify-between">
-              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(dataset.id)}>
+              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset()}>
                 {t('deleteDataset')}
               </Button>
             </div>

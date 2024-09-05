@@ -97,6 +97,17 @@ export class ProjectsController {
     return this.projectsService.isProjectManager(currentUserId, projectId);
   }
 
+  @ApiOperation({ summary: 'Remove a Dataset from a Project' })
+  @RouteAccess({ role: 'STANDARD' })
+  @Delete('/remove-dataset/:projectId/:datasetId')
+  removeDataset(
+    @CurrentUser('id') currentUserId: string,
+    @Param('projectId') projectId: string,
+    @Param('datasetId') datasetIdToRemove: string
+  ) {
+    return this.projectsService.removeDataset(currentUserId, projectId, datasetIdToRemove);
+  }
+
   @ApiOperation({ summary: 'Delete a Project' })
   @RouteAccess({ role: 'STANDARD' })
   @Delete('/remove-user/:projectId/:id')
