@@ -506,9 +506,13 @@ export class TabularDataService {
 
   private primaryKeyCheck(primaryKeys: string[], df: DataFrame): boolean {
     for (let key of primaryKeys) {
-      const col = df.getColumn(key);
-      if (col.nullCount() > 0) {
-        return false;
+      try {
+        const col = df.getColumn(key);
+        if (col.nullCount() > 0) {
+          return false;
+        }
+      } catch {
+        throw new NotFoundException(`Cannot find primary key ${key} or the primary key column contains null value`);
       }
     }
 

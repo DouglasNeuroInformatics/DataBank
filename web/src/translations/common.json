@@ -275,6 +275,10 @@
     "en": "successfully created dataset",
     "fr": "ensemble de données créé avec succès"
   },
+  "createDatasetFailure": {
+    "en": "Error: unable to created dataset",
+    "fr": "Erreur : impossible de créer le jeu de données"
+  },
   "unexpectedValue": {
     "en": "Unexpected Value",
     "fr": "Valeur inattendue"
