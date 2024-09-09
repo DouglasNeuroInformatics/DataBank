@@ -141,10 +141,20 @@ export class TabularDataService {
         rowMin: projectDatasetDto.rowFilter ? projectDatasetDto.rowFilter.rowMin : 0
       };
       const currColumnView = await this.columnsService.getColumnView(getColumnViewDto);
-      // 2. need to handle column type filter HANDLE HERE
       columns.push(currColumnView.name);
       columnIds[currColumnView.name] = currColumnView.id;
-      metaData[currColumnView.name] = currColumnView.summary;
+      metaData[currColumnView.name] = {
+        count: currColumnView.count,
+        kind: currColumnView.kind,
+        max: currColumnView.max,
+        mean: currColumnView.mean,
+        median: currColumnView.median,
+        min: currColumnView.min,
+        mode: currColumnView.mode,
+        nullCount: currColumnView.nullCount,
+        nullable: currColumnView.nullable,
+        std: currColumnView.std
+      };
 
       switch (currColumnView.kind) {
         case 'STRING':

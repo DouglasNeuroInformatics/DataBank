@@ -1,7 +1,6 @@
 import type { DatasetInfo, DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/types';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
-import type { ColumnsService } from '@/columns/columns.service';
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service';
 import type { Model } from '@/prisma/prisma.types';
