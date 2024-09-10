@@ -84,6 +84,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                       <>
                         <DropdownMenu.Group>
                           <DropdownMenu.Item
+                            disabled={tabularDataset.primaryKeys.includes(column)}
                             onClick={() => void handleToggleColumnNullable(tabularDataset.columnIds[column]!)}
                           >
                             {t('toggleColumnNullable')}
@@ -91,7 +92,10 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                               <QuestionMarkCircleIcon height={14} width={14} />
                             </DropdownMenu.Shortcut>
                           </DropdownMenu.Item>
-                          <DropdownMenu.Item onClick={() => void handleDeleteColumn(tabularDataset.columnIds[column]!)}>
+                          <DropdownMenu.Item
+                            disabled={tabularDataset.primaryKeys.includes(column)}
+                            onClick={() => void handleDeleteColumn(tabularDataset.columnIds[column]!)}
+                          >
                             {t('deleteColumn')}
                             <DropdownMenu.Shortcut>
                               <TrashIcon height={14} width={14} />
@@ -137,23 +141,27 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                             </DropdownMenu.Portal>
                           </DropdownMenu.Sub>
                           <DropdownMenu.Sub>
-                            <DropdownMenu.SubTrigger>{t('changeColumnType')}</DropdownMenu.SubTrigger>
-                            <DropdownMenu.Portal>
-                              <DropdownMenu.SubContent>
-                                {(['INT', 'FLOAT', 'STRING', 'BOOLEAN', 'DATETIME', 'ENUM'] as const)
-                                  .filter((x) => x !== tabularDataset.metadata[column]?.kind)
-                                  .map((option) => (
-                                    <DropdownMenu.Item
-                                      key={option}
-                                      onClick={() =>
-                                        void handleChangeColumnType(tabularDataset.columnIds[column]!, option)
-                                      }
-                                    >
-                                      {option}
-                                    </DropdownMenu.Item>
-                                  ))}
-                              </DropdownMenu.SubContent>
-                            </DropdownMenu.Portal>
+                            {!tabularDataset.primaryKeys.includes(column) && (
+                              <>
+                                <DropdownMenu.SubTrigger>{t('changeColumnType')}</DropdownMenu.SubTrigger>
+                                <DropdownMenu.Portal>
+                                  <DropdownMenu.SubContent>
+                                    {(['INT', 'FLOAT', 'STRING', 'BOOLEAN', 'DATETIME', 'ENUM'] as const)
+                                      .filter((x) => x !== tabularDataset.metadata[column]?.kind)
+                                      .map((option) => (
+                                        <DropdownMenu.Item
+                                          key={option}
+                                          onClick={() =>
+                                            void handleChangeColumnType(tabularDataset.columnIds[column]!, option)
+                                          }
+                                        >
+                                          {option}
+                                        </DropdownMenu.Item>
+                                      ))}
+                                  </DropdownMenu.SubContent>
+                                </DropdownMenu.Portal>
+                              </>
+                            )}
                           </DropdownMenu.Sub>
                         </DropdownMenu.Group>
                       </>
