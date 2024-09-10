@@ -616,7 +616,7 @@ export class DatasetsService {
     });
 
     if (!dataset) {
-      throw new NotFoundException();
+      throw new NotFoundException('Dataset not found!');
     }
 
     if (!dataset.tabularData?.id) {

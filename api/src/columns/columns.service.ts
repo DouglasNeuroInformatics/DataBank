@@ -371,7 +371,7 @@ export class ColumnsService {
         columnMetadata.kind = 'DATETIME';
         columnMetadata.nullable = columnView.nullable;
         columnMetadata.max = columnView.summary.datetimeSummary?.max;
-        columnMetadata.min = columnView.summary.datetimeSummary?.max;
+        columnMetadata.min = columnView.summary.datetimeSummary?.min;
         break;
     }
 
@@ -818,8 +818,8 @@ export class ColumnsService {
         return {
           count: currSeries.len() - currSeries.nullCount(),
           datetimeSummary: {
-            max: new Date(),
-            min: new Date('1970-01-01')
+            max: new Date(currSeries.max() * 24 * 3600 * 1000),
+            min: new Date(currSeries.min() * 24 * 3600 * 1000)
           },
           enumSummary: null,
           floatSummary: null,
