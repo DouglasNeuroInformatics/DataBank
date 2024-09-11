@@ -5,10 +5,10 @@ import type { PermissionLevel, TabularDataset } from '@databank/types';
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { Table } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 
 export type DatasetTableProps = { isManager: boolean } & TabularDataset;
 

@@ -1,8 +1,6 @@
-import React from 'react';
-
 import { Button } from '@douglasneuroinformatics/libui/components';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { HeroIcon } from './HeroIcon';

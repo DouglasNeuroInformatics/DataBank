@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 
 import type { AuthPayload, EmailConfirmationProcedureInfo } from '@databank/types';
-import { useNotificationsStore } from '@douglasneuroinformatics/ui';
+import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
