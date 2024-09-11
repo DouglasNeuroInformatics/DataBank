@@ -1,7 +1,5 @@
-import React from 'react';
-
 import { Heading } from '@douglasneuroinformatics/libui/components';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import type { RouteObject } from 'react-router-dom';
 
 import { Summary } from '../components/Summary';

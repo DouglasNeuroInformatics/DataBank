@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';

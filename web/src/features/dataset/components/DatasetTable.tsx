@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-import React from 'react';
 
 import type { PermissionLevel, TabularDataset } from '@databank/types';
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';

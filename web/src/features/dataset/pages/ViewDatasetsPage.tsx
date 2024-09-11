@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import type { DatasetCardProps } from '@databank/types';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { type RouteObject, useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';

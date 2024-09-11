@@ -1,7 +1,5 @@
-import React from 'react';
-
 import { Button, Dropdown, Table } from '@douglasneuroinformatics/ui';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';

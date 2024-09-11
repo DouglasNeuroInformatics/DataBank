@@ -1,5 +1,4 @@
 /* eslint-disable perfectionist/sort-objects */
-import React from 'react';
 
 import type { EditProjectInfoDto } from '@databank/types';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';

@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
-import React from 'react';
 
 import { range } from '@douglasneuroinformatics/libjs';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { clsx } from 'clsx';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 
 const CODE_LENGTH = 6;
 

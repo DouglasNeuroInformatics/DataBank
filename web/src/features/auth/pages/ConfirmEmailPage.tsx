@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import React from 'react';
 
 import type { AuthPayload, EmailConfirmationProcedureInfo } from '@databank/types';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';

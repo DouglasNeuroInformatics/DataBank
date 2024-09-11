@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import type { RouteObject } from 'react-router-dom';
 

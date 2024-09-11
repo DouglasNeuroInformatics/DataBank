@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import React from 'react';
 
 import type { AuthPayload, LoginCredentials } from '@databank/types';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';

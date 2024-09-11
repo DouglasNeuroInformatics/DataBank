@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { RouteObject } from 'react-router-dom';
 
 import { PublicLayout } from '@/components/Layout/PublicLayout';
