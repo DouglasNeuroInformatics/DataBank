@@ -6,12 +6,12 @@
   "license": "AGPL-3.0",
   "scripts": {
     "build": "tsc && cross-env NODE_ENV=production pnpm exec vite build",
+    "build-storybook": "storybook build",
     "dev": "env-cmd -f ../.env pnpm vite",
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src",
     "preview": "vite preview",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "storybook": "storybook dev -p 6006"
   },
   "dependencies": {
     "@douglasneuroinformatics/libjs": "^0.7.0",
