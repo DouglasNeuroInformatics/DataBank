@@ -125,7 +125,7 @@ export type DatasetInfo = {
 export type DatasetCardProps = { isManager: boolean } & DatasetInfo;
 
 export type TabularDataRow = {
-  [key: string]: Date | boolean | number | string;
+  [key: string]: boolean | Date | number | string;
 };
 
 export type TabularDatasetView = {
@@ -162,8 +162,8 @@ export type TabularDataset = {
       median?: number;
       min?: number;
       mode?: number;
-      nullCount: number;
       nullable: boolean;
+      nullCount: number;
       std?: number;
     };
   };
@@ -252,8 +252,8 @@ export type ProjectColumnTrim = {
 
 export type ProjectColumn = {
   columnId: string;
-  hash: ProjectColumnHash | null;
-  trim: ProjectColumnTrim | null;
+  hash: null | ProjectColumnHash;
+  trim: null | ProjectColumnTrim;
 };
 
 export type ProjectRowFilter = {
@@ -263,9 +263,9 @@ export type ProjectRowFilter = {
 
 export type ProjectDatasetDto = {
   columns: ProjectColumn[];
-  dataTypeFilters: ColumnDataType[];
   datasetId: string;
-  rowFilter: ProjectRowFilter | null;
+  dataTypeFilters: ColumnDataType[];
+  rowFilter: null | ProjectRowFilter;
   useDataTypeFilter: boolean;
   useRowFilter: boolean;
 };
