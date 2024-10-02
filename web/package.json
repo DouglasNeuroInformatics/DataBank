@@ -16,7 +16,7 @@
   "dependencies": {
     "@douglasneuroinformatics/libjs": "^0.7.0",
     "@douglasneuroinformatics/libpasswd": "^0.0.3",
-    "@douglasneuroinformatics/libui": "^3.1.0",
+    "@douglasneuroinformatics/libui": "^3.5.0",
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.5",
     "@import-meta-env/unplugin": "^0.6.0",
