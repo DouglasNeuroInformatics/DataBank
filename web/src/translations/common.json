@@ -526,5 +526,9 @@
   "preferences": {
     "en": "Preferences",
     "fr": "Préférences"
+  },
+  "contactOwner": {
+    "en": "Contact owner",
+    "fr": "Contacter le propriétaire"
   }
 }

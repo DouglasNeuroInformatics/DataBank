@@ -14,7 +14,7 @@ import { ProjectCard, type ProjectCardProps } from '../components/ProjectCard';
 
 const ViewProjectsPage = () => {
   const { currentUser } = useAuthStore();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
 

@@ -30,7 +30,7 @@ const ViewOneProjectPage = () => {
   const notifications = useNotificationsStore();
   const [isManager, setIsManager] = useState(false);
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
 
   const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
