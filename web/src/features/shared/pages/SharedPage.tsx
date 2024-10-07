@@ -34,7 +34,12 @@ export const SharedPage = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <Heading title={t('sharedDatasets')} />
+      <Heading
+        title={t({
+          en: 'Shared Datasets',
+          fr: 'ensembles de données partagés'
+        })}
+      />
       <SearchBar
         className="mb-3 rounded-sm"
         size="sm"

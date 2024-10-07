@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Dropdown, Table } from '@douglasneuroinformatics/libui/components';
+import { Button, ActionDropdown, Table } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useParams } from 'react-router-dom';
 
@@ -26,7 +26,7 @@ export const SharedDatasetPage = () => {
               window.open(`mailto:${dataset.owner.email}?subject=${encodeURIComponent(dataset.name)}`, '_self');
             }}
           />
-          <Dropdown
+          <ActionDropdown
             className="w-min whitespace-nowrap"
             options={['CSV', 'TSV', 'DICT']}
             size="sm"
