@@ -9,7 +9,8 @@ import { MobileNavbar } from './MobileNavbar';
 import { type NavItem } from './types';
 
 export const Layout = () => {
-  const { i18n, t } = useTranslation('common');
+  const { t } = useTranslation('common');
+  const languageResolved = useTranslation('common').resolvedLanguage;
   const navigation: NavItem[] = useMemo(
     () => [
       {
@@ -28,7 +29,7 @@ export const Layout = () => {
         label: t('viewProjects')
       }
     ],
-    [i18n.resolvedLanguage]
+    [languageResolved]
   );
 
   return (
