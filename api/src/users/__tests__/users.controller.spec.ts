@@ -33,9 +33,9 @@ describe('UsersController', () => {
       createUserDto = createUserDtoStubFactory();
     });
 
-    it('should return the same value as returned by the service', () => {
+    it('should return the same value as returned by the service', async () => {
       usersService.createUser.mockResolvedValueOnce(createUserDto);
-      expect(usersController.createUser(createUserDto)).resolves.toMatchObject(createUserDto);
+      await expect(usersController.createUser(createUserDto)).resolves.toMatchObject(createUserDto);
     });
   });
 });

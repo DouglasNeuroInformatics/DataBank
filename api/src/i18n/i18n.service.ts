@@ -20,7 +20,7 @@ type Translations = MergeDeep<typeof en, typeof fr>;
 @Injectable()
 export class I18nService {
   private readonly defaultLocale: Locale = 'en';
-  private readonly resources: { [key: Locale]: Translations };
+  private readonly resources: { [K in Locale]: Translations };
 
   constructor() {
     this.resources = {

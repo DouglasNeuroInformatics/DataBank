@@ -59,9 +59,9 @@ describe('UsersService', () => {
       createUserDto = createUserDtoStubFactory();
     });
 
-    it('should throw a conflict exception if the user already exists', () => {
+    it('should throw a conflict exception if the user already exists', async () => {
       userModel.findUnique.mockResolvedValueOnce(createUserDto);
-      expect(usersService.createUser(createUserDto)).rejects.toBeInstanceOf(ConflictException);
+      await expect(usersService.createUser(createUserDto)).rejects.toBeInstanceOf(ConflictException);
     });
 
     it('should return an object that containers neither a password or hashedPassword', async () => {

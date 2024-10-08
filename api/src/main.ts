@@ -30,6 +30,7 @@ async function bootstrap() {
   const port = isProduction ? 80 : parseInt(configService.getOrThrow('API_DEV_SERVER_PORT'));
 
   await app.listen(port);
+  // eslint-disable-next-line no-console
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 
