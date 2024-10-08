@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';

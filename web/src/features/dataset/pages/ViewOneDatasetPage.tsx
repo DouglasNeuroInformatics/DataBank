@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
