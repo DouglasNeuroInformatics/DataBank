@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';

@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { DatasetCardProps } from '@databank/types';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
@@ -30,7 +30,7 @@ const ViewOneProjectPage = () => {
   const notifications = useNotificationsStore();
   const [isManager, setIsManager] = useState(false);
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
 
   const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);

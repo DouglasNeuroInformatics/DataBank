@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
 import axios from 'axios';

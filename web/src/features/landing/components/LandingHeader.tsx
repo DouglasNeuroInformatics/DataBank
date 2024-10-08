@@ -10,7 +10,9 @@ import { Link } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
 
 export const LandingHeader = () => {
-  const { i18n, t } = useTranslation('common');
+  const { t } = useTranslation('common');
+  const languageResolved = useTranslation('common').resolvedLanguage;
+
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (
@@ -49,7 +51,8 @@ export const LandingHeader = () => {
             <Link
               className={clsx(
                 'block p-3 font-medium',
-                i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
+
+                languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
               to="/auth/login"
             >
@@ -58,7 +61,7 @@ export const LandingHeader = () => {
             <Link
               className={clsx(
                 'block p-3 font-medium',
-                i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
+                languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
               to="/auth/create-account"
             >
@@ -67,7 +70,7 @@ export const LandingHeader = () => {
             <Link
               className={clsx(
                 'block p-3 font-medium',
-                i18n.resolvedLanguage === 'en' ? 'capitalize' : 'first-letter:capitalize'
+                languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
               to="/public/datasets"
             >

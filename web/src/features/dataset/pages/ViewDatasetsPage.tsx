@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { DatasetCardProps } from '@databank/types';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
@@ -33,7 +33,12 @@ const ViewDatasetsPage = () => {
   return (
     <Card>
       <Card.Header>
-        <Card.Title className="text-3xl">{t('datasets')}</Card.Title>
+        <Card.Title className="text-3xl">
+          {t({
+            en: 'Datasets',
+            fr: 'Ensembles de données'
+          })}
+        </Card.Title>
         <Button className="m-2" variant={'secondary'} onClick={() => navigate('/portal/createDataset')}>
           Create Dataset
         </Button>

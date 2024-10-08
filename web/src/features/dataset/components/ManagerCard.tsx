@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { TUser } from '@databank/types';
 import { Button } from '@douglasneuroinformatics/libui/components';

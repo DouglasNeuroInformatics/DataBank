@@ -15,6 +15,4 @@ i18n.init({
   translations: { common }
 });
 
-console.log(i18n);
-
 export default i18n;

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import type { DatasetInfo } from '@databank/types';
-import { SearchBar } from '@douglasneuroinformatics/ui';
+import { SearchBar } from '@douglasneuroinformatics/libui/components';
 import axios from 'axios';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +34,12 @@ export const SharedPage = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <Heading title={t('sharedDatasets')} />
+      <Heading
+        title={t({
+          en: 'Shared Datasets',
+          fr: 'ensembles de données partagés'
+        })}
+      />
       <SearchBar
         className="mb-3 rounded-sm"
         size="sm"

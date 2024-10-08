@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
@@ -14,7 +14,7 @@ import { ProjectCard, type ProjectCardProps } from '../components/ProjectCard';
 
 const ViewProjectsPage = () => {
   const { currentUser } = useAuthStore();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
 
