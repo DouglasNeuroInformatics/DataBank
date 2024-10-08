@@ -1,8 +1,6 @@
-import React from 'react';
-
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from 'react-router-dom';
 
 export type ProjectDatasetCardProps = {

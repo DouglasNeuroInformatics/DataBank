@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { Link } from 'react-router-dom';
 

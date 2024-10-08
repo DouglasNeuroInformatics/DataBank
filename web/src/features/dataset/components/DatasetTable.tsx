@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-import React from 'react';
 
 import type { PermissionLevel, TabularDataset } from '@databank/types';
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { Table } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 
 export type DatasetTableProps = { isManager: boolean } & TabularDataset;
 
@@ -18,7 +17,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const queryClient = useQueryClient();
 
   const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
-    await axios.patch(`/v1/columns/metadata-permission/${columnId}`, {
+    await axios.patch(`/v1/datasets/column-metadata-permission/${tabularDataset.id}/${columnId}`, {
       newPermissionLevel
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
@@ -29,7 +28,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   const handleSetColumnDataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
-    await axios.patch(`/v1/columns/data-permission/${columnId}`, {
+    await axios.patch(`/v1/datasets/column-data-permission/${tabularDataset.id}/${columnId}`, {
       newPermissionLevel
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
@@ -40,7 +39,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   const handleToggleColumnNullable = async (columnId: string) => {
-    await axios.patch(`/v1/columns/nullable/${columnId}`);
+    await axios.patch(`/v1/datasets/column-nullable/${tabularDataset.id}/${columnId}`);
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
       message: `Column with Id ${columnId} has been modified`,
@@ -49,7 +48,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   const handleChangeColumnType = async (columnId: string, type: string) => {
-    await axios.patch(`/v1/columns/type/${columnId}`, { type });
+    await axios.patch(`/v1/datasets/column-type/${tabularDataset.id}/${columnId}`, { type });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
       message: `Column with Id ${columnId} has been modified`,
@@ -58,7 +57,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   const handleDeleteColumn = async (columnId: string) => {
-    await axios.delete(`/v1/columns/${columnId}`);
+    await axios.delete(`/v1/datasets/column/${tabularDataset.id}/${columnId}`);
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
       message: `Column with Id ${columnId} has been deleted`,
@@ -84,6 +83,7 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                       <>
                         <DropdownMenu.Group>
                           <DropdownMenu.Item
+                            disabled={tabularDataset.primaryKeys.includes(column)}
                             onClick={() => void handleToggleColumnNullable(tabularDataset.columnIds[column]!)}
                           >
                             {t('toggleColumnNullable')}
@@ -91,7 +91,10 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                               <QuestionMarkCircleIcon height={14} width={14} />
                             </DropdownMenu.Shortcut>
                           </DropdownMenu.Item>
-                          <DropdownMenu.Item onClick={() => void handleDeleteColumn(tabularDataset.columnIds[column]!)}>
+                          <DropdownMenu.Item
+                            disabled={tabularDataset.primaryKeys.includes(column)}
+                            onClick={() => void handleDeleteColumn(tabularDataset.columnIds[column]!)}
+                          >
                             {t('deleteColumn')}
                             <DropdownMenu.Shortcut>
                               <TrashIcon height={14} width={14} />
@@ -137,23 +140,27 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
                             </DropdownMenu.Portal>
                           </DropdownMenu.Sub>
                           <DropdownMenu.Sub>
-                            <DropdownMenu.SubTrigger>{t('changeColumnType')}</DropdownMenu.SubTrigger>
-                            <DropdownMenu.Portal>
-                              <DropdownMenu.SubContent>
-                                {(['INT', 'FLOAT', 'STRING', 'BOOLEAN', 'DATETIME', 'ENUM'] as const)
-                                  .filter((x) => x !== tabularDataset.metadata[column]?.kind)
-                                  .map((option) => (
-                                    <DropdownMenu.Item
-                                      key={option}
-                                      onClick={() =>
-                                        void handleChangeColumnType(tabularDataset.columnIds[column]!, option)
-                                      }
-                                    >
-                                      {option}
-                                    </DropdownMenu.Item>
-                                  ))}
-                              </DropdownMenu.SubContent>
-                            </DropdownMenu.Portal>
+                            {!tabularDataset.primaryKeys.includes(column) && (
+                              <>
+                                <DropdownMenu.SubTrigger>{t('changeColumnType')}</DropdownMenu.SubTrigger>
+                                <DropdownMenu.Portal>
+                                  <DropdownMenu.SubContent>
+                                    {(['INT', 'FLOAT', 'STRING', 'BOOLEAN', 'DATETIME', 'ENUM'] as const)
+                                      .filter((x) => x !== tabularDataset.metadata[column]?.kind)
+                                      .map((option) => (
+                                        <DropdownMenu.Item
+                                          key={option}
+                                          onClick={() =>
+                                            void handleChangeColumnType(tabularDataset.columnIds[column]!, option)
+                                          }
+                                        >
+                                          {option}
+                                        </DropdownMenu.Item>
+                                      ))}
+                                  </DropdownMenu.SubContent>
+                                </DropdownMenu.Portal>
+                              </>
+                            )}
                           </DropdownMenu.Sub>
                         </DropdownMenu.Group>
                       </>

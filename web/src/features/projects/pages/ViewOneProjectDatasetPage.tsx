@@ -6,7 +6,7 @@ import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/compo
 import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
@@ -51,84 +51,29 @@ const ViewOneProjectDatasetPage = () => {
 
   const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
 
-  const deleteDataset = (datasetId: string) => {
+  const deleteDataset = () => {
     axios
-      .delete(`/v1/datasets/${datasetId}`)
+      .delete(`/v1/projects/remove-dataset/${params.projectId}/${params.datasetId}`)
       .then(() => {
         notifications.addNotification({
           type: 'success',
-          message: `Dataset with Id ${datasetId} has been deleted`
+          message: `Dataset with Id ${params.datasetId} has been deleted`
         });
-        navigate('/portal/datasets');
+        navigate(-1);
       })
       .catch(console.error);
   };
 
-  const handleDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
-    const delimiter = format === 'CSV' ? ',' : '\t';
+  const handleDataDownload = async (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
-    let resultString = data.columns.join(delimiter) + '\n';
-    for (let row of data.rows) {
-      resultString += Object.values(row).join(delimiter) + '\n';
-    }
-
-    // axios request to get the data string for the entire dataset
-    // once the request is resolved, send it to the download function
-    void download(filename, resultString);
+    let response = await axios.get(`/v1/projects/download-data/${params.projectId}/${params.datasetId}/${format}`);
+    void download(filename, response.data as string);
   };
 
-  const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
-    const delimiter = format === 'CSV' ? ',' : '\t';
+  const handleMetaDataDownload = async (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
-
-    // axios request to get the meta data string for the entire dataset
-    // once the request is resolved, send it to the download function
-
-    const metaDataHeader = [
-      'column_name',
-      'column_type',
-      'nullable',
-      'count',
-      'nullCount',
-      'max',
-      'min',
-      'mean',
-      'median',
-      'mode',
-      'std',
-      'distribution'
-    ];
-
-    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-    for (let columnName of Object.keys(data.metadata)) {
-      metadataRowsString +=
-        columnName +
-        delimiter +
-        data.metadata[columnName]?.kind +
-        delimiter +
-        data.metadata[columnName]?.nullable +
-        delimiter +
-        data.metadata[columnName]?.count +
-        delimiter +
-        data.metadata[columnName]?.nullCount +
-        delimiter +
-        data.metadata[columnName]?.max +
-        delimiter +
-        data.metadata[columnName]?.min +
-        delimiter +
-        data.metadata[columnName]?.mean +
-        delimiter +
-        data.metadata[columnName]?.median +
-        delimiter +
-        data.metadata[columnName]?.mode +
-        delimiter +
-        data.metadata[columnName]?.std +
-        delimiter +
-        JSON.stringify(data.metadata[columnName]?.distribution) +
-        delimiter +
-        '\n';
-    }
-    void download(filename, metadataRowsString);
+    let response = await axios.get(`/v1/projects/download-metadata/${params.projectId}/${params.datasetId}/${format}`);
+    void download(filename, response.data as string);
   };
 
   return dataset ? (
@@ -139,7 +84,7 @@ const ViewOneProjectDatasetPage = () => {
           <Card.Description>{`${t('datasetDescription')}: ${dataset.description}`}</Card.Description>
           {isManager && (
             <div className="flex justify-between">
-              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(dataset.id)}>
+              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset()}>
                 {t('deleteDataset')}
               </Button>
             </div>
@@ -204,10 +149,10 @@ const ViewOneProjectDatasetPage = () => {
                   <ChevronDownIcon className="size-[1rem]" />
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content className="w-48">
-                  <DropdownMenu.Item onClick={() => handleDataDownload('TSV', dataset)}>
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
                     {t('downloadTsv')}
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item onClick={() => handleDataDownload('CSV', dataset)}>
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
                     {t('downloadCsv')}
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
@@ -221,10 +166,10 @@ const ViewOneProjectDatasetPage = () => {
                   <ChevronDownIcon className="size-[1rem]" />
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content className="w-48">
-                  <DropdownMenu.Item onClick={() => handleMetaDataDownload('TSV', dataset)}>
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
                     {t('downloadTsv')}
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item onClick={() => handleMetaDataDownload('CSV', dataset)}>
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
                     {t('downloadCsv')}
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>

@@ -1,5 +1,6 @@
 import type {
   AddProjectDatasetColumns,
+  ColumnDataType,
   DatasetCardProps,
   DatasetViewPaginationDto,
   EditDatasetInfoDto,
@@ -81,6 +82,36 @@ export class DatasetsService {
     return dataset;
   }
 
+  async changeColumnDataPermission(
+    datasetId: string,
+    columnId: string,
+    userId: string,
+    newPermissionLevel: PermissionLevel
+  ) {
+    const dataset = await this.canModifyDataset(datasetId, userId);
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return this.columnService.changeColumnDataPermission(columnId, newPermissionLevel);
+  }
+
+  async changeColumnMetadataPermission(
+    datasetId: string,
+    columnId: string,
+    userId: string,
+    newPermissionLevel: PermissionLevel
+  ) {
+    const dataset = await this.canModifyDataset(datasetId, userId);
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return this.columnService.changeColumnMetadataPermission(columnId, newPermissionLevel);
+  }
+
   async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
     const dataset = await this.canModifyDataset(datasetId, currentUserId);
 
@@ -135,19 +166,22 @@ export class DatasetsService {
 
     let csvString: string;
     let df: DataFrame;
+    let separator = ',';
 
     if (typeof file === 'string') {
       csvString = file;
     } else {
       // file received through the network is stored in memory buffer which is converted to a string
-      csvString = file.buffer.toString().replaceAll('\t', ','); // polars has a bug parsing tsv, this is a hack for it to work
+      separator = file.originalname.endsWith('.tsv') ? '\t' : ',';
+      csvString = file.buffer.toString(); // polars has a bug parsing tsv, this is a hack for it to work
     }
 
     if (createTabularDatasetDto.isJSON.toLowerCase() === 'true') {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
     } else {
-      df = pl.readCSV(csvString, { tryParseDates: true });
+      df = pl.readCSV(csvString, { quoteChar: '"', sep: separator, tryParseDates: true });
+      // df = pl.readJSON(JSON.stringify(typedObjs));
     }
 
     const dataset = await this.datasetModel.create({
@@ -164,8 +198,8 @@ export class DatasetsService {
       // prepare the primary keys array
       if (createTabularDatasetDto.primaryKeys) {
         const primaryKeysArray = createTabularDatasetDto.primaryKeys.split(',');
-        primaryKeysArray.map((x) => {
-          x.trim();
+        primaryKeysArray.map((primaryKey) => {
+          primaryKey.trim();
         });
         await this.tabularDataService.create(df, dataset.id, primaryKeysArray);
       } else {
@@ -189,18 +223,20 @@ export class DatasetsService {
     return dataset;
   }
 
-  async deleteDataset(datasetId: string, currentUserId: string) {
-    const dataset = await this.canModifyDataset(datasetId, currentUserId);
+  async deleteColumnById(datasetId: string, columnId: string, userId: string) {
+    const dataset = await this.canModifyDataset(datasetId, userId);
 
     if (!dataset.tabularData) {
       throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
     }
 
-    const deleteTabularData = this.tabularDataService.deleteById(dataset.tabularData.id);
+    return await this.tabularDataService.deleteColumnById(dataset.tabularData.id, columnId);
+  }
 
-    const deleteColumns = this.columnService.deleteByTabularDataId(dataset.tabularData.id);
+  async deleteDataset(datasetId: string, currentUserId: string) {
+    const dataset = await this.canModifyDataset(datasetId, currentUserId);
 
-    const deleteTargetDataset = this.datasetModel.delete({
+    let deleteTargetDataset = this.datasetModel.delete({
       where: {
         id: dataset.id
       }
@@ -220,7 +256,16 @@ export class DatasetsService {
       );
     }
 
-    return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
+    if (dataset.datasetType === 'TABULAR') {
+      if (!dataset.tabularData) {
+        throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+      }
+      const deleteColumns = this.columnService.deleteByTabularDataId(dataset.tabularData.id);
+      const deleteTabularData = this.tabularDataService.deleteById(dataset.tabularData.id);
+      return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
+    }
+
+    return await this.prisma.$transaction([...updateManagers, deleteTargetDataset]);
   }
 
   async downloadDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
@@ -464,6 +509,10 @@ export class DatasetsService {
     return dataset;
   }
 
+  async getColumnLengthById(columnId: string) {
+    return await this.columnService.getLengthById(columnId);
+  }
+
   async getColumnsById(datasetId: string, currentUserId: string) {
     const dataset = await this.datasetModel.findUnique({
       include: {
@@ -514,7 +563,18 @@ export class DatasetsService {
     }
 
     if (!dataset.tabularData?.id) {
-      throw new NotFoundException('No such tabular data available!');
+      return {
+        createdAt: dataset.createdAt,
+        datasetType: dataset.datasetType,
+        description: dataset.description,
+        id: dataset.id,
+        isReadyToShare: dataset.isReadyToShare,
+        license: dataset.license,
+        managerIds: dataset.managerIds,
+        name: dataset.name,
+        permission: dataset.permission,
+        updatedAt: dataset.updatedAt
+      };
     }
     const datasetView = await this.tabularDataService.getViewById(
       dataset.tabularData.id,
@@ -556,7 +616,7 @@ export class DatasetsService {
     });
 
     if (!dataset) {
-      throw new NotFoundException();
+      throw new NotFoundException('Dataset not found!');
     }
 
     if (!dataset.tabularData?.id) {
@@ -666,9 +726,6 @@ export class DatasetsService {
       throw new ForbiddenException('The dataset is not ready for share!');
     }
 
-    if (!dataset.tabularData?.id) {
-      throw new NotFoundException('No such tabular data available!');
-    }
     let datasetView: TabularDatasetView;
     const emptyDatasetView = {
       columnIds: {},
@@ -679,6 +736,22 @@ export class DatasetsService {
       totalNumberOfColumns: 0,
       totalNumberOfRows: 0
     };
+
+    if (!dataset.tabularData?.id) {
+      return {
+        createdAt: dataset.createdAt,
+        datasetType: dataset.datasetType,
+        description: dataset.description,
+        id: dataset.id,
+        isReadyToShare: dataset.isReadyToShare,
+        license: dataset.license,
+        managerIds: dataset.managerIds,
+        name: dataset.name,
+        permission: dataset.permission,
+        updatedAt: dataset.updatedAt,
+        ...emptyDatasetView
+      };
+    }
 
     // the frontend search function should allow the user to fill a form
     // according to the form data (filter constrains), the backend should find
@@ -717,6 +790,16 @@ export class DatasetsService {
       updatedAt: dataset.updatedAt,
       ...datasetView
     };
+  }
+
+  async mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: ColumnDataType) {
+    const dataset = await this.canModifyDataset(datasetId, userId);
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return await this.columnService.mutateColumnType(columnId, columnType);
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
@@ -763,6 +846,16 @@ export class DatasetsService {
       }
     });
     return await this.prisma.$transaction([updateDataset]);
+  }
+
+  async toggleColumnNullable(datasetId: string, columnId: string, userId: string) {
+    const dataset = await this.canModifyDataset(datasetId, userId);
+
+    if (!dataset.tabularData) {
+      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+    }
+
+    return this.columnService.toggleColumnNullable(columnId);
   }
 
   private formatDataDownloadString(format: 'CSV' | 'TSV', datasetView: TabularDatasetView) {

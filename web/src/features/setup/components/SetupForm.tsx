@@ -1,10 +1,8 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import React from 'react';
-
 import type { SetupDto } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/libui/components';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { z } from 'zod';
 
 type SetupFormProps = {

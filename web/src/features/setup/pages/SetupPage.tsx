@@ -1,8 +1,6 @@
-import React from 'react';
-
 import type { SetupDto } from '@databank/types';
 import { Card, Heading, LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 
 import { Logo } from '@/components/Logo';
 

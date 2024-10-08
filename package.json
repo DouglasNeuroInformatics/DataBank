@@ -2,7 +2,7 @@
   "name": "databank",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@9.4.0+sha512.f549b8a52c9d2b8536762f99c0722205efc5af913e77835dbccc3b0b0b2ca9e7dc8022b78062c17291c48e88749c70ce88eb5a74f1fa8c4bf5e18bb46c8bd83a",
+  "packageManager": "pnpm@9.10.0",
   "scripts": {
     "build": "env-cmd turbo run build",
     "clean": "find . -type d '(' -name '.turbo' -o -name 'dist' -o -name 'node_modules' ')' -prune -exec rm -rf {} \\;",
@@ -16,15 +16,15 @@
   },
   "devDependencies": {
     "@databank/types": "workspace:*",
-    "@douglasneuroinformatics/eslint-config": "^4.2.2",
+    "@douglasneuroinformatics/eslint-config": "^5.1.8",
     "@types/node": "^20.14.11",
     "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
-    "eslint": "^9.7.0",
-    "husky": "^9.0.11",
+    "eslint": "^9.10.0",
+    "husky": "^9.1.5",
     "prettier": "^3.3.3",
-    "turbo": "^2.0.7",
-    "typescript": "~5.5.3",
-    "vitest": "^2.0.3"
+    "turbo": "^2.1.1",
+    "typescript": "~5.6.2",
+    "vitest": "^1.6.0"
   }
 }

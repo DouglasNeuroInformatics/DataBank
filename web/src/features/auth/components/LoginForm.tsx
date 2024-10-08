@@ -1,8 +1,6 @@
-import React from 'react';
-
 import type { LoginCredentials } from '@databank/types';
 import { Form } from '@douglasneuroinformatics/libui/components';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { z } from 'zod';
 
 export type LoginFormProps = {

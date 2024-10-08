@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import React from 'react';
 
 import type { DatasetInfo } from '@databank/types';
 import { SearchBar } from '@douglasneuroinformatics/ui';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';

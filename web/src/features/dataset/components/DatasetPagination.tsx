@@ -1,8 +1,6 @@
-import React from 'react';
-
 import type { DatasetViewPaginationDto } from '@databank/types';
 import { ActionDropdown, Button } from '@douglasneuroinformatics/libui/components';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 
 type DatasetPagePaginationProps = {
   currentPage: number;

@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
-import React from 'react';
 
 import { ArrowRightEndOnRectangleIcon, HomeIcon, UsersIcon } from '@heroicons/react/24/outline';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { Outlet } from 'react-router-dom';
 
 import { DesktopSidebar } from './DesktopSidebar';

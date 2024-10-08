@@ -273,6 +273,26 @@ export class ColumnsService {
     }
     // recalculate the summary for the column
     columnView.summary = this.calculateSummaryOnSeries(columnView.kind, currSeries);
+    type ColumnMetadata = {
+      count: number;
+      distribution?: { [key: string]: number }[];
+      kind: ColumnType;
+      max?: Date | number;
+      mean?: number;
+      median?: number;
+      min?: Date | number;
+      mode?: number;
+      nullCount: number;
+      nullable: boolean;
+      std?: number;
+    };
+
+    let columnMetadata: ColumnMetadata = {
+      count: 0,
+      kind: 'STRING',
+      nullCount: 0,
+      nullable: false
+    };
     switch (columnView.kind) {
       case 'BOOLEAN':
         columnView.booleanData = currSeries.toArray().map((entry) => {
@@ -280,6 +300,10 @@ export class ColumnsService {
             value: entry as boolean
           };
         });
+        columnMetadata.count = columnView.summary.count;
+        columnMetadata.nullCount = columnView.summary.nullCount;
+        columnMetadata.kind = 'BOOLEAN';
+        columnMetadata.nullable = columnView.nullable;
         break;
       case 'INT':
         columnView.intData = currSeries.toArray().map((entry) => {
@@ -287,6 +311,16 @@ export class ColumnsService {
             value: entry as number
           };
         });
+        columnMetadata.count = columnView.summary.count;
+        columnMetadata.nullCount = columnView.summary.nullCount;
+        columnMetadata.kind = 'INT';
+        columnMetadata.nullable = columnView.nullable;
+        columnMetadata.max = columnView.summary.intSummary?.max;
+        columnMetadata.min = columnView.summary.intSummary?.min;
+        columnMetadata.mean = columnView.summary.intSummary?.mean;
+        columnMetadata.mode = columnView.summary.intSummary?.mode;
+        columnMetadata.median = columnView.summary.intSummary?.median;
+        columnMetadata.std = columnView.summary.intSummary?.std;
         break;
       case 'FLOAT':
         columnView.floatData = currSeries.toArray().map((entry) => {
@@ -294,6 +328,15 @@ export class ColumnsService {
             value: entry as number
           };
         });
+        columnMetadata.count = columnView.summary.count;
+        columnMetadata.nullCount = columnView.summary.nullCount;
+        columnMetadata.kind = 'FLOAT';
+        columnMetadata.nullable = columnView.nullable;
+        columnMetadata.max = columnView.summary.floatSummary?.max;
+        columnMetadata.min = columnView.summary.floatSummary?.min;
+        columnMetadata.mean = columnView.summary.floatSummary?.mean;
+        columnMetadata.median = columnView.summary.floatSummary?.median;
+        columnMetadata.std = columnView.summary.floatSummary?.std;
         break;
       case 'STRING':
         columnView.stringData = currSeries.toArray().map((entry) => {
@@ -301,6 +344,10 @@ export class ColumnsService {
             value: entry as string
           };
         });
+        columnMetadata.count = columnView.summary.count;
+        columnMetadata.nullCount = columnView.summary.nullCount;
+        columnMetadata.kind = 'STRING';
+        columnMetadata.nullable = columnView.nullable;
         break;
       case 'ENUM':
         columnView.enumData = currSeries.toArray().map((entry) => {
@@ -308,6 +355,10 @@ export class ColumnsService {
             value: entry as string
           };
         });
+        columnMetadata.count = columnView.summary.count;
+        columnMetadata.nullCount = columnView.summary.nullCount;
+        columnMetadata.kind = 'ENUM';
+        columnMetadata.nullable = columnView.nullable;
         break;
       case 'DATETIME':
         columnView.datetimeData = currSeries.toArray().map((entry) => {
@@ -315,10 +366,35 @@ export class ColumnsService {
             value: entry as Date
           };
         });
+        columnMetadata.count = columnView.summary.count;
+        columnMetadata.nullCount = columnView.summary.nullCount;
+        columnMetadata.kind = 'DATETIME';
+        columnMetadata.nullable = columnView.nullable;
+        columnMetadata.max = columnView.summary.datetimeSummary?.max;
+        columnMetadata.min = columnView.summary.datetimeSummary?.min;
         break;
     }
 
-    return columnView;
+    return {
+      booleanData: columnView.booleanData,
+      count: columnView.summary.count,
+      datetimeData: columnView.datetimeData,
+      enumData: columnView.enumData,
+      floatData: columnView.floatData,
+      id: columnView.id,
+      intData: columnView.intData,
+      kind: columnView.kind,
+      max: columnMetadata.max,
+      mean: columnMetadata.mean,
+      median: columnMetadata.median,
+      min: columnMetadata.min,
+      mode: columnMetadata.mode,
+      name: columnView.name,
+      nullCount: columnView.summary.nullCount,
+      nullable: columnView.nullable,
+      std: columnMetadata.std,
+      stringData: columnView.stringData
+    };
   }
 
   async getLengthById(columnId: string) {
@@ -742,8 +818,8 @@ export class ColumnsService {
         return {
           count: currSeries.len() - currSeries.nullCount(),
           datetimeSummary: {
-            max: new Date(),
-            min: new Date('1970-01-01')
+            max: new Date(currSeries.max() * 24 * 3600 * 1000),
+            min: new Date(currSeries.min() * 24 * 3600 * 1000)
           },
           enumSummary: null,
           floatSummary: null,

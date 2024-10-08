@@ -1,8 +1,6 @@
-import React from 'react';
-
 import { Menu, Transition } from '@headlessui/react';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { Link } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';

@@ -92,6 +92,137 @@ export class ProjectsService {
     return deletedProject;
   }
 
+  async downloadDatasetById(projectId: string, datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
+    const project = await this.getProjectById(currentUserId, projectId);
+    const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
+    if (!projectDatasetDto) {
+      throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
+    }
+
+    // set initial row number to number of entries in a column
+    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDatasetDto.columns[0]!.columnId);
+    if (projectDatasetDto.rowFilter) {
+      if (projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
+        rowNumber = projectDatasetDto.rowFilter.rowMax - projectDatasetDto.rowFilter.rowMin;
+      } else if (!projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
+        rowNumber = rowNumber - projectDatasetDto.rowFilter.rowMin;
+        // check for invalid row min input (row min greater than the largest possible value of rows)
+        if (rowNumber < 0) {
+          throw new ForbiddenException('Row number per page is nagative! Check the row min value');
+        }
+      } else if (projectDatasetDto.rowFilter.rowMax && !projectDatasetDto.rowFilter.rowMin) {
+        rowNumber = projectDatasetDto.rowFilter.rowMax;
+      }
+    }
+
+    const projectDatasetView = await this.datasetService.getProjectDatasetViewById(
+      projectDatasetDto,
+      {
+        currentPage: 1,
+        itemsPerPage: rowNumber
+      },
+      {
+        currentPage: 1,
+        itemsPerPage: projectDatasetDto.columns.length
+      }
+    );
+
+    const delimiter = format === 'CSV' ? ',' : '\t';
+    let resultString = projectDatasetView.columns.join(delimiter) + '\n';
+    for (let row of projectDatasetView.rows) {
+      resultString += Object.values(row).join(delimiter) + '\n';
+    }
+
+    return resultString;
+  }
+
+  async downloadDatasetMetadataById(
+    projectId: string,
+    datasetId: string,
+    currentUserId: string,
+    format: 'CSV' | 'TSV'
+  ) {
+    const project = await this.getProjectById(currentUserId, projectId);
+    const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
+    if (!projectDatasetDto) {
+      throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
+    }
+
+    // set initial row number to number of entries in a column
+    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDatasetDto.columns[0]!.columnId);
+    if (projectDatasetDto.rowFilter) {
+      if (projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
+        rowNumber = projectDatasetDto.rowFilter.rowMax - projectDatasetDto.rowFilter.rowMin;
+      } else if (!projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
+        rowNumber = rowNumber - projectDatasetDto.rowFilter.rowMin;
+        // check for invalid row min input (row min greater than the largest possible value of rows)
+        if (rowNumber < 0) {
+          throw new ForbiddenException('Row number per page is nagative! Check the row min value');
+        }
+      } else if (projectDatasetDto.rowFilter.rowMax && !projectDatasetDto.rowFilter.rowMin) {
+        rowNumber = projectDatasetDto.rowFilter.rowMax;
+      }
+    }
+
+    const projectDatasetView = await this.datasetService.getProjectDatasetViewById(
+      projectDatasetDto,
+      {
+        currentPage: 1,
+        itemsPerPage: rowNumber
+      },
+      {
+        currentPage: 1,
+        itemsPerPage: projectDatasetDto.columns.length
+      }
+    );
+    const delimiter = format === 'CSV' ? ',' : '\t';
+    const metaDataHeader = [
+      'column_name',
+      'column_type',
+      'nullable',
+      'count',
+      'nullCount',
+      'max',
+      'min',
+      'mean',
+      'median',
+      'mode',
+      'std',
+      'distribution'
+    ];
+
+    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
+    for (let columnName of Object.keys(projectDatasetView.metadata)) {
+      metadataRowsString +=
+        columnName +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.kind +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.nullable +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.count +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.nullCount +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.max +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.min +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.mean +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.median +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.mode +
+        delimiter +
+        projectDatasetView.metadata[columnName]?.std +
+        delimiter +
+        JSON.stringify(projectDatasetView.metadata[columnName]?.distribution) +
+        delimiter +
+        '\n';
+    }
+    return metadataRowsString;
+  }
+
   async getAllProjects(currentUserId: string) {
     return await this.projectModel.findMany({
       where: {

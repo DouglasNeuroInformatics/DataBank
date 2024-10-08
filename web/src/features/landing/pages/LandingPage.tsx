@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Hero } from '../components/Hero';
 import { LandingHeader } from '../components/LandingHeader';
 

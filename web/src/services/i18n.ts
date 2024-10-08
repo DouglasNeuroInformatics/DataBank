@@ -1,10 +1,20 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+/* eslint-disable @typescript-eslint/no-namespace */
 import { i18n } from '@douglasneuroinformatics/libui/i18n';
 
 import common from '../translations/common.json';
+declare module '@douglasneuroinformatics/libui/i18n' {
+  export namespace UserConfig {
+    export interface Translations {
+      common: typeof common;
+    }
+  }
+}
 
-i18n.setDefaultNamespace('common');
-i18n.addPreInitTranslations({ common });
+i18n.init({
+  translations: { common }
+});
 
-await i18n.init();
+console.log(i18n);
 
 export default i18n;

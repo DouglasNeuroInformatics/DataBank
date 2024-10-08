@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Badge } from '@douglasneuroinformatics/libui/components';
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';

@@ -6,7 +6,7 @@ import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { type RouteObject, useNavigate } from 'react-router-dom';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
@@ -15,7 +15,7 @@ import { LoadingFallback } from '@/components';
 
 const $CreateDatasetFormValidation = z.object({
   description: z.string().optional(),
-  datasetType: z.enum(['BASE', 'BINARY', 'TABULAR']),
+  datasetType: z.enum(['BASE', 'TABULAR']),
   license: z.enum(['PUBLIC', 'OTHER']),
   name: z.string().min(1),
   primaryKeys: z.string().optional()
@@ -36,22 +36,27 @@ const CreateDatasetPage = () => {
   const createDataset = async () => {
     setProcessingFile(true);
     // important to add the header content type for posting file
-    await axios.post(
-      '/v1/datasets/create',
-      {
-        ...formData,
-        file: file,
-        isJSON: false,
-        isReadyToShare: false,
-        permission: 'MANAGER'
-      },
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+    try {
+      await axios.post(
+        '/v1/datasets/create',
+        {
+          ...formData,
+          file: file,
+          isJSON: false,
+          isReadyToShare: false,
+          permission: 'MANAGER'
+        },
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         }
-      }
-    );
-    notifications.addNotification({ message: t('createDatasetSuccess'), type: 'success' });
+      );
+      notifications.addNotification({ message: t('createDatasetSuccess'), type: 'success' });
+    } catch {
+      notifications.addNotification({ type: 'error', message: t('createDatasetFailure') });
+    }
+
     navigate('/portal/datasets');
   };
 
@@ -101,7 +106,7 @@ const CreateDatasetPage = () => {
                 label: t('datasetType'),
                 options: {
                   BASE: 'Base',
-                  BINARY: 'Binary',
+                  // BINARY: 'Binary',
                   TABULAR: 'Tabular'
                 },
                 variant: 'select'

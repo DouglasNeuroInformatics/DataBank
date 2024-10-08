@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { DatasetCardProps } from '@databank/types';
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
