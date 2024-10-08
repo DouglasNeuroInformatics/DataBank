@@ -1,8 +1,5 @@
-// @ts-check
+import { createConfig } from '@douglasneuroinformatics/prettier-config';
 
-/** @type {import("prettier").Options} */
-export default {
-  printWidth: 120,
-  singleQuote: true,
-  trailingComma: 'none'
-};
+export default createConfig({
+  tailwindcss: true
+});

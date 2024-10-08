@@ -16,8 +16,8 @@
     "test:e2e": "vitest test/"
   },
   "dependencies": {
-    "@douglasneuroinformatics/libjs": "^0.7.0",
-    "@douglasneuroinformatics/libnest": "^0.1.1",
+    "@douglasneuroinformatics/libjs": "catalog:",
+    "@douglasneuroinformatics/libnest": "catalog:",
     "@nestjs/common": "^10.4.1",
     "@nestjs/config": "^3.2.3",
     "@nestjs/core": "^10.4.1",
@@ -39,8 +39,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@douglasneuroinformatics/esbuild-plugin-native-modules": "^1.0.0",
-    "@douglasneuroinformatics/esbuild-plugin-prisma": "^1.0.0",
+    "@douglasneuroinformatics/esbuild-plugin-native-modules": "catalog:",
+    "@douglasneuroinformatics/esbuild-plugin-prisma": "catalog:",
     "@nestjs/testing": "^10.4.1",
     "@swc/core": "^1.7.26",
     "@swc/helpers": "^0.5.13",

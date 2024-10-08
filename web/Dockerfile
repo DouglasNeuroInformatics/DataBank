@@ -19,7 +19,7 @@ RUN npm ci
 
 # BUILD THE PROJECT
 COPY --from=builder /app/out/full/ .
-COPY jsconfig.json jsconfig.json
+COPY tsconfig.base.json tsconfig.base.json
 COPY turbo.json turbo.json
 RUN turbo run build --filter=@databank/web
 

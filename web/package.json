@@ -14,9 +14,9 @@
     "storybook": "storybook dev -p 6006"
   },
   "dependencies": {
-    "@douglasneuroinformatics/libjs": "^0.7.0",
-    "@douglasneuroinformatics/libpasswd": "^0.0.3",
-    "@douglasneuroinformatics/libui": "^3.5.0",
+    "@douglasneuroinformatics/libjs": "catalog:",
+    "@douglasneuroinformatics/libpasswd": "catalog:",
+    "@douglasneuroinformatics/libui": "catalog:",
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.5",
     "@import-meta-env/unplugin": "^0.6.0",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.5.0",
-    "@douglasneuroinformatics/form-types": "^5.2.0",
+    "@douglasneuroinformatics/libui-form-types": "catalog:",
     "@headlessui/tailwindcss": "^0.2.1",
     "@storybook/addon-essentials": "^8.3.0",
     "@storybook/addon-interactions": "^8.3.0",
