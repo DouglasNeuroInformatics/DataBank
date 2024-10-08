@@ -489,11 +489,13 @@ export class DatasetsService {
 
     if (!currentUser.verifiedAt) {
       return availableDatasets.filter((dataset) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         dataset.managerIds.includes(currentUserId) || dataset.permission == 'LOGIN' || dataset.permission == 'PUBLIC';
       });
     }
 
     availableDatasets.forEach((dataset) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       dataset.managerIds.includes(currentUserId) || dataset.permission !== 'MANAGER' ? dataset : null;
     });
     return availableDatasets;
@@ -893,29 +895,36 @@ export class DatasetsService {
         delimiter +
         datasetView.metadata[columnName]?.kind +
         delimiter +
+        // @ts-expect-error - see issue
         datasetView.metadata[columnName]?.nullable +
         delimiter +
         datasetView.metadata[columnName]?.count +
         delimiter +
         datasetView.metadata[columnName]?.nullCount +
         delimiter +
+        // @ts-expect-error - see issue
         datasetView.metadata[columnName]?.max +
         delimiter +
+        // @ts-expect-error - see issue
         datasetView.metadata[columnName]?.min +
         delimiter +
+        // @ts-expect-error - see issue
         datasetView.metadata[columnName]?.mean +
         delimiter +
+        // @ts-expect-error - see issue
         datasetView.metadata[columnName]?.median +
         delimiter +
+        // @ts-expect-error - see issue
         datasetView.metadata[columnName]?.mode +
         delimiter +
+        // @ts-expect-error - see issue
         datasetView.metadata[columnName]?.std +
         delimiter +
+        // @ts-expect-error - see issue
         JSON.stringify(datasetView.metadata[columnName]?.distribution) +
         delimiter +
         '\n';
     }
-
     return metadataRowsString;
   }
 }

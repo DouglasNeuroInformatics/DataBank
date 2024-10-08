@@ -1,4 +1,4 @@
-import type { SetupDto } from "@/setup/zod/setup";
+import type { SetupDto } from '@/setup/zod/setup';
 
 export const manualSetupDtoFactory = (): SetupDto => ({
   admin: {
@@ -6,12 +6,12 @@ export const manualSetupDtoFactory = (): SetupDto => ({
     firstName: 'John',
     lastName: 'Doe',
     password: 'Password123',
-    role: "ADMIN"
+    role: 'ADMIN'
   },
 
   setupConfig: {
     userVerification: {
-      method: 'MANUAL'
+      kind: 'MANUAL'
     }
   }
 });
@@ -22,12 +22,12 @@ export const EmailSetupDtoFactory = (): SetupDto => ({
     firstName: 'John',
     lastName: 'Doe',
     password: 'Password123',
-    role: "ADMIN"
+    role: 'ADMIN'
   },
 
   setupConfig: {
     userVerification: {
-      method: 'CONFIRM_EMAIL'
+      kind: 'CONFIRM_EMAIL'
     }
   }
 });
@@ -38,13 +38,13 @@ export const RegexSetupDtoFactory = (): SetupDto => ({
     firstName: 'John',
     lastName: 'Doe',
     password: 'Password123',
-    role: "ADMIN"
+    role: 'ADMIN'
   },
 
   setupConfig: {
     userVerification: {
-      method: 'REGEX_EMAIL',
-      regex: "some_regex"
+      emailRegex: 'some_regex',
+      kind: 'REGEX_EMAIL'
     }
   }
 });
