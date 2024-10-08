@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Button, ActionDropdown, Table } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useParams } from 'react-router-dom';
