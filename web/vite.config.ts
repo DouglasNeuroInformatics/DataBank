@@ -1,4 +1,3 @@
-import module from 'module';
 import path from 'path';
 
 import importMetaEnv from '@import-meta-env/unplugin';
@@ -7,12 +6,11 @@ import autoprefixer from 'autoprefixer';
 import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 
-const require = module.createRequire(import.meta.url);
-
-export default defineConfig(() => ({
+export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1000,
     emptyOutDir: false,
+    sourcemap: true,
     target: 'es2022'
   },
   css: {
@@ -34,9 +32,7 @@ export default defineConfig(() => ({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(import.meta.dirname, 'src'),
-      react: path.dirname(require.resolve('react/package.json')),
-      'react-dom': path.dirname(require.resolve('react-dom/package.json'))
+      '@': path.resolve(import.meta.dirname, 'src')
     }
   },
   server: {
@@ -51,4 +47,4 @@ export default defineConfig(() => ({
       }
     }
   }
-}));
+});

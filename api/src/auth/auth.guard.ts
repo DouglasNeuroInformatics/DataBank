@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector
-  ) { }
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
@@ -41,6 +41,7 @@ export class AuthGuard implements CanActivate {
         secret: this.configService.getOrThrow('SECRET_KEY')
       });
     } catch (error) {
+      this.logger.error(error);
       this.logger.warn('Failed to parse JWT. Potential attacker.');
       throw new UnauthorizedException('Invalid Credentials');
     }

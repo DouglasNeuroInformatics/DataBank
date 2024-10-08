@@ -2,7 +2,7 @@ import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
 import { ConflictException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { type Prisma, type User } from '@prisma/client';
-import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
 import { UsersService } from '../users.service.js';
 import { createUserDtoStubFactory } from './stubs/create-user.dto.stub.js';
@@ -59,9 +59,9 @@ describe('UsersService', () => {
       createUserDto = createUserDtoStubFactory();
     });
 
-    it('should throw a conflict exception if the user already exists', () => {
+    it('should throw a conflict exception if the user already exists', async () => {
       userModel.findUnique.mockResolvedValueOnce(createUserDto);
-      expect(usersService.createUser(createUserDto)).rejects.toBeInstanceOf(ConflictException);
+      await expect(usersService.createUser(createUserDto)).rejects.toBeInstanceOf(ConflictException);
     });
 
     it('should return an object that containers neither a password or hashedPassword', async () => {

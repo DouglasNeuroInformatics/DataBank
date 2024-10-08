@@ -4,8 +4,8 @@ import type { TUser } from '@databank/types';
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import axios from 'axios';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
@@ -20,7 +20,7 @@ const UserCard = ({ projectId, userId, userNumber }: UserCardProps) => {
   const { t } = useTranslation('common');
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
-  const [user, setUser] = useState<TUser | null>(null);
+  const [user, setUser] = useState<null | TUser>(null);
   const { currentUser } = useAuthStore();
   if (!currentUser) {
     throw new Error();

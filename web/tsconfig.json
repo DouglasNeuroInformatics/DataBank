@@ -1,16 +1,11 @@
 {
-  "extends": "../jsconfig.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "src",
-    "esModuleInterop": false,
+    "baseUrl": ".",
     "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "paths": {
-      "@/*": ["*"]
-    },
-    "resolveJsonModule": true
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"]
+  "include": [".storybook/*", "src/**/*", "tailwind.config.cjs", "vite.config.ts"]
 }

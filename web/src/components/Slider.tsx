@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
@@ -38,7 +40,7 @@ export const Slider = ({ children, isOpen, setIsOpen, title }: SliderProps) => {
                 <div className="flex h-full flex-col overflow-y-scroll bg-slate-50 py-6 shadow-xl dark:bg-slate-800">
                   <div className="px-4 sm:px-6">
                     <div className="flex items-center justify-between">
-                      <Dialog.Title className="text-slate-900 dark:text-slate-100 font-semibold">{title}</Dialog.Title>
+                      <Dialog.Title className="font-semibold text-slate-900 dark:text-slate-100">{title}</Dialog.Title>
                       <button
                         className="text-slate-600 hover:text-slate-500 dark:text-slate-300"
                         type="button"

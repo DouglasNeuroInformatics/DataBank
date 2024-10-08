@@ -4,10 +4,10 @@ import { useState } from 'react';
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
@@ -202,7 +202,7 @@ const ViewOneDatasetPage = () => {
               {dataset.datasetType === 'TABULAR' && (
                 <>
                   <DropdownMenu>
-                    <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+                    <DropdownMenu.Trigger asChild className="m-2 flex items-center justify-between gap-3">
                       <Button variant="secondary">
                         {t('downloadDataset')}
                         <ChevronDownIcon className="size-[1rem]" />
@@ -218,7 +218,7 @@ const ViewOneDatasetPage = () => {
                     </DropdownMenu.Content>
                   </DropdownMenu>
                   <DropdownMenu>
-                    <DropdownMenu.Trigger asChild className="flex items-center justify-between gap-3 m-2">
+                    <DropdownMenu.Trigger asChild className="m-2 flex items-center justify-between gap-3">
                       <Button variant="secondary">
                         {t('downloadMetadata')}
                         <ChevronDownIcon className="size-[1rem]" />

@@ -29,7 +29,7 @@ export default defineConfig({
         type: 'es6'
       },
       sourceMaps: true
-    })
+    }) as any
   ],
   test: {
     coverage: {

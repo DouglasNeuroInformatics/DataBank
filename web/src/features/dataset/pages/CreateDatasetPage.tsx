@@ -3,10 +3,10 @@ import { useCallback, useState } from 'react';
 
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { type RouteObject, useNavigate } from 'react-router-dom';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
@@ -63,13 +63,10 @@ const CreateDatasetPage = () => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (!acceptedFiles[0]) {
       notifications.addNotification({ type: 'error', message: 'Unexpected file error' });
-      throw console.error();
     } else if (!acceptedFiles[0].name.includes('.csv') && !acceptedFiles[0].name.includes('.tsv')) {
       notifications.addNotification({ type: 'error', message: 'Only CSV or TSV files are allowed!' });
-      throw console.error();
     } else if (acceptedFiles[0].size > MAX_UPLOAD_FILE_SIZE) {
       notifications.addNotification({ type: 'error', message: 'File size larger than 1 GB' });
-      throw console.error();
     } else {
       setFile(acceptedFiles[0]);
     }
@@ -167,7 +164,7 @@ const CreateDatasetPage = () => {
         <LoadingFallback />
       ) : (
         <>
-          <div {...getRootProps()} className="flex-col text-center justify-center">
+          <div {...getRootProps()} className="flex-col justify-center text-center">
             <input {...getInputProps()} />
             {isDragActive ? (
               <Heading variant="h3">Drop the file here ...</Heading>
@@ -208,12 +205,12 @@ const CreateDatasetPage = () => {
     <>
       <motion.div
         animate={{ opacity: 1 }}
-        className="flex flex-grow h-full flex-col items-center justify-center"
+        className="flex h-full flex-grow flex-col items-center justify-center"
         exit={{ opacity: 0 }}
         initial={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="w-full mt-6 sm:max-w-md space-y-40">
+        <div className="mt-6 w-full space-y-40 sm:max-w-md">
           <div className="h-auto rounded-lg border-2 border-dashed border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
             <AnimatePresence initial={false} mode="wait">
               <motion.div

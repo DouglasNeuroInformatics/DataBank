@@ -2,7 +2,7 @@ import { uncapitalize } from '@douglasneuroinformatics/libjs';
 import { type DynamicModule, Module } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
 
-import { PRISMA_CLIENT_TOKEN, getModelToken } from './prisma.utils.js';
+import { getModelToken, PRISMA_CLIENT_TOKEN } from './prisma.utils.js';
 
 @Module({})
 export class PrismaModule {

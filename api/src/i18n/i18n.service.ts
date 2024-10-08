@@ -20,7 +20,7 @@ type Translations = MergeDeep<typeof en, typeof fr>;
 @Injectable()
 export class I18nService {
   private readonly defaultLocale: Locale = 'en';
-  private readonly resources: Record<Locale, Translations>;
+  private readonly resources: { [K in Locale]: Translations };
 
   constructor() {
     this.resources = {
@@ -45,7 +45,7 @@ export class I18nService {
   translate(locale: Locale | undefined, path: Path<Translations>) {
     let item: unknown = this.resources[locale ?? this.defaultLocale];
     path.split('.').forEach((key) => {
-      item = (item as Record<string, string>)[key];
+      item = (item as { [key: string]: string })[key];
     });
     return item as string;
   }

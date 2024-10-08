@@ -1,4 +1,15 @@
+catalog:
+  '@douglasneuroinformatics/esbuild-plugin-native-modules': latest
+  '@douglasneuroinformatics/esbuild-plugin-prisma': latest
+  '@douglasneuroinformatics/eslint-config': latest
+  '@douglasneuroinformatics/libjs': latest
+  '@douglasneuroinformatics/libnest': latest
+  '@douglasneuroinformatics/libpasswd': latest
+  '@douglasneuroinformatics/libui': latest
+  '@douglasneuroinformatics/libui-form-types': latest
+  '@douglasneuroinformatics/prettier-config': latest
+  '@douglasneuroinformatics/tsconfig': latest
 packages:
-  - 'api'
-  - 'types'
-  - 'web'
+  - api
+  - types
+  - web

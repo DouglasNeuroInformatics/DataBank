@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { $TabularColumn } from '@/columns/zod/columns';
 
-const $TabularData = z.object({
+export const $TabularData = z.object({
   columns: $TabularColumn.array(),
   datasetId: z.string(),
   id: z.string(),
@@ -10,7 +10,8 @@ const $TabularData = z.object({
 });
 export type TabularData = z.infer<typeof $TabularData>;
 
-const $UpdatePrimaryKeysDto = z.object({
+export const $UpdatePrimaryKeysDto = z.object({
   primaryKeys: z.string().array()
 });
+
 export type UpdatePrimaryKeysDto = z.infer<typeof $UpdatePrimaryKeysDto>;

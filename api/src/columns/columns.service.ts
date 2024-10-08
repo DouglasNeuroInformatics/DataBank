@@ -5,7 +5,7 @@ import type { PrismaClient } from '@prisma/client/extension';
 import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
 import type { Model } from '@/prisma/prisma.types';
 import type { GetColumnViewDto } from '@/projects/zod/projects';
-import { type Series, pl } from '@/vendor/nodejs-polars.js';
+import { pl, type Series } from '@/vendor/nodejs-polars.js';
 
 import type { UpdateTabularColumnDto } from './zod/columns';
 
@@ -282,16 +282,16 @@ export class ColumnsService {
       median?: number;
       min?: Date | number;
       mode?: number;
-      nullCount: number;
       nullable: boolean;
+      nullCount: number;
       std?: number;
     };
 
     let columnMetadata: ColumnMetadata = {
       count: 0,
       kind: 'STRING',
-      nullCount: 0,
-      nullable: false
+      nullable: false,
+      nullCount: 0
     };
     switch (columnView.kind) {
       case 'BOOLEAN':
@@ -390,8 +390,8 @@ export class ColumnsService {
       min: columnMetadata.min,
       mode: columnMetadata.mode,
       name: columnView.name,
-      nullCount: columnView.summary.nullCount,
       nullable: columnView.nullable,
+      nullCount: columnView.summary.nullCount,
       std: columnMetadata.std,
       stringData: columnView.stringData
     };
@@ -568,80 +568,23 @@ export class ColumnsService {
           }
         });
         break;
-      case 'STRING':
-        data = data.cast(pl.Utf8, true);
+      case 'DATETIME':
+        data = data.cast(pl.Date, true);
         addToCol = this.columnModel.update({
           data: {
-            kind: colType,
-            stringColumnValidation: {
-              minLength: 0
+            datetimeColumnValidation: {
+              max: new Date(),
+              min: '1970-01-01'
             },
-            stringData: data.toArray().map((entry: string) => {
-              return { value: entry };
-            }),
-            summary: {
-              count: data.len() - data.nullCount(),
-              nullCount: data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'INT':
-        data = data.cast(pl.Int64, true);
-        addToCol = this.columnModel.update({
-          data: {
-            intData: data.toArray().map((entry: number) => {
+            datetimeData: data.toArray().map((entry: Date) => {
               return { value: entry };
             }),
             kind: colType,
-            numericColumnValidation: {
-              max: data.max(),
-              min: data.min()
-            },
             summary: {
               count: data.len() - data.nullCount(),
-              intSummary: {
-                max: data.max(),
-                mean: data.mean(),
-                median: data.median(),
-                min: data.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                mode: data.mode()[0],
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                std: data.rollingStd(data.len())[-1]
-              },
-              nullCount: data.len()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'FLOAT':
-        data = data.cast(pl.Float64, true);
-        addToCol = this.columnModel.update({
-          data: {
-            floatData: data.toArray().map((entry: number) => {
-              return { value: entry };
-            }),
-            kind: colType,
-            numericColumnValidation: {
-              max: data.max(),
-              min: data.min()
-            },
-            summary: {
-              count: data.len() - data.nullCount(),
-              floatSummary: {
-                max: data.max(),
-                mean: data.mean(),
-                median: data.median(),
-                min: data.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                std: data.rollingStd(data.len())[-1]
+              datetimeSummary: {
+                max: new Date(),
+                min: '1970-01-01'
               },
               nullCount: data.nullCount()
             }
@@ -674,24 +617,81 @@ export class ColumnsService {
           }
         });
         break;
-      case 'DATETIME':
-        data = data.cast(pl.Date, true);
+      case 'FLOAT':
+        data = data.cast(pl.Float64, true);
         addToCol = this.columnModel.update({
           data: {
-            datetimeColumnValidation: {
-              max: new Date(),
-              min: '1970-01-01'
-            },
-            datetimeData: data.toArray().map((entry: Date) => {
+            floatData: data.toArray().map((entry: number) => {
               return { value: entry };
             }),
             kind: colType,
+            numericColumnValidation: {
+              max: data.max(),
+              min: data.min()
+            },
             summary: {
               count: data.len() - data.nullCount(),
-              datetimeSummary: {
-                max: new Date(),
-                min: '1970-01-01'
+              floatSummary: {
+                max: data.max(),
+                mean: data.mean(),
+                median: data.median(),
+                min: data.min(),
+                // @ts-expect-error - see issue
+                std: data.rollingStd(data.len())[-1]
               },
+              nullCount: data.nullCount()
+            }
+          },
+          where: {
+            id: col.id
+          }
+        });
+        break;
+      case 'INT':
+        data = data.cast(pl.Int64, true);
+        addToCol = this.columnModel.update({
+          data: {
+            intData: data.toArray().map((entry: number) => {
+              return { value: entry };
+            }),
+            kind: colType,
+            numericColumnValidation: {
+              max: data.max(),
+              min: data.min()
+            },
+            summary: {
+              count: data.len() - data.nullCount(),
+              intSummary: {
+                max: data.max(),
+                mean: data.mean(),
+                median: data.median(),
+                min: data.min(),
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                mode: data.mode()[0],
+                // @ts-expect-error - see issue
+                std: data.rollingStd(data.len())[-1]
+              },
+              nullCount: data.len()
+            }
+          },
+          where: {
+            id: col.id
+          }
+        });
+        break;
+      case 'STRING':
+        data = data.cast(pl.Utf8, true);
+        addToCol = this.columnModel.update({
+          data: {
+            kind: colType,
+            stringColumnValidation: {
+              minLength: 0
+            },
+            stringData: data.toArray().map((entry: string) => {
+              return { value: entry };
+            }),
+            summary: {
+              count: data.len() - data.nullCount(),
               nullCount: data.nullCount()
             }
           },
@@ -760,12 +760,42 @@ export class ColumnsService {
           intSummary: null,
           nullCount: currSeries.nullCount()
         };
-      case 'STRING':
+      case 'DATETIME':
+        return {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: {
+            max: new Date(currSeries.max() * 24 * 3600 * 1000),
+            min: new Date(currSeries.min() * 24 * 3600 * 1000)
+          },
+          enumSummary: null,
+          floatSummary: null,
+          intSummary: null,
+          nullCount: currSeries.nullCount()
+        };
+      case 'ENUM':
+        return {
+          count: currSeries.len() - currSeries.nullCount(),
+          datetimeSummary: null,
+          enumSummary: {
+            distribution: currSeries.valueCounts().toRecords() as unknown as { [key: string]: number }
+          },
+          floatSummary: null,
+          intSummary: null,
+          nullCount: currSeries.nullCount()
+        };
+      case 'FLOAT':
         return {
           count: currSeries.len() - currSeries.nullCount(),
           datetimeSummary: null,
           enumSummary: null,
-          floatSummary: null,
+          floatSummary: {
+            max: currSeries.max(),
+            mean: currSeries.mean(),
+            median: currSeries.median(),
+            min: currSeries.min(),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
+          },
           intSummary: null,
           nullCount: currSeries.nullCount()
         };
@@ -787,40 +817,10 @@ export class ColumnsService {
           },
           nullCount: currSeries.nullCount()
         };
-      case 'FLOAT':
+      case 'STRING':
         return {
           count: currSeries.len() - currSeries.nullCount(),
           datetimeSummary: null,
-          enumSummary: null,
-          floatSummary: {
-            max: currSeries.max(),
-            mean: currSeries.mean(),
-            median: currSeries.median(),
-            min: currSeries.min(),
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
-          },
-          intSummary: null,
-          nullCount: currSeries.nullCount()
-        };
-      case 'ENUM':
-        return {
-          count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
-          enumSummary: {
-            distribution: currSeries.valueCounts().toRecords() as unknown as { [key: string]: number }
-          },
-          floatSummary: null,
-          intSummary: null,
-          nullCount: currSeries.nullCount()
-        };
-      case 'DATETIME':
-        return {
-          count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: {
-            max: new Date(currSeries.max() * 24 * 3600 * 1000),
-            min: new Date(currSeries.min() * 24 * 3600 * 1000)
-          },
           enumSummary: null,
           floatSummary: null,
           intSummary: null,

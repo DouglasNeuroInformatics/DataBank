@@ -1,4 +1,3 @@
-import { type ExceptionResponse } from '@databank/types';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios, { isAxiosError } from 'axios';
 
@@ -12,7 +11,7 @@ axios.interceptors.request.use((config) => {
   const auth = useAuthStore.getState();
 
   config.headers.setAccept('application/json');
-  config.headers.set('Accept-Language', i18n.resolvedLanguage ?? 'en');
+  // config.headers.set('Accept-Language', i18n.resolvedLanguage ?? 'en');
 
   if (auth.accessToken) {
     config.headers.set('Authorization', `Bearer ${auth.accessToken}`);
@@ -25,21 +24,25 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     const notifications = useNotificationsStore.getState();
-
-    let message: string;
-    if (isAxiosError<ExceptionResponse>(error) && error.response) {
-      message = `${error.response.status}: ${error.response.statusText}`;
-    } else if (error instanceof Error) {
-      message = error.message;
-    } else {
-      message = '';
+    if (!isAxiosError(error)) {
+      notifications.addNotification({
+        message: i18n.t({
+          en: 'Unknown Error',
+          fr: 'Erreur inconnue'
+        }),
+        type: 'error'
+      });
+      console.error(error);
+      return Promise.reject(error as Error);
     }
-
     notifications.addNotification({
-      message,
+      message: i18n.t({
+        en: 'HTTP Request Failed',
+        fr: 'Échec de la requête HTTP'
+      }),
+      title: error.response?.status.toString(),
       type: 'error'
     });
-
     return Promise.reject(error);
   }
 );

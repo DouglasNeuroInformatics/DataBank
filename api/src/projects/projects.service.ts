@@ -198,24 +198,32 @@ export class ProjectsService {
         delimiter +
         projectDatasetView.metadata[columnName]?.kind +
         delimiter +
+        // @ts-expect-error - see issue
         projectDatasetView.metadata[columnName]?.nullable +
         delimiter +
         projectDatasetView.metadata[columnName]?.count +
         delimiter +
         projectDatasetView.metadata[columnName]?.nullCount +
         delimiter +
+        // @ts-expect-error - see issue
         projectDatasetView.metadata[columnName]?.max +
         delimiter +
+        // @ts-expect-error - see issue
         projectDatasetView.metadata[columnName]?.min +
         delimiter +
+        // @ts-expect-error - see issue
         projectDatasetView.metadata[columnName]?.mean +
         delimiter +
+        // @ts-expect-error - see issue
         projectDatasetView.metadata[columnName]?.median +
         delimiter +
+        // @ts-expect-error - see issue
         projectDatasetView.metadata[columnName]?.mode +
         delimiter +
+        // @ts-expect-error - see issue
         projectDatasetView.metadata[columnName]?.std +
         delimiter +
+        // @ts-expect-error - see issue
         JSON.stringify(projectDatasetView.metadata[columnName]?.distribution) +
         delimiter +
         '\n';

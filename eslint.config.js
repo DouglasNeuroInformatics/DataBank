@@ -7,7 +7,8 @@ export default config({
     node: true
   },
   react: {
-    enabled: true
+    enabled: true,
+    version: '18'
   },
   typescript: {
     enabled: true

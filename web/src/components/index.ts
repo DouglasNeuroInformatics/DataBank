@@ -1,3 +1,3 @@
 export * from './Layout';
-export * from './Logo.js';
 export * from './LoadingFallback.js';
+export * from './Logo.js';

@@ -1,16 +1,13 @@
 {
-  "extends": "../jsconfig.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "esModuleInterop": false,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     },
     "strictPropertyInitialization": false
   },
-  "include": ["src", "test", "scripts"]
+  "include": ["scripts/*", "src/**/*", "test/**/*", "vitest.config.ts"]
 }

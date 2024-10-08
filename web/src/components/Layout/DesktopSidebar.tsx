@@ -3,8 +3,8 @@ import { Link, NavLink } from 'react-router-dom';
 
 import { Logo } from '@/components';
 
-import { UserDropup } from './UserDropup';
 import { type NavItem } from './types';
+import { UserDropup } from './UserDropup';
 
 export type DesktopSidebarProps = {
   isLogIn: boolean;

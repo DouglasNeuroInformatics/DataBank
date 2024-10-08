@@ -23,8 +23,8 @@ const $ProjectRowFilter = z.object({
 
 const $ProjectDataset = z.object({
   columns: $ProjectColumn.array(),
-  dataTypeFilters: z.enum(['INT', 'FLOAT', 'STRING', 'ENUM', 'DATETIME', 'BOOLEAN']).array(),
   datasetId: z.string(),
+  dataTypeFilters: z.enum(['INT', 'FLOAT', 'STRING', 'ENUM', 'DATETIME', 'BOOLEAN']).array(),
   rowFilter: $ProjectRowFilter.nullable(),
   useDataTypeFilter: z.boolean(),
   useRowFilter: z.boolean()
@@ -45,8 +45,8 @@ const $CreateProjectDto = z.object({
 
 export type CreateProjectDto = z.infer<typeof $CreateProjectDto>;
 
-const $UpdateProjectDto = $CreateProjectDto.partial();
+export const $UpdateProjectDto = $CreateProjectDto.partial();
 export type UpdateProjectDto = z.infer<typeof $UpdateProjectDto>;
 
-const $GetColumnViewDto = $ProjectColumn.merge($ProjectRowFilter);
+export const $GetColumnViewDto = $ProjectColumn.merge($ProjectRowFilter);
 export type GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;

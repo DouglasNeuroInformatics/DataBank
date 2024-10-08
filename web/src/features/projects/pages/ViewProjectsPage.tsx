@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import axios from 'axios';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import axios from 'axios';
 import { type RouteObject, useNavigate } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
@@ -18,7 +18,7 @@ const ViewProjectsPage = () => {
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
 
-  const [projectsInfoArray, setProjectsInfoArray] = useState<ProjectCardProps[] | null>(null);
+  const [projectsInfoArray, setProjectsInfoArray] = useState<null | ProjectCardProps[]>(null);
 
   useEffect(() => {
     axios

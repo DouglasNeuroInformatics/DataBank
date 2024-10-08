@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { type RouteObject, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -49,7 +49,7 @@ const CreateProjectPage = () => {
   return (
     <motion.div
       animate={{ opacity: 1 }}
-      className="flex flex-grow h-full flex-col items-center justify-center"
+      className="flex h-full flex-grow flex-col items-center justify-center"
       exit={{ opacity: 0 }}
       initial={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
@@ -57,7 +57,7 @@ const CreateProjectPage = () => {
       {projectData ? (
         <LoadingFallback />
       ) : (
-        <div className="w-full mt-6 sm:max-w-md space-y-40">
+        <div className="mt-6 w-full space-y-40 sm:max-w-md">
           <div className="h-auto rounded-lg border-2 border-dashed border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
             <AnimatePresence initial={false} mode="wait">
               <motion.div

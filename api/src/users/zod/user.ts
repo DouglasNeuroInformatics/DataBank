@@ -23,6 +23,6 @@ export const $CreateUserDto = z.object({
 
 export type CreateUserDto = z.infer<typeof $CreateUserDto>;
 
-const $UpdateUserDto = $CreateUserDto.partial();
+export const $UpdateUserDto = $CreateUserDto.partial();
 
 export type UpdateUserDto = z.infer<typeof $UpdateUserDto>;

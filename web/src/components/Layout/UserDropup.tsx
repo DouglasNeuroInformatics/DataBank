@@ -1,6 +1,8 @@
+import React from 'react';
+
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { Menu, Transition } from '@headlessui/react';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { Link } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
@@ -14,7 +16,7 @@ export const UserDropup = () => {
         <UserCircleIcon className="h-8 w-8" />
       </Menu.Button>
       <Transition
-        as={Fragment}
+        as={React.Fragment}
         enter="transition ease-out duration-100"
         enterFrom="transform opacity-0 scale-95"
         enterTo="transform opacity-100 scale-100"
@@ -22,7 +24,7 @@ export const UserDropup = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute z-50 bottom-14 left-0 origin-bottom-left whitespace-nowrap rounded-sm border shadow-lg border-slate-700 bg-slate-800">
+        <Menu.Items className="absolute bottom-14 left-0 z-50 origin-bottom-left whitespace-nowrap rounded-sm border border-slate-700 bg-slate-800 shadow-lg">
           <Menu.Item>
             <Link className="block w-full p-2 first-letter:capitalize hover:bg-slate-700" to="/portal/user">
               {t('preferences')}

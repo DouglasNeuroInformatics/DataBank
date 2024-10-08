@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable perfectionist/sort-objects */
+
 import { useEffect, useState } from 'react';
 
 import type { AddProjectDatasetColumns, ProjectColumn, ProjectDatasetDto } from '@databank/types';
@@ -230,7 +234,6 @@ const AddProjectDatasetColumnPage = () => {
   const formContent = generateContent();
 
   const handleSubmit = (data: { [x: string]: any }) => {
-    data;
     const projectDatasetDto: ProjectDatasetDto = {
       columns: [],
       dataTypeFilters: [],
@@ -243,9 +246,9 @@ const AddProjectDatasetColumnPage = () => {
       useRowFilter: data.useRowFilter as boolean
     };
 
-    data.selected.keys().forEach((colName) => {
+    data.selected.keys().forEach((colName: any) => {
       const currProjectColumn: ProjectColumn = {
-        columnId: columns[colName]!,
+        columnId: columns![colName]!,
         hash: null,
         trim: null
       };

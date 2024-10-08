@@ -1,4 +1,4 @@
-import { MockFactory, type MockedInstance } from '@douglasneuroinformatics/libnest/testing';
+import { type MockedInstance, MockFactory } from '@douglasneuroinformatics/libnest/testing';
 import { Test } from '@nestjs/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 
@@ -33,9 +33,9 @@ describe('UsersController', () => {
       createUserDto = createUserDtoStubFactory();
     });
 
-    it('should return the same value as returned by the service', () => {
+    it('should return the same value as returned by the service', async () => {
       usersService.createUser.mockResolvedValueOnce(createUserDto);
-      expect(usersController.createUser(createUserDto)).resolves.toMatchObject(createUserDto);
+      await expect(usersController.createUser(createUserDto)).resolves.toMatchObject(createUserDto);
     });
   });
 });

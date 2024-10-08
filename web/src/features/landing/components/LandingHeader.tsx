@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { Bars3Icon } from '@heroicons/react/24/solid';
 import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { Link } from 'react-router-dom';
 
 import { Logo } from '@/components/Logo';

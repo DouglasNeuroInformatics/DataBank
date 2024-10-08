@@ -151,8 +151,8 @@ export class TabularDataService {
         median: currColumnView.median,
         min: currColumnView.min,
         mode: currColumnView.mode,
-        nullCount: currColumnView.nullCount,
         nullable: currColumnView.nullable,
+        nullCount: currColumnView.nullCount,
         std: currColumnView.std
       };
 
