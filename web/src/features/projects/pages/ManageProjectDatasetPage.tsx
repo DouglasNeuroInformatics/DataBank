@@ -14,7 +14,7 @@ import DatasetTable from '@/features/dataset/components/DatasetTable';
 
 const ViewOneProjectDatasetPage = () => {
   const params = useParams();
-  const [dataset, setDataset] = useState<TabularDataset | null>(null);
+  const [dataset, setDataset] = useState<null | TabularDataset>(null);
 
   const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto | null>(null);
 

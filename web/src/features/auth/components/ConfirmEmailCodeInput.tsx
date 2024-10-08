@@ -3,8 +3,8 @@ import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
 
 import { range } from '@douglasneuroinformatics/libjs';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { clsx } from 'clsx';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { clsx } from 'clsx';
 
 const CODE_LENGTH = 6;
 

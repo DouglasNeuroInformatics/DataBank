@@ -7,8 +7,8 @@ import { Link } from 'react-router-dom';
 import { Logo } from '@/components';
 
 import { Slider } from '../Slider';
-import { UserDropup } from './UserDropup';
 import { type NavItem } from './types';
+import { UserDropup } from './UserDropup';
 
 export type MobileNavbarProps = {
   isLogIn: boolean;
@@ -20,7 +20,7 @@ export const MobileNavbar = ({ isLogIn, navigation }: MobileNavbarProps) => {
 
   return (
     <>
-      <div className="flex w-full items-center justify-between bg-slate-900 p-4 dark:bg-slate-800 lg:hidden">
+      <div className="flex w-full items-center justify-between bg-slate-900 p-4 lg:hidden dark:bg-slate-800">
         <Link to="/">
           <Logo className="h-12 w-12 fill-slate-100" />
         </Link>
@@ -34,7 +34,7 @@ export const MobileNavbar = ({ isLogIn, navigation }: MobileNavbarProps) => {
         </button>
       </div>
       <Slider isOpen={isOpen} setIsOpen={setIsOpen} title={<Logo className="h-12 w-12" />}>
-        <div className="flex flex-col h-full">
+        <div className="flex h-full flex-col">
           <nav className="flex-grow">
             {navigation.map((item) => (
               <Link

@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import type { DatasetCardProps } from '@databank/types';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import axios from 'axios';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import axios from 'axios';
 import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
@@ -26,7 +26,7 @@ type Project = {
 
 const ViewOneProjectPage = () => {
   const params = useParams();
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState<null | Project>(null);
   const notifications = useNotificationsStore();
   const [isManager, setIsManager] = useState(false);
 
@@ -109,7 +109,7 @@ const ViewOneProjectPage = () => {
                 <li>{`${t('projectExternalId')}: ${project.externalId}`}</li>
                 <li>{`${t('projectExpiry')}: ${project.expiry.toString()}`}</li>
               </ul>
-              <div className="m-3 rounded-md border bg-card tracking-tight text-muted-foreground shadow-sm">
+              <div className="bg-card text-muted-foreground m-3 rounded-md border tracking-tight shadow-sm">
                 <Card>
                   <Card.Header>
                     <Card.Title>{`${t('projectDatasets')}`}</Card.Title>

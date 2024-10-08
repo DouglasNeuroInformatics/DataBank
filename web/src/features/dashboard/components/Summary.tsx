@@ -1,5 +1,5 @@
-import { UserIcon, UsersIcon } from '@heroicons/react/24/solid';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { UserIcon, UsersIcon } from '@heroicons/react/24/solid';
 import { Navigate } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components/LoadingFallback';

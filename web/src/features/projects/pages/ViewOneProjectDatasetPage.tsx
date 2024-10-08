@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
@@ -20,7 +20,7 @@ const ViewOneProjectDatasetPage = () => {
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
   const params = useParams();
-  const [dataset, setDataset] = useState<TabularDataset | null>(null);
+  const [dataset, setDataset] = useState<null | TabularDataset>(null);
   const download = useDownload();
   const { currentUser } = useAuthStore();
 

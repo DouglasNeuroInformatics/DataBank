@@ -6,7 +6,7 @@ import 'i18next';
 
 declare module 'i18next' {
   // Extend CustomTypeOptions
-  interface CustomTypeOptions {
+  type CustomTypeOptions = {
     // custom namespace type, if you changed it
     defaultNS: 'common';
     // custom resources type
@@ -14,5 +14,5 @@ declare module 'i18next' {
       common: TranslatedResource<typeof common>;
     };
     // other
-  }
+  };
 }

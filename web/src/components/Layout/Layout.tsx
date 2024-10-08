@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import { CircleStackIcon, ClipboardDocumentListIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { CircleStackIcon, ClipboardDocumentListIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { Outlet } from 'react-router-dom';
 
 import { DesktopSidebar } from './DesktopSidebar';
