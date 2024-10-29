@@ -25,10 +25,14 @@ Researchers at institutions like the Douglas Research Centre often work with sen
 pnpm install
 ```
 
-### Setup Config
+### Setup Config and Docker Compose
 
 ```shell
 awk -v secret_key="$(openssl rand -hex 16)" '/^SECRET_KEY=/{print $0 secret_key;next}1' .env.template > .env
+```
+
+```shell
+docker compose -f docker-compose.dev.yaml up
 ```
 
 ### Launch Dev Server
