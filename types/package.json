@@ -9,6 +9,6 @@
     "lint": "tsc && eslint index.d.ts"
   },
   "dependencies": {
-    "type-fest": "^4.3.3"
+    "type-fest": "catalog:"
   }
 }
