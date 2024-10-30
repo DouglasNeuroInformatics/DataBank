@@ -48,7 +48,6 @@
     "@types/nodemailer": "^6.4.15",
     "@types/nodemon": "^1.19.6",
     "@types/supertest": "^6.0.2",
-    "@vitest/coverage-v8": "^1.6.0",
     "concurrently": "^8.2.2",
     "esbuild": "^0.23.1",
     "esbuild-plugin-copy": "^2.1.1",
