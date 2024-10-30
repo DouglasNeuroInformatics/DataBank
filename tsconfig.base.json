@@ -6,7 +6,7 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "maxNodeModuleJsDepth": 0,
-    "module": "Preserve",
+    "module": "ESNext",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true
   },
