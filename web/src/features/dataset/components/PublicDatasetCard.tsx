@@ -1,4 +1,4 @@
-import type { DatasetCardProps } from '@databank/types';
+import type { DatasetCardProps } from '@databank/core';
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { useNavigate } from 'react-router-dom';

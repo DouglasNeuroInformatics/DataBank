@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { Locale } from '@databank/types';
+import type { Locale } from '@databank/core';
 import { Injectable } from '@nestjs/common';
 import type { Request } from 'express';
 import type { MergeDeep } from 'type-fest';

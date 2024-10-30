@@ -1,4 +1,4 @@
-import type { CurrentUser } from '@databank/types';
+import type { CurrentUser } from '@databank/core';
 import { jwtDecode } from 'jwt-decode';
 import { create } from 'zustand';
 

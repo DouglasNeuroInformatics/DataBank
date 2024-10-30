@@ -1,4 +1,4 @@
-import type { DatasetViewPaginationDto } from '@databank/types';
+import type { DatasetViewPaginationDto } from '@databank/core';
 import { ActionDropdown, Button } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 

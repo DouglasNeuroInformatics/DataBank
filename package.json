@@ -18,7 +18,7 @@
     "test": "env-cmd turbo run test"
   },
   "devDependencies": {
-    "@databank/types": "workspace:*",
+    "@databank/core": "workspace:*",
     "@douglasneuroinformatics/eslint-config": "catalog:",
     "@douglasneuroinformatics/prettier-config": "catalog:",
     "@douglasneuroinformatics/tsconfig": "catalog:",

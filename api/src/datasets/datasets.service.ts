@@ -6,7 +6,7 @@ import type {
   EditDatasetInfoDto,
   ProjectDatasetDto,
   TabularDatasetView
-} from '@databank/types';
+} from '@databank/core';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 

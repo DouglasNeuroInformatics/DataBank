@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useEffect, useState } from 'react';
 
-import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
+import type { DatasetViewPaginationDto, TabularDataset } from '@databank/core';
 import axios from 'axios';
 import { type RouteObject, useParams } from 'react-router-dom';
 

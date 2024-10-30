@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { TUser } from '@databank/types';
+import type { TUser } from '@databank/core';
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';

@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import type { EditDatasetInfoDto } from '@databank/types';
+import type { EditDatasetInfoDto } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';

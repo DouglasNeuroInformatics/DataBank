@@ -46,9 +46,9 @@ catalogs:
 importers:
   .:
     devDependencies:
-      '@databank/types':
+      '@databank/core':
         specifier: workspace:*
-        version: link:types
+        version: link:core
       '@douglasneuroinformatics/eslint-config':
         specifier: 'catalog:'
         version: 5.1.9(astro-eslint-parser@1.0.3(typescript@5.5.4))(eslint@9.13.0(jiti@1.21.6))(svelte-eslint-parser@0.41.1)(typescript@5.5.4)
@@ -201,7 +201,7 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1(@swc/core@1.7.40(@swc/helpers@0.5.13))(rollup@4.24.0)
 
-  types:
+  core:
     dependencies:
       type-fest:
         specifier: 'catalog:'

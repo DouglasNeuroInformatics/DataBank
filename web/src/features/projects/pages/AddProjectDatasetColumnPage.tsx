@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 
-import type { AddProjectDatasetColumns, ProjectColumn, ProjectDatasetDto } from '@databank/types';
+import type { AddProjectDatasetColumns, ProjectColumn, ProjectDatasetDto } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import axios from 'axios';
 import { type RouteObject, useNavigate, useParams } from 'react-router-dom';

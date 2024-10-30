@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import type { SetupDto } from '@databank/types';
+import type { SetupDto } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { z } from 'zod';

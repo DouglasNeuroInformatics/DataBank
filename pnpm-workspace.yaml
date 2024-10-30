@@ -13,5 +13,5 @@ catalog:
   'zod': '^3.23.8'
 packages:
   - api
-  - types
+  - core
   - web

@@ -1,5 +1,5 @@
 {
-  "name": "@databank/types",
+  "name": "@databank/core",
   "type": "module",
   "version": "0.0.0",
   "private": true,

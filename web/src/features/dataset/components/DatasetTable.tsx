@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
-import type { PermissionLevel, TabularDataset } from '@databank/types';
+import type { PermissionLevel, TabularDataset } from '@databank/core';
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { Table } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';

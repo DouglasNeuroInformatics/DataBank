@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { DatasetCardProps } from '@databank/types';
+import type { DatasetCardProps } from '@databank/core';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';

@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useEffect, useState } from 'react';
 
-import type { DatasetViewPaginationDto, TabularDataset } from '@databank/types';
+import type { DatasetViewPaginationDto, TabularDataset } from '@databank/core';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';

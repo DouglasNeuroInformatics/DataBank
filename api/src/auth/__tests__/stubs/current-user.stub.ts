@@ -1,4 +1,4 @@
-// import type { CurrentUser } from '@databank/types';
+// import type { CurrentUser } from '@databank/core';
 
 // export const currentUserStubFactory = (): CurrentUser => ({
 //   confirmedAt: Date.now(),

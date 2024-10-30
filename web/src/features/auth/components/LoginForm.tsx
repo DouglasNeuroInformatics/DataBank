@@ -1,4 +1,4 @@
-import type { LoginCredentials } from '@databank/types';
+import type { LoginCredentials } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { z } from 'zod';
