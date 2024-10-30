@@ -1,8 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
+  output        = "../node_modules/@prisma/generated-client"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
