@@ -1,6 +1,6 @@
 // import { useEffect, useMemo, useState } from 'react';
 
-// import type { DatasetInfo } from '@databank/types';
+// import type { DatasetInfo } from '@databank/core';
 // import { SearchBar } from '@douglasneuroinformatics/libui/components';
 // import axios from 'axios';
 // import { useTranslation } from '@douglasneuroinformatics/libui/hooks';

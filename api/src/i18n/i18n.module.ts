@@ -6,4 +6,4 @@ import { I18nService } from './i18n.service.js';
   exports: [I18nService],
   providers: [I18nService]
 })
-export class I18nModule { }
+export class I18nModule {}

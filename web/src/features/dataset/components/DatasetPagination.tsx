@@ -1,4 +1,4 @@
-import type { DatasetViewPaginationDto } from '@databank/types';
+import type { DatasetViewPaginationDto } from '@databank/core';
 import { ActionDropdown, Button } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 
@@ -58,7 +58,7 @@ export const DatasetPagination = ({
   return (
     <div className="flex items-center justify-between py-3">
       <div className="hidden sm:block">
-        <p className="text-sm font-medium text-muted-foreground"></p>
+        <p className="text-muted-foreground text-sm font-medium"></p>
       </div>
       <div className="flex flex-1 justify-between gap-5 sm:justify-center">
         <h1>{title}: </h1>

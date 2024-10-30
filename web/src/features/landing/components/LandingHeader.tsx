@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { cn } from '@douglasneuroinformatics/libui/utils';
 import { Bars3Icon } from '@heroicons/react/24/solid';
-import { clsx } from 'clsx';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -41,7 +41,7 @@ export const LandingHeader = () => {
             <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
           </div>
           <nav
-            className={clsx(
+            className={cn(
               'flex max-h-0 w-full flex-col overflow-hidden transition-[max-height] duration-300 md:max-h-fit md:w-auto md:flex-row md:items-center md:space-x-6',
               {
                 'max-h-40': isMobileNavOpen
@@ -49,7 +49,7 @@ export const LandingHeader = () => {
             )}
           >
             <Link
-              className={clsx(
+              className={cn(
                 'block p-3 font-medium',
 
                 languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
@@ -59,7 +59,7 @@ export const LandingHeader = () => {
               {t('login')}
             </Link>
             <Link
-              className={clsx(
+              className={cn(
                 'block p-3 font-medium',
                 languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
@@ -68,7 +68,7 @@ export const LandingHeader = () => {
               {t('createAccount')}
             </Link>
             <Link
-              className={clsx(
+              className={cn(
                 'block p-3 font-medium',
                 languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}

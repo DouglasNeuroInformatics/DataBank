@@ -1,4 +1,4 @@
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@douglasneuroinformatics/libui/utils';
 
 export type HeadingProps = {
   border?: boolean;
@@ -10,8 +10,8 @@ export type HeadingProps = {
 export const Heading = ({ border = true, children, subtitle, title }: HeadingProps) => {
   return (
     <div
-      className={twMerge(
-        'mb-3 flex flex-col gap-5 border-slate-300 py-5 dark:border-slate-600 sm:flex-row sm:items-center sm:justify-between',
+      className={cn(
+        'mb-3 flex flex-col gap-5 border-slate-300 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-slate-600',
         border && 'border-b'
       )}
     >

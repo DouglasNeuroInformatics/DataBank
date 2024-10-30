@@ -1,35 +1,31 @@
-FROM node:20-alpine AS runtime
-FROM runtime as base
-RUN apk upgrade --no-cache
-RUN apk add --no-cache libc6-compat
-RUN npm install -g turbo
+FROM node:lts-alpine AS runtime
+
+FROM runtime AS base
+WORKDIR /app
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV NODE_OPTIONS="--max-old-space-size=8192"
+RUN corepack enable
+RUN pnpm install -g turbo@latest
 
 # PRUNE SOURCE CODE
-FROM base AS builder
-WORKDIR /app
+FROM base AS pruner
 COPY . .
-RUN turbo prune --scope=@databank/api --docker
+RUN turbo prune @databank/api
 
-# INSTALL DEPENDENCIES
+# INSTALL DEPENDENCIES AND BUILD
 FROM base AS installer
-WORKDIR /app
-COPY .gitignore .gitignore
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/package-lock.json ./package-lock.json
-RUN npm ci
+COPY tsconfig.base.json ./
+COPY --from=pruner /app/out/ .
+RUN pnpm install --frozen-lockfile 
+RUN turbo build --filter=@databank/api
 
-# BUILD THE PROJECT
-COPY --from=builder /app/out/full/ .
-COPY tsconfig.base.json tsconfig.base.json
-COPY turbo.json turbo.json
-RUN turbo run build --filter=@databank/api
-
-# RUN PRODUCTION IMAGE
+# RUN SERVER
 FROM runtime AS runner
 WORKDIR /app
-RUN addgroup --system --gid 1001 nestjs
-RUN adduser --system --uid 1001 nestjs
-USER nestjs
-COPY --from=installer /app .
-
-CMD ["node", "./api/dist/main.js"]
+COPY --from=installer /app/api/dist/ /app/dist/
+COPY --from=installer /app/api/public/ /app/public/
+COPY --from=installer /app/api/dist/prisma/client/ /.prisma/client/
+RUN echo '{ "type": "module" }' > package.json
+USER node
+CMD [ "node", "./dist/app.js" ]

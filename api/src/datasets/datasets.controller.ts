@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-classes */
-import type { ColumnDataType, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevel } from '@databank/types';
+import type { ColumnDataType, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevel } from '@databank/core';
 import { CurrentUser, ParseObjectIdPipe } from '@douglasneuroinformatics/libnest/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';

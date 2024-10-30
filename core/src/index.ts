@@ -105,7 +105,7 @@ export type TManualVerification = {
 export type TVerificationInfo = TManualVerification | TVerificationUponConfirmEmail | TVerificationWithRegex;
 
 // Datasets
-type PermissionLevel = 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED';
+export type PermissionLevel = 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED';
 
 type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
 

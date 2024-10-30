@@ -1,4 +1,4 @@
-import type { DatasetInfo, DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/types';
+import type { DatasetInfo, DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/core';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';

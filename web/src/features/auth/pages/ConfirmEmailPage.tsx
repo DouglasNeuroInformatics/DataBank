@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { AuthPayload, EmailConfirmationProcedureInfo } from '@databank/types';
+import type { AuthPayload, EmailConfirmationProcedureInfo } from '@databank/core';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';

@@ -1,4 +1,4 @@
-import type { SetupDto } from '@databank/types';
+import type { SetupDto } from '@databank/core';
 import { Card, Heading, LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 

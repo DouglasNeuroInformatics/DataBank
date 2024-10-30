@@ -1,0 +1,16 @@
+{
+  "name": "@databank/core",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "license": "AGPL-3.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "tsc && eslint --fix src"
+  },
+  "dependencies": {
+    "type-fest": "catalog:"
+  }
+}

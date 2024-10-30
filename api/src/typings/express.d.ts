@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
-import type { CurrentUser, Locale } from '@databank/types';
+import type { CurrentUser, Locale } from '@databank/core';
 import { Simplify } from 'type-fest';
 
 import 'multer';

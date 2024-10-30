@@ -1,6 +1,6 @@
 import { randomInt } from 'crypto';
 
-import type { AuthPayload, CurrentUser, EmailConfirmationProcedureInfo, Locale } from '@databank/types';
+import type { AuthPayload, CurrentUser, EmailConfirmationProcedureInfo, Locale } from '@databank/core';
 import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
 import {
   ForbiddenException,

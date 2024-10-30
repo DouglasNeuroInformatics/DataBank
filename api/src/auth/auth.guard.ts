@@ -1,4 +1,4 @@
-import type { CurrentUser, UserRole } from '@databank/types';
+import type { CurrentUser, UserRole } from '@databank/core';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

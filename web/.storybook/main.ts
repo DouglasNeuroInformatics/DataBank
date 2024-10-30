@@ -1,21 +1,17 @@
 import path from 'node:path';
 
+import type { StorybookConfig } from '@storybook/react-vite';
 import autoprefixer from 'autoprefixer';
 import tailwindcss from 'tailwindcss';
 import { mergeConfig } from 'vite';
 
-/** @type {import('@storybook/react-vite').StorybookConfig} */
-const config = {
+const config: StorybookConfig = {
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
-    '@storybook/addon-themes',
-    'storybook-react-i18next'
+    '@storybook/addon-themes'
   ],
-  core: {
-    builder: '@storybook/builder-vite'
-  },
   docs: {
     autodocs: 'tag'
   },
@@ -24,6 +20,11 @@ const config = {
     options: {}
   },
   stories: [
+    {
+      directory: '../src/components',
+      files: '**/*.stories.@(js|jsx|ts|tsx)',
+      titlePrefix: 'Components'
+    },
     {
       directory: '../src/features',
       files: '**/*.stories.@(js|jsx|ts|tsx)',
@@ -39,12 +40,10 @@ const config = {
       },
       resolve: {
         alias: {
-          // eslint-disable-next-line no-undef
           '@': path.resolve(__dirname, '..', 'src')
         }
       }
     });
   }
 };
-
 export default config;

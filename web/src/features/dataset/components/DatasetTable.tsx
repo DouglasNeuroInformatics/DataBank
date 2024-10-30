@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
-import type { PermissionLevel, TabularDataset } from '@databank/types';
+import type { PermissionLevel, TabularDataset } from '@databank/core';
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { Table } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
@@ -66,12 +66,12 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   return (
-    <div className="m-3 rounded-md border bg-card tracking-tight text-muted-foreground shadow-sm">
+    <div className="bg-card text-muted-foreground m-3 rounded-md border tracking-tight shadow-sm">
       <Table>
         <Table.Header>
           <Table.Row>
             {tabularDataset.columns.map((column, i) => (
-              <Table.Head className="whitespace-nowrap text-foreground" key={i}>
+              <Table.Head className="text-foreground whitespace-nowrap" key={i}>
                 <DropdownMenu>
                   <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
                     <span>{column}</span>

@@ -1,10 +1,18 @@
-import type { LoginCredentials } from '@databank/types';
-import { IsNotEmpty } from 'class-validator';
+import type { LoginCredentials } from '@databank/core';
+import { ValidationSchema } from '@douglasneuroinformatics/libnest/core';
+import { ApiProperty } from '@nestjs/swagger';
+import { z } from 'zod';
 
+@ValidationSchema(
+  z.object({
+    email: z.string().min(1),
+    password: z.string().min(1)
+  })
+)
 export class LoginRequestDto implements LoginCredentials {
-  @IsNotEmpty()
+  @ApiProperty()
   email: string;
 
-  @IsNotEmpty()
+  @ApiProperty()
   password: string;
 }

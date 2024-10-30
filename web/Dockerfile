@@ -1,31 +1,27 @@
-FROM node:20-alpine AS base
-RUN apk upgrade --no-cache
-RUN apk add --no-cache libc6-compat
-RUN npm install -g turbo
+FROM node:lts-alpine AS runtime
+
+FROM runtime AS base
+WORKDIR /app
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV NODE_OPTIONS="--max-old-space-size=8192"
+RUN corepack enable
+RUN pnpm install -g turbo@latest
 
 # PRUNE SOURCE CODE
 FROM base AS builder
-WORKDIR /app
 COPY . .
-RUN turbo prune --scope=@databank/web --docker
+RUN turbo prune @databank/web
 
-# INSTALL DEPENDENCIES
+# INSTALL DEPENDENCIES AND BUILD
 FROM base AS installer
-WORKDIR /app
-COPY .gitignore .gitignore
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/package-lock.json ./package-lock.json
-RUN npm ci
+COPY tsconfig.base.json ./
+COPY --from=builder /app/out/ .
+RUN pnpm install --frozen-lockfile 
+RUN turbo build --filter=@databank/web
 
-# BUILD THE PROJECT
-COPY --from=builder /app/out/full/ .
-COPY tsconfig.base.json tsconfig.base.json
-COPY turbo.json turbo.json
-RUN turbo run build --filter=@databank/web
-
-# MOUNT STATIC CODE
-FROM caddy:2.7-alpine as runner
-WORKDIR /app
-COPY web/Caddyfile /etc/caddy/Caddyfile
-COPY --from=installer /app/web/dist/ .
-CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]
+# RUN SERVER
+FROM runtime AS runner
+RUN npm install -g 8 http-server@14.1.1
+COPY --from=installer /app/web/.env.public /app/web/dist/ ./
+CMD [ "sh", "-c", "import-meta-env -x .env.public -p index.html && http-server -s -p 80 -P http://localhost:80? ." ]

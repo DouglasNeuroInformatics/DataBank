@@ -1,4 +1,3 @@
-version: '3'
 name: databank
 volumes:
   caddy_data:
@@ -8,7 +7,7 @@ services:
     image: caddy:2.7-alpine
     restart: unless-stopped
     ports:
-      - "6000:80"
+      - '6000:80'
     environment:
       - SITE_ADDRESS
     volumes:
