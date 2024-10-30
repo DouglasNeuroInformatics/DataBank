@@ -1,21 +1,18 @@
-import path from 'node:path';
+import type { StorybookConfig } from '@storybook/react-vite';
 
-import autoprefixer from 'autoprefixer';
-import tailwindcss from 'tailwindcss';
-import { mergeConfig } from 'vite';
+import path = require('node:path');
 
-/** @type {import('@storybook/react-vite').StorybookConfig} */
-const config = {
+import autoprefixer = require('autoprefixer');
+import tailwindcss = require('tailwindcss');
+import vite = require('vite');
+
+const config: StorybookConfig = {
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
-    '@storybook/addon-themes',
-    'storybook-react-i18next'
+    '@storybook/addon-themes'
   ],
-  core: {
-    builder: '@storybook/builder-vite'
-  },
   docs: {
     autodocs: 'tag'
   },
@@ -25,13 +22,18 @@ const config = {
   },
   stories: [
     {
+      directory: '../src/components',
+      files: '**/*.stories.@(js|jsx|ts|tsx)',
+      titlePrefix: 'Components'
+    },
+    {
       directory: '../src/features',
       files: '**/*.stories.@(js|jsx|ts|tsx)',
       titlePrefix: 'Features'
     }
   ],
   viteFinal(config) {
-    return mergeConfig(config, {
+    return vite.mergeConfig(config, {
       css: {
         postcss: {
           plugins: [autoprefixer(), tailwindcss()]
@@ -39,7 +41,6 @@ const config = {
       },
       resolve: {
         alias: {
-          // eslint-disable-next-line no-undef
           '@': path.resolve(__dirname, '..', 'src')
         }
       }
@@ -47,4 +48,4 @@ const config = {
   }
 };
 
-export default config;
+export = config;
