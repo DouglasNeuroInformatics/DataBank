@@ -1,8 +1,8 @@
-import { clsx } from 'clsx';
+import { cn } from '@douglasneuroinformatics/libui/utils';
 
 export const Logo = ({ className, ...props }: React.ComponentPropsWithoutRef<'svg'>) => (
   <svg
-    className={clsx('fill-sky-900 dark:fill-slate-100', className)}
+    className={cn('fill-sky-900 dark:fill-slate-100', className)}
     height="1388"
     version="1"
     viewBox="0 0 1287 1041"

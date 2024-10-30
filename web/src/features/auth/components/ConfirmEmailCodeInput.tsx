@@ -4,7 +4,7 @@ import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
 import { range } from '@douglasneuroinformatics/libjs';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { clsx } from 'clsx';
+import { cn } from '@douglasneuroinformatics/libui/utils';
 
 const CODE_LENGTH = 6;
 
@@ -83,7 +83,7 @@ export const ConfirmEmailCodeInput = ({ className, onComplete }: ConfirmEmailCod
   };
 
   return (
-    <div className={clsx('flex gap-2', className)}>
+    <div className={cn('flex gap-2', className)}>
       {range(CODE_LENGTH).map((index) => (
         <input
           className="w-1/6 rounded-md border border-slate-300 bg-transparent p-2 shadow-sm hover:border-slate-300 focus:border-sky-800 focus:outline-none dark:border-slate-600 dark:hover:border-slate-400 dark:focus:border-sky-500"
