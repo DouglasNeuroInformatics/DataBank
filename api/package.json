@@ -10,6 +10,7 @@
     "dev": "NODE_ENV=development env-cmd -f ../.env tsx scripts/dev.ts",
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src",
+    "start": "NODE_ENV=production env-cmd -f ../.env node dist/app.js",
     "test": "env-cmd -f ../.env vitest",
     "test:coverage": "env-cmd -f ../.env vitest --coverage",
     "test:e2e": "vitest test/"
