@@ -33,7 +33,7 @@ const EditProjectInfoPage = () => {
   };
 
   return (
-    <div className="w-full mt-6 sm:max-w-md space-y-40">
+    <div className="mt-6 w-full space-y-40 sm:max-w-md">
       <div className="h-auto rounded-lg border-2 border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
         <AnimatePresence initial={false} mode="wait">
           <motion.div
@@ -74,7 +74,7 @@ const EditProjectInfoPage = () => {
               onSubmit={(data) => handleSubmit(data)}
             />
             <Button
-              className="w-full m-4"
+              className="m-4 w-full"
               label="Back"
               variant={'secondary'}
               onClick={() => {

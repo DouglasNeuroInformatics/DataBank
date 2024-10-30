@@ -35,4 +35,4 @@ import { AuthService } from './auth.service.js';
     }
   ]
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -11,7 +11,7 @@ import { VerifyAccountDto } from './dto/verify-account.dto.js';
 @ApiTags('Auth')
 @Controller({ path: 'auth' })
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ description: 'Create a new account as a standard user', summary: 'Create Account' })
   @Post('account')

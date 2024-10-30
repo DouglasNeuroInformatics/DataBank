@@ -66,12 +66,12 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   return (
-    <div className="m-3 rounded-md border bg-card tracking-tight text-muted-foreground shadow-sm">
+    <div className="bg-card text-muted-foreground m-3 rounded-md border tracking-tight shadow-sm">
       <Table>
         <Table.Header>
           <Table.Row>
             {tabularDataset.columns.map((column, i) => (
-              <Table.Head className="whitespace-nowrap text-foreground" key={i}>
+              <Table.Head className="text-foreground whitespace-nowrap" key={i}>
                 <DropdownMenu>
                   <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
                     <span>{column}</span>
