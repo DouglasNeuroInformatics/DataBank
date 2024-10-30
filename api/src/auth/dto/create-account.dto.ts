@@ -1,22 +1,27 @@
+import { ValidationSchema } from '@douglasneuroinformatics/libnest/core';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { z } from 'zod';
 
+@ValidationSchema(
+  z.object({
+    email: z.string().min(1),
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+    password: z.string().min(1)
+  })
+)
 export class CreateAccountDto {
   datasetId: string[];
 
   @ApiProperty()
-  @IsEmail()
   email: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   firstName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   lastName: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   password: string;
 }

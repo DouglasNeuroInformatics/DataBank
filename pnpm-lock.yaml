@@ -115,9 +115,6 @@ importers:
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
-      class-validator:
-        specifier: ^0.14.1
-        version: 0.14.1
       express:
         specifier: ^4.20.0
         version: 4.21.0
@@ -9428,7 +9425,8 @@ snapshots:
 
   '@types/uuid@9.0.8': {}
 
-  '@types/validator@13.12.2': {}
+  '@types/validator@13.12.2':
+    optional: true
 
   '@types/webidl-conversions@7.0.3': {}
 
@@ -9966,6 +9964,7 @@ snapshots:
       '@types/validator': 13.12.2
       libphonenumber-js: 1.11.11
       validator: 13.12.0
+    optional: true
 
   class-variance-authority@0.7.0:
     dependencies:
@@ -11361,7 +11360,8 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  libphonenumber-js@1.11.11: {}
+  libphonenumber-js@1.11.11:
+    optional: true
 
   lilconfig@2.1.0: {}
 
@@ -12860,7 +12860,8 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  validator@13.12.0: {}
+  validator@13.12.0:
+    optional: true
 
   vary@1.1.2: {}
 
