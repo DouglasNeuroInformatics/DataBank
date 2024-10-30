@@ -22,7 +22,7 @@ async function bootstrap() {
     type: VersioningType.URI
   });
   app.use(json({ limit: '50MB' }));
-  app.useGlobalPipes(new ValidationPipe());
+  // app.useGlobalPipes(new ValidationPipe());
 
   app.useStaticAssets(path.resolve(import.meta.dirname, '..', 'public'));
   setupDocs(app);
