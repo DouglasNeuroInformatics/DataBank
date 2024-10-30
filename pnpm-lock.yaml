@@ -288,9 +288,6 @@ importers:
         specifier: ^4.5.5
         version: 4.5.5(@types/react@18.3.11)(react@18.3.1)
     devDependencies:
-      '@chromatic-com/storybook':
-        specifier: ^1.5.0
-        version: 1.9.0(react@18.3.1)
       '@douglasneuroinformatics/libui-form-types':
         specifier: 'catalog:'
         version: 0.11.0
@@ -310,23 +307,17 @@ importers:
         specifier: ^8.3.0
         version: 8.3.5(react@18.3.1)(storybook@8.3.5)
       '@storybook/blocks':
-        specifier: ^8.3.0
+        specifier: ^8.2.9
         version: 8.3.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.3.5)
-      '@storybook/builder-vite':
-        specifier: ^8.3.0
-        version: 8.3.5(storybook@8.3.5)(typescript@5.6.2)(vite@4.5.5(@types/node@22.7.5))
+      '@storybook/icons':
+        specifier: ^1.2.10
+        version: 1.2.12(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/react':
-        specifier: ^8.3.0
+        specifier: ^8.2.9
         version: 8.3.5(@storybook/test@8.3.5(storybook@8.3.5))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.3.5)(typescript@5.6.2)
       '@storybook/react-vite':
-        specifier: ^8.3.0
+        specifier: ^8.2.9
         version: 8.3.5(@storybook/test@8.3.5(storybook@8.3.5))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.24.0)(storybook@8.3.5)(typescript@5.6.2)(vite@4.5.5(@types/node@22.7.5))
-      '@storybook/test':
-        specifier: ^8.3.0
-        version: 8.3.5(storybook@8.3.5)
-      '@tailwindcss/container-queries':
-        specifier: ^0.1.1
-        version: 0.1.1(tailwindcss@3.4.13)
       '@types/papaparse':
         specifier: ^5.3.14
         version: 5.3.14
@@ -480,11 +471,6 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution:
       { integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw== }
-
-  '@chromatic-com/storybook@1.9.0':
-    resolution:
-      { integrity: sha512-vYQ+TcfktEE3GHnLZXHCzXF/sN9dw+KivH8a5cmPyd9YtQs7fZtHrEgsIjWpYycXiweKMo1Lm1RZsjxk8DH3rA== }
-    engines: { node: '>=16.0.0', yarn: '>=1.22.18' }
 
   '@douglasneuroinformatics/esbuild-plugin-native-modules@1.0.0':
     resolution:
@@ -3564,19 +3550,6 @@ packages:
       { integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw== }
     engines: { node: '>= 8.10.0' }
 
-  chromatic@11.12.0:
-    resolution:
-      { integrity: sha512-7nHjFrGoRcGVNSGUmVdAGfWDN97z74D4Q5da48IAt4CcougEffVr+WWmJYqJ/WUa7by0/Ny5iYyX3FMz40juxw== }
-    hasBin: true
-    peerDependencies:
-      '@chromatic-com/cypress': ^0.*.* || ^1.0.0
-      '@chromatic-com/playwright': ^0.*.* || ^1.0.0
-    peerDependenciesMeta:
-      '@chromatic-com/cypress':
-        optional: true
-      '@chromatic-com/playwright':
-        optional: true
-
   class-transformer@0.5.1:
     resolution:
       { integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw== }
@@ -4354,11 +4327,6 @@ packages:
     resolution:
       { integrity: sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw== }
     engines: { node: '>= 12' }
-
-  filesize@10.1.6:
-    resolution:
-      { integrity: sha512-sJslQKU2uM33qH5nqewAwVB2QgR6w1aMNsYUp3aN5rMRyXEwJGmZvaWzeJFNTOXWlHQyBFCWrdj3fV/fsTOX8w== }
-    engines: { node: '>= 10.4.0' }
 
   fill-range@7.1.1:
     resolution:
@@ -7331,18 +7299,6 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@chromatic-com/storybook@1.9.0(react@18.3.1)':
-    dependencies:
-      chromatic: 11.12.0
-      filesize: 10.1.6
-      jsonfile: 6.1.0
-      react-confetti: 6.1.0(react@18.3.1)
-      strip-ansi: 7.1.0
-    transitivePeerDependencies:
-      - '@chromatic-com/cypress'
-      - '@chromatic-com/playwright'
-      - react
-
   '@douglasneuroinformatics/esbuild-plugin-native-modules@1.0.0(esbuild@0.23.1)':
     dependencies:
       esbuild: 0.23.1
@@ -9955,8 +9911,6 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  chromatic@11.12.0: {}
-
   class-transformer@0.5.1: {}
 
   class-validator@0.14.1:
@@ -10820,8 +10774,6 @@ snapshots:
   file-selector@0.6.0:
     dependencies:
       tslib: 2.7.0
-
-  filesize@10.1.6: {}
 
   fill-range@7.1.1:
     dependencies:
