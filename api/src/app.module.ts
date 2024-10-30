@@ -1,7 +1,8 @@
 import { CryptoModule, LoggingModule } from '@douglasneuroinformatics/libnest/modules';
-import { type MiddlewareConsumer, Module, type NestModule, ValidationPipe } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import type { MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AuthModule } from './auth/auth.module.js';
@@ -50,10 +51,6 @@ import { UsersModule } from './users/users.module.js';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
-    },
-    {
-      provide: APP_PIPE,
-      useClass: ValidationPipe
     }
   ]
 })
