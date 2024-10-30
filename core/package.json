@@ -4,9 +4,11 @@
   "version": "0.0.0",
   "private": true,
   "license": "AGPL-3.0",
-  "types": "index.d.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
-    "lint": "tsc && eslint index.d.ts"
+    "lint": "tsc && eslint --fix src"
   },
   "dependencies": {
     "type-fest": "catalog:"
