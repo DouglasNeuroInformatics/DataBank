@@ -6,5 +6,5 @@ await clean();
 await copyIrisDataset();
 await copyTranslations();
 await watch();
-// @ts-ignore
-nodemon(outfile);
+
+nodemon({ script: outfile });

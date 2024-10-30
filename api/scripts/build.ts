@@ -1,55 +1,46 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
+
 import fs from 'fs/promises';
 import path from 'path';
 
 import { nativeModulesPlugin } from '@douglasneuroinformatics/esbuild-plugin-native-modules';
 import { prismaPlugin } from '@douglasneuroinformatics/esbuild-plugin-prisma';
 import esbuild from 'esbuild';
+import type { BuildOptions } from 'esbuild';
 import esbuildPluginTsc from 'esbuild-plugin-tsc';
 
 const entryFile = path.resolve(import.meta.dirname, '../src/main.ts');
 const outdir = path.resolve(import.meta.dirname, '../dist');
 const tsconfig = path.resolve(import.meta.dirname, '../tsconfig.json');
 
-const cjsShims = `
-const { __dirname, __filename, require } = await (async () => {
-  const module = (await import('module')).default;
-  const path = (await import('path')).default;
-  const url = (await import('url')).default;
+const outfile = path.resolve(outdir, 'app.js');
 
-  const __filename = url.fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  const require = module.createRequire(__dirname);
-
-  return { __dirname, __filename, require };
-})();
-`;
-
-const outfile = path.resolve(outdir, 'app.mjs');
-
-/** @type {import('esbuild').BuildOptions & { external: NonNullable<unknown>, plugins: NonNullable<unknown> }} */
-const options = {
+const options: { external: NonNullable<unknown>; plugins: NonNullable<unknown> } & BuildOptions = {
   banner: {
-    js: cjsShims
+    js: "Object.defineProperties(globalThis, { __dirname: { value: import.meta.dirname, writable: false }, __filename: { value: import.meta.filename, writable: false }, require: { value: (await import('module')).createRequire(import.meta.url), writable: false } });"
   },
   bundle: true,
   entryPoints: [entryFile],
   external: ['@nestjs/microservices', '@nestjs/websockets/socket-module', 'class-transformer', 'class-validator'],
   format: 'esm',
   keepNames: true,
+  loader: {
+    '.node': 'copy'
+  },
   outfile,
   platform: 'node',
   plugins: [
     esbuildPluginTsc({
       tsconfigPath: tsconfig
     }),
-    prismaPlugin({ outdir: path.join(outdir, 'core') }),
+    prismaPlugin({ outdir: path.join(outdir, 'prisma/client') }),
     nativeModulesPlugin({
       resolveFailure: 'warn'
     })
   ],
-  target: ['node18', 'es2022'],
+  target: ['node20', 'es2022'],
   tsconfig
 };
 
@@ -59,13 +50,13 @@ async function clean() {
 }
 
 async function copyTranslations() {
-  fs.cp(path.resolve(import.meta.dirname, '../src/i18n/translations'), path.resolve(outdir, 'translations'), {
+  return fs.cp(path.resolve(import.meta.dirname, '../src/i18n/translations'), path.resolve(outdir, 'translations'), {
     recursive: true
   });
 }
 
 async function copyIrisDataset() {
-  fs.cp(path.resolve(import.meta.dirname, '../src/setup/resources'), path.resolve(outdir, 'resources'), {
+  return fs.cp(path.resolve(import.meta.dirname, '../src/setup/resources'), path.resolve(outdir, 'resources'), {
     recursive: true
   });
 }
@@ -98,18 +89,18 @@ async function watch() {
         sourcemap: true
       })
       .then((ctx) => {
-        ctx.watch();
+        void ctx.watch();
         console.log('Watching...');
       })
       .catch((err) => {
-        reject(err);
+        reject(err as Error);
       });
   });
 }
 
 const isEntry = process.argv[1] === import.meta.filename;
 if (isEntry) {
-  build();
+  await build();
 }
 
 export { clean, copyIrisDataset, copyTranslations, outfile, watch };
