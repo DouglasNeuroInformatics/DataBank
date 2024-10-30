@@ -72,20 +72,20 @@ describe('UsersService', () => {
     });
 
     describe('findByEmail', () => {
-      it('should return the user object with the input email', () => {
+      it('should return the user object with the input email', async () => {
         userModel.findUnique.mockReturnValueOnce({ email: 'johnsmith@gmail.com' });
-        expect(usersService.findByEmail('johnsmith@gmail.com')).toEqual({
+        await expect(usersService.findByEmail('johnsmith@gmail.com')).resolves.toEqual({
           email: 'johnsmith@gmail.com'
         } as unknown as Prisma.Prisma__UserClient<User>);
       });
     });
 
     describe('getAll', () => {
-      it('should return all users in the database', () => {
+      it('should return all users in the database', async () => {
         userModel.findMany.mockImplementationOnce(() => {
           return [{ email: 'johnsmith@gmail.com' }, { email: 'abc@outlook.com' }];
         });
-        expect(usersService.getAll()).toEqual([
+        await expect(usersService.getAll()).resolves.toEqual([
           { email: 'johnsmith@gmail.com' },
           { email: 'abc@outlook.com' }
         ] as unknown as Promise<User[]>);
