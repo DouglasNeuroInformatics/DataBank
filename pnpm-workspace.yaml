@@ -3,7 +3,7 @@ catalog:
   '@douglasneuroinformatics/esbuild-plugin-prisma': latest
   '@douglasneuroinformatics/eslint-config': latest
   '@douglasneuroinformatics/libjs': latest
-  '@douglasneuroinformatics/libnest': latest
+  '@douglasneuroinformatics/libnest': 0.1.0
   '@douglasneuroinformatics/libpasswd': latest
   '@douglasneuroinformatics/libui': latest
   '@douglasneuroinformatics/libui-form-types': latest
