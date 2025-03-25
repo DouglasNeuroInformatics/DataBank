@@ -22,6 +22,6 @@ RUN turbo build --filter=@databank/web
 
 # RUN SERVER
 FROM runtime AS runner
-RUN npm install -g 8 http-server@14.1.1
+RUN npm install -g @import-meta-env/cli@0.7.0  http-server@14.1.1
 COPY --from=installer /app/web/.env.public /app/web/dist/ ./
 CMD [ "sh", "-c", "import-meta-env -x .env.public -p index.html && http-server -s -p 80 -P http://localhost:80? ." ]

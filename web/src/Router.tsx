@@ -1,6 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import { BrowserRouter, type RouteObject, useRoutes } from 'react-router-dom';
+import { BrowserRouter, useRoutes } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 
 import { Layout } from './components';
 import { authRoutes } from './features/auth';
@@ -32,7 +33,7 @@ const publicRoutes: RouteObject[] = [
   }
 ];
 
-export const protectedRoutes: RouteObject[] = [
+const protectedRoutes: RouteObject[] = [
   authRoutes,
   publicDatasetsRoute,
   {

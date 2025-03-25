@@ -1,5 +1,5 @@
 import type { DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/core';
-import { CurrentUser } from '@douglasneuroinformatics/libnest/core';
+import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -44,8 +44,8 @@ export class ProjectsController {
   }
 
   @ApiOperation({ summary: 'Delete a Project' })
-  @RouteAccess({ role: 'STANDARD' })
   @Delete(':id')
+  @RouteAccess({ role: 'STANDARD' })
   deleteProject(@CurrentUser('id') currentUserId: string, @Param('id') projectId: string) {
     return this.projectsService.deleteProject(currentUserId, projectId);
   }
@@ -101,15 +101,15 @@ export class ProjectsController {
   }
 
   @ApiOperation({ summary: 'Get One Project by ID' })
-  @RouteAccess({ role: 'STANDARD' })
   @Get(':id')
+  @RouteAccess({ role: 'STANDARD' })
   getProjectById(@CurrentUser('id') currentUserId: string, @Param('id') projectId: string) {
     return this.projectsService.getProjectById(currentUserId, projectId);
   }
 
   @ApiOperation({ summary: 'Get Project Datasets by ID' })
-  @RouteAccess({ role: 'STANDARD' })
   @Get('datasets/:id')
+  @RouteAccess({ role: 'STANDARD' })
   getProjectDatasets(@Param('id') projectId: string) {
     return this.projectsService.getProjectDatasets(projectId);
   }
@@ -122,8 +122,8 @@ export class ProjectsController {
   }
 
   @ApiOperation({ summary: 'Remove a Dataset from a Project' })
-  @RouteAccess({ role: 'STANDARD' })
   @Delete('/remove-dataset/:projectId/:datasetId')
+  @RouteAccess({ role: 'STANDARD' })
   removeDataset(
     @CurrentUser('id') currentUserId: string,
     @Param('projectId') projectId: string,
@@ -133,8 +133,8 @@ export class ProjectsController {
   }
 
   @ApiOperation({ summary: 'Delete a Project' })
-  @RouteAccess({ role: 'STANDARD' })
   @Delete('/remove-user/:projectId/:id')
+  @RouteAccess({ role: 'STANDARD' })
   removeUser(
     @CurrentUser('id') currentUserId: string,
     @Param('projectId') projectId: string,
@@ -144,8 +144,8 @@ export class ProjectsController {
   }
 
   @ApiOperation({ summary: 'Update a Project' })
-  @RouteAccess({ role: 'STANDARD' })
   @Patch('/update/:id')
+  @RouteAccess({ role: 'STANDARD' })
   updateProject(
     @CurrentUser('id') currentUserId: string,
     @Param('id') projectId: string,

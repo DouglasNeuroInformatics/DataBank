@@ -1,5 +1,5 @@
 import type { LoginCredentials } from '@databank/core';
-import { ValidationSchema } from '@douglasneuroinformatics/libnest/core';
+import { ValidationSchema } from '@douglasneuroinformatics/libnest';
 import { ApiProperty } from '@nestjs/swagger';
 import { z } from 'zod';
 

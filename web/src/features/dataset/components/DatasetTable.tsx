@@ -1,17 +1,15 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
 import type { PermissionLevel, TabularDataset } from '@databank/core';
-import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
-import { Table } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { DropdownMenu, Table } from '@douglasneuroinformatics/libui/components';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-export type DatasetTableProps = { isManager: boolean } & TabularDataset;
+export type DatasetTableProps = TabularDataset & { isManager: boolean };
 
-const DatasetTable = (tabularDataset: DatasetTableProps) => {
+export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const { t } = useTranslation('common');
   const notifications = useNotificationsStore();
   const queryClient = useQueryClient();
@@ -229,5 +227,3 @@ const DatasetTable = (tabularDataset: DatasetTableProps) => {
     </div>
   );
 };
-
-export default DatasetTable;

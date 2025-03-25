@@ -1,10 +1,10 @@
+import type { Model } from '@douglasneuroinformatics/libnest';
+import { getModelToken } from '@douglasneuroinformatics/libnest';
 import { MockFactory } from '@douglasneuroinformatics/libnest/testing';
 import { Test, TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { ColumnsService } from '@/columns/columns.service';
-import type { Model } from '@/prisma/prisma.types';
-import { getModelToken } from '@/prisma/prisma.utils';
 
 import { TabularDataService } from './tabular-data.service';
 

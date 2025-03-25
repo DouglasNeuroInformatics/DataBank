@@ -1,8 +1,9 @@
-import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
+import { CryptoService, getModelToken } from '@douglasneuroinformatics/libnest';
 import { ConflictException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { type Prisma, type User } from '@prisma/client';
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import type { Prisma, User } from '@prisma/client';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Mock } from 'vitest';
 
 import { UsersService } from '../users.service.js';
 import { createUserDtoStubFactory } from './stubs/create-user.dto.stub.js';
@@ -31,7 +32,7 @@ describe('UsersService', () => {
       providers: [
         UsersService,
         {
-          provide: 'prismaUser',
+          provide: getModelToken('User'),
           useValue: {
             create: vi.fn(),
             findMany: vi.fn(),
@@ -44,7 +45,7 @@ describe('UsersService', () => {
         }
       ]
     }).compile();
-    userModel = moduleRef.get('prismaUser');
+    userModel = moduleRef.get('UserPrismaModel');
     usersService = moduleRef.get(UsersService);
   });
 

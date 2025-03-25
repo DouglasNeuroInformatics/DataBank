@@ -1,12 +1,12 @@
 import type { CurrentUser, UserRole } from '@databank/core';
+import { ConfigService } from '@douglasneuroinformatics/libnest';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { type Request } from 'express';
+import type { Request } from 'express';
 
-import { type ProtectedRouteAccess, type RouteAccessType } from '../core/decorators/route-access.decorator.js';
+import type { ProtectedRouteAccess, RouteAccessType } from '../core/decorators/route-access.decorator.js';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

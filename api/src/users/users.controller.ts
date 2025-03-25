@@ -24,8 +24,8 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: 'Find User by Email' })
-  @RouteAccess({ role: 'STANDARD' })
   @Get('/email/:email')
+  @RouteAccess({ role: 'STANDARD' })
   findByEmail(@Param('email') email: string) {
     return this.usersService.findByEmail(email);
   }

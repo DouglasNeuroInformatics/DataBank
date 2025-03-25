@@ -4,7 +4,8 @@ import type { DatasetCardProps } from '@databank/core';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
-import { type RouteObject, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 
 import AddProjectDatasetCard from '../components/AddProjectDatasetCard';
 

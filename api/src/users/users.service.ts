@@ -1,10 +1,8 @@
-import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
+import { CryptoService, InjectModel } from '@douglasneuroinformatics/libnest';
+import type { Model } from '@douglasneuroinformatics/libnest';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { type ConfirmEmailInfo, type User } from '@prisma/client';
+import type { ConfirmEmailInfo, User } from '@prisma/client';
 import type { SetOptional } from 'type-fest';
-
-import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
-import type { Model } from '@/prisma/prisma.types';
 
 import type { CreateUserDto, UpdateUserDto } from './zod/user.js';
 

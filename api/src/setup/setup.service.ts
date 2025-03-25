@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import type { Model } from '@douglasneuroinformatics/libnest';
+import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
-import type { Model } from '@/prisma/prisma.types.js';
 import { UsersService } from '@/users/users.service.js';
 
 import type { CreateAdminDto, SetupDto } from './zod/setup.js';

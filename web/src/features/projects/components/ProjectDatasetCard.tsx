@@ -1,9 +1,8 @@
-import { Button } from '@douglasneuroinformatics/libui/components';
-import { Card } from '@douglasneuroinformatics/libui/components';
+import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from 'react-router-dom';
 
-export type ProjectDatasetCardProps = {
+type ProjectDatasetCardProps = {
   createdAt: Date;
   datasetId: string;
   description: null | string;
@@ -56,5 +55,7 @@ const ProjectDatasetCard = ({
     </>
   );
 };
+
+export type { ProjectDatasetCardProps };
 
 export default ProjectDatasetCard;

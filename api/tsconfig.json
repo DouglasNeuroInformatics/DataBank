@@ -9,5 +9,5 @@
     },
     "strictPropertyInitialization": false
   },
-  "include": ["scripts/*", "src/**/*", "test/**/*", "vitest.config.ts"]
+  "include": ["src/**/*", "libnest.config.ts", "vitest.config.js"]
 }

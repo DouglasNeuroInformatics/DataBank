@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 
 import type { AuthPayload, CurrentUser, EmailConfirmationProcedureInfo, Locale } from '@databank/core';
-import { CryptoService } from '@douglasneuroinformatics/libnest/modules';
+import { ConfigService, CryptoService } from '@douglasneuroinformatics/libnest';
 import {
   ForbiddenException,
   Injectable,
@@ -9,7 +9,6 @@ import {
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import type { ConfirmEmailInfo, User } from '@prisma/client';
 
@@ -72,7 +71,7 @@ export class AuthService {
       confirmEmailInfo = {
         attemptsMade: 0,
         confirmEmailCode: randomInt(100000, 1000000),
-        expiryAt: new Date(Date.now() + parseInt(this.config.getOrThrow('VALIDATION_TIMEOUT')))
+        expiryAt: new Date(Date.now() + this.config.getOrThrow('VALIDATION_TIMEOUT'))
       };
       await this.usersService.updateConfirmEmailInfo(user.email, confirmEmailInfo);
     }
@@ -99,12 +98,12 @@ export class AuthService {
       throw new ForbiddenException('Validation code is expired. Please request a new validation code.');
     }
 
-    const maxAttempts = parseInt(this.config.get('MAX_VALIDATION_ATTEMPTS')!);
+    const maxAttempts = this.config.get('MAX_VALIDATION_ATTEMPTS');
     if (!maxAttempts) {
       throw new InternalServerErrorException(
         `Environment variable 'MAX_VALIDATION_ATTEMPTS' must be set to a positive integer, not ${this.config.get(
           'MAX_VALIDATION_ATTEMPTS'
-        )!}`
+        )}`
       );
     }
 

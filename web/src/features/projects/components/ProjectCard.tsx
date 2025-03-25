@@ -1,6 +1,4 @@
-import { Badge } from '@douglasneuroinformatics/libui/components';
-import { Button } from '@douglasneuroinformatics/libui/components';
-import { Card } from '@douglasneuroinformatics/libui/components';
+import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNavigate } from 'react-router-dom';
 
 export type ProjectCardProps = {

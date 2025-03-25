@@ -28,7 +28,7 @@ pnpm install
 ### Setup Config and Docker Compose
 
 ```shell
-awk -v secret_key="$(openssl rand -hex 16)" '/^SECRET_KEY=/{print $0 secret_key;next}1' .env.template > .env
+awk -v secret_key="$(openssl rand -hex 32)" '/^SECRET_KEY=/{print $0 secret_key;next}1' .env.template > .env
 ```
 
 ```shell

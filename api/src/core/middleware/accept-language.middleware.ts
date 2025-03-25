@@ -1,4 +1,5 @@
-import { Injectable, type NestMiddleware } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import type { NestMiddleware } from '@nestjs/common';
 import type { NextFunction, Request, Response } from 'express';
 
 import { I18nService } from '@/i18n/i18n.service';

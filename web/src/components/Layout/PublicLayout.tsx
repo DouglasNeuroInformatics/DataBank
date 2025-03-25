@@ -6,7 +6,8 @@ import { Outlet } from 'react-router-dom';
 
 import { DesktopSidebar } from './DesktopSidebar';
 import { MobileNavbar } from './MobileNavbar';
-import { type NavItem } from './types';
+
+import type { NavItem } from './types';
 
 export const PublicLayout = () => {
   const { t } = useTranslation('common');

@@ -1,6 +1,7 @@
 /* eslint-disable perfectionist/sort-classes */
+
 import type { ColumnDataType, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevel } from '@databank/core';
-import { CurrentUser, ParseObjectIdPipe } from '@douglasneuroinformatics/libnest/core';
+import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -42,20 +43,20 @@ export class DatasetsController {
   @ApiOperation({ summary: 'Delete Dataset' })
   @Delete(':id')
   @RouteAccess({ role: 'STANDARD' })
-  deleteDataset(@Param('id', ParseObjectIdPipe) datasetId: string, @CurrentUser('id') currentUserId: string) {
+  deleteDataset(@Param('id') datasetId: string, @CurrentUser('id') currentUserId: string) {
     return this.datasetsService.deleteDataset(datasetId, currentUserId);
   }
 
   @ApiOperation({ summary: 'Get all Public Datasets' })
-  @RouteAccess('public')
   @Get('public')
+  @RouteAccess('public')
   getPublic() {
     return this.datasetsService.getPublic();
   }
 
   @ApiOperation({ summary: 'Get One Public Dataset by Id' })
-  @RouteAccess('public')
   @Post('public/:id')
+  @RouteAccess('public')
   getOnePublicById(
     @Param('id') datasetId: string,
     @Body('rowPaginationDto') rowPaginationDto: DatasetViewPaginationDto,

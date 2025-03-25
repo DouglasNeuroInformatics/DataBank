@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
 
-import { range } from '@douglasneuroinformatics/libjs';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { cn } from '@douglasneuroinformatics/libui/utils';
 
 const CODE_LENGTH = 6;
+
+const EMPTY_CODE = Object.freeze(Array<null>(CODE_LENGTH).fill(null));
 
 type ConfirmEmailCodeInputProps = {
   className?: string;
@@ -22,14 +22,14 @@ function getUpdatedDigits(digits: (null | number)[], index: number, value: null 
 export const ConfirmEmailCodeInput = ({ className, onComplete }: ConfirmEmailCodeInputProps) => {
   const notifications = useNotificationsStore();
   const { t } = useTranslation('common');
-  const [digits, setDigits] = useState<(null | number)[]>(range(CODE_LENGTH).map(() => null));
-  const inputRefs = range(6).map(() => useRef<HTMLInputElement>(null));
+  const [digits, setDigits] = useState<(null | number)[]>([...EMPTY_CODE]);
+  const inputRefs = digits.map(() => useRef<HTMLInputElement>(null));
 
   useEffect(() => {
     const isComplete = digits.every((value) => Number.isInteger(value));
     if (isComplete) {
       void onComplete(parseInt(digits.join('')));
-      setDigits(range(CODE_LENGTH).map(() => null));
+      setDigits([...EMPTY_CODE]);
     }
   }, [digits]);
 
@@ -52,11 +52,11 @@ export const ConfirmEmailCodeInput = ({ className, onComplete }: ConfirmEmailCod
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
     switch (e.key) {
-      case 'ArrowRight':
-        focusNext(index);
-        break;
       case 'ArrowLeft':
         focusPrev(index);
+        break;
+      case 'ArrowRight':
+        focusNext(index);
         break;
       case 'Backspace':
         setDigits((prevDigits) => getUpdatedDigits(prevDigits, index - 1, null));
@@ -84,7 +84,7 @@ export const ConfirmEmailCodeInput = ({ className, onComplete }: ConfirmEmailCod
 
   return (
     <div className={cn('flex gap-2', className)}>
-      {range(CODE_LENGTH).map((index) => (
+      {digits.map((_, index) => (
         <input
           className="w-1/6 rounded-md border border-slate-300 bg-transparent p-2 shadow-sm hover:border-slate-300 focus:border-sky-800 focus:outline-none dark:border-slate-600 dark:hover:border-slate-400 dark:focus:border-sky-500"
           key={index}

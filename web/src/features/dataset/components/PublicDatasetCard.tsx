@@ -1,6 +1,5 @@
 import type { DatasetCardProps } from '@databank/core';
-import { Button } from '@douglasneuroinformatics/libui/components';
-import { Card } from '@douglasneuroinformatics/libui/components';
+import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNavigate } from 'react-router-dom';
 
 const PublicDatasetCard = ({ createdAt, description, id, license, name, updatedAt }: DatasetCardProps) => {

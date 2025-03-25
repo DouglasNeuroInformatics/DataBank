@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/core';
 import axios from 'axios';
-import { type RouteObject, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { DatasetPagination } from '@/features/dataset/components/DatasetPagination';
-import DatasetTable from '@/features/dataset/components/DatasetTable';
+import { DatasetTable } from '@/features/dataset/components/DatasetTable';
 
 // should show the current view and also allow the manager to add
 // or remove columns from the project
