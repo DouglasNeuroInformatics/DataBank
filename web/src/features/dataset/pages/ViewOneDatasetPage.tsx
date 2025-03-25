@@ -3,18 +3,18 @@ import { useState } from 'react';
 
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/core';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
-import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { useAuthStore } from '@/stores/auth-store';
 
 import { DatasetPagination } from '../components/DatasetPagination';
-import DatasetTable from '../components/DatasetTable';
+import { DatasetTable } from '../components/DatasetTable';
 
 const ViewOneDatasetPage = () => {
   const { t } = useTranslation('common');

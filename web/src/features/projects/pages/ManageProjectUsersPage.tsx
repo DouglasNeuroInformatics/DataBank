@@ -1,8 +1,8 @@
 import { Form } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
-import { type RouteObject, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 import { z } from 'zod';
 
 import UserCard from '../components/UserCard';

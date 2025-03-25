@@ -6,14 +6,15 @@ import type {
   ProjectTabularDatasetView,
   TabularDatasetView
 } from '@databank/core';
+import type { Model } from '@douglasneuroinformatics/libnest';
+import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { PermissionLevel } from '@prisma/client';
 
 import { ColumnsService } from '@/columns/columns.service';
-import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
-import type { Model } from '@/prisma/prisma.types';
 import type { GetColumnViewDto } from '@/projects/zod/projects';
-import { type DataFrame, pl } from '@/vendor/nodejs-polars.js';
+import { pl } from '@/vendor/nodejs-polars.js';
+import type { DataFrame } from '@/vendor/nodejs-polars.js';
 
 import type { UpdatePrimaryKeysDto } from './zod/tabular-data';
 
@@ -37,7 +38,7 @@ export class TabularDataService {
       throw new NotFoundException(`Cannot find tabular with dataset id ${datasetId}`);
     }
 
-    for (let col of tabularData.columns) {
+    for (const col of tabularData.columns) {
       await this.columnsService.changeColumnMetadataPermission(col.id, permissionLevel);
     }
 
@@ -69,7 +70,7 @@ export class TabularDataService {
     });
 
     try {
-      for (let col of df.getColumns()) {
+      for (const col of df.getColumns()) {
         await this.columnsService.createFromSeries(tabularData.id, col);
       }
     } catch {
@@ -134,7 +135,7 @@ export class TabularDataService {
     const columnStart = (columnPagination.currentPage - 1) * columnPagination.itemsPerPage;
     const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage;
 
-    for (let col of projectDatasetDto.columns.slice(columnStart, columnEnd)) {
+    for (const col of projectDatasetDto.columns.slice(columnStart, columnEnd)) {
       const getColumnViewDto: GetColumnViewDto = {
         ...col,
         rowMax: projectDatasetDto.rowFilter ? projectDatasetDto.rowFilter.rowMax : null,
@@ -157,52 +158,40 @@ export class TabularDataService {
       };
 
       switch (currColumnView.kind) {
-        case 'STRING':
-          currColumnView.stringData.map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
-            rows[i][currColumnView.name] = entry.value!;
-          });
-          break;
         case 'BOOLEAN':
           currColumnView.booleanData.map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
-            rows[i][currColumnView.name] = entry.value!;
-          });
-          break;
-        case 'INT':
-          currColumnView.intData.map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
-            rows[i][currColumnView.name] = entry.value!;
-          });
-          break;
-        case 'FLOAT':
-          currColumnView.floatData.map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
-            rows[i][currColumnView.name] = entry.value!;
-          });
-          break;
-        case 'ENUM':
-          currColumnView.enumData.map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
+            rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
           break;
         case 'DATETIME':
           currColumnView.datetimeData.map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
+            rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!.toDateString()!;
+          });
+          break;
+        case 'ENUM':
+          currColumnView.enumData.map((entry, i) => {
+            rows[i] ??= {};
+            rows[i][currColumnView.name] = entry.value!;
+          });
+          break;
+        case 'FLOAT':
+          currColumnView.floatData.map((entry, i) => {
+            rows[i] ??= {};
+            rows[i][currColumnView.name] = entry.value!;
+          });
+          break;
+        case 'INT':
+          currColumnView.intData.map((entry, i) => {
+            rows[i] ??= {};
+            rows[i][currColumnView.name] = entry.value!;
+          });
+          break;
+        case 'STRING':
+          currColumnView.stringData.map((entry, i) => {
+            rows[i] ??= {};
+            rows[i][currColumnView.name] = entry.value!;
           });
           break;
       }
@@ -274,10 +263,10 @@ export class TabularDataService {
       });
     }
 
-    let columnIds: { [key: string]: string } = {};
-    let columns: string[] = [];
+    const columnIds: { [key: string]: string } = {};
+    const columns: string[] = [];
 
-    let rows: { [key: string]: boolean | null | number | string }[] = [];
+    const rows: { [key: string]: boolean | null | number | string }[] = [];
     if (!tabularData.columns[0]?.id) {
       throw new NotFoundException('No columns in this tabular data.');
     }
@@ -292,45 +281,16 @@ export class TabularDataService {
       rows.push({});
     }
 
-    let metaData: { [key: string]: ColumnSummary } = {};
+    const metaData: { [key: string]: ColumnSummary } = {};
 
-    for (let col of tabularData.columns.slice(columnStart, columnEnd)) {
+    for (const col of tabularData.columns.slice(columnStart, columnEnd)) {
       columnIds[col.name] = col.id;
       columns.push(col.name);
 
       switch (col.kind) {
-        case 'STRING':
-          col.stringData.slice(rowStart, rowEnd).map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
-
-            if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'Hidden';
-            } else {
-              rows[i][col.name] = entry.value;
-            }
-          });
-
-          if (columnIdsModifyMetadata.includes(col.id)) {
-            metaData[col.name] = {
-              count: 0,
-              kind: 'STRING',
-              nullCount: 0
-            };
-          } else {
-            metaData[col.name] = {
-              count: col.summary.count,
-              kind: 'STRING',
-              nullCount: col.summary.nullCount
-            };
-          }
-          break;
         case 'BOOLEAN':
           col.booleanData.slice(rowStart, rowEnd).map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
+            rows[i] ??= {};
             if (columnIdsModifyData.includes(col.id)) {
               rows[i][col.name] = 'Hidden';
             } else {
@@ -356,11 +316,96 @@ export class TabularDataService {
             };
           }
           break;
+        case 'DATETIME':
+          col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
+            rows[i] ??= {};
+            if (columnIdsModifyData.includes(col.id)) {
+              rows[i][col.name] = 'Hidden';
+            } else {
+              rows[i][col.name] = entry.value?.toISOString() ?? null;
+            }
+          });
+
+          if (columnIdsModifyMetadata.includes(col.id)) {
+            metaData[col.name] = {
+              count: 0,
+              kind: 'DATETIME',
+              max: new Date(0),
+              min: new Date(0),
+              nullCount: 0
+            };
+          } else {
+            metaData[col.name] = {
+              count: col.summary.count,
+              kind: 'DATETIME',
+              max: col.summary.datetimeSummary?.max ?? new Date(),
+              min: col.summary.datetimeSummary?.min ?? new Date(),
+              nullCount: col.summary.nullCount
+            };
+          }
+          break;
+        case 'ENUM':
+          col.enumData.slice(rowStart, rowEnd).map((entry, i) => {
+            rows[i] ??= {};
+
+            if (columnIdsModifyData.includes(col.id)) {
+              rows[i][col.name] = 'Hidden';
+            } else {
+              rows[i][col.name] = entry.value;
+            }
+          });
+
+          if (columnIdsModifyMetadata.includes(col.id)) {
+            metaData[col.name] = {
+              count: 0,
+              kind: 'ENUM',
+              nullCount: 0
+            };
+          } else {
+            metaData[col.name] = {
+              count: col.summary.count,
+              kind: 'ENUM',
+              nullCount: col.summary.nullCount
+            };
+          }
+          break;
+        case 'FLOAT':
+          col.floatData.slice(rowStart, rowEnd).map((entry, i) => {
+            rows[i] ??= {};
+            if (columnIdsModifyData.includes(col.id)) {
+              rows[i][col.name] = 'Hidden';
+            } else {
+              rows[i][col.name] = entry.value;
+            }
+          });
+
+          if (columnIdsModifyMetadata.includes(col.id)) {
+            metaData[col.name] = {
+              count: 0,
+              kind: 'FLOAT',
+              max: 0,
+              mean: 0,
+              median: 0,
+              min: 0,
+              nullCount: 0,
+              std: 0
+            };
+          } else {
+            metaData[col.name] = {
+              count: col.summary.count,
+              kind: 'FLOAT',
+              max: col.summary.floatSummary?.max,
+              mean: col.summary.floatSummary?.mean,
+              median: col.summary.floatSummary?.median,
+              min: col.summary.floatSummary?.min,
+              nullCount: col.summary.nullCount,
+              std: col.summary.floatSummary?.std
+            };
+          }
+          break;
         case 'INT':
           col.intData.slice(rowStart, rowEnd).map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
+            rows[i] ??= {};
             if (columnIdsModifyData.includes(col.id)) {
               rows[i][col.name] = 'Hidden';
             } else {
@@ -393,47 +438,9 @@ export class TabularDataService {
             };
           }
           break;
-        case 'FLOAT':
-          col.floatData.slice(rowStart, rowEnd).map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
-            if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'Hidden';
-            } else {
-              rows[i][col.name] = entry.value;
-            }
-          });
-
-          if (columnIdsModifyMetadata.includes(col.id)) {
-            metaData[col.name] = {
-              count: 0,
-              kind: 'FLOAT',
-              max: 0,
-              mean: 0,
-              median: 0,
-              min: 0,
-              nullCount: 0,
-              std: 0
-            };
-          } else {
-            metaData[col.name] = {
-              count: col.summary.count,
-              kind: 'FLOAT',
-              max: col.summary.floatSummary?.max,
-              mean: col.summary.floatSummary?.mean,
-              median: col.summary.floatSummary?.median,
-              min: col.summary.floatSummary?.min,
-              nullCount: col.summary.nullCount,
-              std: col.summary.floatSummary?.std
-            };
-          }
-          break;
-        case 'ENUM':
-          col.enumData.slice(rowStart, rowEnd).map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
+        case 'STRING':
+          col.stringData.slice(rowStart, rowEnd).map((entry, i) => {
+            rows[i] ??= {};
 
             if (columnIdsModifyData.includes(col.id)) {
               rows[i][col.name] = 'Hidden';
@@ -445,43 +452,13 @@ export class TabularDataService {
           if (columnIdsModifyMetadata.includes(col.id)) {
             metaData[col.name] = {
               count: 0,
-              kind: 'ENUM',
+              kind: 'STRING',
               nullCount: 0
             };
           } else {
             metaData[col.name] = {
               count: col.summary.count,
-              kind: 'ENUM',
-              nullCount: col.summary.nullCount
-            };
-          }
-          break;
-        case 'DATETIME':
-          col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
-            if (!rows[i]) {
-              rows[i] = {};
-            }
-            if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'Hidden';
-            } else {
-              rows[i][col.name] = entry.value?.toISOString() ?? null;
-            }
-          });
-
-          if (columnIdsModifyMetadata.includes(col.id)) {
-            metaData[col.name] = {
-              count: 0,
-              kind: 'DATETIME',
-              max: new Date(0),
-              min: new Date(0),
-              nullCount: 0
-            };
-          } else {
-            metaData[col.name] = {
-              count: col.summary.count,
-              kind: 'DATETIME',
-              max: col.summary.datetimeSummary?.max ? col.summary.datetimeSummary?.max : new Date(),
-              min: col.summary.datetimeSummary?.min ? col.summary.datetimeSummary?.min : new Date(),
+              kind: 'STRING',
               nullCount: col.summary.nullCount
             };
           }
@@ -513,7 +490,7 @@ export class TabularDataService {
   }
 
   private primaryKeyCheck(primaryKeys: string[], df: DataFrame): boolean {
-    for (let key of primaryKeys) {
+    for (const key of primaryKeys) {
       try {
         const col = df.getColumn(key);
         if (col.nullCount() > 0) {

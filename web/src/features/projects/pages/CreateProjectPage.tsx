@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 
 import { Form } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { type RouteObject, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 import { z } from 'zod';
 
 import { LoadingFallback } from '@/components';
@@ -20,15 +20,13 @@ const $CreateProjectFormValidation = z.object({
   name: z.string().min(1)
 });
 
-export type CreateProjectprojectData = z.infer<typeof $CreateProjectFormValidation>;
-
 const CreateProjectPage = () => {
   const { currentUser } = useAuthStore();
   const notifications = useNotificationsStore();
   const { t } = useTranslation('common');
   const navigate = useNavigate();
 
-  const [projectData, setProjectData] = useState<CreateProjectprojectData | null>(null);
+  const [projectData, setProjectData] = useState<null | z.infer<typeof $CreateProjectFormValidation>>(null);
 
   useEffect(() => {
     if (projectData) {

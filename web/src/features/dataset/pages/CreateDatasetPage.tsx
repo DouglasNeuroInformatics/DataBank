@@ -2,12 +2,12 @@
 import { useCallback, useState } from 'react';
 
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
-import { type RouteObject, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
 
@@ -21,7 +21,7 @@ const $CreateDatasetFormValidation = z.object({
   primaryKeys: z.string().optional()
 });
 
-export type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
+type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
 
 const CreateDatasetPage = () => {
   const MAX_UPLOAD_FILE_SIZE = 1024 * 1024 * 1024;
@@ -82,7 +82,7 @@ const CreateDatasetPage = () => {
     onDrop
   });
 
-  let element = match(formData)
+  const element = match(formData)
     .with(null, () => {
       return (
         <>
@@ -235,3 +235,5 @@ export const CreateDatasetRoute: RouteObject = {
   element: <CreateDatasetPage />,
   path: 'createDataset'
 };
+
+export type { CreateDatasetFormData };

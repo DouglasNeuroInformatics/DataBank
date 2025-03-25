@@ -2,15 +2,17 @@
 import { useEffect, useState } from 'react';
 
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
-import { type RouteObject, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { useAuthStore } from '@/stores/auth-store';
 
-import { ProjectCard, type ProjectCardProps } from '../components/ProjectCard';
+import { ProjectCard } from '../components/ProjectCard';
+
+import type { ProjectCardProps } from '../components/ProjectCard';
 
 const ViewProjectsPage = () => {
   const { currentUser } = useAuthStore();

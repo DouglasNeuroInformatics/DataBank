@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
 import { AuthLayout } from '../components/AuthLayout';
-import { type CreateAccountData, CreateAccountForm } from '../components/CreateAccountForm';
+import { CreateAccountForm } from '../components/CreateAccountForm';
+
+import type { CreateAccountData } from '../components/CreateAccountForm';
 
 export const CreateAccountPage = () => {
   const auth = useAuthStore();

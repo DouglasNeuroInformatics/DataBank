@@ -30,9 +30,9 @@ const $ProjectDataset = z.object({
   useRowFilter: z.boolean()
 });
 
-export type ProjectDatasetDto = z.infer<typeof $ProjectDataset>;
+type ProjectDatasetDto = z.infer<typeof $ProjectDataset>;
 
-export type ProjectDataset = z.infer<typeof $ProjectDataset>;
+type ProjectDataset = z.infer<typeof $ProjectDataset>;
 
 const $CreateProjectDto = z.object({
   datasets: $ProjectDataset.array(),
@@ -50,3 +50,5 @@ export type UpdateProjectDto = z.infer<typeof $UpdateProjectDto>;
 
 export const $GetColumnViewDto = $ProjectColumn.merge($ProjectRowFilter);
 export type GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;
+
+export type { ProjectDataset, ProjectDatasetDto };

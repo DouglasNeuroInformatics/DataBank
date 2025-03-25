@@ -5,7 +5,8 @@ import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 import { z } from 'zod';
 
 const $EditProjectInfoDto = z.object({

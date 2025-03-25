@@ -1,4 +1,4 @@
-import { ValidationSchema } from '@douglasneuroinformatics/libnest/core';
+import { ValidationSchema } from '@douglasneuroinformatics/libnest';
 import { z } from 'zod';
 
 @ValidationSchema(

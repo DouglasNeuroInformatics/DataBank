@@ -3,14 +3,14 @@ import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { z } from 'zod';
 
-export type CreateAccountData = {
+type CreateAccountData = {
   email: string;
   firstName: string;
   lastName: string;
   password: string;
 };
 
-export type CreateAccountFormProps = {
+type CreateAccountFormProps = {
   onSubmit: (data: CreateAccountData) => void;
 };
 
@@ -66,3 +66,5 @@ export const CreateAccountForm = ({ onSubmit }: CreateAccountFormProps) => {
     />
   );
 };
+
+export type { CreateAccountData, CreateAccountFormProps };

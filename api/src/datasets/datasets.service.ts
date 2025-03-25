@@ -7,12 +7,12 @@ import type {
   ProjectDatasetDto,
   TabularDatasetView
 } from '@databank/core';
+import type { Model } from '@douglasneuroinformatics/libnest';
+import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 
 import { ColumnsService } from '@/columns/columns.service.js';
-import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
-import type { Model } from '@/prisma/prisma.types';
 import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 import type { DataFrame } from '@/vendor/nodejs-polars.js';
@@ -141,7 +141,7 @@ export class DatasetsService {
     if (!currUser.datasetId) {
       throw new NotFoundException('User Not Found!');
     }
-    let datasetIdArr = currUser.datasetId;
+    const datasetIdArr = currUser.datasetId;
 
     // create base dataset without file
     if (!file) {
@@ -236,7 +236,7 @@ export class DatasetsService {
   async deleteDataset(datasetId: string, currentUserId: string) {
     const dataset = await this.canModifyDataset(datasetId, currentUserId);
 
-    let deleteTargetDataset = this.datasetModel.delete({
+    const deleteTargetDataset = this.datasetModel.delete({
       where: {
         id: dataset.id
       }
@@ -247,8 +247,8 @@ export class DatasetsService {
 
     const updateManagers = [];
 
-    for (let manager of managersToUpdate) {
-      let newDatasetId = manager.datasetId.filter((val) => val !== dataset.id);
+    for (const manager of managersToUpdate) {
+      const newDatasetId = manager.datasetId.filter((val) => val !== dataset.id);
       updateManagers.push(
         this.usersService.updateUser(manager.id, {
           datasetId: newDatasetId
@@ -863,7 +863,7 @@ export class DatasetsService {
   private formatDataDownloadString(format: 'CSV' | 'TSV', datasetView: TabularDatasetView) {
     const delimiter = format === 'CSV' ? ',' : '\t';
     let resultString = datasetView.columns.join(delimiter) + '\n';
-    for (let row of datasetView.rows) {
+    for (const row of datasetView.rows) {
       resultString += Object.values(row).join(delimiter) + '\n';
     }
 
@@ -889,7 +889,7 @@ export class DatasetsService {
     ];
 
     let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-    for (let columnName of Object.keys(datasetView.metadata)) {
+    for (const columnName of Object.keys(datasetView.metadata)) {
       metadataRowsString +=
         columnName +
         delimiter +

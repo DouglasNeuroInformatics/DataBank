@@ -3,17 +3,17 @@ import { useEffect, useState } from 'react';
 
 import type { DatasetViewPaginationDto, TabularDataset } from '@databank/core';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
-import { useDownload, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
-import { type RouteObject, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { useAuthStore } from '@/stores/auth-store';
 
 import { DatasetPagination } from '../../dataset/components/DatasetPagination';
-import DatasetTable from '../../dataset/components/DatasetTable';
+import { DatasetTable } from '../../dataset/components/DatasetTable';
 
 const ViewOneProjectDatasetPage = () => {
   const { t } = useTranslation('common');
@@ -66,13 +66,15 @@ const ViewOneProjectDatasetPage = () => {
 
   const handleDataDownload = async (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
-    let response = await axios.get(`/v1/projects/download-data/${params.projectId}/${params.datasetId}/${format}`);
+    const response = await axios.get(`/v1/projects/download-data/${params.projectId}/${params.datasetId}/${format}`);
     void download(filename, response.data as string);
   };
 
   const handleMetaDataDownload = async (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
-    let response = await axios.get(`/v1/projects/download-metadata/${params.projectId}/${params.datasetId}/${format}`);
+    const response = await axios.get(
+      `/v1/projects/download-metadata/${params.projectId}/${params.datasetId}/${format}`
+    );
     void download(filename, response.data as string);
   };
 

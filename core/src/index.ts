@@ -107,7 +107,7 @@ export type TVerificationInfo = TManualVerification | TVerificationUponConfirmEm
 // Datasets
 export type PermissionLevel = 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED';
 
-type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
+export type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
 
 export type DatasetInfo = {
   createdAt: Date;
@@ -122,7 +122,7 @@ export type DatasetInfo = {
   updatedAt: Date;
 };
 
-export type DatasetCardProps = { isManager: boolean } & DatasetInfo;
+export type DatasetCardProps = DatasetInfo & { isManager: boolean };
 
 export type TabularDataRow = {
   [key: string]: boolean | Date | number | string;
@@ -149,7 +149,7 @@ export type ProjectTabularDatasetView = {
 
 export type ColumnDataType = 'BOOLEAN' | 'DATETIME' | 'ENUM' | 'FLOAT' | 'INT' | 'STRING';
 
-export type TabularDataset = {
+export type TabularDataset = DatasetInfo & {
   columnIds: { [key: string]: string };
   columns: string[];
   metadata: {
@@ -171,7 +171,7 @@ export type TabularDataset = {
   rows: { [key: string]: string }[];
   totalNumberOfColumns: number;
   totalNumberOfRows: number;
-} & DatasetInfo;
+};
 
 export type BaseColumnSummary = {
   count: number;
@@ -217,15 +217,15 @@ export type DatetimeColumnSummary = {
   min: Date;
 };
 
-export type ColumnSummary = (
-  | BooleanColumnSummary
-  | DatetimeColumnSummary
-  | EnumColumnSummary
-  | FloatColumnSummary
-  | IntColumnSummary
-  | StringColumnSummary
-) &
-  BaseColumnSummary;
+export type ColumnSummary = BaseColumnSummary &
+  (
+    | BooleanColumnSummary
+    | DatetimeColumnSummary
+    | EnumColumnSummary
+    | FloatColumnSummary
+    | IntColumnSummary
+    | StringColumnSummary
+  );
 
 export type DatasetViewPaginationDto = {
   currentPage: number;

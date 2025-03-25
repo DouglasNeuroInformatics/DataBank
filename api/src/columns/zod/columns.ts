@@ -40,14 +40,14 @@ const $DatetimeSummary = $BaseSummary.extend({
 });
 type DatetimeSummary = z.infer<typeof $DatetimeSummary>;
 
-export const $ColumnSummary = z.union([
+const $ColumnSummary = z.union([
   $BaseSummary,
   $IntSummary,
   $FloatSummary,
   $EnumSummary,
   $DatetimeSummary
 ]) satisfies z.ZodType<ColumnSummary>;
-export type ColumnSummary = BaseSummary | DatetimeSummary | EnumSummary | FloatSummary | IntSummary;
+type ColumnSummary = BaseSummary | DatetimeSummary | EnumSummary | FloatSummary | IntSummary;
 
 // ----------------------- Column Validation -----------------------
 // const $StringColumnValidation = z.object({
@@ -95,17 +95,17 @@ const $StringColumn = $TabularColumnInfo.extend({
   ),
   summary: $BaseSummary
 });
-export type StringColumn = z.infer<typeof $StringColumn>;
+type StringColumn = z.infer<typeof $StringColumn>;
 
 const $CreateStringColumnDto = $StringColumn.omit({
   id: true
 });
-export type CreateStringColumnDto = z.infer<typeof $CreateStringColumnDto>;
+type CreateStringColumnDto = z.infer<typeof $CreateStringColumnDto>;
 
-export const $UpdateStringColumnDto = $CreateStringColumnDto.partial();
-export type UpdateStringColumnDto = z.infer<typeof $UpdateStringColumnDto>;
+const $UpdateStringColumnDto = $CreateStringColumnDto.partial();
+type UpdateStringColumnDto = z.infer<typeof $UpdateStringColumnDto>;
 
-export const $IntColumn = $TabularColumnInfo.extend({
+const $IntColumn = $TabularColumnInfo.extend({
   intData: z.array(
     z.object({
       value: z.number().optional()
@@ -114,17 +114,17 @@ export const $IntColumn = $TabularColumnInfo.extend({
   kind: z.literal('INT'),
   summary: $IntSummary
 });
-export type IntColumn = z.infer<typeof $IntColumn>;
+type IntColumn = z.infer<typeof $IntColumn>;
 
 const $CreateIntColumnDto = $IntColumn.omit({
   id: true
 });
-export type CreateIntColumnDto = z.infer<typeof $CreateIntColumnDto>;
+type CreateIntColumnDto = z.infer<typeof $CreateIntColumnDto>;
 
-export const $UpdateIntColumnDto = $CreateIntColumnDto.partial();
-export type UpdateIntColumnDto = z.infer<typeof $UpdateIntColumnDto>;
+const $UpdateIntColumnDto = $CreateIntColumnDto.partial();
+type UpdateIntColumnDto = z.infer<typeof $UpdateIntColumnDto>;
 
-export const $FloatColumn = $TabularColumnInfo.extend({
+const $FloatColumn = $TabularColumnInfo.extend({
   floatData: z.array(
     z.object({
       value: z.number().optional()
@@ -133,17 +133,17 @@ export const $FloatColumn = $TabularColumnInfo.extend({
   kind: z.literal('FLOAT'),
   summary: $FloatSummary
 });
-export type FloatColumn = z.infer<typeof $FloatColumn>;
+type FloatColumn = z.infer<typeof $FloatColumn>;
 
-export const $CreateFloatColumnDto = $FloatColumn.omit({
+const $CreateFloatColumnDto = $FloatColumn.omit({
   id: true
 });
-export type CreateFloatColumnDto = z.infer<typeof $CreateFloatColumnDto>;
+type CreateFloatColumnDto = z.infer<typeof $CreateFloatColumnDto>;
 
-export const $UpdateFloatColumnDto = $CreateFloatColumnDto.partial();
-export type UpdateFloatColumnDto = z.infer<typeof $UpdateFloatColumnDto>;
+const $UpdateFloatColumnDto = $CreateFloatColumnDto.partial();
+type UpdateFloatColumnDto = z.infer<typeof $UpdateFloatColumnDto>;
 
-export const $EnumColumn = $TabularColumnInfo.extend({
+const $EnumColumn = $TabularColumnInfo.extend({
   enumData: z.array(
     z.object({
       value: z.string().optional()
@@ -152,17 +152,17 @@ export const $EnumColumn = $TabularColumnInfo.extend({
   kind: z.literal('ENUM'),
   summary: $EnumSummary
 });
-export type EnumColumn = z.infer<typeof $EnumColumn>;
+type EnumColumn = z.infer<typeof $EnumColumn>;
 
-export const $CreateEnumColumnDto = $EnumColumn.omit({
+const $CreateEnumColumnDto = $EnumColumn.omit({
   id: true
 });
-export type CreateEnumColumnDto = z.infer<typeof $CreateEnumColumnDto>;
+type CreateEnumColumnDto = z.infer<typeof $CreateEnumColumnDto>;
 
-export const $UpdateEnumColumnDto = $CreateEnumColumnDto.partial();
-export type UpdateEnumColumnDto = z.infer<typeof $UpdateEnumColumnDto>;
+const $UpdateEnumColumnDto = $CreateEnumColumnDto.partial();
+type UpdateEnumColumnDto = z.infer<typeof $UpdateEnumColumnDto>;
 
-export const $DatetimeColumn = $TabularColumnInfo.extend({
+const $DatetimeColumn = $TabularColumnInfo.extend({
   datetimeData: z.array(
     z.object({
       value: z.date().optional()
@@ -171,7 +171,7 @@ export const $DatetimeColumn = $TabularColumnInfo.extend({
   kind: z.literal('DATETIME'),
   summary: $DatetimeSummary
 });
-export type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
+type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
 
 const $BooleanColumn = $TabularColumnInfo.extend({
   booleanData: z.array(
@@ -221,3 +221,34 @@ export type UpdateTabularColumnDto =
   | UpdateFloatColumnDto
   | UpdateIntColumnDto
   | UpdateStringColumnDto;
+
+export {
+  $ColumnSummary,
+  $CreateEnumColumnDto,
+  $CreateFloatColumnDto,
+  $DatetimeColumn,
+  $EnumColumn,
+  $FloatColumn,
+  $IntColumn,
+  $UpdateEnumColumnDto,
+  $UpdateFloatColumnDto,
+  $UpdateIntColumnDto,
+  $UpdateStringColumnDto
+};
+
+export type {
+  ColumnSummary,
+  CreateEnumColumnDto,
+  CreateFloatColumnDto,
+  CreateIntColumnDto,
+  CreateStringColumnDto,
+  DatetimeColumn,
+  EnumColumn,
+  FloatColumn,
+  IntColumn,
+  StringColumn,
+  UpdateEnumColumnDto,
+  UpdateFloatColumnDto,
+  UpdateIntColumnDto,
+  UpdateStringColumnDto
+};

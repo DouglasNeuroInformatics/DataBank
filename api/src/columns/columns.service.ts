@@ -1,11 +1,11 @@
+import type { Model } from '@douglasneuroinformatics/libnest';
+import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { ColumnType, PermissionLevel } from '@prisma/client';
-import type { PrismaClient } from '@prisma/client/extension';
+import type { ColumnType, PermissionLevel, PrismaClient } from '@prisma/client';
 
-import { InjectModel, InjectPrismaClient } from '@/core/decorators/inject-prisma-client.decorator';
-import type { Model } from '@/prisma/prisma.types';
 import type { GetColumnViewDto } from '@/projects/zod/projects';
-import { pl, type Series } from '@/vendor/nodejs-polars.js';
+import { pl } from '@/vendor/nodejs-polars.js';
+import type { Series } from '@/vendor/nodejs-polars.js';
 
 import type { UpdateTabularColumnDto } from './zod/columns';
 
@@ -287,7 +287,7 @@ export class ColumnsService {
       std?: number;
     };
 
-    let columnMetadata: ColumnMetadata = {
+    const columnMetadata: ColumnMetadata = {
       count: 0,
       kind: 'STRING',
       nullable: false,
@@ -304,6 +304,46 @@ export class ColumnsService {
         columnMetadata.nullCount = columnView.summary.nullCount;
         columnMetadata.kind = 'BOOLEAN';
         columnMetadata.nullable = columnView.nullable;
+        break;
+      case 'DATETIME':
+        columnView.datetimeData = currSeries.toArray().map((entry) => {
+          return {
+            value: entry as Date
+          };
+        });
+        columnMetadata.count = columnView.summary.count;
+        columnMetadata.nullCount = columnView.summary.nullCount;
+        columnMetadata.kind = 'DATETIME';
+        columnMetadata.nullable = columnView.nullable;
+        columnMetadata.max = columnView.summary.datetimeSummary?.max;
+        columnMetadata.min = columnView.summary.datetimeSummary?.min;
+        break;
+      case 'ENUM':
+        columnView.enumData = currSeries.toArray().map((entry) => {
+          return {
+            value: entry as string
+          };
+        });
+        columnMetadata.count = columnView.summary.count;
+        columnMetadata.nullCount = columnView.summary.nullCount;
+        columnMetadata.kind = 'ENUM';
+        columnMetadata.nullable = columnView.nullable;
+        break;
+      case 'FLOAT':
+        columnView.floatData = currSeries.toArray().map((entry) => {
+          return {
+            value: entry as number
+          };
+        });
+        columnMetadata.count = columnView.summary.count;
+        columnMetadata.nullCount = columnView.summary.nullCount;
+        columnMetadata.kind = 'FLOAT';
+        columnMetadata.nullable = columnView.nullable;
+        columnMetadata.max = columnView.summary.floatSummary?.max;
+        columnMetadata.min = columnView.summary.floatSummary?.min;
+        columnMetadata.mean = columnView.summary.floatSummary?.mean;
+        columnMetadata.median = columnView.summary.floatSummary?.median;
+        columnMetadata.std = columnView.summary.floatSummary?.std;
         break;
       case 'INT':
         columnView.intData = currSeries.toArray().map((entry) => {
@@ -322,22 +362,6 @@ export class ColumnsService {
         columnMetadata.median = columnView.summary.intSummary?.median;
         columnMetadata.std = columnView.summary.intSummary?.std;
         break;
-      case 'FLOAT':
-        columnView.floatData = currSeries.toArray().map((entry) => {
-          return {
-            value: entry as number
-          };
-        });
-        columnMetadata.count = columnView.summary.count;
-        columnMetadata.nullCount = columnView.summary.nullCount;
-        columnMetadata.kind = 'FLOAT';
-        columnMetadata.nullable = columnView.nullable;
-        columnMetadata.max = columnView.summary.floatSummary?.max;
-        columnMetadata.min = columnView.summary.floatSummary?.min;
-        columnMetadata.mean = columnView.summary.floatSummary?.mean;
-        columnMetadata.median = columnView.summary.floatSummary?.median;
-        columnMetadata.std = columnView.summary.floatSummary?.std;
-        break;
       case 'STRING':
         columnView.stringData = currSeries.toArray().map((entry) => {
           return {
@@ -348,30 +372,6 @@ export class ColumnsService {
         columnMetadata.nullCount = columnView.summary.nullCount;
         columnMetadata.kind = 'STRING';
         columnMetadata.nullable = columnView.nullable;
-        break;
-      case 'ENUM':
-        columnView.enumData = currSeries.toArray().map((entry) => {
-          return {
-            value: entry as string
-          };
-        });
-        columnMetadata.count = columnView.summary.count;
-        columnMetadata.nullCount = columnView.summary.nullCount;
-        columnMetadata.kind = 'ENUM';
-        columnMetadata.nullable = columnView.nullable;
-        break;
-      case 'DATETIME':
-        columnView.datetimeData = currSeries.toArray().map((entry) => {
-          return {
-            value: entry as Date
-          };
-        });
-        columnMetadata.count = columnView.summary.count;
-        columnMetadata.nullCount = columnView.summary.nullCount;
-        columnMetadata.kind = 'DATETIME';
-        columnMetadata.nullable = columnView.nullable;
-        columnMetadata.max = columnView.summary.datetimeSummary?.max;
-        columnMetadata.min = columnView.summary.datetimeSummary?.min;
         break;
     }
 
@@ -454,48 +454,15 @@ export class ColumnsService {
           }
         });
         break;
-      case 'STRING':
-        data = pl.Series(col.stringData.map((entry) => Object.values(entry)[0]));
+      case 'DATETIME':
+        data = pl.Series(col.datetimeData.map((entry) => Object.values(entry)[0]));
         removeFromCol = this.columnModel.update({
           data: {
-            stringColumnValidation: undefined,
-            stringData: undefined,
+            datetimeColumnValidation: undefined,
+            datetimeData: undefined,
             summary: {
               count: data.len() - data.nullCount(),
-              nullCount: data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'INT':
-        data = pl.Series(col.intData.map((entry) => Object.values(entry)[0]));
-        removeFromCol = this.columnModel.update({
-          data: {
-            intData: undefined,
-            numericColumnValidation: undefined,
-            summary: {
-              count: data.len() - data.nullCount(),
-              intSummary: undefined,
-              nullCount: data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
-      case 'FLOAT':
-        data = pl.Series(col.floatData.map((entry) => Object.values(entry)[0]));
-        removeFromCol = this.columnModel.update({
-          data: {
-            floatData: undefined,
-            numericColumnValidation: undefined,
-            summary: {
-              count: data.len() - data.nullCount(),
-              floatSummary: undefined,
+              datetimeSummary: undefined,
               nullCount: data.nullCount()
             }
           },
@@ -521,15 +488,48 @@ export class ColumnsService {
           }
         });
         break;
-      case 'DATETIME':
-        data = pl.Series(col.datetimeData.map((entry) => Object.values(entry)[0]));
+      case 'FLOAT':
+        data = pl.Series(col.floatData.map((entry) => Object.values(entry)[0]));
         removeFromCol = this.columnModel.update({
           data: {
-            datetimeColumnValidation: undefined,
-            datetimeData: undefined,
+            floatData: undefined,
+            numericColumnValidation: undefined,
             summary: {
               count: data.len() - data.nullCount(),
-              datetimeSummary: undefined,
+              floatSummary: undefined,
+              nullCount: data.nullCount()
+            }
+          },
+          where: {
+            id: col.id
+          }
+        });
+        break;
+      case 'INT':
+        data = pl.Series(col.intData.map((entry) => Object.values(entry)[0]));
+        removeFromCol = this.columnModel.update({
+          data: {
+            intData: undefined,
+            numericColumnValidation: undefined,
+            summary: {
+              count: data.len() - data.nullCount(),
+              intSummary: undefined,
+              nullCount: data.nullCount()
+            }
+          },
+          where: {
+            id: col.id
+          }
+        });
+        break;
+      case 'STRING':
+        data = pl.Series(col.stringData.map((entry) => Object.values(entry)[0]));
+        removeFromCol = this.columnModel.update({
+          data: {
+            stringColumnValidation: undefined,
+            stringData: undefined,
+            summary: {
+              count: data.len() - data.nullCount(),
               nullCount: data.nullCount()
             }
           },
@@ -702,7 +702,6 @@ export class ColumnsService {
         break;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return (await this.prisma.$transaction([removeFromCol, addToCol])) as unknown[];
   }
 
@@ -840,20 +839,8 @@ export class ColumnsService {
         });
         return pl.Series(arr);
       }
-      case 'STRING': {
-        const arr = column.stringData.map((entry) => {
-          return entry.value;
-        });
-        return pl.Series(arr);
-      }
-      case 'INT': {
-        const arr = column.intData.map((entry) => {
-          return entry.value;
-        });
-        return pl.Series(arr);
-      }
-      case 'FLOAT': {
-        const arr = column.floatData.map((entry) => {
+      case 'DATETIME': {
+        const arr = column.datetimeData.map((entry) => {
           return entry.value;
         });
         return pl.Series(arr);
@@ -864,8 +851,20 @@ export class ColumnsService {
         });
         return pl.Series(arr);
       }
-      case 'DATETIME': {
-        const arr = column.datetimeData.map((entry) => {
+      case 'FLOAT': {
+        const arr = column.floatData.map((entry) => {
+          return entry.value;
+        });
+        return pl.Series(arr);
+      }
+      case 'INT': {
+        const arr = column.intData.map((entry) => {
+          return entry.value;
+        });
+        return pl.Series(arr);
+      }
+      case 'STRING': {
+        const arr = column.stringData.map((entry) => {
           return entry.value;
         });
         return pl.Series(arr);

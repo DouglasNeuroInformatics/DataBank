@@ -5,7 +5,8 @@ import type { DatasetCardProps } from '@databank/core';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
-import { type RouteObject, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 

@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { type Request } from 'express';
+import type { Request } from 'express';
 
 import { RouteAccess } from '../core/decorators/route-access.decorator.js';
 import { AuthService } from './auth.service.js';
@@ -21,8 +21,8 @@ export class AuthController {
   }
 
   @ApiOperation({ description: 'Request an access token from the server', summary: 'Login' })
-  @Post('login')
   @HttpCode(HttpStatus.OK)
+  @Post('login')
   @RouteAccess('public')
   login(@Body() { email, password }: LoginRequestDto) {
     return this.authService.login(email, password);

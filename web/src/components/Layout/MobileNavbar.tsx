@@ -7,8 +7,9 @@ import { Link } from 'react-router-dom';
 import { Logo } from '@/components';
 
 import { Slider } from '../Slider';
-import { type NavItem } from './types';
 import { UserDropup } from './UserDropup';
+
+import type { NavItem } from './types';
 
 export type MobileNavbarProps = {
   isLogIn: boolean;

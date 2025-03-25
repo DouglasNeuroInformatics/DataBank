@@ -1,17 +1,9 @@
 catalog:
-  '@douglasneuroinformatics/esbuild-plugin-native-modules': latest
-  '@douglasneuroinformatics/esbuild-plugin-prisma': latest
-  '@douglasneuroinformatics/eslint-config': latest
-  '@douglasneuroinformatics/libjs': latest
-  '@douglasneuroinformatics/libnest': 0.1.0
-  '@douglasneuroinformatics/libpasswd': latest
-  '@douglasneuroinformatics/libui': latest
-  '@douglasneuroinformatics/libui-form-types': latest
-  '@douglasneuroinformatics/prettier-config': latest
-  '@douglasneuroinformatics/tsconfig': latest
-  'type-fest': '^4.26.1'
-  'zod': '^3.23.8'
+  '@douglasneuroinformatics/libjs': '^2.4.0'
+  type-fest: ^4.26.1
+  zod: ^3.23.8
 packages:
   - api
   - core
+  - test
   - web

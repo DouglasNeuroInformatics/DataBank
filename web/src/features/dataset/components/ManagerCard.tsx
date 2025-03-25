@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import type { TUser } from '@databank/core';
-import { Button } from '@douglasneuroinformatics/libui/components';
-import { Card } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { Button, Card } from '@douglasneuroinformatics/libui/components';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,9 +1,9 @@
 import type { DatasetInfo, DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/core';
+import type { Model } from '@douglasneuroinformatics/libnest';
+import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
-import { InjectModel } from '@/core/decorators/inject-prisma-client.decorator';
 import { DatasetsService } from '@/datasets/datasets.service';
-import type { Model } from '@/prisma/prisma.types';
 import { UsersService } from '@/users/users.service';
 
 import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
@@ -129,7 +129,7 @@ export class ProjectsService {
 
     const delimiter = format === 'CSV' ? ',' : '\t';
     let resultString = projectDatasetView.columns.join(delimiter) + '\n';
-    for (let row of projectDatasetView.rows) {
+    for (const row of projectDatasetView.rows) {
       resultString += Object.values(row).join(delimiter) + '\n';
     }
 
@@ -192,7 +192,7 @@ export class ProjectsService {
     ];
 
     let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-    for (let columnName of Object.keys(projectDatasetView.metadata)) {
+    for (const columnName of Object.keys(projectDatasetView.metadata)) {
       metadataRowsString +=
         columnName +
         delimiter +
@@ -319,7 +319,7 @@ export class ProjectsService {
     }
     const projectDatasetsInfo: DatasetInfo[] = [];
     const datasetIdToRemove: string[] = [];
-    for (let projectDataset of project.datasets) {
+    for (const projectDataset of project.datasets) {
       const projectDatasetInfo = await this.datasetService.getById(projectDataset.datasetId);
       if (!projectDatasetInfo) {
         datasetIdToRemove.push(projectDataset.datasetId);
@@ -348,11 +348,11 @@ export class ProjectsService {
     const project = await this.getProjectById(currentUserId, projectId);
 
     const datasetIdSet = new Set();
-    for (let curr_datasetId of user.datasetId) {
+    for (const curr_datasetId of user.datasetId) {
       datasetIdSet.add(curr_datasetId);
     }
 
-    for (let dataset of project.datasets) {
+    for (const dataset of project.datasets) {
       if (datasetIdSet.has(dataset.datasetId)) {
         return true;
       }

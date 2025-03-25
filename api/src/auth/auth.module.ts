@@ -1,5 +1,5 @@
+import { ConfigService } from '@douglasneuroinformatics/libnest';
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -20,7 +20,7 @@ import { AuthService } from './auth.service.js';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         global: true,
-        secret: configService.getOrThrow<string>('SECRET_KEY')
+        secret: configService.getOrThrow('SECRET_KEY')
       })
     }),
     MailModule,

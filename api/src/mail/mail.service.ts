@@ -1,6 +1,7 @@
+import { ConfigService } from '@douglasneuroinformatics/libnest';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { createTransport, type SendMailOptions, type Transporter } from 'nodemailer';
+import { createTransport } from 'nodemailer';
+import type { SendMailOptions, Transporter } from 'nodemailer';
 
 @Injectable()
 export class MailService {
