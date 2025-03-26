@@ -5,6 +5,7 @@ import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { Injectable } from '@nestjs/common';
 import { ForbiddenException, ServiceUnavailableException } from '@nestjs/common/exceptions';
+import type { SetupConfig } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
@@ -15,7 +16,7 @@ import type { CreateAdminData, SetupOptions } from './setup.schemas.js';
 @Injectable()
 export class SetupService {
   constructor(
-    @InjectModel('Setup') private readonly setupModel: Model<'Setup'>,
+    @InjectModel('SetupConfig') private readonly setupConfigModel: Model<'SetupConfig'>,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) {}
@@ -25,15 +26,8 @@ export class SetupService {
   }
 
   async getVerificationStrategy() {
-    const setupConfig = await this.setupModel.findFirst({
-      select: {
-        verificationStrategy: true
-      }
-    });
-    if (!setupConfig) {
-      throw new ServiceUnavailableException('Application is not setup');
-    }
-    return setupConfig.verificationStrategy;
+    const { verificationStrategy } = await this.getSetupConfig();
+    return verificationStrategy;
   }
 
   async initApp({ admin, setupConfig }: SetupOptions) {
@@ -76,7 +70,15 @@ export class SetupService {
     });
   }
 
-  private async isSetup() {
-    return (await this.setupModel.count({})) !== 0;
+  private async getSetupConfig(): Promise<SetupConfig> {
+    const setupConfig = await this.setupConfigModel.findFirst({});
+    if (!setupConfig) {
+      throw new ServiceUnavailableException('Application is not setup');
+    }
+    return setupConfig;
+  }
+
+  private async isSetup(): Promise<boolean> {
+    return (await this.setupConfigModel.count({})) !== 0;
   }
 }
