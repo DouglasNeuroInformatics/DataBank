@@ -5,8 +5,7 @@ const $CreateAdminData = z.object({
   email: z.string(),
   firstName: z.string(),
   lastName: z.string(),
-  password: z.string(),
-  role: z.literal('ADMIN')
+  password: z.string()
 });
 
 const $ManualVerification = z.object({
