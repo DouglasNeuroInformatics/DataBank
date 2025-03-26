@@ -29,7 +29,7 @@ const $ConfirmEmailVerification = z.object({
 const $UserVerificationStrategy = z.union([$ManualVerification, $RegexEmailVerification, $ConfirmEmailVerification]);
 
 const $SetupConfig = z.object({
-  userVerificationStrategy: $UserVerificationStrategy
+  verificationStrategy: $UserVerificationStrategy
 });
 
 type SetupOptions = z.infer<typeof $SetupOptions>;

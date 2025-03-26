@@ -11,6 +11,7 @@ import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
 
 import { SetupService } from '../setup.service';
+
 describe('SetupService', () => {
   let setupConfigModel: MockedInstance<Model<'SetupConfig'>>;
   let setupService: SetupService;
@@ -41,16 +42,16 @@ describe('SetupService', () => {
     });
   });
 
-  describe('getUserVerificationStrategy', () => {
+  describe('getVerificationStrategy', () => {
     it('should throw a ServiceUnavailableException if the app has not been setup', async () => {
       setupConfigModel.findFirst.mockResolvedValueOnce(null);
-      await expect(setupService.getUserVerificationStrategy()).rejects.toMatchObject({
+      await expect(setupService.getVerificationStrategy()).rejects.toMatchObject({
         status: HttpStatus.SERVICE_UNAVAILABLE
       });
     });
     it('should return the result from the db if it exists', async () => {
       setupConfigModel.findFirst.mockResolvedValueOnce({ verificationStrategy: 'STRATEGY' });
-      await expect(setupService.getUserVerificationStrategy()).resolves.toBe('STRATEGY');
+      await expect(setupService.getVerificationStrategy()).resolves.toBe('STRATEGY');
     });
   });
 
@@ -63,7 +64,7 @@ describe('SetupService', () => {
         password: 'Password123'
       },
       setupConfig: {
-        userVerificationStrategy: {
+        verificationStrategy: {
           kind: 'MANUAL'
         }
       }
@@ -78,6 +79,9 @@ describe('SetupService', () => {
 
     it('should ', async () => {
       setupConfigModel.count.mockReturnValueOnce(0);
+      usersService.createUser.mockResolvedValueOnce({
+        id: '1'
+      });
       await setupService.initApp(setupOptions);
       expect(usersService.createUser).toHaveBeenCalledOnce();
     });

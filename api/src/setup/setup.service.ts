@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import type { CreateAdminData, SetupOptions } from '@databank/core';
+import type { CreateAdminData, SetupOptions, SetupState } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { Injectable } from '@nestjs/common';
 import { ForbiddenException, ServiceUnavailableException } from '@nestjs/common/exceptions';
-import type { SetupConfig } from '@prisma/client';
+import type { SetupConfig, User, UserVerificationStrategy } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
@@ -20,15 +20,15 @@ export class SetupService {
     private readonly usersService: UsersService
   ) {}
 
-  async getState() {
+  async getState(): Promise<SetupState> {
     return { isSetup: await this.isSetup() };
   }
 
-  async getUserVerificationStrategy() {
-    return this.getSetupConfig().then((config) => config.userVerificationStrategy);
+  async getVerificationStrategy(): Promise<UserVerificationStrategy> {
+    return this.getSetupConfig().then((config) => config.verificationStrategy);
   }
 
-  async initApp({ admin, setupConfig }: SetupOptions) {
+  async initApp({ admin, setupConfig }: SetupOptions): Promise<{ success: true }> {
     if (await this.isSetup()) {
       throw new ForbiddenException();
     }
@@ -55,9 +55,11 @@ export class SetupService {
       await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'iris.json'), 'utf-8'),
       adminUser.id
     );
+
+    return { success: true };
   }
 
-  private async createAdmin(admin: CreateAdminData) {
+  private async createAdmin(admin: CreateAdminData): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
       ...admin,
       confirmedAt: new Date(Date.now()),

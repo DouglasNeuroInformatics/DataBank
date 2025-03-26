@@ -125,7 +125,7 @@ export class AuthService {
       confirmedAt: new Date()
     });
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
-    const verificationInfo = await this.setupService.getUserVerificationStrategy();
+    const verificationInfo = await this.setupService.getVerificationStrategy();
     let isVerified: boolean;
 
     if (verificationInfo.kind === 'CONFIRM_EMAIL') {
