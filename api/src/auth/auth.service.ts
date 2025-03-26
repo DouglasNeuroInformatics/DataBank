@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 
 import type { AuthPayload, CurrentUser, EmailConfirmationProcedureInfo, Locale } from '@databank/core';
-import { ConfigService, CryptoService } from '@douglasneuroinformatics/libnest';
+import { ConfigService, CryptoService, MailService } from '@douglasneuroinformatics/libnest';
 import {
   ForbiddenException,
   Injectable,
@@ -13,7 +13,6 @@ import { JwtService } from '@nestjs/jwt';
 import type { ConfirmEmailInfo, User } from '@prisma/client';
 
 import { I18nService } from '@/i18n/i18n.service';
-import { MailService } from '@/mail/mail.service';
 import { SetupService } from '@/setup/setup.service';
 
 import { UsersService } from '../users/users.service.js';
