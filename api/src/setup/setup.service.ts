@@ -88,14 +88,6 @@ export class SetupService {
   }
 
   private async isSetup() {
-    const setupConfig = await this.setupModel.findMany();
-    return setupConfig.length == 0 ? false : true;
+    return (await this.setupModel.count({})) !== 0;
   }
-
-  // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
-  //   const setupConfig = await this.setupConfigModel.findOne();
-  //   if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
-  //   setupConfig.verificationInfo = setupConfigDto.verificationInfo;
-  //   setupConfig.save();
-  // }
 }
