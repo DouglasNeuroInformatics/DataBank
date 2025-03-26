@@ -1,4 +1,4 @@
-import { $NumberLike } from '@douglasneuroinformatics/libjs';
+import { $BooleanLike, $NumberLike } from '@douglasneuroinformatics/libjs';
 import { $BaseEnv, AppContainer } from '@douglasneuroinformatics/libnest';
 import { Module } from '@nestjs/common';
 import type { MiddlewareConsumer, NestModule } from '@nestjs/common';
@@ -49,10 +49,12 @@ export default AppContainer.create({
   },
   envSchema: $BaseEnv.extend({
     MAX_VALIDATION_ATTEMPTS: $NumberLike.pipe(z.number().positive().int()),
+    SMTP_AUTH_PASSWORD: z.string().min(1),
+    SMTP_AUTH_USERNAME: z.string().min(1),
     SMTP_HOST: z.string().min(1),
-    SMTP_PASS: z.string().min(1),
     SMTP_PORT: $NumberLike.pipe(z.union([z.literal(25), z.literal(465), z.literal(587)])),
-    SMTP_USER: z.string().min(1),
+    SMTP_SECURE: $BooleanLike,
+    SMTP_SENDER: z.string().min(1).email(),
     VALIDATION_TIMEOUT: $NumberLike.pipe(z.number().positive().int())
   }),
   imports: [AppModule],
