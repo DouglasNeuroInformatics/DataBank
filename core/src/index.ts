@@ -1,3 +1,9 @@
+/* eslint-disable import/exports-last */
+
+export * from './setup';
+
+///// LEGACY
+
 /** CORE */
 
 import type { JsonValue } from 'type-fest';
@@ -65,44 +71,6 @@ export type UpdateDatasetActivity = {
 };
 
 export type Activity = CreateDatasetActivity | UpdateDatasetActivity;
-
-/** Setup */
-
-export type SetupState = {
-  isSetup: boolean | null;
-};
-
-export type SetupDto = {
-  admin: {
-    email: string;
-    firstName: string;
-    lastName: string;
-    password: string;
-  };
-
-  setupConfig: TSetupConfig;
-};
-
-export type TSetupConfig = {
-  userVerification: TVerificationInfo;
-};
-
-/** Verification */
-
-export type TVerificationWithRegex = {
-  emailRegex: string;
-  kind: 'REGEX_EMAIL';
-};
-
-export type TVerificationUponConfirmEmail = {
-  kind: 'CONFIRM_EMAIL';
-};
-
-export type TManualVerification = {
-  kind: 'MANUAL';
-};
-
-export type TVerificationInfo = TManualVerification | TVerificationUponConfirmEmail | TVerificationWithRegex;
 
 // Datasets
 export type PermissionLevel = 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED';
