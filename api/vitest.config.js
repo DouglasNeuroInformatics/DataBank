@@ -37,7 +37,8 @@ export default mergeConfig(
     test: {
       globals: true,
       passWithNoTests: true,
-      root: import.meta.dirname
+      root: import.meta.dirname,
+      setupFiles: [path.resolve(import.meta.dirname, 'src/testing/setup.ts')]
     }
   })
 );
