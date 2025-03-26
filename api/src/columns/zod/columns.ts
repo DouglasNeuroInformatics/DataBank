@@ -184,15 +184,15 @@ const $BooleanColumn = $TabularColumnInfo.extend({
 });
 type BooleanColumn = z.infer<typeof $BooleanColumn>;
 
-export const $CreateDatetimeColumnDto = $DatetimeColumn.omit({
+const $CreateDatetimeColumnDto = $DatetimeColumn.omit({
   id: true
 });
-export type CreateDatetimeColumnDto = z.infer<typeof $CreateDatetimeColumnDto>;
+type CreateDatetimeColumnDto = z.infer<typeof $CreateDatetimeColumnDto>;
 
-export const $UpdateDatetimeColumnDto = $CreateDatetimeColumnDto.partial();
-export type UpdateDatetimeColumnDto = z.infer<typeof $UpdateDatetimeColumnDto>;
+const $UpdateDatetimeColumnDto = $CreateDatetimeColumnDto.partial();
+type UpdateDatetimeColumnDto = z.infer<typeof $UpdateDatetimeColumnDto>;
 
-export const $TabularColumn = z.union([
+const $TabularColumn = z.union([
   $StringColumn,
   $IntColumn,
   $FloatColumn,
@@ -200,22 +200,22 @@ export const $TabularColumn = z.union([
   $DatetimeColumn,
   $BooleanColumn
 ]) satisfies z.ZodType<TabularColumn>;
-export type TabularColumn = BooleanColumn | DatetimeColumn | EnumColumn | FloatColumn | IntColumn | StringColumn;
+type TabularColumn = BooleanColumn | DatetimeColumn | EnumColumn | FloatColumn | IntColumn | StringColumn;
 
-export const $CreateTabularColumnDto = z.union([
+const $CreateTabularColumnDto = z.union([
   $CreateStringColumnDto,
   $CreateIntColumnDto,
   $CreateFloatColumnDto,
   $CreateEnumColumnDto,
   $CreateDatetimeColumnDto
 ]) satisfies z.ZodType<CreateTabularColumnDto>;
-export type CreateTabularColumnDto =
+type CreateTabularColumnDto =
   | CreateDatetimeColumnDto
   | CreateEnumColumnDto
   | CreateFloatColumnDto
   | CreateIntColumnDto
   | CreateStringColumnDto;
-export type UpdateTabularColumnDto =
+type UpdateTabularColumnDto =
   | UpdateDatetimeColumnDto
   | UpdateEnumColumnDto
   | UpdateFloatColumnDto
@@ -224,12 +224,16 @@ export type UpdateTabularColumnDto =
 
 export {
   $ColumnSummary,
+  $CreateDatetimeColumnDto,
   $CreateEnumColumnDto,
   $CreateFloatColumnDto,
+  $CreateTabularColumnDto,
   $DatetimeColumn,
   $EnumColumn,
   $FloatColumn,
   $IntColumn,
+  $TabularColumn,
+  $UpdateDatetimeColumnDto,
   $UpdateEnumColumnDto,
   $UpdateFloatColumnDto,
   $UpdateIntColumnDto,
@@ -238,17 +242,22 @@ export {
 
 export type {
   ColumnSummary,
+  CreateDatetimeColumnDto,
   CreateEnumColumnDto,
   CreateFloatColumnDto,
   CreateIntColumnDto,
   CreateStringColumnDto,
+  CreateTabularColumnDto,
   DatetimeColumn,
   EnumColumn,
   FloatColumn,
   IntColumn,
   StringColumn,
+  TabularColumn,
+  UpdateDatetimeColumnDto,
   UpdateEnumColumnDto,
   UpdateFloatColumnDto,
   UpdateIntColumnDto,
-  UpdateStringColumnDto
+  UpdateStringColumnDto,
+  UpdateTabularColumnDto
 };
