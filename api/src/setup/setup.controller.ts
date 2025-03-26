@@ -24,7 +24,7 @@ export class SetupController {
 
   @ApiOperation({
     description: [
-      'Initialize an instance of the application with a default admin user and some starter datasets. ',
+      'Initialize an instance of the application with a default admin user and some starter datasets.',
       'Although this route is public, this operation may only be performed when there are no users in the database.'
     ].join(''),
     summary: 'Initialize'
