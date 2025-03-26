@@ -3,7 +3,8 @@ import path from 'node:path';
 
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ForbiddenException, ServiceUnavailableException } from '@nestjs/common/exceptions';
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
@@ -19,32 +20,20 @@ export class SetupService {
     private readonly usersService: UsersService
   ) {}
 
-  async getSetupConfig() {
-    const setup = await this.setupModel.findFirst({
-      include: {
-        setupConfig: {
-          include: {
-            userVerification: true
-          }
-        }
-      }
-    });
-    if (!setup?.setupConfig) {
-      throw new NotFoundException('Setup Config not found in the database.');
-    }
-    return setup.setupConfig;
-  }
-
   async getState() {
     return { isSetup: await this.isSetup() };
   }
 
-  async getVerificationInfo() {
-    const setupConfig = await this.getSetupConfig();
-    if (!setupConfig.userVerification) {
-      throw new NotFoundException('Cannot access verification info.');
+  async getVerificationStrategy() {
+    const setupConfig = await this.setupModel.findFirst({
+      select: {
+        verificationStrategy: true
+      }
+    });
+    if (!setupConfig) {
+      throw new ServiceUnavailableException('Application is not setup');
     }
-    return setupConfig.userVerification;
+    return setupConfig.verificationStrategy;
   }
 
   async initApp({ admin, setupConfig }: SetupOptions) {
