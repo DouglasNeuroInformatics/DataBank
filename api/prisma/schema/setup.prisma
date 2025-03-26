@@ -1,17 +1,17 @@
-enum UserVerificationMethod {
+enum VerificationMethod {
   MANUAL
   CONFIRM_EMAIL
   REGEX_EMAIL
 }
 
-type UserVerificationStrategy {
-  kind       UserVerificationMethod
+type VerificationStrategy {
+  kind       VerificationMethod
   emailRegex String?
 }
 
 model Setup {
-  id                       String                   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt                DateTime                 @default(now()) @db.Date
-  updatedAt                DateTime                 @default(now()) @updatedAt @db.Date
-  userVerificationStrategy UserVerificationStrategy
+  id                   String               @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt            DateTime             @default(now()) @db.Date
+  updatedAt            DateTime             @default(now()) @updatedAt @db.Date
+  verificationStrategy VerificationStrategy
 }
