@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import type { CreateAdminData, SetupOptions } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { Injectable } from '@nestjs/common';
@@ -10,8 +11,6 @@ import type { SetupConfig } from '@prisma/client';
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
 import { UsersService } from '@/users/users.service.js';
-
-import type { CreateAdminData, SetupOptions } from './setup.schemas.js';
 
 @Injectable()
 export class SetupService {
@@ -25,21 +24,18 @@ export class SetupService {
     return { isSetup: await this.isSetup() };
   }
 
-  async getVerificationStrategy() {
-    const { verificationStrategy } = await this.getSetupConfig();
-    return verificationStrategy;
+  async getUserVerificationStrategy() {
+    return this.getSetupConfig().then((config) => config.userVerificationStrategy);
   }
 
   async initApp({ admin, setupConfig }: SetupOptions) {
     if (await this.isSetup()) {
       throw new ForbiddenException();
     }
-    const user = await this.createAdmin(admin);
+    const adminUser = await this.createAdmin(admin);
 
-    await this.setupModel.create({
-      data: {
-        setupConfig: setupConfig
-      }
+    await this.setupConfigModel.create({
+      data: setupConfig
     });
 
     const createStarterDatasetDto: CreateTabularDatasetDto = {
@@ -48,15 +44,16 @@ export class SetupService {
       isJSON: 'true',
       isReadyToShare: 'true',
       license: 'PUBLIC',
-      managerIds: [user.id],
+      managerIds: [adminUser.id],
       name: 'iris',
       permission: 'PUBLIC',
       primaryKeys: ''
     };
+
     await this.datasetsService.createDataset(
       createStarterDatasetDto,
       await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'iris.json'), 'utf-8'),
-      user.id
+      adminUser.id
     );
   }
 

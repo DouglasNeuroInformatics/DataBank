@@ -1,3 +1,4 @@
+import type { SetupOptions } from '@databank/core';
 import { getModelToken } from '@douglasneuroinformatics/libnest';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { MockFactory } from '@douglasneuroinformatics/libnest/testing';
@@ -10,10 +11,10 @@ import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
 
 import { SetupService } from '../setup.service';
-
 describe('SetupService', () => {
   let setupConfigModel: MockedInstance<Model<'SetupConfig'>>;
   let setupService: SetupService;
+  let usersService: MockedInstance<UsersService>;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -26,6 +27,7 @@ describe('SetupService', () => {
     }).compile();
     setupConfigModel = moduleRef.get(getModelToken('SetupConfig'));
     setupService = moduleRef.get(SetupService);
+    usersService = moduleRef.get(UsersService);
   });
 
   describe('getState', () => {
@@ -39,16 +41,45 @@ describe('SetupService', () => {
     });
   });
 
-  describe('getVerificationStrategy', () => {
+  describe('getUserVerificationStrategy', () => {
     it('should throw a ServiceUnavailableException if the app has not been setup', async () => {
       setupConfigModel.findFirst.mockResolvedValueOnce(null);
-      await expect(setupService.getVerificationStrategy()).rejects.toMatchObject({
+      await expect(setupService.getUserVerificationStrategy()).rejects.toMatchObject({
         status: HttpStatus.SERVICE_UNAVAILABLE
       });
     });
     it('should return the result from the db if it exists', async () => {
       setupConfigModel.findFirst.mockResolvedValueOnce({ verificationStrategy: 'STRATEGY' });
-      await expect(setupService.getVerificationStrategy()).resolves.toBe('STRATEGY');
+      await expect(setupService.getUserVerificationStrategy()).resolves.toBe('STRATEGY');
+    });
+  });
+
+  describe('initApp', () => {
+    const setupOptions: SetupOptions = {
+      admin: {
+        email: 'jane.doe@example.org',
+        firstName: 'Jane',
+        lastName: 'Doe',
+        password: 'Password123'
+      },
+      setupConfig: {
+        userVerificationStrategy: {
+          kind: 'MANUAL'
+        }
+      }
+    };
+
+    it('should throw a ForbiddenException if the app is already setup', async () => {
+      setupConfigModel.count.mockReturnValueOnce(1);
+      await expect(setupService.initApp(setupOptions)).rejects.toMatchObject({
+        status: HttpStatus.FORBIDDEN
+      });
+    });
+
+    it('should ', async () => {
+      setupConfigModel.count.mockReturnValueOnce(0);
+      await setupService.initApp(setupOptions);
+      expect(usersService.createUser).toHaveBeenCalledOnce();
     });
   });
 });
