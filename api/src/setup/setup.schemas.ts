@@ -23,13 +23,9 @@ const $ConfirmEmailVerification = z.object({
 
 const $UserVerification = z.union([$ManualVerification, $RegexEmailVerification, $ConfirmEmailVerification]);
 
-const $SetupConfig = z.object({
-  userVerification: $UserVerification
-});
-
 const $SetupOptions = z.object({
   admin: $CreateAdminData,
-  setupConfig: $SetupConfig
+  userVerification: $UserVerification
 });
 
 type SetupOptions = z.infer<typeof $SetupOptions>;
