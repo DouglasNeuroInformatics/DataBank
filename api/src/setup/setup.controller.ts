@@ -3,9 +3,8 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
+import { SetupOptionsDto } from './dto/setup-options.dto.js';
 import { SetupService } from './setup.service.js';
-
-import type { SetupDto } from './zod/setup.js';
 
 @ApiTags('Setup')
 @Controller({ path: 'setup' })
@@ -31,7 +30,7 @@ export class SetupController {
   })
   @Post()
   @RouteAccess('public')
-  initApp(@Body() setupDto: SetupDto) {
+  initApp(@Body() setupDto: SetupOptionsDto) {
     return this.setupService.initApp(setupDto);
   }
 }

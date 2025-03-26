@@ -9,7 +9,7 @@ import { DatasetsService } from '@/datasets/datasets.service.js';
 import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
 import { UsersService } from '@/users/users.service.js';
 
-import type { CreateAdminDto, SetupDto } from './zod/setup.js';
+import type { CreateAdminData, SetupOptions } from './setup.schemas.js';
 
 @Injectable()
 export class SetupService {
@@ -47,7 +47,7 @@ export class SetupService {
     return setupConfig.userVerification;
   }
 
-  async initApp({ admin, setupConfig }: SetupDto) {
+  async initApp({ admin, setupConfig }: SetupOptions) {
     if (await this.isSetup()) {
       throw new ForbiddenException();
     }
@@ -77,7 +77,7 @@ export class SetupService {
     );
   }
 
-  private async createAdmin(admin: CreateAdminDto) {
+  private async createAdmin(admin: CreateAdminData) {
     return this.usersService.createUser({
       ...admin,
       confirmedAt: new Date(Date.now()),
