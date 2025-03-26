@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "workspaces": {
     "api": {
-      "entry": ["src/app.ts", "libnest.config.ts"],
+      "entry": ["src/app.ts", "libnest.config.ts", "**/*.{test,test-d,spec}.ts"],
       "project": "**/*.{js,ts}"
     }
   }
