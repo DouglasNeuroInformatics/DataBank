@@ -4,14 +4,14 @@ enum VerificationMethod {
   REGEX_EMAIL
 }
 
-type VerificationStrategy {
+type UserVerificationStrategy {
   kind       VerificationMethod
   emailRegex String?
 }
 
 model SetupConfig {
-  id                   String               @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt            DateTime             @default(now()) @db.Date
-  updatedAt            DateTime             @default(now()) @updatedAt @db.Date
-  verificationStrategy VerificationStrategy
+  id                       String                   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt                DateTime                 @default(now()) @db.Date
+  updatedAt                DateTime                 @default(now()) @updatedAt @db.Date
+  userVerificationStrategy UserVerificationStrategy
 }
