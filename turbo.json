@@ -8,7 +8,7 @@
       "outputs": ["dist/**"]
     },
     "db:generate": {
-      "cache": false
+      "inputs": ["prisma/**/*"]
     },
     "dev": {
       "cache": false,
