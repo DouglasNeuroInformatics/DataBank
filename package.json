@@ -47,6 +47,7 @@
       "cypress",
       "esbuild",
       "nestjs-pino",
+      "mongodb-memory-server",
       "prisma"
     ],
     "ignoredBuiltDependencies": [

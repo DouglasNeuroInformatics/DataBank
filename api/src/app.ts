@@ -1,5 +1,5 @@
 import { $BooleanLike, $NumberLike } from '@douglasneuroinformatics/libjs';
-import { $BaseEnv, AppContainer } from '@douglasneuroinformatics/libnest';
+import { $BaseEnv, AppFactory } from '@douglasneuroinformatics/libnest';
 import { Module } from '@nestjs/common';
 import type { MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { z } from 'zod';
@@ -32,7 +32,7 @@ class AppModule implements NestModule {
   }
 }
 
-export default AppContainer.create({
+export default AppFactory.create({
   docs: {
     contact: {
       email: 'support@douglasneuroinformatics.ca',
