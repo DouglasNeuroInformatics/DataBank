@@ -24,6 +24,7 @@
     },
     "start:test-server": {
       "dependsOn": ["db:generate"],
+      "cache": false,
       "persistent": true
     }
   }
