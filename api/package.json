@@ -11,6 +11,7 @@
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src",
     "start": "NODE_ENV=production env-cmd -f ../.env node dist/app.js",
+    "start:test-server": "env-cmd -f ../.env libnest dev -c libnest.config.ts --no-watch",
     "test": "pnpm -w test -- --project @databank/api"
   },
   "dependencies": {

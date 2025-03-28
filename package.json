@@ -17,6 +17,7 @@
     "lint": "turbo run lint",
     "postinstall": "turbo telemetry disable",
     "prepare": "husky",
+    "start:test-server": "turbo run start:test-server",
     "test": "NODE_ENV=test env-cmd vitest",
     "test:coverage": "pnpm test --coverage"
   },

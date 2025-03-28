@@ -20,6 +20,10 @@
     },
     "test": {
       "dependsOn": ["db:generate"]
+    },
+    "start:test-server": {
+      "dependsOn": ["db:generate"],
+      "persistent": true
     }
   }
 }
