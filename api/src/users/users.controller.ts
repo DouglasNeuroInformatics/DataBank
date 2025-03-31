@@ -1,11 +1,10 @@
+import type { CreateUser } from '@databank/core';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator.js';
 
 import { UsersService } from './users.service.js';
-
-import type { CreateUserDto } from './zod/user.js';
 
 @ApiTags('Users')
 @Controller({ path: 'users' })
@@ -19,7 +18,7 @@ export class UsersController {
   })
   @Post()
   @RouteAccess({ role: 'STANDARD' })
-  createUser(@Body() createUserDto: CreateUserDto) {
+  createUser(@Body() createUserDto: CreateUser) {
     return this.usersService.createUser(createUserDto);
   }
 

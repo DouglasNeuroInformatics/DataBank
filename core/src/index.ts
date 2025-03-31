@@ -1,6 +1,7 @@
 /* eslint-disable import/exports-last */
 
 export * from './setup';
+export * from './users';
 
 ///// LEGACY
 
@@ -20,19 +21,6 @@ export type AuthPayload = {
   accessToken: string;
 };
 
-export type UserRole = 'ADMIN' | 'STANDARD';
-
-export type CurrentUser = {
-  confirmedAt: Date | null | undefined;
-  datasetId: string[];
-  email: string;
-  firstName: string;
-  id: string;
-  lastName: string;
-  role: UserRole;
-  verifiedAt: Date | null | undefined;
-};
-
 export type LoginCredentials = {
   email: string;
   password: string;
@@ -44,18 +32,6 @@ export type EmailConfirmationProcedureInfo = {
 
   /** The unix timestamp after which the code will be invalidated */
   expiry: Date;
-};
-
-/** USER */
-
-export type TUser = {
-  confirmedAt: null | number | undefined;
-  creationTime?: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: UserRole;
-  verifiedAt: null | number | undefined;
 };
 
 /** Activity */
@@ -117,7 +93,7 @@ export type ProjectTabularDatasetView = {
 
 export type ColumnDataType = 'BOOLEAN' | 'DATETIME' | 'ENUM' | 'FLOAT' | 'INT' | 'STRING';
 
-export type TabularDataset = DatasetInfo & {
+export type TabularDataset = {
   columnIds: { [key: string]: string };
   columns: string[];
   metadata: {
@@ -139,7 +115,7 @@ export type TabularDataset = DatasetInfo & {
   rows: { [key: string]: string }[];
   totalNumberOfColumns: number;
   totalNumberOfRows: number;
-};
+} & DatasetInfo;
 
 export type BaseColumnSummary = {
   count: number;
