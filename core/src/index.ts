@@ -1,5 +1,6 @@
 /* eslint-disable import/exports-last */
 
+export * from './datasets';
 export * from './setup';
 export * from './users';
 
@@ -170,11 +171,6 @@ export type ColumnSummary = BaseColumnSummary &
     | IntColumnSummary
     | StringColumnSummary
   );
-
-export type DatasetViewPaginationDto = {
-  currentPage: number;
-  itemsPerPage: number;
-};
 
 export type EditDatasetInfoDto = {
   description?: string | undefined;

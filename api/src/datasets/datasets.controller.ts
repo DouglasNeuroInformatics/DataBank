@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-classes */
 
-import type { ColumnDataType, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevel } from '@databank/core';
+import type { ColumnDataType, EditDatasetInfoDto, PermissionLevel } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -9,6 +9,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
 import { DatasetsService } from './datasets.service.js';
+import { DatasetViewPaginationDto } from './dto/datasets.dto.js';
 
 import type { CreateTabularDatasetDto } from './zod/dataset.js';
 
