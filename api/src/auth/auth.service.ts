@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 
 import type { AuthPayload, CurrentUser, EmailConfirmationProcedureInfo, Locale } from '@databank/core';
-import { ConfigService, CryptoService } from '@douglasneuroinformatics/libnest';
+import { ConfigService, CryptoService, MailService } from '@douglasneuroinformatics/libnest';
 import {
   ForbiddenException,
   Injectable,
@@ -13,7 +13,6 @@ import { JwtService } from '@nestjs/jwt';
 import type { ConfirmEmailInfo, User } from '@prisma/client';
 
 import { I18nService } from '@/i18n/i18n.service';
-import { MailService } from '@/mail/mail.service';
 import { SetupService } from '@/setup/setup.service';
 
 import { UsersService } from '../users/users.service.js';
@@ -126,7 +125,7 @@ export class AuthService {
       confirmedAt: new Date()
     });
     /** Now the user has confirm their email, verify the user according to the verification method set by the admin */
-    const verificationInfo = await this.setupService.getVerificationInfo();
+    const verificationInfo = await this.setupService.getVerificationStrategy();
     let isVerified: boolean;
 
     if (verificationInfo.kind === 'CONFIRM_EMAIL') {

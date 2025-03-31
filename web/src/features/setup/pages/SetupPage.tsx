@@ -1,4 +1,4 @@
-import type { SetupDto } from '@databank/core';
+import type { SetupOptions } from '@databank/core';
 import { Card, Heading, LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 
@@ -7,9 +7,9 @@ import { Logo } from '@/components/Logo';
 import { SetupForm } from '../components/SetupForm';
 
 export type SetupPageProps = {
-  onSubmit: (data: SetupDto) => void;
+  onSubmit: (data: SetupOptions) => void;
 };
-//
+
 export const SetupPage = ({ onSubmit }: SetupPageProps) => {
   const { t } = useTranslation('common');
   return (

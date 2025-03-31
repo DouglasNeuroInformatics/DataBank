@@ -7,7 +7,7 @@
   "scripts": {
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "test": "start-server-and-test 'pnpm -w dev' 5500 'echo hello'"
+    "test": "start-server-and-test 'pnpm -w start:test-server' 'localhost:3000|localhost:5500' 'echo hello && exit 0'"
   },
   "devDependencies": {
     "cypress": "^14.2.0",

@@ -11,6 +11,7 @@
     "lint": "tsc && eslint --fix src"
   },
   "dependencies": {
-    "type-fest": "catalog:"
+    "type-fest": "catalog:",
+    "zod": "catalog:"
   }
 }

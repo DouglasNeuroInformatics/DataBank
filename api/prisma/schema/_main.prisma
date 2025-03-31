@@ -1,6 +1,7 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-1.1.x"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "debian-openssl-1.1.x"]
+  previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
@@ -208,29 +209,6 @@ type EnumColumnValidation {
 type DatetimeColumnValidation {
   min DateTime?
   max DateTime?
-}
-
-// ---------------- Setup ----------------
-model Setup {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime    @default(now()) @db.Date
-  updatedAt   DateTime    @default(now()) @updatedAt @db.Date
-  setupConfig SetupConfig
-}
-
-type SetupConfig {
-  userVerification UserVerification
-}
-
-type UserVerification {
-  kind       VerificationMethod
-  emailRegex String?
-}
-
-enum VerificationMethod {
-  MANUAL
-  CONFIRM_EMAIL
-  REGEX_EMAIL
 }
 
 // ---------------- Project ----------------

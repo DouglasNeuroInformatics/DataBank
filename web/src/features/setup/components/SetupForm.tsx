@@ -1,12 +1,12 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import type { SetupDto } from '@databank/core';
+import type { SetupOptions } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { z } from 'zod';
 
 type SetupFormProps = {
-  onSubmit: (data: SetupDto) => void;
+  onSubmit: (data: SetupOptions) => void;
 };
 
 export const SetupForm = ({ onSubmit }: SetupFormProps) => {
@@ -73,7 +73,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
       ]}
       submitBtnLabel={t('submit')}
       validationSchema={z.object({
-        email: z.string().regex(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/),
+        email: z.string().min(1).email(),
         firstName: z.string().min(1),
         lastName: z.string().min(1),
         password: z.string().min(1),
@@ -90,7 +90,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               password: data.password
             },
             setupConfig: {
-              userVerification: {
+              verificationStrategy: {
                 kind: 'REGEX_EMAIL',
                 emailRegex: data.verificationRegex
               }
@@ -105,7 +105,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               password: data.password
             },
             setupConfig: {
-              userVerification: {
+              verificationStrategy: {
                 kind: data.verificationType
               }
             }

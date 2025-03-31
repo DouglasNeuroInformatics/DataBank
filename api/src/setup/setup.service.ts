@@ -1,62 +1,41 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import type { CreateAdminData, SetupOptions, SetupState } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ForbiddenException, ServiceUnavailableException } from '@nestjs/common/exceptions';
+import type { SetupConfig, User, UserVerificationStrategy } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
 import { UsersService } from '@/users/users.service.js';
 
-import type { CreateAdminDto, SetupDto } from './zod/setup.js';
-
 @Injectable()
 export class SetupService {
   constructor(
-    @InjectModel('Setup') private readonly setupModel: Model<'Setup'>,
+    @InjectModel('SetupConfig') private readonly setupConfigModel: Model<'SetupConfig'>,
     private readonly datasetsService: DatasetsService,
     private readonly usersService: UsersService
   ) {}
 
-  async getSetupConfig() {
-    const setup = await this.setupModel.findFirst({
-      include: {
-        setupConfig: {
-          include: {
-            userVerification: true
-          }
-        }
-      }
-    });
-    if (!setup?.setupConfig) {
-      throw new NotFoundException('Setup Config not found in the database.');
-    }
-    return setup.setupConfig;
-  }
-
-  async getState() {
+  async getState(): Promise<SetupState> {
     return { isSetup: await this.isSetup() };
   }
 
-  async getVerificationInfo() {
-    const setupConfig = await this.getSetupConfig();
-    if (!setupConfig.userVerification) {
-      throw new NotFoundException('Cannot access verification info.');
-    }
-    return setupConfig.userVerification;
+  async getVerificationStrategy(): Promise<UserVerificationStrategy> {
+    return this.getSetupConfig().then((config) => config.verificationStrategy);
   }
 
-  async initApp({ admin, setupConfig }: SetupDto) {
+  async initApp({ admin, setupConfig }: SetupOptions): Promise<{ success: true }> {
     if (await this.isSetup()) {
       throw new ForbiddenException();
     }
-    const user = await this.createAdmin(admin);
+    const adminUser = await this.createAdmin(admin);
 
-    await this.setupModel.create({
-      data: {
-        setupConfig: setupConfig
-      }
+    await this.setupConfigModel.create({
+      data: setupConfig
     });
 
     const createStarterDatasetDto: CreateTabularDatasetDto = {
@@ -65,19 +44,22 @@ export class SetupService {
       isJSON: 'true',
       isReadyToShare: 'true',
       license: 'PUBLIC',
-      managerIds: [user.id],
+      managerIds: [adminUser.id],
       name: 'iris',
       permission: 'PUBLIC',
       primaryKeys: ''
     };
+
     await this.datasetsService.createDataset(
       createStarterDatasetDto,
       await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'iris.json'), 'utf-8'),
-      user.id
+      adminUser.id
     );
+
+    return { success: true };
   }
 
-  private async createAdmin(admin: CreateAdminDto) {
+  private async createAdmin(admin: CreateAdminData): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
       ...admin,
       confirmedAt: new Date(Date.now()),
@@ -87,15 +69,15 @@ export class SetupService {
     });
   }
 
-  private async isSetup() {
-    const setupConfig = await this.setupModel.findMany();
-    return setupConfig.length == 0 ? false : true;
+  private async getSetupConfig(): Promise<SetupConfig> {
+    const setupConfig = await this.setupConfigModel.findFirst({});
+    if (!setupConfig) {
+      throw new ServiceUnavailableException('Application is not setup');
+    }
+    return setupConfig;
   }
 
-  // private async updateSetupConfig(setupConfigDto: SetupConfigDto) {
-  //   const setupConfig = await this.setupConfigModel.findOne();
-  //   if (!setupConfig) { throw new NotFoundException('Setup Config not found in the database.')}
-  //   setupConfig.verificationInfo = setupConfigDto.verificationInfo;
-  //   setupConfig.save();
-  // }
+  private async isSetup(): Promise<boolean> {
+    return (await this.setupConfigModel.count({})) !== 0;
+  }
 }

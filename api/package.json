@@ -11,12 +11,13 @@
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src",
     "start": "NODE_ENV=production env-cmd -f ../.env node dist/app.js",
+    "start:test-server": "env-cmd -f ../.env libnest dev -c libnest.config.ts --no-watch",
     "test": "pnpm -w test -- --project @databank/api"
   },
   "dependencies": {
     "@databank/core": "workspace:*",
     "@douglasneuroinformatics/libjs": "catalog:",
-    "@douglasneuroinformatics/libnest": "^3.1.1",
+    "@douglasneuroinformatics/libnest": "^4.0.0",
     "@nestjs/common": "^11.0.12",
     "@nestjs/core": "^11.0.12",
     "@nestjs/jwt": "^11.0.0",
@@ -27,7 +28,6 @@
     "mongodb": "^6.15.0",
     "multer": "1.4.5-lts.2",
     "nodejs-polars": "0.15.0",
-    "nodemailer": "^6.10.0",
     "reflect-metadata": "~0.1.14",
     "rxjs": "^7.8.2",
     "type-fest": "catalog:",
@@ -37,7 +37,6 @@
     "@nestjs/testing": "^11.0.12",
     "@types/express": "^5.0.1",
     "@types/multer": "^1.4.12",
-    "@types/nodemailer": "^6.4.17",
     "prisma": "^6.5.0",
     "unplugin-swc": "^1.5.1"
   }

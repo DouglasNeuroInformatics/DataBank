@@ -11,6 +11,7 @@
     "format": "prettier --write src",
     "lint": "tsc && eslint --fix src",
     "preview": "vite preview",
+    "start:test-server": "pnpm dev",
     "storybook": "storybook dev -p 6006"
   },
   "dependencies": {
