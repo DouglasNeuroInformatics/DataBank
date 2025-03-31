@@ -1,6 +1,6 @@
-import type { CreateUserDto } from '@/users/zod/user';
+import type { CreateUser } from '@databank/core';
 
-export const createUserDtoStubFactory = (): CreateUserDto => ({
+export const createUserDtoStubFactory = (): CreateUser => ({
   datasetId: [],
   email: 'johnsmith@gmail.com',
   firstName: 'John',

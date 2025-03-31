@@ -1,3 +1,4 @@
+import type { CreateUser } from '@databank/core';
 import { CryptoService, getModelToken } from '@douglasneuroinformatics/libnest';
 import { ConflictException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -7,8 +8,6 @@ import type { Mock } from 'vitest';
 
 import { UsersService } from '../users.service.js';
 import { createUserDtoStubFactory } from './stubs/create-user.dto.stub.js';
-
-import type { CreateUserDto } from '../zod/user.js';
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -54,7 +53,7 @@ describe('UsersService', () => {
   });
 
   describe('createUser', () => {
-    let createUserDto: CreateUserDto;
+    let createUserDto: CreateUser;
 
     beforeEach(() => {
       createUserDto = createUserDtoStubFactory();

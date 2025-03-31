@@ -1,10 +1,9 @@
+import type { CreateUser, UpdateUser } from '@databank/core';
 import { CryptoService, InjectModel } from '@douglasneuroinformatics/libnest';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import type { ConfirmEmailInfo, User } from '@prisma/client';
 import type { SetOptional } from 'type-fest';
-
-import type { CreateUserDto, UpdateUserDto } from './zod/user.js';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +19,7 @@ export class UsersService {
     lastName,
     password,
     ...rest
-  }: CreateUserDto): Promise<Omit<User, 'hashedPassword'>> {
+  }: CreateUser): Promise<Omit<User, 'hashedPassword'>> {
     const userExists = await this.findByEmail(email);
     if (userExists) {
       throw new ConflictException(`User with the provided email already exists: ${email}`);
@@ -106,9 +105,9 @@ export class UsersService {
     });
   }
 
-  updateUser(userId: string, updateUserDto: UpdateUserDto) {
+  updateUser(userId: string, updateUserData: UpdateUser) {
     return this.userModel.update({
-      data: updateUserDto,
+      data: updateUserData,
       where: {
         id: userId
       }

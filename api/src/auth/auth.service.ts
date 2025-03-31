@@ -32,7 +32,7 @@ export class AuthService {
   ) {}
 
   /** Create a new standard account with verification required */
-  async createAccount(createAccountDto: CreateAccountDto): Promise<Omit<User, 'hashedPassword'>> {
+  createAccount(createAccountDto: CreateAccountDto): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
       ...createAccountDto,
       role: 'STANDARD'
@@ -75,12 +75,16 @@ export class AuthService {
       await this.usersService.updateConfirmEmailInfo(user.email, confirmEmailInfo);
     }
 
-    await this.mailService.sendMail({
+    const result = await this.mailService.sendMail({
       subject: this.i18n.translate(locale, 'confirmationEmail.body'),
       text:
         this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailInfo.confirmEmailCode}`,
       to: user.email
     });
+
+    if (result.isErr()) {
+      throw result.error;
+    }
     return { attemptsMade: confirmEmailInfo.attemptsMade, expiry: confirmEmailInfo.expiryAt };
   }
 
