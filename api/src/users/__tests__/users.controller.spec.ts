@@ -1,3 +1,4 @@
+import type { CreateUser } from '@databank/core';
 import { MockFactory } from '@douglasneuroinformatics/libnest/testing';
 import type { MockedInstance } from '@douglasneuroinformatics/libnest/testing';
 import { Test } from '@nestjs/testing';
@@ -6,8 +7,6 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { UsersController } from '../users.controller.js';
 import { UsersService } from '../users.service.js';
 import { createUserDtoStubFactory } from './stubs/create-user.dto.stub.js';
-
-import type { CreateUserDto } from '../zod/user.js';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -28,7 +27,7 @@ describe('UsersController', () => {
   });
 
   describe('createUser', () => {
-    let createUserDto: CreateUserDto;
+    let createUserDto: CreateUser;
 
     beforeEach(() => {
       createUserDto = createUserDtoStubFactory();

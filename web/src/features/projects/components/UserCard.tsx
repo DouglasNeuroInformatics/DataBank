@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { TUser } from '@databank/core';
+import type { User } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
@@ -18,14 +18,14 @@ const UserCard = ({ projectId, userId, userNumber }: UserCardProps) => {
   const { t } = useTranslation('common');
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
-  const [user, setUser] = useState<null | TUser>(null);
+  const [user, setUser] = useState<null | User>(null);
   const { currentUser } = useAuthStore();
   if (!currentUser) {
     throw new Error();
   }
 
   useEffect(() => {
-    void axios.get<TUser>(`/v1/users/${userId}`).then((response) => {
+    void axios.get<User>(`/v1/users/${userId}`).then((response) => {
       setUser(response.data);
     });
   }, [projectId, userId]);
