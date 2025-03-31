@@ -35,14 +35,14 @@ type CreateUser = z.infer<typeof $CreateUser>;
 const $UpdateUser = $CreateUser.partial();
 
 const $CurrentUser = z.object({
-  confirmedAt: z.date().optional(),
+  confirmedAt: z.date().nullish(),
   datasetId: z.string().array(),
   email: z.string(),
   firstName: z.string(),
   id: z.string(),
   lastName: z.string(),
   role: z.optional($UserRole),
-  verifiedAt: z.date().optional()
+  verifiedAt: z.date().nullish()
 });
 type CurrentUser = z.infer<typeof $CurrentUser>;
 
