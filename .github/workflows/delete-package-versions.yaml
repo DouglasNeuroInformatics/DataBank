@@ -1,0 +1,26 @@
+name: Delete Package Versions
+on:
+  workflow_dispatch:
+permissions:
+  packages: write
+jobs:
+  run:
+    name: Delete Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete API
+        uses: actions/delete-package-versions@v5
+        with:
+          owner: DouglasNeuroInformatics
+          package-name: databank-api
+          package-type: container
+          min-versions-to-keep: 0
+          delete-only-untagged-versions: true
+      - name: Delete Web
+        uses: actions/delete-package-versions@v5
+        with:
+          owner: DouglasNeuroInformatics
+          package-name: databank-web
+          package-type: container
+          min-versions-to-keep: 0
+          delete-only-untagged-versions: true
