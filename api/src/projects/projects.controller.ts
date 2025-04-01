@@ -1,9 +1,10 @@
-import type { DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/core';
+import type { ProjectDatasetDto } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
+import type { DatasetViewPaginationDto } from '@/datasets/dto/datasets.dto';
 
 import { ProjectsService } from './projects.service';
 
