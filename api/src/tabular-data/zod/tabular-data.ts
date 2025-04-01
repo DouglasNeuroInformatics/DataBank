@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { $TabularColumn } from './columns';
+import { $TabularColumn } from '@/columns/zod/columns';
 
 export const $TabularData = z.object({
   columns: $TabularColumn.array(),

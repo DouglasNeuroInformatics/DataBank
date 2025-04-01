@@ -1,6 +1,7 @@
+import type { PermissionLevel } from '@prisma/client';
 import { z } from 'zod';
 
-const $PermissionLevel = z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']);
+const $PermissionLevel: Zod.ZodType<PermissionLevel> = z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']);
 
 // ---------------------- Column Summaries ---------------------
 const $BaseSummary = z.object({
@@ -208,14 +209,12 @@ const $CreateTabularColumnDto = z.union([
   $CreateEnumColumnDto,
   $CreateDatetimeColumnDto
 ]) satisfies z.ZodType<CreateTabularColumnDto>;
-
 type CreateTabularColumnDto =
   | CreateDatetimeColumnDto
   | CreateEnumColumnDto
   | CreateFloatColumnDto
   | CreateIntColumnDto
   | CreateStringColumnDto;
-
 type UpdateTabularColumnDto =
   | UpdateDatetimeColumnDto
   | UpdateEnumColumnDto
