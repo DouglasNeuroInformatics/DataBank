@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-classes */
 
-import type { ColumnDataType, EditDatasetInfoDto } from '@databank/core';
+import type { ColumnDataType, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevel } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -9,7 +9,8 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
 import { DatasetsService } from './datasets.service.js';
-import { CreateDatasetDto, DatasetViewPaginationDto, PermissionLevelDto } from './dto/datasets.dto.js';
+
+import type { CreateTabularDatasetDto } from './zod/dataset.js';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })
@@ -32,11 +33,11 @@ export class DatasetsController {
   @RouteAccess({ role: 'STANDARD' })
   @UseInterceptors(FileInterceptor('file'))
   createDataset(
-    @Body() createDatasetDto: CreateDatasetDto,
+    @Body() createTabularDatasetDto: CreateTabularDatasetDto,
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser('id') managerId: string
   ) {
-    return this.datasetsService.createDataset(createDatasetDto, file, managerId);
+    return this.datasetsService.createDataset(createTabularDatasetDto, file, managerId);
   }
 
   @ApiOperation({ summary: 'Delete Dataset' })
@@ -174,9 +175,9 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('newPermissionLevel') newPermissionLevel: PermissionLevelDto
+    @Body('newPermissionLevel') newPermissionLevel: PermissionLevel
   ) {
-    return this.datasetsService.changeColumnDataPermission(datasetId, columnId, userId, newPermissionLevel.permission);
+    return this.datasetsService.changeColumnDataPermission(datasetId, columnId, userId, newPermissionLevel);
   }
 
   @ApiOperation({ summary: 'Change Metadata Permission Level of a Column' })
@@ -186,14 +187,9 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('newPermissionLevel') newPermissionLevel: PermissionLevelDto
+    @Body('newPermissionLevel') newPermissionLevel: PermissionLevel
   ) {
-    return this.datasetsService.changeColumnMetadataPermission(
-      datasetId,
-      columnId,
-      userId,
-      newPermissionLevel.permission
-    );
+    return this.datasetsService.changeColumnMetadataPermission(datasetId, columnId, userId, newPermissionLevel);
   }
 
   @ApiOperation({ summary: 'Delete a Column' })

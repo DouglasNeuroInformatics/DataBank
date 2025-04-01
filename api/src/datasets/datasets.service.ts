@@ -2,6 +2,7 @@ import type {
   AddProjectDatasetColumns,
   ColumnDataType,
   DatasetCardProps,
+  DatasetViewPaginationDto,
   EditDatasetInfoDto,
   ProjectDatasetDto,
   TabularDatasetView
@@ -16,8 +17,6 @@ import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 import type { DataFrame } from '@/vendor/nodejs-polars.js';
 import { pl } from '@/vendor/nodejs-polars.js';
-
-import { DatasetViewPaginationDto } from './dto/datasets.dto.js';
 
 import type { CreateTabularDatasetDto } from './zod/dataset.js';
 
