@@ -4,7 +4,8 @@ import type {
   DatasetViewPagination,
   ProjectDatasetDto,
   ProjectTabularDatasetView,
-  TabularDatasetView
+  TabularDatasetView,
+  UpdatePrimaryKeys
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
@@ -15,8 +16,6 @@ import type { DataFrame } from 'nodejs-polars';
 
 import { ColumnsService } from '@/columns/columns.service';
 import type { GetColumnViewDto } from '@/projects/zod/projects';
-
-import type { UpdatePrimaryKeysDto } from './zod/tabular-data';
 
 @Injectable()
 export class TabularDataService {
@@ -480,7 +479,7 @@ export class TabularDataService {
   }
 
   // update Primary keys for a tabular column
-  async updatePrimaryKeys(tabularDataId: string, updatePrimaryKeysDto: UpdatePrimaryKeysDto) {
+  async updatePrimaryKeys(tabularDataId: string, updatePrimaryKeysDto: UpdatePrimaryKeys) {
     return await this.tabularDataModel.update({
       data: updatePrimaryKeysDto,
       where: {

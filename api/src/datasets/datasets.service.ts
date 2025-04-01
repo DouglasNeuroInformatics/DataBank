@@ -2,7 +2,6 @@ import type {
   AddProjectDatasetColumns,
   ColumnDataType,
   DatasetCardProps,
-  EditDatasetInfoDto,
   ProjectDatasetDto,
   TabularDatasetView
 } from '@databank/core';
@@ -17,7 +16,7 @@ import { ColumnsService } from '@/columns/columns.service.js';
 import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 
-import { CreateDatasetDto, DatasetViewPaginationDto } from './dto/datasets.dto.js';
+import { CreateDatasetDto, DatasetViewPaginationDto, EditDatasetInfoDto } from './dto/datasets.dto.js';
 
 @Injectable()
 export class DatasetsService {
@@ -797,7 +796,7 @@ export class DatasetsService {
     const dataset = await this.canModifyDataset(datasetId, userId);
 
     if (!dataset.tabularData) {
-      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+      throw new NotFoundException(`There is no tabular data in this dataset with id ${datasetId}`);
     }
 
     return await this.columnService.mutateColumnType(columnId, columnType);

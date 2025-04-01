@@ -1,6 +1,7 @@
 /* eslint-disable import/exports-last */
 
 export * from './setup';
+export * from './tabular-data';
 export * from './users';
 
 ///// LEGACY
@@ -170,18 +171,6 @@ export type ColumnSummary = BaseColumnSummary &
     | IntColumnSummary
     | StringColumnSummary
   );
-
-export type DatasetViewPaginationDto = {
-  currentPage: number;
-  itemsPerPage: number;
-};
-
-export type EditDatasetInfoDto = {
-  description?: string | undefined;
-  license?: 'OTHER' | 'PUBLIC' | undefined;
-  name?: string | undefined;
-  permission?: 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED' | undefined;
-};
 
 // Projects
 export type ProjectColumnHash = {
