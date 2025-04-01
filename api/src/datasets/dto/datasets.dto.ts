@@ -1,5 +1,17 @@
-import { $CreateDataset, $DatasetViewPagination, $EditDatasetInfo, $PermissionLevel } from '@databank/core';
-import type { CreateDataset, DatasetViewPagination, EditDatasetInfo, PermissionLevel } from '@databank/core';
+import {
+  $ColumnDataType,
+  $CreateDataset,
+  $DatasetViewPagination,
+  $EditDatasetInfo,
+  $PermissionLevel
+} from '@databank/core';
+import type {
+  ColumnDataType,
+  CreateDataset,
+  DatasetViewPagination,
+  EditDatasetInfo,
+  PermissionLevel
+} from '@databank/core';
 import { DataTransferObject } from '@douglasneuroinformatics/libnest';
 
 class DatasetViewPaginationDto extends DataTransferObject($DatasetViewPagination) implements DatasetViewPagination {}
@@ -12,4 +24,6 @@ class EditDatasetInfoDto extends DataTransferObject($EditDatasetInfo) implements
 
 class PermissionLevelDto extends DataTransferObject($PermissionLevel) implements PermissionLevel {}
 
-export { CreateDatasetDto, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevelDto };
+class ColumnDataTypeDto extends DataTransferObject($ColumnDataType) implements ColumnDataType {}
+
+export { ColumnDataTypeDto, CreateDatasetDto, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevelDto };

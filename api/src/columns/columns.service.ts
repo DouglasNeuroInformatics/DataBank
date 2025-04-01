@@ -1,3 +1,4 @@
+import type { UpdateTabularColumn } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -6,8 +7,6 @@ import pl from 'nodejs-polars';
 import type { Series } from 'nodejs-polars';
 
 import type { GetColumnViewDto } from '@/projects/zod/projects';
-
-import type { UpdateTabularColumnDto } from './zod/columns';
 
 @Injectable()
 export class ColumnsService {
@@ -723,7 +722,7 @@ export class ColumnsService {
     return await updateColumnNullable;
   }
 
-  async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumnDto) {
+  async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumn) {
     const columnsToUpdate = await this.columnModel.findMany({
       where: {
         tabularDataId: tabularDataId

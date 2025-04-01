@@ -662,7 +662,7 @@ export class DatasetsService {
         license: publicDataset.license,
         managerIds: publicDataset.managerIds,
         name: publicDataset.name,
-        permission: publicDataset.permission,
+        permission: { permission: publicDataset.permission },
         updatedAt: publicDataset.updatedAt
       });
     });
@@ -799,7 +799,7 @@ export class DatasetsService {
       throw new NotFoundException(`There is no tabular data in this dataset with id ${datasetId}`);
     }
 
-    return await this.columnService.mutateColumnType(columnId, columnType);
+    return await this.columnService.mutateColumnType(columnId, columnType.type);
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
@@ -891,7 +891,7 @@ export class DatasetsService {
       metadataRowsString +=
         columnName +
         delimiter +
-        datasetView.metadata[columnName]?.kind +
+        datasetView.metadata[columnName]?.kind.type +
         delimiter +
         // @ts-expect-error - see issue
         datasetView.metadata[columnName]?.nullable +

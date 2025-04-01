@@ -1,6 +1,5 @@
 /* eslint-disable perfectionist/sort-classes */
 
-import type { ColumnDataType } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -10,6 +9,7 @@ import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
 import { DatasetsService } from './datasets.service.js';
 import {
+  ColumnDataTypeDto,
   CreateDatasetDto,
   DatasetViewPaginationDto,
   EditDatasetInfoDto,
@@ -214,7 +214,7 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('type') columnType: ColumnDataType
+    @Body('type') columnType: ColumnDataTypeDto
   ) {
     return this.datasetsService.mutateColumnType(datasetId, columnId, userId, columnType);
   }

@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useState } from 'react';
 
-import type { DatasetViewPaginationDto, TabularDataset } from '@databank/core';
+import type { DatasetViewPagination, TabularDataset } from '@databank/core';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -24,12 +24,12 @@ const ViewOneDatasetPage = () => {
   const download = useDownload();
   const { currentUser } = useAuthStore();
 
-  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto>({
+  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });
 
-  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPaginationDto>({
+  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });

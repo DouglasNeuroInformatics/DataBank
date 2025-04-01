@@ -1,14 +1,15 @@
 /* eslint-disable import/exports-last */
 
+export * from './columns';
+export * from './datasets';
 export * from './setup';
 export * from './tabular-data';
 export * from './users';
 
+import type { ColumnSummary } from './columns';
 ///// LEGACY
-
 /** CORE */
-
-import type { JsonValue } from 'type-fest';
+import type { ColumnDataType, PermissionLevel } from './datasets';
 
 export type Locale = 'en' | 'fr';
 
@@ -92,8 +93,6 @@ export type ProjectTabularDatasetView = {
   totalNumberOfRows: number;
 };
 
-export type ColumnDataType = 'BOOLEAN' | 'DATETIME' | 'ENUM' | 'FLOAT' | 'INT' | 'STRING';
-
 export type TabularDataset = DatasetInfo & {
   columnIds: { [key: string]: string };
   columns: string[];
@@ -117,60 +116,6 @@ export type TabularDataset = DatasetInfo & {
   totalNumberOfColumns: number;
   totalNumberOfRows: number;
 };
-
-export type BaseColumnSummary = {
-  count: number;
-  nullCount: number;
-};
-
-export type StringColumnSummary = {
-  kind: 'STRING';
-};
-
-export type IntColumnSummary = {
-  kind: 'INT';
-  max?: number;
-  mean?: number;
-  median?: number;
-  min?: number;
-  mode?: number;
-  std?: number;
-};
-
-export type FloatColumnSummary = {
-  kind: 'FLOAT';
-  max?: number;
-  mean?: number;
-  median?: number;
-  min?: number;
-  std?: number;
-};
-
-export type BooleanColumnSummary = {
-  kind: 'BOOLEAN';
-  trueCount: number;
-};
-
-export type EnumColumnSummary = {
-  distribution?: JsonValue;
-  kind: 'ENUM';
-};
-
-export type DatetimeColumnSummary = {
-  kind: 'DATETIME';
-  max: Date;
-  min: Date;
-};
-
-export type ColumnSummary = BaseColumnSummary &
-  (
-    | BooleanColumnSummary
-    | DatetimeColumnSummary
-    | EnumColumnSummary
-    | FloatColumnSummary
-    | IntColumnSummary
-    | StringColumnSummary
-  );
 
 // Projects
 export type ProjectColumnHash = {

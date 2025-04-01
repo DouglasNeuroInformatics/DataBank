@@ -32,5 +32,10 @@ const $EditDatasetInfo = z.object({
 });
 type EditDatasetInfo = z.infer<typeof $EditDatasetInfo>;
 
-export { $CreateDataset, $DatasetViewPagination, $EditDatasetInfo, $PermissionLevel };
-export type { CreateDataset, DatasetViewPagination, EditDatasetInfo, PermissionLevel };
+const $ColumnDataType = z.object({
+  type: z.enum(['BOOLEAN', 'DATETIME', 'ENUM', 'FLOAT', 'INT', 'STRING'])
+});
+type ColumnDataType = z.infer<typeof $ColumnDataType>;
+
+export { $ColumnDataType, $CreateDataset, $DatasetViewPagination, $EditDatasetInfo, $PermissionLevel };
+export type { ColumnDataType, CreateDataset, DatasetViewPagination, EditDatasetInfo, PermissionLevel };
