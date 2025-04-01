@@ -23,23 +23,26 @@ services:
     environment:
       - NODE_ENV=production
       - MONGO_URI=mongodb://mongo:27017
-      - SECRET_KEY
+      - API_PORT=80
       - SMTP_HOST
       - SMTP_PORT
-      - SMTP_USER
-      - SMTP_PASS
+      - SMTP_AUTH_USERNAME
+      - SMTP_AUTH_PASSWORD
+      - SMTP_SENDER
+      - SMTP_SECURE
+      - SECRET_KEY
       - VALIDATION_TIMEOUT
       - MAX_VALIDATION_ATTEMPTS
     expose:
       - 80
-  web:
-    image: ghcr.io/douglasneuroinformatics/databank-web:latest
-    restart: unless-stopped
-    build:
-      context: .
-      dockerfile: ./web/Dockerfile
-    expose:
-      - 80
+  # web:
+  #   image: ghcr.io/douglasneuroinformatics/databank-web:latest
+  #   restart: unless-stopped
+  #   build:
+  #     context: .
+  #     dockerfile: ./web/Dockerfile
+  #   expose:
+  #     - 80
   mongo:
     image: mongo:7.0
     command: ['--replSet', 'rs0', '--bind_ip_all', '--port', '27017']
