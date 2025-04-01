@@ -11,12 +11,12 @@ import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
+import type { DataFrame } from 'nodejs-polars';
+import pl from 'nodejs-polars';
 
 import { ColumnsService } from '@/columns/columns.service.js';
 import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
-import type { DataFrame } from '@/vendor/nodejs-polars.js';
-import { pl } from '@/vendor/nodejs-polars.js';
 
 import type { CreateTabularDatasetDto } from './zod/dataset.js';
 
