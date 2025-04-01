@@ -40,22 +40,3 @@ type TabularDatasetModel = z.infer<typeof $TabularDatasetModel>;
 
 export const $DatasetModel = z.union([$BaseDatasetModel, $TabularDatasetModel]) satisfies z.ZodType<DatasetModel>;
 export type DatasetModel = BaseDatasetModel | TabularDatasetModel;
-
-// --------------- DTO --------------------------
-export const $CreateTabularDatasetDto = $DatasetInfo
-  .omit({
-    createdAt: true,
-    id: true,
-    updatedAt: true
-  })
-  .extend({
-    datasetType: z.literal('TABULAR'),
-    primaryKeys: z.string()
-  });
-
-export type CreateTabularDatasetDto = z.infer<typeof $CreateTabularDatasetDto>;
-
-export const $GetDataViewDto = z.object({
-  datasetId: z.string()
-});
-export type GetDataViewDto = z.infer<typeof $GetDataViewDto>;

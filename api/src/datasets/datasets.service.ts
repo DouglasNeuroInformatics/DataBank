@@ -2,7 +2,6 @@ import type {
   AddProjectDatasetColumns,
   ColumnDataType,
   DatasetCardProps,
-  DatasetViewPaginationDto,
   EditDatasetInfoDto,
   ProjectDatasetDto,
   TabularDatasetView
@@ -18,7 +17,7 @@ import { ColumnsService } from '@/columns/columns.service.js';
 import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 
-import type { CreateTabularDatasetDto } from './zod/dataset.js';
+import { CreateDatasetDto, DatasetViewPaginationDto } from './dto/datasets.dto.js';
 
 @Injectable()
 export class DatasetsService {
@@ -133,7 +132,7 @@ export class DatasetsService {
   }
 
   async createDataset(
-    createTabularDatasetDto: CreateTabularDatasetDto,
+    createTabularDatasetDto: CreateDatasetDto,
     file: Express.Multer.File | string,
     managerId: string
   ) {
