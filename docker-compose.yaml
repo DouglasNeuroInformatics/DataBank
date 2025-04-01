@@ -23,11 +23,14 @@ services:
     environment:
       - NODE_ENV=production
       - MONGO_URI=mongodb://mongo:27017
-      - SECRET_KEY
+      - API_PORT=80
       - SMTP_HOST
       - SMTP_PORT
-      - SMTP_USER
-      - SMTP_PASS
+      - SMTP_AUTH_USERNAME
+      - SMTP_AUTH_PASSWORD
+      - SMTP_SENDER
+      - SMTP_SECURE
+      - SECRET_KEY
       - VALIDATION_TIMEOUT
       - MAX_VALIDATION_ATTEMPTS
     expose:

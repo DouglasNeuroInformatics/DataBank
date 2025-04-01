@@ -10,11 +10,11 @@ import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { PermissionLevel } from '@prisma/client';
+import pl from 'nodejs-polars';
+import type { DataFrame } from 'nodejs-polars';
 
 import { ColumnsService } from '@/columns/columns.service';
 import type { GetColumnViewDto } from '@/projects/zod/projects';
-import { pl } from '@/vendor/nodejs-polars.js';
-import type { DataFrame } from '@/vendor/nodejs-polars.js';
 
 import type { UpdatePrimaryKeysDto } from './zod/tabular-data';
 

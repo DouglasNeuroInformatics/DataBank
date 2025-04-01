@@ -93,7 +93,7 @@ export type ProjectTabularDatasetView = {
 
 export type ColumnDataType = 'BOOLEAN' | 'DATETIME' | 'ENUM' | 'FLOAT' | 'INT' | 'STRING';
 
-export type TabularDataset = {
+export type TabularDataset = DatasetInfo & {
   columnIds: { [key: string]: string };
   columns: string[];
   metadata: {
@@ -115,7 +115,7 @@ export type TabularDataset = {
   rows: { [key: string]: string }[];
   totalNumberOfColumns: number;
   totalNumberOfRows: number;
-} & DatasetInfo;
+};
 
 export type BaseColumnSummary = {
   count: number;
