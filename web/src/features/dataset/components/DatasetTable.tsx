@@ -108,7 +108,9 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                   <DropdownMenu.Item
                                     key={option}
                                     onClick={() =>
-                                      void handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, option)
+                                      void handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, {
+                                        permission: option
+                                      })
                                     }
                                   >
                                     {option}
@@ -125,10 +127,9 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                   <DropdownMenu.Item
                                     key={option}
                                     onClick={() =>
-                                      void handleSetColumnMetadataPermissionLevel(
-                                        tabularDataset.columnIds[column]!,
-                                        option
-                                      )
+                                      void handleSetColumnMetadataPermissionLevel(tabularDataset.columnIds[column]!, {
+                                        permission: option
+                                      })
                                     }
                                   >
                                     {option}

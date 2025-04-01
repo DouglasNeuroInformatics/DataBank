@@ -1,5 +1,6 @@
 /* eslint-disable import/exports-last */
 
+export * from './datasets';
 export * from './setup';
 export * from './users';
 
@@ -49,8 +50,6 @@ export type UpdateDatasetActivity = {
 export type Activity = CreateDatasetActivity | UpdateDatasetActivity;
 
 // Datasets
-export type PermissionLevel = 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED';
-
 export type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
 
 export type DatasetInfo = {
@@ -170,11 +169,6 @@ export type ColumnSummary = BaseColumnSummary &
     | IntColumnSummary
     | StringColumnSummary
   );
-
-export type DatasetViewPaginationDto = {
-  currentPage: number;
-  itemsPerPage: number;
-};
 
 export type EditDatasetInfoDto = {
   description?: string | undefined;
