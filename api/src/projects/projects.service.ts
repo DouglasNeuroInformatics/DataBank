@@ -1,4 +1,4 @@
-import type { DatasetInfo, DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/core';
+import type { DatasetInfo, DatasetViewPagination, ProjectDatasetDto } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -261,8 +261,8 @@ export class ProjectsService {
   async getOneProjectDatasetView(
     projectId: string,
     datasetId: string,
-    rowPaginationDto: DatasetViewPaginationDto,
-    columnPaginationDto: DatasetViewPaginationDto
+    rowPaginationDto: DatasetViewPagination,
+    columnPaginationDto: DatasetViewPagination
   ) {
     // get project
     const project = await this.projectModel.findUnique({
