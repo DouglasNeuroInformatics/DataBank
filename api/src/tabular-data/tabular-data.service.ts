@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type {
   ColumnSummary,
-  DatasetViewPaginationDto,
+  DatasetViewPagination,
   ProjectDatasetDto,
   ProjectTabularDatasetView,
   TabularDatasetView
@@ -122,8 +122,8 @@ export class TabularDataService {
 
   async getProjectDatasetView(
     projectDatasetDto: ProjectDatasetDto,
-    rowPagination: DatasetViewPaginationDto,
-    columnPagination: DatasetViewPaginationDto
+    rowPagination: DatasetViewPagination,
+    columnPagination: DatasetViewPagination
   ) {
     const columnIds: { [key: string]: string } = {};
     const columns: string[] = [];
@@ -211,8 +211,8 @@ export class TabularDataService {
   async getViewById(
     tabularDataId: string,
     userStatus: PermissionLevel,
-    rowPagination: DatasetViewPaginationDto,
-    columnPagination: DatasetViewPaginationDto
+    rowPagination: DatasetViewPagination,
+    columnPagination: DatasetViewPagination
   ) {
     const tabularData = await this.tabularDataModel.findUnique({
       include: {
