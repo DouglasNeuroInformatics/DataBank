@@ -118,7 +118,7 @@ export class DatasetsService {
     }
 
     return await this.columnService.updateMany(dataset.tabularData.id, {
-      dataPermission: permissionLevel
+      dataPermission: { permission: permissionLevel }
     });
   }
 

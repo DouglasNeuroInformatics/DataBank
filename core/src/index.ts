@@ -51,8 +51,6 @@ export type UpdateDatasetActivity = {
 export type Activity = CreateDatasetActivity | UpdateDatasetActivity;
 
 // Datasets
-export type PermissionLevel = 'LOGIN' | 'MANAGER' | 'PUBLIC' | 'VERIFIED';
-
 export type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
 
 export type DatasetInfo = {

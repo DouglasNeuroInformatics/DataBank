@@ -1,4 +1,4 @@
-import type { DatasetViewPaginationDto } from '@databank/core';
+import type { DatasetViewPagination } from '@databank/core';
 import { ActionDropdown, Button } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 
@@ -6,7 +6,7 @@ type DatasetPagePaginationProps = {
   currentPage: number;
   itemsPerPage: number;
   kind: 'COLUMN' | 'ROW';
-  setDatasetPagination: (newPaginationDto: DatasetViewPaginationDto) => void;
+  setDatasetPagination: (newPaginationDto: DatasetViewPagination) => void;
   totalNumberOfItems: number;
 };
 

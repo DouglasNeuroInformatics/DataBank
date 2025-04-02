@@ -37,11 +37,11 @@ export class DatasetsController {
   @RouteAccess({ role: 'STANDARD' })
   @UseInterceptors(FileInterceptor('file'))
   createDataset(
-    @Body() createTabularDatasetDto: CreateTabularDatasetDto,
+    @Body() createDatasetDto: CreateDatasetDto,
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser('id') managerId: string
   ) {
-    return this.datasetsService.createDataset(createTabularDatasetDto, file, managerId);
+    return this.datasetsService.createDataset(createDatasetDto, file, managerId);
   }
 
   @ApiOperation({ summary: 'Delete Dataset' })
@@ -179,9 +179,9 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('newPermissionLevel') newPermissionLevel: PermissionLevel
+    @Body('newPermissionLevel') newPermissionLevel: PermissionLevelDto
   ) {
-    return this.datasetsService.changeColumnDataPermission(datasetId, columnId, userId, newPermissionLevel);
+    return this.datasetsService.changeColumnDataPermission(datasetId, columnId, userId, newPermissionLevel.permission);
   }
 
   @ApiOperation({ summary: 'Change Metadata Permission Level of a Column' })
@@ -191,9 +191,14 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('newPermissionLevel') newPermissionLevel: PermissionLevel
+    @Body('newPermissionLevel') newPermissionLevel: PermissionLevelDto
   ) {
-    return this.datasetsService.changeColumnMetadataPermission(datasetId, columnId, userId, newPermissionLevel);
+    return this.datasetsService.changeColumnMetadataPermission(
+      datasetId,
+      columnId,
+      userId,
+      newPermissionLevel.permission
+    );
   }
 
   @ApiOperation({ summary: 'Delete a Column' })

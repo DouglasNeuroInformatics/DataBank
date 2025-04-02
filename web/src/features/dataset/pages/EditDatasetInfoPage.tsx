@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import type { EditDatasetInfoDto } from '@databank/core';
+import type { EditDatasetInfo } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
@@ -33,7 +33,7 @@ const EditDatasetInfoPage = () => {
     MANAGER: 'MANAGER'
   };
 
-  const handleSubmit = (data: EditDatasetInfoDto) => {
+  const handleSubmit = (data: EditDatasetInfo) => {
     axios
       .patch(`/v1/datasets/info/${params.datasetId}`, {
         editDatasetInfoDto: data

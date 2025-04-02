@@ -53,7 +53,7 @@ const ViewPublicDatasetsPage = () => {
                     license={datasetInfo.license}
                     managerIds={datasetInfo.managerIds}
                     name={datasetInfo.name}
-                    permission={'PUBLIC'}
+                    permission={{ permission: 'PUBLIC' }}
                     updatedAt={datasetInfo.updatedAt}
                   />
                 </li>

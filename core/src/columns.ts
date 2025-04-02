@@ -1,7 +1,7 @@
 import type { JsonValue } from 'type-fest';
 import { z } from 'zod';
 
-const $PermissionLevel: Zod.ZodType<PermissionLevel> = z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']);
+import { $PermissionLevel } from './datasets';
 
 // ---------------------- Column Summaries ---------------------
 type BaseColumnSummary = {
