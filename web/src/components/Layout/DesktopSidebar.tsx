@@ -15,7 +15,7 @@ export type DesktopSidebarProps = {
 export const DesktopSidebar = ({ isLogIn, navigation }: DesktopSidebarProps) => {
   return (
     <div className="hidden h-full w-20 flex-col bg-slate-800 p-2 text-slate-100 lg:flex">
-      <div className="flex-grow">
+      <div className="grow">
         <Link className="flex items-center justify-center" to="/">
           <Logo className="h-12 w-12 fill-slate-100" />
         </Link>
@@ -32,7 +32,7 @@ export const DesktopSidebar = ({ isLogIn, navigation }: DesktopSidebarProps) => 
           ))}
         </nav>
       </div>
-      <div className="flex flex-shrink flex-col items-center space-y-3">
+      <div className="flex shrink flex-col items-center space-y-3">
         <ThemeToggle className="hover:backdrop-brightness-150" />
         <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
         {isLogIn && <UserDropup />}

@@ -86,7 +86,7 @@ export const ConfirmEmailCodeInput = ({ className, onComplete }: ConfirmEmailCod
     <div className={cn('flex gap-2', className)}>
       {digits.map((_, index) => (
         <input
-          className="w-1/6 rounded-md border border-slate-300 bg-transparent p-2 shadow-sm hover:border-slate-300 focus:border-sky-800 focus:outline-none dark:border-slate-600 dark:hover:border-slate-400 dark:focus:border-sky-500"
+          className="shadow-xs focus:outline-hidden w-1/6 rounded-md border border-slate-300 bg-transparent p-2 hover:border-slate-300 focus:border-sky-800 dark:border-slate-600 dark:hover:border-slate-400 dark:focus:border-sky-500"
           key={index}
           maxLength={1}
           ref={inputRefs[index]}

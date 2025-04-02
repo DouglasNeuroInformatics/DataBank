@@ -12,7 +12,7 @@ export const Hero = () => {
     <section className="flex gap-5 text-center xl:text-left">
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-grow flex-col justify-center"
+        className="flex grow flex-col justify-center"
         initial={{ opacity: 0, y: 10 }}
         transition={{ duration: 0.7 }}
       >

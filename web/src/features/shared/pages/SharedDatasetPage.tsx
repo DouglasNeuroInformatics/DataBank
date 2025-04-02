@@ -35,7 +35,7 @@
 //           />
 //         </div>
 //       </Heading>
-//       <div className="flex-grow overflow-hidden">
+//       <div className="grow overflow-hidden">
 //         <Table columns={table.columns} data={table.data} />
 //       </div>
 //     </div>
