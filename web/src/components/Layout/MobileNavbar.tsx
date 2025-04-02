@@ -36,7 +36,7 @@ export const MobileNavbar = ({ isLogIn, navigation }: MobileNavbarProps) => {
       </div>
       <Slider isOpen={isOpen} setIsOpen={setIsOpen} title={<Logo className="h-12 w-12" />}>
         <div className="flex h-full flex-col">
-          <nav className="flex-grow">
+          <nav className="grow">
             {navigation.map((item) => (
               <Link
                 className="group flex items-center rounded-md p-2 text-base font-medium text-slate-600 dark:text-slate-300 dark:hover:text-slate-500 [&>svg]:h-6 [&>svg]:w-6"

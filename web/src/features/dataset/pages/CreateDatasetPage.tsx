@@ -205,7 +205,7 @@ const CreateDatasetPage = () => {
     <>
       <motion.div
         animate={{ opacity: 1 }}
-        className="flex h-full flex-grow flex-col items-center justify-center"
+        className="flex h-full grow flex-col items-center justify-center"
         exit={{ opacity: 0 }}
         initial={{ opacity: 0 }}
         transition={{ duration: 0.5 }}

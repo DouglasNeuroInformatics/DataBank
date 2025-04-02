@@ -36,7 +36,7 @@ export const LandingHeader = () => {
           >
             <Bars3Icon height={32} width={32} />
           </button>
-          <div className="flex flex-grow justify-end gap-3 bg-inherit md:order-last">
+          <div className="flex grow justify-end gap-3 bg-inherit md:order-last">
             <ThemeToggle />
             <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
           </div>
