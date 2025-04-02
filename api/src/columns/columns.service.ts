@@ -1,12 +1,10 @@
-import type { UpdateTabularColumn } from '@databank/core';
+import type { GetColumnViewDto, UpdateTabularColumn } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { ColumnType, PermissionLevel, PrismaClient } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { Series } from 'nodejs-polars';
-
-import type { GetColumnViewDto } from '@/projects/zod/projects';
 
 @Injectable()
 export class ColumnsService {

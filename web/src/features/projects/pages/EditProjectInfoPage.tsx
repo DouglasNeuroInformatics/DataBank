@@ -1,6 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-
-import type { EditProjectInfoDto } from '@databank/core';
+import type { UpdateProject } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
@@ -21,7 +20,7 @@ const EditProjectInfoPage = () => {
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
 
-  const handleSubmit = (data: EditProjectInfoDto) => {
+  const handleSubmit = (data: UpdateProject) => {
     axios
       .patch(`/v1/projects/update/${params.projectId}`, {
         updateProjectDto: data

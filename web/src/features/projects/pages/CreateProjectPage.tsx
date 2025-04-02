@@ -37,8 +37,8 @@ const CreateProjectPage = () => {
   const createProject = async () => {
     await axios.post('/v1/projects/create', {
       datasets: [],
-      ...projectData,
-      userIds: [currentUser?.id]
+      userIds: [currentUser?.id],
+      ...projectData
     });
     notifications.addNotification({ message: t('createDatasetSuccess'), type: 'success' });
     navigate('/portal/projects');

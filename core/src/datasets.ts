@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { ColumnSummary } from './columns';
+
 const $DatasetViewPagination = z.object({
   currentPage: z.number(),
   itemsPerPage: z.number()
@@ -37,5 +39,81 @@ const $ColumnDataType = z.object({
 });
 type ColumnDataType = z.infer<typeof $ColumnDataType>;
 
+type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
+
+type DatasetInfo = {
+  createdAt: Date;
+  datasetType: DatasetType;
+  description: null | string;
+  id: string;
+  isReadyToShare: boolean;
+  license: string;
+  managerIds: string[];
+  name: string;
+  permission: PermissionLevel;
+  updatedAt: Date;
+};
+
+type DatasetCardProps = DatasetInfo & { isManager: boolean };
+
+type TabularDataRow = {
+  [key: string]: boolean | Date | number | string;
+};
+
+type TabularDatasetView = {
+  columnIds: { [key: string]: string };
+  columns: string[];
+  metadata: { [key: string]: ColumnSummary };
+  primaryKeys: string[];
+  rows: { [key: string]: boolean | null | number | string }[];
+  totalNumberOfColumns: number;
+  totalNumberOfRows: number;
+};
+
+type ProjectTabularDatasetView = {
+  columnIds: { [key: string]: string };
+  columns: string[];
+  metadata: { [key: string]: ColumnSummary };
+  rows: { [key: string]: boolean | null | number | string }[];
+  totalNumberOfColumns: number;
+  totalNumberOfRows: number;
+};
+
+type TabularDataset = DatasetInfo & {
+  columnIds: { [key: string]: string };
+  columns: string[];
+  metadata: {
+    [key: string]: {
+      count: number;
+      distribution?: { [key: string]: number };
+      kind: ColumnDataType;
+      max?: number;
+      mean?: number;
+      median?: number;
+      min?: number;
+      mode?: number;
+      nullable: boolean;
+      nullCount: number;
+      std?: number;
+    };
+  };
+  primaryKeys: string[];
+  rows: { [key: string]: string }[];
+  totalNumberOfColumns: number;
+  totalNumberOfRows: number;
+};
+
 export { $ColumnDataType, $CreateDataset, $DatasetViewPagination, $EditDatasetInfo, $PermissionLevel };
-export type { ColumnDataType, CreateDataset, DatasetViewPagination, EditDatasetInfo, PermissionLevel };
+export type {
+  ColumnDataType,
+  CreateDataset,
+  DatasetCardProps,
+  DatasetInfo,
+  DatasetViewPagination,
+  EditDatasetInfo,
+  PermissionLevel,
+  ProjectTabularDatasetView,
+  TabularDataRow,
+  TabularDataset,
+  TabularDatasetView
+};

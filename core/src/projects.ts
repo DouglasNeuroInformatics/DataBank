@@ -35,7 +35,7 @@ type ProjectDataset = z.infer<typeof $ProjectDataset>;
 const $CreateProject = z.object({
   datasets: $ProjectDataset.array(),
   description: z.string().optional(),
-  expiry: z.date(),
+  expiry: z.coerce.date(),
   externalId: z.string().optional(),
   name: z.string().min(1),
   userIds: z.string().array().min(1)

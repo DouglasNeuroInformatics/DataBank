@@ -1,10 +1,4 @@
-import type {
-  AddProjectDatasetColumns,
-  ColumnDataType,
-  DatasetCardProps,
-  ProjectDatasetDto,
-  TabularDatasetView
-} from '@databank/core';
+import type { ColumnDataType, DatasetCardProps, TabularDatasetView } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -13,6 +7,7 @@ import type { DataFrame } from 'nodejs-polars';
 import pl from 'nodejs-polars';
 
 import { ColumnsService } from '@/columns/columns.service.js';
+import type { ProjectDatasetDto } from '@/projects/dto/projects.dto.js';
 import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 

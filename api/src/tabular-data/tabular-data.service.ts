@@ -2,7 +2,7 @@
 import type {
   ColumnSummary,
   DatasetViewPagination,
-  ProjectDatasetDto,
+  GetColumnViewDto,
   ProjectTabularDatasetView,
   TabularDatasetView,
   UpdatePrimaryKeys
@@ -15,7 +15,7 @@ import pl from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
 
 import { ColumnsService } from '@/columns/columns.service';
-import type { GetColumnViewDto } from '@/projects/zod/projects';
+import type { ProjectDatasetDto } from '@/projects/dto/projects.dto';
 
 @Injectable()
 export class TabularDataService {
