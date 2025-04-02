@@ -41,7 +41,7 @@
 //         })}
 //       />
 //       <SearchBar
-//         className="mb-3 rounded-sm"
+//         className="mb-3 rounded-xs"
 //         size="sm"
 //         value={searchTerm}
 //         onChange={(e) => {
@@ -56,7 +56,7 @@
 //             <p>{t('noResultsFound')}</p>
 //           </div>
 //         ) : (
-//           <ul className="h-full overflow-x-visible overflow-y-scroll rounded-sm shadow">
+//           <ul className="h-full overflow-x-visible overflow-y-scroll rounded-xs shadow-sm">
 //             {filteredDatasets.map((dataset) => (
 //               <li key={dataset._id}>
 //                 <DatasetCard

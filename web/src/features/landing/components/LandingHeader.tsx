@@ -16,7 +16,7 @@ export const LandingHeader = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (
-    <header className="bg-white text-slate-700 shadow dark:bg-slate-800 dark:text-slate-300">
+    <header className="bg-white text-slate-700 shadow-sm dark:bg-slate-800 dark:text-slate-300">
       <motion.div
         animate={{ opacity: 1 }}
         className="bg-inherit"

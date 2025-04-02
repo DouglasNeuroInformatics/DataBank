@@ -109,7 +109,7 @@ const ViewOneProjectPage = () => {
                 <li>{`${t('projectExternalId')}: ${project.externalId}`}</li>
                 <li>{`${t('projectExpiry')}: ${project.expiry.toString()}`}</li>
               </ul>
-              <div className="bg-card text-muted-foreground m-3 rounded-md border tracking-tight shadow-sm">
+              <div className="bg-card text-muted-foreground shadow-xs m-3 rounded-md border tracking-tight">
                 <Card>
                   <Card.Header>
                     <Card.Title>{`${t('projectDatasets')}`}</Card.Title>

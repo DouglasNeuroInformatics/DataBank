@@ -64,7 +64,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   return (
-    <div className="bg-card text-muted-foreground m-3 rounded-md border tracking-tight shadow-sm">
+    <div className="bg-card text-muted-foreground shadow-xs m-3 rounded-md border tracking-tight">
       <Table>
         <Table.Header>
           <Table.Row>
