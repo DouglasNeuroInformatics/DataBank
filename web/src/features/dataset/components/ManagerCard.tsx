@@ -50,10 +50,10 @@ const ManagerCard = ({ datasetId, isManager, managerId }: ManagerCardProps) => {
           <Card.Content>
             <ul>
               <li key={user.firstName}>
-                {t('managerName')}: {user.firstName}
+                {t('managerFirstName')}: {user.firstName}
               </li>
               <li key={user.lastName}>
-                {t('managerName')}: {user.lastName}
+                {t('managerLastName')}: {user.lastName}
               </li>
               <li key={user.email}>
                 {t('managerEmail')}: {user.email}
