@@ -1,7 +1,7 @@
 /* eslint-disable import/exports-last */
-
 export * from './columns';
 export * from './datasets';
+export * from './projects';
 export * from './setup';
 export * from './tabular-data';
 export * from './users';
@@ -113,46 +113,4 @@ export type TabularDataset = DatasetInfo & {
   rows: { [key: string]: string }[];
   totalNumberOfColumns: number;
   totalNumberOfRows: number;
-};
-
-// Projects
-export type ProjectColumnHash = {
-  length: null | number;
-  salt: string;
-};
-
-export type ProjectColumnTrim = {
-  end: null | number;
-  start: null | number;
-};
-
-export type ProjectColumn = {
-  columnId: string;
-  hash: null | ProjectColumnHash;
-  trim: null | ProjectColumnTrim;
-};
-
-export type ProjectRowFilter = {
-  rowMax: null | number;
-  rowMin: null | number;
-};
-
-export type ProjectDatasetDto = {
-  columns: ProjectColumn[];
-  datasetId: string;
-  dataTypeFilters: ColumnDataType[];
-  rowFilter: null | ProjectRowFilter;
-  useDataTypeFilter: boolean;
-  useRowFilter: boolean;
-};
-
-export type EditProjectInfoDto = {
-  description?: string | undefined;
-  expiry?: Date | undefined;
-  externalId?: string | undefined;
-  name?: string | undefined;
-};
-
-export type AddProjectDatasetColumns = {
-  [key: string]: string;
 };

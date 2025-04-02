@@ -1,14 +1,12 @@
-import type { ProjectDatasetDto } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
-import type { DatasetViewPaginationDto } from '@/datasets/dto/datasets.dto';
+import { DatasetViewPaginationDto } from '@/datasets/dto/datasets.dto';
 
+import { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './dto/projects.dto';
 import { ProjectsService } from './projects.service';
-
-import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
 
 @ApiTags('Projects')
 @Controller('projects')

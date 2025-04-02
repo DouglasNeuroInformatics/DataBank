@@ -1,4 +1,4 @@
-import type { DatasetInfo, DatasetViewPagination, ProjectDatasetDto } from '@databank/core';
+import type { DatasetInfo, DatasetViewPagination } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -6,7 +6,7 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
 
-import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
+import { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './dto/projects.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -196,7 +196,7 @@ export class ProjectsService {
       metadataRowsString +=
         columnName +
         delimiter +
-        projectDatasetView.metadata[columnName]?.kind +
+        projectDatasetView.metadata[columnName]?.kind.type +
         delimiter +
         // @ts-expect-error - see issue
         projectDatasetView.metadata[columnName]?.nullable +
@@ -324,7 +324,10 @@ export class ProjectsService {
       if (!projectDatasetInfo) {
         datasetIdToRemove.push(projectDataset.datasetId);
       }
-      projectDatasetsInfo.push(projectDatasetInfo!);
+      projectDatasetsInfo.push({
+        permission: { permission: projectDatasetInfo?.permission },
+        ...projectDatasetInfo
+      });
     }
 
     const newProjectDatasets = project.datasets.filter((dataset) => {

@@ -30,19 +30,24 @@ const $ProjectDataset = z.object({
   useRowFilter: z.boolean()
 });
 
-const $CreateProjectDto = z.object({
+type ProjectDataset = z.infer<typeof $ProjectDataset>;
+
+const $CreateProject = z.object({
   datasets: $ProjectDataset.array(),
-  description: z.string().nullable(),
+  description: z.string().optional(),
   expiry: z.date(),
-  externalId: z.string().nullable(),
+  externalId: z.string().optional(),
   name: z.string().min(1),
   userIds: z.string().array().min(1)
 });
 
-export type CreateProjectDto = z.infer<typeof $CreateProjectDto>;
+type CreateProject = z.infer<typeof $CreateProject>;
 
-export const $UpdateProjectDto = $CreateProjectDto.partial();
-export type UpdateProjectDto = z.infer<typeof $UpdateProjectDto>;
+const $UpdateProject = $CreateProject.partial();
+type UpdateProject = z.infer<typeof $UpdateProject>;
 
-export const $GetColumnViewDto = $ProjectColumn.merge($ProjectRowFilter);
-export type GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;
+const $GetColumnViewDto = $ProjectColumn.merge($ProjectRowFilter);
+type GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;
+
+export { $CreateProject, $GetColumnViewDto, $ProjectDataset, $UpdateProject };
+export type { CreateProject, GetColumnViewDto, ProjectDataset, UpdateProject };
