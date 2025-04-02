@@ -1,8 +1,6 @@
 import path from 'node:path';
 
 import type { StorybookConfig } from '@storybook/react-vite';
-import autoprefixer from 'autoprefixer';
-import tailwindcss from 'tailwindcss';
 import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
@@ -33,11 +31,6 @@ const config: StorybookConfig = {
   ],
   viteFinal(config) {
     return mergeConfig(config, {
-      css: {
-        postcss: {
-          plugins: [autoprefixer(), tailwindcss()]
-        }
-      },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '..', 'src')

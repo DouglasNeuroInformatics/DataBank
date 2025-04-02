@@ -53,8 +53,6 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
     "@vitejs/plugin-react-swc": "^3.8.1",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
     "storybook": "^8.6.11",
     "tailwindcss": "^4.1.1",
     "vite": "^6.2.4"

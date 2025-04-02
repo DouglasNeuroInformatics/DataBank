@@ -3,9 +3,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM"],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["vite/client"]
   },
   "include": [".storybook/*", "src/**/*", "vite.config.ts"]
 }

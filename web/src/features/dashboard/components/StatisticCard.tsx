@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
+import type { ReactElement } from 'react';
 
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { motion, useSpring, useTransform } from 'framer-motion';
 
 type StatisticCardProps = {
-  icon?: JSX.Element;
+  icon?: ReactElement;
   label: string;
   value: number;
 };

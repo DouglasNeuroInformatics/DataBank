@@ -1,9 +1,8 @@
 import path from 'path';
 
 import importMetaEnv from '@import-meta-env/unplugin';
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react-swc';
-import autoprefixer from 'autoprefixer';
-import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -13,11 +12,6 @@ export default defineConfig({
     sourcemap: true,
     target: 'es2022'
   },
-  css: {
-    postcss: {
-      plugins: [autoprefixer(), tailwindcss()]
-    }
-  },
   optimizeDeps: {
     esbuildOptions: {
       target: 'es2022'
@@ -26,6 +20,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    tailwindcss(),
     importMetaEnv.vite({
       example: path.resolve(import.meta.dirname, '.env.public')
     })
