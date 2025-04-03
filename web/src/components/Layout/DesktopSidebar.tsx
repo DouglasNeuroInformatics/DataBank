@@ -7,7 +7,7 @@ import { UserDropup } from './UserDropup';
 
 import type { NavItem } from './types';
 
-export type DesktopSidebarProps = {
+type DesktopSidebarProps = {
   isLogIn: boolean;
   navigation: NavItem[];
 };

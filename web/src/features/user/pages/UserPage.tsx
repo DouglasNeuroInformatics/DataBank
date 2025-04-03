@@ -3,7 +3,7 @@ import type { RouteObject } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
-export const UserPage = () => {
+const UserPage = () => {
   const { currentUser } = useAuthStore();
 
   let fullName: string;

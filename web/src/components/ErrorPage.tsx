@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export type ErrorPageProps = {
+type ErrorPageProps = {
   error: {
     message: string;
   };

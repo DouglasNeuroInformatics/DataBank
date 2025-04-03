@@ -7,7 +7,7 @@ import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/r
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-export type DatasetTableProps = TabularDataset & { isManager: boolean };
+type DatasetTableProps = TabularDataset & { isManager: boolean };
 
 export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const { t } = useTranslation('common');

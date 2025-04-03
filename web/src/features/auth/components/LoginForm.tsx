@@ -3,7 +3,7 @@ import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { z } from 'zod';
 
-export type LoginFormProps = {
+type LoginFormProps = {
   onSubmit: (credentials: LoginCredentials) => void;
 };
 

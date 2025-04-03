@@ -235,5 +235,3 @@ export const CreateDatasetRoute: RouteObject = {
   element: <CreateDatasetPage />,
   path: 'createDataset'
 };
-
-export type { CreateDatasetFormData };

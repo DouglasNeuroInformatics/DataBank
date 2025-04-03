@@ -1,6 +1,6 @@
 import { Spinner } from '@douglasneuroinformatics/libui/components';
 
-export type LoadingPageProps = {
+type LoadingPageProps = {
   subtitle: string;
   title: string;
 };

@@ -6,7 +6,7 @@ import { Logo } from '@/components/Logo';
 
 import { SetupForm } from '../components/SetupForm';
 
-export type SetupPageProps = {
+type SetupPageProps = {
   onSubmit: (data: SetupOptions) => void;
 };
 

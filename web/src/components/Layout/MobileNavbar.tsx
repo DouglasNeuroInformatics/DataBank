@@ -11,7 +11,7 @@ import { UserDropup } from './UserDropup';
 
 import type { NavItem } from './types';
 
-export type MobileNavbarProps = {
+type MobileNavbarProps = {
   isLogIn: boolean;
   navigation: NavItem[];
 };
