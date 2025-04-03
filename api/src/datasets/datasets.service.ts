@@ -1,4 +1,4 @@
-import type { ColumnDataType, DatasetCardProps, TabularDatasetView } from '@databank/core';
+import type { AddProjectDatasetColumns, ColumnDataType, DatasetCardProps, TabularDatasetView } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -105,25 +105,25 @@ export class DatasetsService {
     return this.columnService.changeColumnMetadataPermission(columnId, newPermissionLevel);
   }
 
-  async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-    const dataset = await this.canModifyDataset(datasetId, currentUserId);
+  // async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
+  //   const dataset = await this.canModifyDataset(datasetId, currentUserId);
 
-    if (!dataset.tabularData) {
-      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
-    }
+  //   if (!dataset.tabularData) {
+  //     throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+  //   }
 
-    return await this.columnService.updateMany(dataset.tabularData.id, {
-      dataPermission: { permission: permissionLevel }
-    });
-  }
+  //   return await this.columnService.updateMany(dataset.tabularData.id, {
+  //     dataPermission: { permission: permissionLevel }
+  //   });
+  // }
 
-  async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-    const dataset = await this.canModifyDataset(datasetId, currentUserId);
-    if (!dataset) {
-      throw new ForbiddenException(`The current user is not allowed to modify the dataset with id ${datasetId}`);
-    }
-    return await this.tabularDataService.changeTabularColumnsMetadataPermission(datasetId, permissionLevel);
-  }
+  // async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
+  //   const dataset = await this.canModifyDataset(datasetId, currentUserId);
+  //   if (!dataset) {
+  //     throw new ForbiddenException(`The current user is not allowed to modify the dataset with id ${datasetId}`);
+  //   }
+  //   return await this.tabularDataService.changeTabularColumnsMetadataPermission(datasetId, permissionLevel);
+  // }
 
   async createDataset(
     createTabularDatasetDto: CreateDatasetDto,

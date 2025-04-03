@@ -324,9 +324,14 @@ export class ProjectsService {
       if (!projectDatasetInfo) {
         datasetIdToRemove.push(projectDataset.datasetId);
       }
+
+      if (!projectDatasetInfo?.permission) {
+        continue;
+      }
+
       projectDatasetsInfo.push({
-        permission: { permission: projectDatasetInfo?.permission },
-        ...projectDatasetInfo
+        ...projectDatasetInfo,
+        permission: { permission: projectDatasetInfo?.permission }
       });
     }
 

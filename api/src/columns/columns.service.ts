@@ -1,4 +1,4 @@
-import type { GetColumnViewDto, UpdateTabularColumn } from '@databank/core';
+import type { GetColumnViewDto } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -720,27 +720,29 @@ export class ColumnsService {
     return await updateColumnNullable;
   }
 
-  async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumn) {
-    const columnsToUpdate = await this.columnModel.findMany({
-      where: {
-        tabularDataId: tabularDataId
-      }
-    });
+  // async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumn) {
+  //   const columnsToUpdate = await this.columnModel.findMany({
+  //     where: {
+  //       tabularDataId: tabularDataId
+  //     }
+  //   });
 
-    if (!columnsToUpdate) {
-      throw new NotFoundException('No columns found with the given tabular data id!');
-    }
+  //   if (!columnsToUpdate) {
+  //     throw new NotFoundException('No columns found with the given tabular data id!');
+  //   }
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    columnsToUpdate.forEach(async (x) => {
-      await this.columnModel.update({
-        data: updateColumnDto,
-        where: {
-          id: x.id
-        }
-      });
-    });
-  }
+  //   // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  //   columnsToUpdate.forEach(async (col) => {
+  //     await this.columnModel.update({
+  //       data: {
+  //         ...updateColumnDto
+  //       },
+  //       where: {
+  //         id: col.id
+  //       }
+  //     });
+  //   });
+  // }
 
   private calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
     // Need to correctly compute the distribution for boolean and enum column

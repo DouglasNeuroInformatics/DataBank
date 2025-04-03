@@ -2,6 +2,10 @@ import { z } from 'zod';
 
 import type { ColumnSummary } from './columns';
 
+type AddProjectDatasetColumns = {
+  [key: string]: string;
+};
+
 const $DatasetViewPagination = z.object({
   currentPage: z.number(),
   itemsPerPage: z.number()
@@ -105,6 +109,7 @@ type TabularDataset = DatasetInfo & {
 
 export { $ColumnDataType, $CreateDataset, $DatasetViewPagination, $EditDatasetInfo, $PermissionLevel };
 export type {
+  AddProjectDatasetColumns,
   ColumnDataType,
   CreateDataset,
   DatasetCardProps,

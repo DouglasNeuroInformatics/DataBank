@@ -1,4 +1,3 @@
-/* eslint-disable import/exports-last */
 export * from './columns';
 export * from './datasets';
 export * from './projects';
