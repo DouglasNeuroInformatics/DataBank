@@ -56,6 +56,4 @@ const ProjectDatasetCard = ({
   );
 };
 
-export type { ProjectDatasetCardProps };
-
 export default ProjectDatasetCard;

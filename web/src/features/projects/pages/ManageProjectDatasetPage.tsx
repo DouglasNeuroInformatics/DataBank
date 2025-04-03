@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useEffect, useState } from 'react';
 
-import type { DatasetViewPaginationDto, TabularDataset } from '@databank/core';
+import type { DatasetViewPagination, TabularDataset } from '@databank/core';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';
@@ -17,9 +17,9 @@ const ViewOneProjectDatasetPage = () => {
   const params = useParams();
   const [dataset, setDataset] = useState<null | TabularDataset>(null);
 
-  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPaginationDto | null>(null);
+  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPagination | null>(null);
 
-  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPaginationDto | null>(null);
+  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPagination | null>(null);
 
   useEffect(() => {
     const fetchDataset = async () => {
@@ -59,7 +59,7 @@ const ViewOneProjectDatasetPage = () => {
         managerIds={dataset.managerIds}
         metadata={dataset.metadata}
         name={dataset.name}
-        permission={'LOGIN'}
+        permission={{ permission: 'LOGIN' }}
         primaryKeys={dataset.primaryKeys}
         rows={dataset.rows}
         totalNumberOfColumns={0}

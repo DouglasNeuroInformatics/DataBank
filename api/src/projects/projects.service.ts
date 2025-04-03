@@ -1,4 +1,4 @@
-import type { DatasetInfo, DatasetViewPaginationDto, ProjectDatasetDto } from '@databank/core';
+import type { DatasetInfo, DatasetViewPagination } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -6,7 +6,7 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
 
-import type { CreateProjectDto, UpdateProjectDto } from './zod/projects';
+import { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './dto/projects.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -196,7 +196,7 @@ export class ProjectsService {
       metadataRowsString +=
         columnName +
         delimiter +
-        projectDatasetView.metadata[columnName]?.kind +
+        projectDatasetView.metadata[columnName]?.kind.type +
         delimiter +
         // @ts-expect-error - see issue
         projectDatasetView.metadata[columnName]?.nullable +
@@ -261,8 +261,8 @@ export class ProjectsService {
   async getOneProjectDatasetView(
     projectId: string,
     datasetId: string,
-    rowPaginationDto: DatasetViewPaginationDto,
-    columnPaginationDto: DatasetViewPaginationDto
+    rowPaginationDto: DatasetViewPagination,
+    columnPaginationDto: DatasetViewPagination
   ) {
     // get project
     const project = await this.projectModel.findUnique({
@@ -324,7 +324,15 @@ export class ProjectsService {
       if (!projectDatasetInfo) {
         datasetIdToRemove.push(projectDataset.datasetId);
       }
-      projectDatasetsInfo.push(projectDatasetInfo!);
+
+      if (!projectDatasetInfo?.permission) {
+        continue;
+      }
+
+      projectDatasetsInfo.push({
+        ...projectDatasetInfo,
+        permission: { permission: projectDatasetInfo?.permission }
+      });
     }
 
     const newProjectDatasets = project.datasets.filter((dataset) => {

@@ -9,7 +9,7 @@ import { ForbiddenException, ServiceUnavailableException } from '@nestjs/common/
 import type { SetupConfig, User, UserVerificationStrategy } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
-import type { CreateTabularDatasetDto } from '@/datasets/zod/dataset';
+import type { CreateDatasetDto } from '@/datasets/dto/datasets.dto';
 import { UsersService } from '@/users/users.service.js';
 
 @Injectable()
@@ -38,13 +38,12 @@ export class SetupService {
       data: setupConfig
     });
 
-    const createStarterDatasetDto: CreateTabularDatasetDto = {
+    const createStarterDatasetDto: CreateDatasetDto = {
       datasetType: 'TABULAR',
       description: 'a sample dataset containing data about iris',
       isJSON: 'true',
       isReadyToShare: 'true',
       license: 'PUBLIC',
-      managerIds: [adminUser.id],
       name: 'iris',
       permission: 'PUBLIC',
       primaryKeys: ''

@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 
-import type { AddProjectDatasetColumns, ProjectColumn, ProjectDatasetDto } from '@databank/core';
+import type { AddProjectDatasetColumns, ProjectColumn, ProjectDataset } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -235,7 +235,7 @@ const AddProjectDatasetColumnPage = () => {
   const formContent = generateContent();
 
   const handleSubmit = (data: { [x: string]: any }) => {
-    const projectDatasetDto: ProjectDatasetDto = {
+    const projectDatasetDto: ProjectDataset = {
       columns: [],
       dataTypeFilters: [],
       datasetId: params.datasetId!,

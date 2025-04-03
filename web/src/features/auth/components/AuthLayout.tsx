@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { Logo } from '@/components';
 
-export type AuthLayoutProps = {
+type AuthLayoutProps = {
   children: React.ReactNode;
   title: string;
 };

@@ -48,5 +48,4 @@ const AddProjectDatasetCard = ({
   );
 };
 
-export type { AddProjectDatasetCardProps };
 export default AddProjectDatasetCard;

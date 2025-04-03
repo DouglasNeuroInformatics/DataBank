@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type {
   ColumnSummary,
-  DatasetViewPaginationDto,
-  ProjectDatasetDto,
+  DatasetViewPagination,
+  GetColumnViewDto,
   ProjectTabularDatasetView,
-  TabularDatasetView
+  TabularDatasetView,
+  UpdatePrimaryKeys
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
@@ -14,9 +15,7 @@ import pl from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
 
 import { ColumnsService } from '@/columns/columns.service';
-import type { GetColumnViewDto } from '@/projects/zod/projects';
-
-import type { UpdatePrimaryKeysDto } from './zod/tabular-data';
+import type { ProjectDatasetDto } from '@/projects/dto/projects.dto';
 
 @Injectable()
 export class TabularDataService {
@@ -122,8 +121,8 @@ export class TabularDataService {
 
   async getProjectDatasetView(
     projectDatasetDto: ProjectDatasetDto,
-    rowPagination: DatasetViewPaginationDto,
-    columnPagination: DatasetViewPaginationDto
+    rowPagination: DatasetViewPagination,
+    columnPagination: DatasetViewPagination
   ) {
     const columnIds: { [key: string]: string } = {};
     const columns: string[] = [];
@@ -146,7 +145,7 @@ export class TabularDataService {
       columnIds[currColumnView.name] = currColumnView.id;
       metaData[currColumnView.name] = {
         count: currColumnView.count,
-        kind: currColumnView.kind,
+        kind: { type: currColumnView.kind },
         max: currColumnView.max,
         mean: currColumnView.mean,
         median: currColumnView.median,
@@ -211,8 +210,8 @@ export class TabularDataService {
   async getViewById(
     tabularDataId: string,
     userStatus: PermissionLevel,
-    rowPagination: DatasetViewPaginationDto,
-    columnPagination: DatasetViewPaginationDto
+    rowPagination: DatasetViewPagination,
+    columnPagination: DatasetViewPagination
   ) {
     const tabularData = await this.tabularDataModel.findUnique({
       include: {
@@ -301,14 +300,14 @@ export class TabularDataService {
           if (columnIdsModifyMetadata.includes(col.id)) {
             metaData[col.name] = {
               count: 0,
-              kind: 'BOOLEAN',
+              kind: { type: 'BOOLEAN' },
               nullCount: 0,
               trueCount: 0
             };
           } else {
             metaData[col.name] = {
               count: col.summary.count,
-              kind: 'BOOLEAN',
+              kind: { type: 'BOOLEAN' },
               nullCount: col.summary.nullCount,
               // BUG: trueCount doesn't work
               // trueCount: col.summary.enumSummary?.distribution
@@ -329,7 +328,7 @@ export class TabularDataService {
           if (columnIdsModifyMetadata.includes(col.id)) {
             metaData[col.name] = {
               count: 0,
-              kind: 'DATETIME',
+              kind: { type: 'DATETIME' },
               max: new Date(0),
               min: new Date(0),
               nullCount: 0
@@ -337,7 +336,7 @@ export class TabularDataService {
           } else {
             metaData[col.name] = {
               count: col.summary.count,
-              kind: 'DATETIME',
+              kind: { type: 'DATETIME' },
               max: col.summary.datetimeSummary?.max ?? new Date(),
               min: col.summary.datetimeSummary?.min ?? new Date(),
               nullCount: col.summary.nullCount
@@ -358,13 +357,13 @@ export class TabularDataService {
           if (columnIdsModifyMetadata.includes(col.id)) {
             metaData[col.name] = {
               count: 0,
-              kind: 'ENUM',
+              kind: { type: 'ENUM' },
               nullCount: 0
             };
           } else {
             metaData[col.name] = {
               count: col.summary.count,
-              kind: 'ENUM',
+              kind: { type: 'ENUM' },
               nullCount: col.summary.nullCount
             };
           }
@@ -382,7 +381,7 @@ export class TabularDataService {
           if (columnIdsModifyMetadata.includes(col.id)) {
             metaData[col.name] = {
               count: 0,
-              kind: 'FLOAT',
+              kind: { type: 'FLOAT' },
               max: 0,
               mean: 0,
               median: 0,
@@ -393,7 +392,7 @@ export class TabularDataService {
           } else {
             metaData[col.name] = {
               count: col.summary.count,
-              kind: 'FLOAT',
+              kind: { type: 'FLOAT' },
               max: col.summary.floatSummary?.max,
               mean: col.summary.floatSummary?.mean,
               median: col.summary.floatSummary?.median,
@@ -415,7 +414,7 @@ export class TabularDataService {
           if (columnIdsModifyMetadata.includes(col.id)) {
             metaData[col.name] = {
               count: 0,
-              kind: 'INT',
+              kind: { type: 'INT' },
               max: 0,
               mean: 0,
               median: 0,
@@ -427,7 +426,7 @@ export class TabularDataService {
           } else {
             metaData[col.name] = {
               count: col.summary.count,
-              kind: 'INT',
+              kind: { type: 'INT' },
               max: col.summary.intSummary?.max,
               mean: col.summary.intSummary?.mean,
               median: col.summary.intSummary?.median,
@@ -452,13 +451,13 @@ export class TabularDataService {
           if (columnIdsModifyMetadata.includes(col.id)) {
             metaData[col.name] = {
               count: 0,
-              kind: 'STRING',
+              kind: { type: 'STRING' },
               nullCount: 0
             };
           } else {
             metaData[col.name] = {
               count: col.summary.count,
-              kind: 'STRING',
+              kind: { type: 'STRING' },
               nullCount: col.summary.nullCount
             };
           }
@@ -480,7 +479,7 @@ export class TabularDataService {
   }
 
   // update Primary keys for a tabular column
-  async updatePrimaryKeys(tabularDataId: string, updatePrimaryKeysDto: UpdatePrimaryKeysDto) {
+  async updatePrimaryKeys(tabularDataId: string, updatePrimaryKeysDto: UpdatePrimaryKeys) {
     return await this.tabularDataModel.update({
       data: updatePrimaryKeysDto,
       where: {

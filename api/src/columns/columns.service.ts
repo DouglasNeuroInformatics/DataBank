@@ -1,13 +1,10 @@
+import type { GetColumnViewDto } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import type { ColumnType, PermissionLevel, PrismaClient } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { Series } from 'nodejs-polars';
-
-import type { GetColumnViewDto } from '@/projects/zod/projects';
-
-import type { UpdateTabularColumnDto } from './zod/columns';
 
 @Injectable()
 export class ColumnsService {
@@ -723,27 +720,29 @@ export class ColumnsService {
     return await updateColumnNullable;
   }
 
-  async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumnDto) {
-    const columnsToUpdate = await this.columnModel.findMany({
-      where: {
-        tabularDataId: tabularDataId
-      }
-    });
+  // async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumn) {
+  //   const columnsToUpdate = await this.columnModel.findMany({
+  //     where: {
+  //       tabularDataId: tabularDataId
+  //     }
+  //   });
 
-    if (!columnsToUpdate) {
-      throw new NotFoundException('No columns found with the given tabular data id!');
-    }
+  //   if (!columnsToUpdate) {
+  //     throw new NotFoundException('No columns found with the given tabular data id!');
+  //   }
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    columnsToUpdate.forEach(async (x) => {
-      await this.columnModel.update({
-        data: updateColumnDto,
-        where: {
-          id: x.id
-        }
-      });
-    });
-  }
+  //   // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  //   columnsToUpdate.forEach(async (col) => {
+  //     await this.columnModel.update({
+  //       data: {
+  //         ...updateColumnDto
+  //       },
+  //       where: {
+  //         id: col.id
+  //       }
+  //     });
+  //   });
+  // }
 
   private calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
     // Need to correctly compute the distribution for boolean and enum column

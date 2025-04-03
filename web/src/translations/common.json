@@ -55,9 +55,13 @@
     "en": "New Manage Email: ",
     "fr": "Nouvel e-mail du gestionnaire :"
   },
-  "managerName": {
-    "en": "Manager Name: ",
-    "fr": "Nom du gestionnaire :"
+  "managerFirstName": {
+    "en": "Manager First Name: ",
+    "fr": "Prénom du gestionnaire :"
+  },
+  "managerLastName": {
+    "en": "Manager Last Name: ",
+    "fr": "Nom de famille du gestionnaire :"
   },
   "managerEmail": {
     "en": "Manager Email: ",

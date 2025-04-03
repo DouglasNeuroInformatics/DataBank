@@ -2,7 +2,7 @@ import type { CurrentUser } from '@databank/core';
 import { jwtDecode } from 'jwt-decode';
 import { create } from 'zustand';
 
-export type AuthStore = {
+type AuthStore = {
   accessToken: null | string;
   currentUser: CurrentUser | null;
   logout: () => void;

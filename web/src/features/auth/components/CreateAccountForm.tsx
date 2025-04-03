@@ -67,4 +67,4 @@ export const CreateAccountForm = ({ onSubmit }: CreateAccountFormProps) => {
   );
 };
 
-export type { CreateAccountData, CreateAccountFormProps };
+export type { CreateAccountData };

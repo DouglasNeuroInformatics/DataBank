@@ -1,12 +1,4 @@
-import type {
-  AddProjectDatasetColumns,
-  ColumnDataType,
-  DatasetCardProps,
-  DatasetViewPaginationDto,
-  EditDatasetInfoDto,
-  ProjectDatasetDto,
-  TabularDatasetView
-} from '@databank/core';
+import type { AddProjectDatasetColumns, ColumnDataType, DatasetCardProps, TabularDatasetView } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -15,10 +7,11 @@ import type { DataFrame } from 'nodejs-polars';
 import pl from 'nodejs-polars';
 
 import { ColumnsService } from '@/columns/columns.service.js';
+import type { ProjectDatasetDto } from '@/projects/dto/projects.dto.js';
 import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 
-import type { CreateTabularDatasetDto } from './zod/dataset.js';
+import { CreateDatasetDto, DatasetViewPaginationDto, EditDatasetInfoDto } from './dto/datasets.dto.js';
 
 @Injectable()
 export class DatasetsService {
@@ -112,28 +105,28 @@ export class DatasetsService {
     return this.columnService.changeColumnMetadataPermission(columnId, newPermissionLevel);
   }
 
-  async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-    const dataset = await this.canModifyDataset(datasetId, currentUserId);
+  // async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
+  //   const dataset = await this.canModifyDataset(datasetId, currentUserId);
 
-    if (!dataset.tabularData) {
-      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
-    }
+  //   if (!dataset.tabularData) {
+  //     throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+  //   }
 
-    return await this.columnService.updateMany(dataset.tabularData.id, {
-      dataPermission: permissionLevel
-    });
-  }
+  //   return await this.columnService.updateMany(dataset.tabularData.id, {
+  //     dataPermission: { permission: permissionLevel }
+  //   });
+  // }
 
-  async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-    const dataset = await this.canModifyDataset(datasetId, currentUserId);
-    if (!dataset) {
-      throw new ForbiddenException(`The current user is not allowed to modify the dataset with id ${datasetId}`);
-    }
-    return await this.tabularDataService.changeTabularColumnsMetadataPermission(datasetId, permissionLevel);
-  }
+  // async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
+  //   const dataset = await this.canModifyDataset(datasetId, currentUserId);
+  //   if (!dataset) {
+  //     throw new ForbiddenException(`The current user is not allowed to modify the dataset with id ${datasetId}`);
+  //   }
+  //   return await this.tabularDataService.changeTabularColumnsMetadataPermission(datasetId, permissionLevel);
+  // }
 
   async createDataset(
-    createTabularDatasetDto: CreateTabularDatasetDto,
+    createTabularDatasetDto: CreateDatasetDto,
     file: Express.Multer.File | string,
     managerId: string
   ) {
@@ -664,7 +657,7 @@ export class DatasetsService {
         license: publicDataset.license,
         managerIds: publicDataset.managerIds,
         name: publicDataset.name,
-        permission: publicDataset.permission,
+        permission: { permission: publicDataset.permission },
         updatedAt: publicDataset.updatedAt
       });
     });
@@ -798,10 +791,10 @@ export class DatasetsService {
     const dataset = await this.canModifyDataset(datasetId, userId);
 
     if (!dataset.tabularData) {
-      throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
+      throw new NotFoundException(`There is no tabular data in this dataset with id ${datasetId}`);
     }
 
-    return await this.columnService.mutateColumnType(columnId, columnType);
+    return await this.columnService.mutateColumnType(columnId, columnType.type);
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
@@ -893,7 +886,7 @@ export class DatasetsService {
       metadataRowsString +=
         columnName +
         delimiter +
-        datasetView.metadata[columnName]?.kind +
+        datasetView.metadata[columnName]?.kind.type +
         delimiter +
         // @ts-expect-error - see issue
         datasetView.metadata[columnName]?.nullable +
