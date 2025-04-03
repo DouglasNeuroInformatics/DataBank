@@ -32,7 +32,7 @@ awk -v secret_key="$(openssl rand -hex 32)" '/^SECRET_KEY=/{print $0 secret_key;
 ```
 
 ```shell
-docker compose -f docker-compose.dev.yaml up
+docker compose -f docker-compose.dev.yaml up -d
 ```
 
 ### Launch Dev Server
