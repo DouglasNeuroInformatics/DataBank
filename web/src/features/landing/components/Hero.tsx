@@ -25,6 +25,7 @@ export const Hero = () => {
         <div className="mt-5 flex justify-center gap-3 xl:justify-start">
           <Button
             label={t('getStarted')}
+            size="lg"
             type="button"
             onClick={() => {
               navigate('/auth/create-account');
@@ -32,6 +33,7 @@ export const Hero = () => {
           />
           <Button
             label={t('learnMore')}
+            size="lg"
             type="button"
             variant="secondary"
             onClick={() => {
