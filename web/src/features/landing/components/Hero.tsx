@@ -9,7 +9,7 @@ export const Hero = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   return (
-    <section className="flex gap-5 text-center xl:text-left">
+    <section className="flex min-h-[calc(100vh-4rem)] items-center justify-center gap-5 text-center xl:text-left">
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className="flex grow flex-col justify-center"

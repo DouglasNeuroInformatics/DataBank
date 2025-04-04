@@ -25,7 +25,7 @@ export const LandingHeader = () => {
       >
         <div className="container flex flex-wrap items-center bg-inherit py-2">
           <Link className="flex items-center justify-center" to="/">
-            <Logo className="m-2 mr-10 hidden h-10 w-auto md:block" />
+            <Logo className="m-1 mr-10 hidden h-10 w-auto md:block" />
           </Link>
           <button
             className="m-2 md:hidden"
@@ -50,7 +50,7 @@ export const LandingHeader = () => {
           >
             <Link
               className={cn(
-                'block p-3 font-medium',
+                'block p-3 text-[0.9375rem] font-medium',
 
                 languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
@@ -60,7 +60,7 @@ export const LandingHeader = () => {
             </Link>
             <Link
               className={cn(
-                'block p-3 font-medium',
+                'block p-3 text-[0.9375rem] font-medium',
                 languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
               to="/auth/create-account"
@@ -69,7 +69,7 @@ export const LandingHeader = () => {
             </Link>
             <Link
               className={cn(
-                'block p-3 font-medium',
+                'block p-3 text-[0.9375rem] font-medium',
                 languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
               to="/public/datasets"
