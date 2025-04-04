@@ -159,8 +159,8 @@ importers:
         specifier: ^0.0.3
         version: 0.0.3(typescript@5.6.3)
       '@douglasneuroinformatics/libui':
-        specifier: ^4.0.1
-        version: 4.0.1(@types/react-dom@19.1.1(@types/react@19.1.0))(@types/react@19.1.0)(neverthrow@8.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.1)(zod@3.24.2)
+        specifier: ^4.0.2
+        version: 4.0.2(@types/react-dom@19.1.1(@types/react@19.1.0))(@types/react@19.1.0)(neverthrow@8.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.1)(zod@3.24.2)
       '@headlessui/react':
         specifier: ^2.2.0
         version: 2.2.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -422,9 +422,9 @@ packages:
     resolution:
       { integrity: sha512-erds8oNXFrWSJfCglR8S7I3Yfkgx2Vz6RIQTa5OFtVAVx8DTSFf5FbnHpp49l6BcQ4FCU5w/PLO5NWdx08cNUg== }
 
-  '@douglasneuroinformatics/libui@4.0.1':
+  '@douglasneuroinformatics/libui@4.0.2':
     resolution:
-      { integrity: sha512-NZIm7MNh7/ZCR0uoqmdHCTfJcFlsU/Z4zDxeaGShOAxIdzkvTz98MtKmaGWYwH19DZaUYTVDXdoUWSJo4LhnTQ== }
+      { integrity: sha512-U6KVAoc49fj/skBnX0xpwU5+LWlyyTf2b1so/T/czNQ7ksb06xOmigdMW1wzzpmUyIhvbrYESkgTAS0oApeRMQ== }
     engines: { node: 22.x }
     peerDependencies:
       react: ^19.1.0
@@ -7082,7 +7082,7 @@ snapshots:
     dependencies:
       type-fest: 4.39.0
 
-  '@douglasneuroinformatics/libui@4.0.1(@types/react-dom@19.1.1(@types/react@19.1.0))(@types/react@19.1.0)(neverthrow@8.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.1)(zod@3.24.2)':
+  '@douglasneuroinformatics/libui@4.0.2(@types/react-dom@19.1.1(@types/react@19.1.0))(@types/react@19.1.0)(neverthrow@8.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.1)(zod@3.24.2)':
     dependencies:
       '@douglasneuroinformatics/libjs': 2.7.0(neverthrow@8.2.0)(zod@3.24.2)
       '@douglasneuroinformatics/libui-form-types': 0.11.0
