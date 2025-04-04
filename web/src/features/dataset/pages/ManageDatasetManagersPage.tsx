@@ -66,7 +66,7 @@ const ManageDatasetManagersPage = () => {
   );
 };
 
-export const ManageDatasetManagersRoute: RouteObject = {
+export const manageDatasetManagersRoute: RouteObject = {
   element: <ManageDatasetManagersPage />,
   path: 'manageDatasetManager'
 };

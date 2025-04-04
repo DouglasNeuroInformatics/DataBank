@@ -80,7 +80,7 @@ const ViewProjectsPage = () => {
   );
 };
 
-export const ViewProjectsRoute: RouteObject = {
+export const viewProjectsRoute: RouteObject = {
   path: 'projects',
   element: <ViewProjectsPage />
 };

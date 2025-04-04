@@ -54,7 +54,7 @@ const AddProjectDatasetPage = () => {
   );
 };
 
-export const AddProjectDatasetRoute: RouteObject = {
+export const addProjectDatasetRoute: RouteObject = {
   element: <AddProjectDatasetPage />,
   path: 'project/addDataset/:projectId'
 };

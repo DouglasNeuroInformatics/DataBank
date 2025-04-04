@@ -88,7 +88,7 @@ const EditProjectInfoPage = () => {
   );
 };
 
-export const EditProjectInfoRoute: RouteObject = {
+export const editProjectInfoRoute: RouteObject = {
   element: <EditProjectInfoPage />,
   path: 'project/edit-info/:projectId'
 };

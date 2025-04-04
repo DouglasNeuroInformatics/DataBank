@@ -104,7 +104,7 @@ const EditDatasetInfoPage = () => {
   );
 };
 
-export const EditDatasetInfoRoute: RouteObject = {
+export const editDatasetInfoRoute: RouteObject = {
   element: <EditDatasetInfoPage />,
   path: 'dataset/edit-info/:datasetId'
 };

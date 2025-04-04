@@ -25,7 +25,7 @@ const DashboardPage = () => {
   );
 };
 
-export const DashboardRoute: RouteObject = {
+export const dashboardRoute: RouteObject = {
   element: <DashboardPage />,
   path: 'dashboard'
 };

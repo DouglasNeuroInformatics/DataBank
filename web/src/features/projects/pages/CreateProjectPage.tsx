@@ -105,7 +105,7 @@ const CreateProjectPage = () => {
   );
 };
 
-export const CreateProjectRoute: RouteObject = {
+export const createProjectRoute: RouteObject = {
   element: <CreateProjectPage />,
   path: 'createProject'
 };

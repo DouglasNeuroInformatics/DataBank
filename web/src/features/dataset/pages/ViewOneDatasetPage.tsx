@@ -245,7 +245,7 @@ const ViewOneDatasetPage = () => {
   );
 };
 
-export const ViewOneDatasetRoute: RouteObject = {
+export const viewOneDatasetRoute: RouteObject = {
   path: 'dataset/:datasetId',
   element: <ViewOneDatasetPage />
 };
