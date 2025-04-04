@@ -15,10 +15,6 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
 
-  // depends on the setup and auth.currentUser.confirmedAt
-  // 1. if setup is manual and auth.accesstoken then go to dashboard
-  // 2. if setup is confirmEmail
-  // 3. if setup is emailRegex
   useEffect(() => {
     if (auth.accessToken && auth.currentUser?.confirmedAt) {
       navigate('/portal/dashboard');

@@ -136,6 +136,8 @@ export class AuthService {
       isVerified = true;
     } else if (verificationInfo.kind === 'REGEX_EMAIL' && verificationInfo.emailRegex) {
       isVerified = new RegExp(verificationInfo.emailRegex).test(user.email) ? true : false;
+    } else if (verificationInfo.kind === 'MANUAL') {
+      isVerified = false;
     } else {
       throw new Error(`Unexpected verification method: ${verificationInfo.kind}`);
     }

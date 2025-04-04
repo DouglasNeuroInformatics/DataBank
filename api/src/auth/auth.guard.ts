@@ -46,7 +46,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid Credentials');
     }
 
-    if (!routeAccess.allowUnverified && !payload.verifiedAt) {
+    if (!routeAccess.allowUnverified && !payload.confirmedAt) {
       throw new UnauthorizedException('Email confirmation required');
     }
 

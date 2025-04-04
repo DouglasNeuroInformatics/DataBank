@@ -46,7 +46,7 @@ const ViewOneDatasetPage = () => {
   });
 
   const dataset = datasetQuery.data;
-  const isManager = Boolean(datasetQuery.data?.managerIds.includes(currentUser!.id));
+  const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
 
   const deleteDataset = (datasetId: string) => {
     axios

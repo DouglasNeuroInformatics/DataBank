@@ -22,6 +22,16 @@ export class SetupController {
   }
 
   @ApiOperation({
+    description: 'Return the Verification Strategy',
+    summary: 'Get Verification Strategy'
+  })
+  @Get('verification')
+  @RouteAccess('public')
+  getVerificationStrategy() {
+    return this.setupService.getVerificationStrategy();
+  }
+
+  @ApiOperation({
     description: [
       'Initialize an instance of the application with a default admin user and some starter datasets.',
       'Although this route is public, this operation may only be performed when there are no users in the database.'
