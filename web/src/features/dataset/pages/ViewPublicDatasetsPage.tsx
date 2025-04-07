@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 
 import type { DatasetCardProps } from '@databank/core';
-import { Heading, Separator } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';
 
+import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
 
 import PublicDatasetCard from '../components/PublicDatasetCard';
@@ -35,10 +35,7 @@ const ViewPublicDatasetsPage = () => {
   // // here should use a function to get all
   return (
     <>
-      <Heading className="py-8" variant="h1">
-        {t('publicDatasets')}
-      </Heading>
-      <Separator className="mb-8" />
+      <PageHeading>{t('publicDatasets')}</PageHeading>
       <ul>
         {datasetsInfoArray?.map((datasetInfo, i) => {
           return (
