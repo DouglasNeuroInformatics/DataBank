@@ -10,7 +10,7 @@ import { InfoGroup } from './InfoGroup';
 export const KeyFeatures: React.FC<{ ref: Ref<HTMLElement> }> = ({ ref }) => {
   const { t } = useTranslation();
   return (
-    <section ref={ref}>
+    <section className="pb-8" ref={ref}>
       <h2 className="mb-8 text-center text-[1.375rem] font-bold leading-tight tracking-tight md:text-2xl xl:text-3xl">
         {t({
           en: 'Key Features',
@@ -18,7 +18,7 @@ export const KeyFeatures: React.FC<{ ref: Ref<HTMLElement> }> = ({ ref }) => {
         })}
       </h2>
       <div className="flex flex-col gap-8">
-        <div className="mb-8 grid gap-12 lg:grid-cols-2">
+        <div className="mb-8 grid gap-12 py-8 lg:grid-cols-2">
           <InfoGroup
             description={t({
               en: 'Efficiently manage your datasets with easy uploads, centralized storage, project organization, and automatic version tracking.',
@@ -76,7 +76,7 @@ export const KeyFeatures: React.FC<{ ref: Ref<HTMLElement> }> = ({ ref }) => {
             dangerouslySetInnerHTML={{ __html: dataManagementFigure }}
           />
         </div>
-        <div className="grid gap-12 lg:grid-cols-2">
+        <div className="grid gap-12 py-8 lg:grid-cols-2">
           <div
             className="hidden items-center justify-center lg:flex [&>svg]:h-96 [&>svg]:w-auto"
             dangerouslySetInnerHTML={{ __html: collaborationFigure }}
