@@ -1,3 +1,5 @@
+import type { Ref } from 'react';
+
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 
 import collaborationFigure from '@/assets/svg/collaboration.svg?raw';
@@ -5,10 +7,10 @@ import dataManagementFigure from '@/assets/svg/data-management.svg?raw';
 
 import { InfoGroup } from './InfoGroup';
 
-export const MoreInfo = () => {
+export const KeyFeatures: React.FC<{ ref: Ref<HTMLElement> }> = ({ ref }) => {
   const { t } = useTranslation();
   return (
-    <section>
+    <section ref={ref}>
       <h2 className="mb-8 text-center text-[1.375rem] font-bold leading-tight tracking-tight md:text-2xl xl:text-3xl">
         {t({
           en: 'Key Features',

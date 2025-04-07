@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { HeroIcon } from './HeroIcon';
 
-export const Hero = () => {
+export const Hero: React.FC<{ onLearnMore: () => void }> = ({ onLearnMore }) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   return (
@@ -37,7 +37,7 @@ export const Hero = () => {
             type="button"
             variant="secondary"
             onClick={() => {
-              navigate('/auth/login');
+              onLearnMore();
             }}
           />
         </div>
