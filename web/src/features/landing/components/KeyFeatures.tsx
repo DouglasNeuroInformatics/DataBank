@@ -17,8 +17,8 @@ export const KeyFeatures: React.FC<{ ref: Ref<HTMLElement> }> = ({ ref }) => {
           fr: 'Fonctionnalités principales'
         })}
       </h2>
-      <div className="flex flex-col gap-8">
-        <div className="mb-8 grid gap-12 py-8 lg:grid-cols-2">
+      <div className="flex flex-col gap-8 xl:gap-16">
+        <div className="flex justify-between gap-12 py-8 xl:gap-16">
           <InfoGroup
             description={t({
               en: 'Efficiently manage your datasets with easy uploads, centralized storage, project organization, and automatic version tracking.',
@@ -72,13 +72,13 @@ export const KeyFeatures: React.FC<{ ref: Ref<HTMLElement> }> = ({ ref }) => {
             })}
           />
           <div
-            className="hidden items-center justify-center lg:flex [&>svg]:h-96"
+            className="hidden items-center justify-center lg:flex [&>svg]:h-72 [&>svg]:w-auto"
             dangerouslySetInnerHTML={{ __html: dataManagementFigure }}
           />
         </div>
-        <div className="grid gap-12 py-8 lg:grid-cols-2">
+        <div className="flex justify-between gap-12 py-8 xl:gap-16">
           <div
-            className="hidden items-center justify-center lg:flex [&>svg]:h-96 [&>svg]:w-auto"
+            className="hidden items-center justify-center lg:flex [&>svg]:h-72 [&>svg]:w-auto"
             dangerouslySetInnerHTML={{ __html: collaborationFigure }}
           />
           <InfoGroup
