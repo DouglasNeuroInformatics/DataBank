@@ -1,8 +1,9 @@
 /* eslint-disable perfectionist/sort-objects */
+
 import { useEffect, useState } from 'react';
 
 import type { DatasetCardProps } from '@databank/core';
-import { Card } from '@douglasneuroinformatics/libui/components';
+import { Heading, Separator } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -34,35 +35,31 @@ const ViewPublicDatasetsPage = () => {
   // // here should use a function to get all
   return (
     <>
-      <Card className="my-3">
-        <Card.Header>
-          <Card.Title className="text-3xl">{t('publicDatasets')}</Card.Title>
-        </Card.Header>
-        <Card.Content>
-          <ul>
-            {datasetsInfoArray?.map((datasetInfo, i) => {
-              return (
-                <li key={i}>
-                  <PublicDatasetCard
-                    createdAt={datasetInfo.createdAt}
-                    datasetType={datasetInfo.datasetType}
-                    description={datasetInfo.description}
-                    id={datasetInfo.id}
-                    isManager={false}
-                    isReadyToShare={false}
-                    license={datasetInfo.license}
-                    managerIds={datasetInfo.managerIds}
-                    name={datasetInfo.name}
-                    permission={{ permission: 'PUBLIC' }}
-                    updatedAt={datasetInfo.updatedAt}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </Card.Content>
-        <Card.Footer className="flex justify-between"></Card.Footer>
-      </Card>
+      <Heading className="py-8" variant="h1">
+        {t('publicDatasets')}
+      </Heading>
+      <Separator className="mb-8" />
+      <ul>
+        {datasetsInfoArray?.map((datasetInfo, i) => {
+          return (
+            <li key={i}>
+              <PublicDatasetCard
+                createdAt={datasetInfo.createdAt}
+                datasetType={datasetInfo.datasetType}
+                description={datasetInfo.description}
+                id={datasetInfo.id}
+                isManager={false}
+                isReadyToShare={false}
+                license={datasetInfo.license}
+                managerIds={datasetInfo.managerIds}
+                name={datasetInfo.name}
+                permission={{ permission: 'PUBLIC' }}
+                updatedAt={datasetInfo.updatedAt}
+              />
+            </li>
+          );
+        })}
+      </ul>
     </>
   );
 };
