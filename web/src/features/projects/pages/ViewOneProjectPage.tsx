@@ -167,7 +167,7 @@ const ViewOneProjectPage = () => {
   );
 };
 
-export const ViewOneProjectRoute: RouteObject = {
+export const viewOneProjectRoute: RouteObject = {
   path: 'project/:projectId',
   element: <ViewOneProjectPage />
 };

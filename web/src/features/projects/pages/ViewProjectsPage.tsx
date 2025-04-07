@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
+import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
 
 import { ProjectCard } from '../components/ProjectCard';
@@ -42,45 +43,47 @@ const ViewProjectsPage = () => {
     }
   };
 
-  return projectsInfoArray ? (
-    <Card>
-      <Card.Header>
-        <Card.Title className="text-3xl">{t('projects')}</Card.Title>
-        {
+  if (!projectsInfoArray) {
+    return <LoadingFallback />;
+  }
+
+  return (
+    <>
+      <PageHeading>{t('projects')}</PageHeading>
+      <Card>
+        <Card.Header>
           <Button className="m-2" variant={'secondary'} onClick={handleCreateProject}>
             Create New Project
           </Button>
-        }
-      </Card.Header>
-      <Card.Content>
-        <ul>
-          {projectsInfoArray.map((projectInfo, i) => {
-            return (
-              <li key={i}>
-                <ProjectCard
-                  createdAt={projectInfo.createdAt}
-                  description={projectInfo.description}
-                  expiry={projectInfo.expiry}
-                  externalId={projectInfo.externalId}
-                  id={projectInfo.id}
-                  isProjectManager={projectInfo.isProjectManager}
-                  name={projectInfo.name}
-                  updatedAt={projectInfo.updatedAt}
-                  userIds={projectInfo.userIds}
-                />
-              </li>
-            );
-          })}
-        </ul>
-      </Card.Content>
-      <Card.Footer className="flex justify-between"></Card.Footer>
-    </Card>
-  ) : (
-    <LoadingFallback />
+        </Card.Header>
+        <Card.Content>
+          <ul>
+            {projectsInfoArray.map((projectInfo, i) => {
+              return (
+                <li key={i}>
+                  <ProjectCard
+                    createdAt={projectInfo.createdAt}
+                    description={projectInfo.description}
+                    expiry={projectInfo.expiry}
+                    externalId={projectInfo.externalId}
+                    id={projectInfo.id}
+                    isProjectManager={projectInfo.isProjectManager}
+                    name={projectInfo.name}
+                    updatedAt={projectInfo.updatedAt}
+                    userIds={projectInfo.userIds}
+                  />
+                </li>
+              );
+            })}
+          </ul>
+        </Card.Content>
+        <Card.Footer className="flex justify-between"></Card.Footer>
+      </Card>
+    </>
   );
 };
 
-export const ViewProjectsRoute: RouteObject = {
+export const viewProjectsRoute: RouteObject = {
   path: 'projects',
   element: <ViewProjectsPage />
 };

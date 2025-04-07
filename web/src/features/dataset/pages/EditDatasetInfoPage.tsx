@@ -46,65 +46,67 @@ const EditDatasetInfoPage = () => {
   };
 
   return (
-    <div className="mt-6 w-full space-y-40 sm:max-w-md">
-      <div className="h-auto rounded-lg border-2 border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
-        <AnimatePresence initial={false} mode="wait">
-          <motion.div
-            animate={{ opacity: 1 }}
-            className="flex h-full flex-col items-center justify-center"
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
-            key={'test'}
-            transition={{ duration: 1 }}
-          >
-            <Heading className="m-4" variant="h3">
-              Edit Dataset Information
-            </Heading>
-            <Form
-              content={{
-                name: {
-                  kind: 'string',
-                  variant: 'input',
-                  label: 'New Dataset Name'
-                },
-                description: {
-                  kind: 'string',
-                  variant: 'input',
-                  label: 'New Dataset Description'
-                },
-                license: {
-                  kind: 'string',
-                  variant: 'select',
-                  options: licenseOption,
-                  label: 'License'
-                },
-                permission: {
-                  kind: 'string',
-                  variant: 'select',
-                  options: permissionOption,
-                  label: 'Permission'
-                }
-              }}
-              resetBtn={true}
-              validationSchema={$EditDatasetInfoDto}
-              onSubmit={(data) => handleSubmit(data)}
-            />
-            <Button
-              className="m-4 w-full"
-              label="Back"
-              variant={'secondary'}
-              onClick={() => {
-                navigate(-1);
-              }}
-            />
-          </motion.div>
-        </AnimatePresence>
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="mt-6 w-full space-y-40 sm:max-w-md">
+        <div className="h-auto rounded-lg border-2 border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
+          <AnimatePresence initial={false} mode="wait">
+            <motion.div
+              animate={{ opacity: 1 }}
+              className="flex h-full flex-col items-center justify-center"
+              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              key={'test'}
+              transition={{ duration: 1 }}
+            >
+              <Heading className="m-4" variant="h3">
+                Edit Dataset Information
+              </Heading>
+              <Form
+                content={{
+                  name: {
+                    kind: 'string',
+                    variant: 'input',
+                    label: 'New Dataset Name'
+                  },
+                  description: {
+                    kind: 'string',
+                    variant: 'input',
+                    label: 'New Dataset Description'
+                  },
+                  license: {
+                    kind: 'string',
+                    variant: 'select',
+                    options: licenseOption,
+                    label: 'License'
+                  },
+                  permission: {
+                    kind: 'string',
+                    variant: 'select',
+                    options: permissionOption,
+                    label: 'Permission'
+                  }
+                }}
+                resetBtn={true}
+                validationSchema={$EditDatasetInfoDto}
+                onSubmit={(data) => handleSubmit(data)}
+              />
+              <Button
+                className="m-4 w-full"
+                label="Back"
+                variant={'secondary'}
+                onClick={() => {
+                  navigate(-1);
+                }}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
 };
 
-export const EditDatasetInfoRoute: RouteObject = {
+export const editDatasetInfoRoute: RouteObject = {
   element: <EditDatasetInfoPage />,
   path: 'dataset/edit-info/:datasetId'
 };

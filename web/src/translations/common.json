@@ -4,8 +4,8 @@
     "fr": "Banque de données ouverte"
   },
   "platformDescription": {
-    "en": "Welcome to Open Data Bank, your gateway to a vast repository of clinical research data! Designed specifically for clinical research scientists, Open Data Bank revolutionizes the way data is shared and accessed in the pursuit of medical breakthroughs. Our platform offers a seamless and secure environment for researchers to upload, store, and share their datasets with colleagues and collaborators worldwide. With cutting-edge technology and robust privacy controls, researchers can confidently contribute their valuable data while maintaining control over access permissions. Open Data Bank isn't just a storage solution; it's a collaborative hub where scientists can discover, analyze, and build upon each other's work. Whether you're investigating new treatments, studying disease patterns, or conducting epidemiological research, our platform provides the tools and resources you need to accelerate your discoveries. Join the global community of researchers who are accelerating scientific progress through open data sharing. Experience the power of collaboration with Open Data Bank today.",
-    "fr": "Bienvenue dans Open Data Bank, votre passerelle vers un vaste référentiel de données de recherche clinique ! Conçue spécifiquement pour les scientifiques en recherche clinique, Open Data Bank révolutionne la manière dont les données sont partagées et accessibles dans le cadre de percées médicales. Notre plateforme offre un environnement transparent et sécurisé permettant aux chercheurs de télécharger, stocker et partager leurs ensembles de données avec des collègues et collaborateurs du monde entier. Grâce à une technologie de pointe et à des contrôles de confidentialité robustes, les chercheurs peuvent partager en toute confiance leurs précieuses données tout en gardant le contrôle des autorisations d'accès. Open Data Bank n'est pas seulement une solution de stockage ; c'est un centre de collaboration où les scientifiques peuvent découvrir, analyser et s'appuyer sur les travaux de chacun. Que vous recherchiez de nouveaux traitements, étudiiez des modèles de maladies ou meniez des recherches épidémiologiques, notre plateforme fournit les outils et les ressources dont vous avez besoin pour accélérer vos découvertes. Rejoignez la communauté mondiale des chercheurs qui accélèrent le progrès scientifique grâce au partage de données ouvertes. Découvrez dès aujourd’hui la puissance de la collaboration avec Open Data Bank."
+    "en": "Open Data Bank is your gateway to a vast repository of research data. It offers an easy-to-use and secure environment for researchers to upload, store, and share their datasets with colleagues and collaborators worldwide. ",
+    "fr": "Open Data Bank est votre porte d'entrée vers un vaste dépôt de données de recherche. La plateforme offre aux chercheurs un environnement facile à utiliser et sécurisé pour télécharger, stocker et partager leurs bases de données avec des collègues et des collaborateurs du monde entier."
   },
   "getStarted": {
     "en": "Get started",
@@ -17,11 +17,11 @@
   },
   "viewDatasets": {
     "en": "View Datasets",
-    "fr": "Voir les ensembles de données"
+    "fr": "Voir les bases de données"
   },
   "home": {
     "en": "Home Page",
-    "fr": "page d'accueil"
+    "fr": "Page d'accueil"
   },
   "login": {
     "en": "Login",
@@ -29,19 +29,19 @@
   },
   "manageDataset": {
     "en": "Manage Dataset",
-    "fr": "Gérer l'ensemble de données"
+    "fr": "Gérer la base de données"
   },
   "selectDataset": {
     "en": "Select Dataset",
-    "fr": "Sélectionner l'ensemble de données"
+    "fr": "Sélectionner la base de données"
   },
   "viewDataset": {
     "en": "View Dataset",
-    "fr": "Voir l'ensemble de données"
+    "fr": "Voir la base de données"
   },
   "totalDatasets": {
     "en": "Total Datasets",
-    "fr": "Total des ensembles de données"
+    "fr": "Total des bases de données"
   },
   "totalProjects": {
     "en": "Total Projects",
@@ -49,7 +49,7 @@
   },
   "manageDatasetManagers": {
     "en": "Manage Dataset Managers",
-    "fr": "Gérer les gestionnaires de jeux de données"
+    "fr": "Gérer les gestionnaires de bases de données"
   },
   "newManagerEmail": {
     "en": "New Manage Email: ",
@@ -73,7 +73,7 @@
   },
   "publicDatasets": {
     "en": "Public Datasets",
-    "fr": "Ensembles de données publics"
+    "fr": "Bases de données publiques"
   },
   "createAccount": {
     "en": "Create Account",
@@ -81,7 +81,7 @@
   },
   "viewPublicDatasets": {
     "en": "View Public Datasets",
-    "fr": "afficher les ensembles de données publics"
+    "fr": "Voir les bases de données publiques"
   },
   "verifyAccount": {
     "en": "Verify Account",
@@ -97,11 +97,11 @@
   },
   "verifyWhenConfirmEmail": {
     "en": "Verify When Confirming Email",
-    "fr": "Vérifier lors de la confirmation de l'email"
+    "fr": "Vérifier lors de la confirmation de l'e-mail"
   },
   "verifyWithEmailRegex": {
     "en": "Verify With Email Regex",
-    "fr": "Vérifier avec Regex de l'email"
+    "fr": "Vérifier avec l'expression régulière de l'e-mail"
   },
   "verificationSectionTitle": {
     "en": "User Verification Options",
@@ -113,7 +113,7 @@
   },
   "regularExpression": {
     "en": "Regular Expression",
-    "fr": "Expression Régulière"
+    "fr": "Expression régulière"
   },
   "pleaseSignIn": {
     "en": "Please sign in",
@@ -133,7 +133,7 @@
   },
   "email": {
     "en": "Email",
-    "fr": "Email"
+    "fr": "E-mail"
   },
   "firstName": {
     "en": "First Name",
@@ -157,11 +157,11 @@
   },
   "viewProjects": {
     "en": "View Projects",
-    "fr": "voir les projets"
+    "fr": "Voir les projets"
   },
   "projectName": {
     "en": "Project Name",
-    "fr": "Nom du Projet"
+    "fr": "Nom du projet"
   },
   "manageProjectUsers": {
     "en": "Manage Project Users",
@@ -169,35 +169,35 @@
   },
   "projectDescription": {
     "en": "Project Description",
-    "fr": "Description du Projet"
+    "fr": "Description du projet"
   },
   "projectExternalId": {
     "en": "Project External ID",
-    "fr": "ID Externe du Projet"
+    "fr": "ID externe du projet"
   },
   "projectExpiry": {
     "en": "Project Expiry",
-    "fr": "Expiration du Projet"
+    "fr": "Expiration du projet"
   },
   "projectDatasets": {
     "en": "Project Datasets",
-    "fr": "Ensembles de données du projet"
+    "fr": "Bases de données des projets"
   },
   "projectDataset": {
     "en": "Project Dataset",
-    "fr": "Ensemble de données du projet"
+    "fr": "Base de données du projet"
   },
   "viewProjectDataset": {
     "en": "View Project Dataset",
-    "fr": "Ensemble de données du projet"
+    "fr": "Voir la base de données du projet"
   },
   "manageProjectDataset": {
     "en": "Manage Project Dataset",
-    "fr": "Ensemble de données du projet"
+    "fr": "Gérer la base de données du projet"
   },
   "datasetsAvailableToAdd": {
     "en": "Datasets Available To Add",
-    "fr": "Ensembles de données disponibles pour l'ajout"
+    "fr": "Bases de données disponibles pour ajout"
   },
   "userFirstName": {
     "en": "User First Name: ",
@@ -209,27 +209,27 @@
   },
   "userEmail": {
     "en": "User Email: ",
-    "fr": "Email de l'utilisateur : "
+    "fr": "E-mail de l'utilisateur : "
   },
   "paginationPrevious": {
     "en": "Previous",
-    "fr": "Précédente"
+    "fr": "Précédent"
   },
   "paginationNext": {
     "en": "Next",
-    "fr": "Suivante"
+    "fr": "Suivant"
   },
   "datasetName": {
     "en": "Dataset Name",
-    "fr": "Nom de l'ensemble de données"
+    "fr": "Nom de la base de données"
   },
   "datasetDescription": {
     "en": "Dataset Description",
-    "fr": "Description de l'ensemble de données"
+    "fr": "Description de la base de données"
   },
   "datasetLicense": {
     "en": "Dataset License",
-    "fr": "Licence de l'ensemble de données"
+    "fr": "Licence de la base de données"
   },
   "publicDomain": {
     "en": "Public Domain",
@@ -241,7 +241,7 @@
   },
   "datasetNullable": {
     "en": "Dataset Nullable",
-    "fr": "Ensemble de données nullable"
+    "fr": "Base de données nullable"
   },
   "yes": {
     "en": "Yes",
@@ -253,7 +253,7 @@
   },
   "back": {
     "en": "Back",
-    "fr": "Retourner"
+    "fr": "Retour"
   },
   "confirm": {
     "en": "Confirm",
@@ -261,15 +261,15 @@
   },
   "confirmCreateBaseDataset": {
     "en": "Please confirm that you want to create a BASE dataset without any files",
-    "fr": "Veuillez confirmer que vous souhaitez créer un ensemble de données BASE sans aucun fichier."
+    "fr": "Veuillez confirmer que vous souhaitez créer une base de données BASE sans aucun fichier."
   },
   "datasets": {
     "en": "Datasets",
-    "fr": "ensembles de données"
+    "fr": "Bases de données"
   },
   "datasetType": {
     "en": "Dataset Type",
-    "fr": "Type d'ensemble de données"
+    "fr": "Type de base de données"
   },
   "primaryKeys": {
     "en": "Primary keys (use , as the delimiter)",
@@ -277,11 +277,11 @@
   },
   "createDatasetSuccess": {
     "en": "successfully created dataset",
-    "fr": "ensemble de données créé avec succès"
+    "fr": "Base de données créée avec succès"
   },
   "createDatasetFailure": {
     "en": "Error: unable to created dataset",
-    "fr": "Erreur : impossible de créer le jeu de données"
+    "fr": "Erreur : impossible de créer la base de données"
   },
   "unexpectedValue": {
     "en": "Unexpected Value",
@@ -401,7 +401,7 @@
   },
   "deleteDataset": {
     "en": "Delete Dataset",
-    "fr": "Supprimer l'ensemble de données"
+    "fr": "Supprimer la base de données"
   },
   "addManager": {
     "en": "Add Manager",
@@ -413,15 +413,15 @@
   },
   "editDatasetInfo": {
     "en": "Edit Dataset Information",
-    "fr": "Modifier les informations du jeu de données"
+    "fr": "Modifier les informations de la base de données"
   },
   "setDatasetSharable": {
     "en": "Set Dataset Sharable",
-    "fr": "Rendre le jeu de données partageable"
+    "fr": "Rendre la base de données partageable"
   },
   "downloadDataset": {
     "en": "Download Dataset",
-    "fr": "Télécharger le jeu de données"
+    "fr": "Télécharger la base de données"
   },
   "downloadTsv": {
     "en": "Download TSV",
@@ -449,11 +449,11 @@
   },
   "setColumnPermission": {
     "en": "Set Data Permission",
-    "fr": "Définir le permission des données"
+    "fr": "Définir les permissions des données"
   },
   "setColumnMetadataPermission": {
     "en": "Set Metadata Permission",
-    "fr": "Définir le permission des métadonnées"
+    "fr": "Définir les permissions des métadonnées"
   },
   "toggleColumnNullable": {
     "en": "Toggle Nullable",
@@ -469,11 +469,11 @@
   },
   "columnPagination": {
     "en": "Column Page",
-    "fr": "Page de colonne"
+    "fr": "Pagination des colonnes"
   },
   "rowPagination": {
     "en": "Row Page",
-    "fr": "Page de rangée"
+    "fr": "Pagination des lignes"
   },
   "columnsPerPage": {
     "en": "Columns Per Page",
@@ -489,7 +489,7 @@
   },
   "manageDatasets": {
     "en": "Manage Datasets",
-    "fr": "Gérer les ensembles de données"
+    "fr": "Gérer les bases de données"
   },
   "noResultsFound": {
     "en": "No Results Found",
@@ -513,11 +513,11 @@
   },
   "setupAdminDescription": {
     "en": "Setup Admin Description",
-    "fr": "Description de configuration administrateur"
+    "fr": "Description de la configuration administrateur"
   },
   "setupAdminTitle": {
     "en": "Setup Admin Title",
-    "fr": "Titre de configuration administrateur"
+    "fr": "Titre de la configuration administrateur"
   },
   "setupPageTitle": {
     "en": "Setup Page Title",

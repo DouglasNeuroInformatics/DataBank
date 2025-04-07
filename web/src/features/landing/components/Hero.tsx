@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { HeroIcon } from './HeroIcon';
 
-export const Hero = () => {
+export const Hero: React.FC<{ onLearnMore: () => void }> = ({ onLearnMore }) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   return (
-    <section className="flex gap-5 text-center xl:text-left">
+    <section className="flex min-h-[calc(100vh-4rem)] items-center justify-center gap-5 text-center xl:text-left">
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className="flex grow flex-col justify-center"
@@ -25,6 +25,7 @@ export const Hero = () => {
         <div className="mt-5 flex justify-center gap-3 xl:justify-start">
           <Button
             label={t('getStarted')}
+            size="lg"
             type="button"
             onClick={() => {
               navigate('/auth/create-account');
@@ -32,10 +33,11 @@ export const Hero = () => {
           />
           <Button
             label={t('learnMore')}
+            size="lg"
             type="button"
             variant="secondary"
             onClick={() => {
-              navigate('/auth/login');
+              onLearnMore();
             }}
           />
         </div>

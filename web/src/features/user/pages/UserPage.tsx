@@ -24,7 +24,7 @@ const UserPage = () => {
   );
 };
 
-export const UserRoute: RouteObject = {
+export const userRoute: RouteObject = {
   element: <UserPage />,
   path: 'user'
 };

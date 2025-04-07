@@ -16,8 +16,9 @@
   },
   "dependencies": {
     "@databank/core": "workspace:*",
+    "@douglasneuroinformatics/libjs": "catalog:",
     "@douglasneuroinformatics/libpasswd": "^0.0.3",
-    "@douglasneuroinformatics/libui": "^4.0.1",
+    "@douglasneuroinformatics/libui": "^4.0.2",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@tanstack/react-query": "^5.71.3",
@@ -25,6 +26,7 @@
     "axios": "^1.8.4",
     "framer-motion": "^12.6.3",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.487.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-dropzone": "^14.3.8",

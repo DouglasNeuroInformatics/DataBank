@@ -16,7 +16,7 @@ export const LandingHeader = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (
-    <header className="bg-white text-slate-700 shadow-sm dark:bg-slate-800 dark:text-slate-300">
+    <header className="text-muted-foreground bg-white shadow-sm dark:bg-slate-800">
       <motion.div
         animate={{ opacity: 1 }}
         className="bg-inherit"
@@ -25,7 +25,7 @@ export const LandingHeader = () => {
       >
         <div className="container flex flex-wrap items-center bg-inherit py-2">
           <Link className="flex items-center justify-center" to="/">
-            <Logo className="m-2 mr-10 hidden h-10 w-auto md:block" />
+            <Logo className="m-1 mr-10 hidden h-10 w-auto md:block" />
           </Link>
           <button
             className="m-2 md:hidden"
@@ -37,8 +37,8 @@ export const LandingHeader = () => {
             <Bars3Icon height={32} width={32} />
           </button>
           <div className="flex grow justify-end gap-3 bg-inherit md:order-last">
-            <ThemeToggle />
-            <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
+            <ThemeToggle className="p-2" />
+            <LanguageToggle align="end" options={{ en: 'English', fr: 'Français' }} triggerClassName="p-2" />
           </div>
           <nav
             className={cn(
@@ -50,7 +50,7 @@ export const LandingHeader = () => {
           >
             <Link
               className={cn(
-                'block p-3 font-medium',
+                'hover:text-foreground block p-3 font-medium',
 
                 languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
@@ -60,7 +60,7 @@ export const LandingHeader = () => {
             </Link>
             <Link
               className={cn(
-                'block p-3 font-medium',
+                'hover:text-foreground block p-3 font-medium',
                 languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
               to="/auth/create-account"
@@ -69,7 +69,7 @@ export const LandingHeader = () => {
             </Link>
             <Link
               className={cn(
-                'block p-3 font-medium',
+                'hover:text-foreground block p-3 font-medium',
                 languageResolved === 'en' ? 'capitalize' : 'first-letter:capitalize'
               )}
               to="/public/datasets"

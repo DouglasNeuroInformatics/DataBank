@@ -5,22 +5,22 @@ import type { RouteObject } from 'react-router-dom';
 
 import { Layout } from './components';
 import { authRoutes } from './features/auth';
-import { DashboardRoute, publicDatasetsRoute } from './features/dashboard';
-import { CreateDatasetRoute } from './features/dataset/pages/CreateDatasetPage';
-import { EditDatasetInfoRoute } from './features/dataset/pages/EditDatasetInfoPage';
-import { ManageDatasetManagersRoute } from './features/dataset/pages/ManageDatasetManagersPage';
-import { ViewDatasetsRoute } from './features/dataset/pages/ViewDatasetsPage';
-import { ViewOneDatasetRoute } from './features/dataset/pages/ViewOneDatasetPage';
+import { dashboardRoute, publicDatasetsRoute } from './features/dashboard';
+import { createDatasetRoute } from './features/dataset/pages/CreateDatasetPage';
+import { editDatasetInfoRoute } from './features/dataset/pages/EditDatasetInfoPage';
+import { manageDatasetManagersRoute } from './features/dataset/pages/ManageDatasetManagersPage';
+import { viewDatasetsRoute } from './features/dataset/pages/ViewDatasetsPage';
+import { viewOneDatasetRoute } from './features/dataset/pages/ViewOneDatasetPage';
 import { LandingPage } from './features/landing';
-import { AddProjectDatasetColumnRoute } from './features/projects/pages/AddProjectDatasetColumnPage';
-import { AddProjectDatasetRoute } from './features/projects/pages/AddProjectDatasetPage';
-import { CreateProjectRoute } from './features/projects/pages/CreateProjectPage';
-import { EditProjectInfoRoute } from './features/projects/pages/EditProjectInfoPage';
-import { ManageProjectUsersRoute } from './features/projects/pages/ManageProjectUsersPage';
-import { ViewOneProjectDatasetRoute } from './features/projects/pages/ViewOneProjectDatasetPage';
-import { ViewOneProjectRoute } from './features/projects/pages/ViewOneProjectPage';
-import { ViewProjectsRoute } from './features/projects/pages/ViewProjectsPage';
-import { UserRoute } from './features/user';
+import { addProjectDatasetColumnRoute } from './features/projects/pages/AddProjectDatasetColumnPage';
+import { addProjectDatasetRoute } from './features/projects/pages/AddProjectDatasetPage';
+import { createProjectRoute } from './features/projects/pages/CreateProjectPage';
+import { editProjectInfoRoute } from './features/projects/pages/EditProjectInfoPage';
+import { manageProjectUsersRoute } from './features/projects/pages/ManageProjectUsersPage';
+import { viewOneProjectDatasetRoute } from './features/projects/pages/ViewOneProjectDatasetPage';
+import { viewOneProjectRoute } from './features/projects/pages/ViewOneProjectPage';
+import { viewProjectsRoute } from './features/projects/pages/ViewProjectsPage';
+import { userRoute } from './features/user';
 import { useAuthStore } from './stores/auth-store';
 
 const publicRoutes: RouteObject[] = [
@@ -42,21 +42,21 @@ const protectedRoutes: RouteObject[] = [
   },
   {
     children: [
-      CreateDatasetRoute,
-      DashboardRoute,
-      ViewDatasetsRoute,
-      ViewOneDatasetRoute,
-      ViewOneProjectDatasetRoute,
-      ViewProjectsRoute,
-      ViewOneProjectRoute,
-      UserRoute,
-      CreateProjectRoute,
-      AddProjectDatasetRoute,
-      ManageDatasetManagersRoute,
-      ManageProjectUsersRoute,
-      EditDatasetInfoRoute,
-      EditProjectInfoRoute,
-      AddProjectDatasetColumnRoute
+      createDatasetRoute,
+      dashboardRoute,
+      viewDatasetsRoute,
+      viewOneDatasetRoute,
+      viewOneProjectDatasetRoute,
+      viewProjectsRoute,
+      viewOneProjectRoute,
+      userRoute,
+      createProjectRoute,
+      addProjectDatasetRoute,
+      manageDatasetManagersRoute,
+      manageProjectUsersRoute,
+      editDatasetInfoRoute,
+      editProjectInfoRoute,
+      addProjectDatasetColumnRoute
     ],
     element: <Layout />,
     path: 'portal'

@@ -231,7 +231,7 @@ const CreateDatasetPage = () => {
   );
 };
 
-export const CreateDatasetRoute: RouteObject = {
+export const createDatasetRoute: RouteObject = {
   element: <CreateDatasetPage />,
   path: 'createDataset'
 };

@@ -280,7 +280,7 @@ const AddProjectDatasetColumnPage = () => {
   return <Form content={formContent} validationSchema={formValidation} onSubmit={(data) => handleSubmit(data)} />;
 };
 
-export const AddProjectDatasetColumnRoute: RouteObject = {
+export const addProjectDatasetColumnRoute: RouteObject = {
   element: <AddProjectDatasetColumnPage />,
   path: 'project/add-columns/:projectId/:datasetId'
 };

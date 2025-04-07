@@ -63,7 +63,7 @@ const ManageProjectUsersPage = () => {
   );
 };
 
-export const ManageProjectUsersRoute: RouteObject = {
+export const manageProjectUsersRoute: RouteObject = {
   element: <ManageProjectUsersPage />,
   path: 'manageProjectUsers'
 };

@@ -24,43 +24,35 @@ const $CreateAccount = z.object({
     .refine((val) => estimatePasswordStrength(val).success, 'Insufficiant Password Strength')
 });
 
-// type CreateAccount = z.infer<typeof $CreateAccount>;
-
 export const CreateAccountForm = ({ onSubmit }: CreateAccountFormProps) => {
   const { t } = useTranslation('common');
   return (
     <Form
-      content={[
-        {
-          description: 'Create Account Form',
-          fields: {
-            email: {
-              kind: 'string',
-              label: t('email'),
-              variant: 'input'
-            },
-            firstName: {
-              kind: 'string',
-              label: t('firstName'),
-              variant: 'input'
-            },
-            lastName: {
-              kind: 'string',
-              label: t('lastName'),
-              variant: 'input'
-            },
-            password: {
-              calculateStrength: (password) => {
-                return estimatePasswordStrength(password).score;
-              },
-              kind: 'string',
-              label: t('password'),
-              variant: 'password'
-            }
+      content={{
+        email: {
+          kind: 'string',
+          label: t('email'),
+          variant: 'input'
+        },
+        firstName: {
+          kind: 'string',
+          label: t('firstName'),
+          variant: 'input'
+        },
+        lastName: {
+          kind: 'string',
+          label: t('lastName'),
+          variant: 'input'
+        },
+        password: {
+          calculateStrength: (password) => {
+            return estimatePasswordStrength(password).score;
           },
-          title: 'Create Account Form'
+          kind: 'string',
+          label: t('password'),
+          variant: 'password'
         }
-      ]}
+      }}
       validationSchema={$CreateAccount}
       onSubmit={onSubmit}
     />

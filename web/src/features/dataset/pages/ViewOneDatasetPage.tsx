@@ -2,6 +2,7 @@
 import { useState } from 'react';
 
 import type { DatasetViewPagination, TabularDataset } from '@databank/core';
+import { capitalize } from '@douglasneuroinformatics/libjs';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -11,6 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
+import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
 
 import { DatasetPagination } from '../components/DatasetPagination';
@@ -94,11 +96,18 @@ const ViewOneDatasetPage = () => {
       .catch(console.error);
   };
 
-  return dataset ? (
+  if (!dataset) {
+    return <LoadingFallback />;
+  }
+
+  const datasetName = capitalize(dataset.name);
+
+  return (
     <>
+      <PageHeading>{datasetName}</PageHeading>
       <Card>
         <Card.Header>
-          <Card.Title>{`${t('datasetName')}: ${dataset.name}`}</Card.Title>
+          <Card.Title>{`${t('datasetName')}: ${datasetName}`}</Card.Title>
           <Card.Description>{`${t('datasetDescription')}: ${dataset.description}`}</Card.Description>
           <Card.Description>{`${t('createdAt')} : ${dataset.createdAt.toString()}`}</Card.Description>
           <Card.Description>{`${t('updatedAt')} : ${dataset.updatedAt.toString()}`}</Card.Description>
@@ -240,12 +249,10 @@ const ViewOneDatasetPage = () => {
         </Card.Footer>
       </Card>
     </>
-  ) : (
-    <LoadingFallback />
   );
 };
 
-export const ViewOneDatasetRoute: RouteObject = {
+export const viewOneDatasetRoute: RouteObject = {
   path: 'dataset/:datasetId',
   element: <ViewOneDatasetPage />
 };

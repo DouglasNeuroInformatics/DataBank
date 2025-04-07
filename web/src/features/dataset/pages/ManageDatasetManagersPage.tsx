@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';
 import { z } from 'zod';
 
+import { PageHeading } from '@/components/PageHeading';
+
 import ManagerCard from '../components/ManagerCard';
 
 const ManageDatasetManagersPage = () => {
@@ -33,6 +35,7 @@ const ManageDatasetManagersPage = () => {
 
   return (
     <>
+      <PageHeading>{t('manageDatasetManagers')}</PageHeading>
       <Form
         content={{
           newManagerEmail: {
@@ -66,7 +69,7 @@ const ManageDatasetManagersPage = () => {
   );
 };
 
-export const ManageDatasetManagersRoute: RouteObject = {
+export const manageDatasetManagersRoute: RouteObject = {
   element: <ManageDatasetManagersPage />,
   path: 'manageDatasetManager'
 };
