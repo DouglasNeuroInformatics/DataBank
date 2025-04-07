@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@databank/core": "workspace:*",
+    "@douglasneuroinformatics/libjs": "catalog:",
     "@douglasneuroinformatics/libpasswd": "^0.0.3",
     "@douglasneuroinformatics/libui": "^4.0.2",
     "@headlessui/react": "^2.2.0",
