@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';
 
+import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
 
 import DatasetCard from '../components/DatasetCard';
@@ -32,51 +33,54 @@ const ViewDatasetsPage = () => {
   }, []);
 
   return (
-    <Card>
-      <Card.Header>
-        <Card.Title className="text-3xl">
-          {t({
-            en: 'Datasets',
-            fr: 'Ensembles de données'
-          })}
-        </Card.Title>
-        <Button className="m-2" variant={'secondary'} onClick={() => navigate('/portal/createDataset')}>
-          Create Dataset
-        </Button>
-      </Card.Header>
-      <Card.Content>
-        <ul>
-          {datasetsInfoArray?.map((datasetInfo, i) => {
-            let isManager: boolean;
-            if (!currentUser?.id) {
-              isManager = false;
-            } else {
-              isManager = datasetInfo.managerIds.includes(currentUser.id);
-            }
-            return (
-              datasetInfo && (
-                <li key={i}>
-                  <DatasetCard
-                    createdAt={datasetInfo.createdAt}
-                    datasetType={datasetInfo.datasetType}
-                    description={datasetInfo.description}
-                    id={datasetInfo.id}
-                    isManager={isManager}
-                    isReadyToShare={false}
-                    license={datasetInfo.license}
-                    managerIds={datasetInfo.managerIds}
-                    name={datasetInfo.name}
-                    permission={datasetInfo.permission}
-                    updatedAt={datasetInfo.updatedAt}
-                  />
-                </li>
-              )
-            );
-          })}
-        </ul>
-      </Card.Content>
-      <Card.Footer className="flex justify-between"></Card.Footer>
-    </Card>
+    <>
+      <PageHeading>
+        {t({
+          en: 'Datasets',
+          fr: 'Ensembles de données'
+        })}
+      </PageHeading>
+      <Card>
+        <Card.Header>
+          <Card.Title className="text-3xl"></Card.Title>
+          <Button className="m-2" variant={'secondary'} onClick={() => navigate('/portal/createDataset')}>
+            Create Dataset
+          </Button>
+        </Card.Header>
+        <Card.Content>
+          <ul>
+            {datasetsInfoArray?.map((datasetInfo, i) => {
+              let isManager: boolean;
+              if (!currentUser?.id) {
+                isManager = false;
+              } else {
+                isManager = datasetInfo.managerIds.includes(currentUser.id);
+              }
+              return (
+                datasetInfo && (
+                  <li key={i}>
+                    <DatasetCard
+                      createdAt={datasetInfo.createdAt}
+                      datasetType={datasetInfo.datasetType}
+                      description={datasetInfo.description}
+                      id={datasetInfo.id}
+                      isManager={isManager}
+                      isReadyToShare={false}
+                      license={datasetInfo.license}
+                      managerIds={datasetInfo.managerIds}
+                      name={datasetInfo.name}
+                      permission={datasetInfo.permission}
+                      updatedAt={datasetInfo.updatedAt}
+                    />
+                  </li>
+                )
+              );
+            })}
+          </ul>
+        </Card.Content>
+        <Card.Footer className="flex justify-between"></Card.Footer>
+      </Card>
+    </>
   );
 };
 
