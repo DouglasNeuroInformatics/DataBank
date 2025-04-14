@@ -38,5 +38,8 @@
     "@types/express": "^5.0.1",
     "@types/multer": "^1.4.12",
     "prisma": "^6.5.0"
+  },
+  "prisma": {
+    "schema": "./prisma/schema"
   }
 }
