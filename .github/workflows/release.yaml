@@ -17,5 +17,5 @@ jobs:
       org: DouglasNeuroinformatics
       packages: databank-api, databank-web
       validate_command: pnpm lint
-    secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # secrets:
+    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
