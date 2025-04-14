@@ -3,16 +3,11 @@ on:
   push:
     branches: ['main']
   workflow_dispatch:
-permissions:
-  contents: read
-  packages: write
 jobs:
   release:
     permissions:
       contents: write
-      issues: write
-      pull-requests: write
-      id-token: write
+      packages: write
     uses: DouglasNeuroinformatics/.github/.github/workflows/app-release.yaml@main
     with:
       org: DouglasNeuroinformatics
