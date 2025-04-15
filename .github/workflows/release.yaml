@@ -1,0 +1,17 @@
+name: Release
+on:
+  push:
+    branches: ['main']
+  workflow_dispatch:
+jobs:
+  release:
+    permissions:
+      contents: write
+      packages: write
+    uses: DouglasNeuroinformatics/.github/.github/workflows/app-release.yaml@main
+    with:
+      org: DouglasNeuroinformatics
+      packages: databank-api, databank-web
+      validate_command: pnpm lint
+    # secrets:
+    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
