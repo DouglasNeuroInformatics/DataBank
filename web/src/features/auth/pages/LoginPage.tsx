@@ -38,7 +38,7 @@ export const LoginPage = () => {
   }, []);
 
   return (
-    <AuthLayout title={t('login')}>
+    <AuthLayout maxWidth="sm" title={t('login')}>
       <LoginForm onSubmit={(data) => void login(data)} />
     </AuthLayout>
   );

@@ -43,7 +43,7 @@ export const ConfirmEmailPage = () => {
   };
 
   return seconds ? (
-    <AuthLayout title={t('verifyAccount')}>
+    <AuthLayout maxWidth="sm" title={t('verifyAccount')}>
       <ConfirmEmailCodeInput className="my-5" onComplete={verifyCode} />
       <Countdown seconds={seconds} />
     </AuthLayout>
