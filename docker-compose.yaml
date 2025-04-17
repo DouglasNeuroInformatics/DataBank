@@ -13,7 +13,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
   api:
-    image: ghcr.io/douglasneuroinformatics/databank-api:latest
+    image: ghcr.io/douglasneuroinformatics/databank-api:${RELEASE_CHANNEL}
     restart: unless-stopped
     build:
       context: .
@@ -23,6 +23,10 @@ services:
     environment:
       - NODE_ENV=production
       - MONGO_URI=mongodb://mongo:27017
+      - MONGO_REPLICA_SET=rs0
+      - MONGO_RETRY_WRITES=true
+      - MONGO_WRITE_CONCERN=majority
+      - MONGO_DIRECT_CONNECTION=true
       - API_PORT=80
       - SMTP_HOST
       - SMTP_PORT
@@ -36,7 +40,7 @@ services:
     expose:
       - 80
   web:
-    image: ghcr.io/douglasneuroinformatics/databank-web:latest
+    image: ghcr.io/douglasneuroinformatics/databank-web:${RELEASE_CHANNEL}
     restart: unless-stopped
     build:
       context: .
