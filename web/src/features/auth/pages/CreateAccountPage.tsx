@@ -33,7 +33,7 @@ export const CreateAccountPage = () => {
   };
 
   return (
-    <AuthLayout title={t('createAccount')}>
+    <AuthLayout maxWidth="md" title={t('createAccount')}>
       <CreateAccountForm onSubmit={(data) => void createAccount(data)} />
     </AuthLayout>
   );

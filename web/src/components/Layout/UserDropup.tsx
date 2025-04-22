@@ -1,48 +1,48 @@
-import React from 'react';
-
+import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { Menu, Transition } from '@headlessui/react';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
-import { Link } from 'react-router-dom';
+import { LogOutIcon, SettingsIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
 export const UserDropup = () => {
   const auth = useAuthStore();
   const { t } = useTranslation('common');
+  const navigate = useNavigate();
+
   return (
-    <Menu as="div" className="relative p-2">
-      <Menu.Button>
-        <UserCircleIcon className="h-8 w-8" />
-      </Menu.Button>
-      <Transition
-        as={React.Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
+    <DropdownMenu>
+      <DropdownMenu.Trigger asChild>
+        <UserCircleIcon className="m-2 mb-4 h-8 w-8" />
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content
+        align="start"
+        className="w-[var(--radix-dropdown-menu-trigger-width)] rounded-lg"
+        side="top"
+        sideOffset={4}
       >
-        <Menu.Items className="rounded-xs absolute bottom-14 left-0 z-50 origin-bottom-left whitespace-nowrap border border-slate-700 bg-slate-800 shadow-lg">
-          <Menu.Item>
-            <Link className="block w-full p-2 first-letter:capitalize hover:bg-slate-700" to="/portal/user">
-              {t('preferences')}
-            </Link>
-          </Menu.Item>
-          <Menu.Item>
-            <button
-              className="block w-full p-2 text-left first-letter:capitalize hover:bg-slate-700"
-              type="button"
-              onClick={() => {
-                auth.logout();
-              }}
-            >
-              {t('logout')}
-            </button>
-          </Menu.Item>
-        </Menu.Items>
-      </Transition>
-    </Menu>
+        <DropdownMenu.Group>
+          <DropdownMenu.Item
+            className="gap-2 hover:bg-slate-700 hover:text-slate-100 focus:bg-slate-700 focus:text-slate-100 focus:ring-0"
+            onClick={() => {
+              navigate('/about');
+            }}
+          >
+            <SettingsIcon />
+            {t('preferences')}
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            className="gap-2 hover:bg-slate-700 hover:text-slate-100 focus:bg-slate-700 focus:text-slate-100 focus:ring-0"
+            onClick={() => {
+              auth.logout();
+            }}
+          >
+            <LogOutIcon />
+            {t('logout')}
+          </DropdownMenu.Item>
+        </DropdownMenu.Group>
+      </DropdownMenu.Content>
+    </DropdownMenu>
   );
 };

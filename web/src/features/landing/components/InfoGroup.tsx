@@ -19,7 +19,7 @@ export const InfoGroup = ({ description, items, title }: InfoGroupProps) => {
       <ul className="space-y-5">
         {items.map((item) => (
           <li className="flex" key={item.label}>
-            <div className="flex h-full w-10 flex-shrink-0 flex-col [&>svg]:h-8 [&>svg]:w-8 [&>svg]:fill-green-600 [&>svg]:stroke-white">
+            <div className="flex h-full w-10 flex-shrink-0 flex-col [&>svg>circle]:stroke-none [&>svg]:h-8 [&>svg]:w-8 [&>svg]:fill-green-600 [&>svg]:stroke-white">
               <CircleCheckIcon style={{ height: '32px', width: '32px' }} />
             </div>
             <div className="flex grow flex-col">
