@@ -45,8 +45,17 @@ export const DesktopSidebar = ({ isLogIn, navigation }: DesktopSidebarProps) => 
         </nav>
       </div>
       <div className="flex shrink flex-col items-center space-y-3">
-        <ThemeToggle className="hover:backdrop-brightness-150" />
-        <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
+        <ThemeToggle className="hover:text-slate-30 border border-slate-700 hover:bg-slate-700" variant="ghost" />
+        <LanguageToggle
+          contentClassName="bg-slate-800 border-slate-700 text-slate-300"
+          itemClassName="bg-slate-800 hover:bg-slate-700 focus:bg-slate-700 focus:text-slate-100"
+          options={{
+            en: 'English',
+            fr: 'Français'
+          }}
+          triggerClassName="border border-slate-700 hover:bg-slate-700 hover:text-slate-300 focus-visible:ring-0"
+          variant="ghost"
+        />
         {isLogIn && <UserDropup />}
       </div>
     </div>
