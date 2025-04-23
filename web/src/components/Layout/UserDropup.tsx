@@ -26,7 +26,7 @@ export const UserDropup = () => {
           <DropdownMenu.Item
             className="gap-2 hover:bg-slate-700 hover:text-slate-100 focus:bg-slate-700 focus:text-slate-100 focus:ring-0"
             onClick={() => {
-              navigate('/about');
+              navigate('/portal/user');
             }}
           >
             <SettingsIcon />
