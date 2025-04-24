@@ -1,12 +1,9 @@
 import { $BooleanLike, $NumberLike } from '@douglasneuroinformatics/libjs';
-import { $BaseEnv, AppFactory } from '@douglasneuroinformatics/libnest';
-import { Module } from '@nestjs/common';
-import type { MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { $BaseEnv, acceptLanguage, AppFactory } from '@douglasneuroinformatics/libnest';
 import { z } from 'zod';
 
 import { AuthModule } from './auth/auth.module.js';
 import { ColumnsModule } from './columns/columns.module.js';
-import { AcceptLanguageMiddleware } from './core/middleware/accept-language.middleware.js';
 import { DatasetsModule } from './datasets/datasets.module.js';
 import { I18nModule } from './i18n/i18n.module.js';
 import { ProjectsModule } from './projects/projects.module';
@@ -14,25 +11,11 @@ import { SetupModule } from './setup/setup.module.js';
 import { TabularDataModule } from './tabular-data/tabular-data.module';
 import { UsersModule } from './users/users.module.js';
 
-@Module({
-  imports: [
-    AuthModule,
-    ColumnsModule,
-    DatasetsModule,
-    I18nModule,
-    ProjectsModule,
-    SetupModule,
-    TabularDataModule,
-    UsersModule
-  ]
-})
-class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AcceptLanguageMiddleware).forRoutes('*');
-  }
-}
-
 export default AppFactory.create({
+  configureMiddleware: (consumer) => {
+    const middleware = acceptLanguage({ fallbackLanguage: 'en', supportedLanguages: ['en', 'fr'] });
+    consumer.apply(middleware).forRoutes('*');
+  },
   docs: {
     contact: {
       email: 'support@douglasneuroinformatics.ca',
@@ -57,7 +40,16 @@ export default AppFactory.create({
     SMTP_SENDER: z.string().min(1).email(),
     VALIDATION_TIMEOUT: $NumberLike.pipe(z.number().positive().int())
   }),
-  imports: [AppModule],
+  imports: [
+    AuthModule,
+    ColumnsModule,
+    DatasetsModule,
+    I18nModule,
+    ProjectsModule,
+    SetupModule,
+    TabularDataModule,
+    UsersModule
+  ],
   prisma: {
     dbPrefix: 'data-bank'
   },
