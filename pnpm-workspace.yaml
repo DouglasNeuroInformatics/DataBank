@@ -5,5 +5,4 @@ catalog:
 packages:
   - api
   - core
-  - test
   - web
