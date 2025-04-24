@@ -17,7 +17,7 @@
   "dependencies": {
     "@databank/core": "workspace:*",
     "@douglasneuroinformatics/libjs": "catalog:",
-    "@douglasneuroinformatics/libnest": "^4.3.0",
+    "@douglasneuroinformatics/libnest": "^5.1.0",
     "@nestjs/common": "^11.0.12",
     "@nestjs/core": "^11.0.12",
     "@nestjs/jwt": "^11.0.0",

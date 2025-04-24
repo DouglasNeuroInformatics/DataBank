@@ -89,7 +89,7 @@ export class AuthService {
   }
 
   async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser): Promise<AuthPayload> {
-    const user = await this.usersService.findByEmail(email);
+    let user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new NotFoundException('User Not Found');
     } else if (!user.confirmEmailInfo) {
@@ -145,6 +145,9 @@ export class AuthService {
     if (isVerified) {
       await this.usersService.setVerified(user.email);
     }
+
+    // retrieve the user from the db again, since it was modified and we need the most recent info encoded in the token
+    user = (await this.usersService.findByEmail(email))!;
 
     const accessToken = await this.signToken(user);
 

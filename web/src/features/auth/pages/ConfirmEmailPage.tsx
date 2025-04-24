@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { AuthPayload, EmailConfirmationProcedureInfo } from '@databank/core';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -18,9 +18,13 @@ export const ConfirmEmailPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   const [seconds, setSeconds] = useState<number>();
+  const hasSentEmail = useRef(false);
 
   useEffect(() => {
-    void sendConfirmEmailCode();
+    if (!hasSentEmail.current) {
+      void sendConfirmEmailCode();
+      hasSentEmail.current = true;
+    }
   }, []);
 
   useEffect(() => {
@@ -43,7 +47,7 @@ export const ConfirmEmailPage = () => {
   };
 
   return seconds ? (
-    <AuthLayout title={t('verifyAccount')}>
+    <AuthLayout maxWidth="sm" title={t('verifyAccount')}>
       <ConfirmEmailCodeInput className="my-5" onComplete={verifyCode} />
       <Countdown seconds={seconds} />
     </AuthLayout>
