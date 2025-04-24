@@ -32,7 +32,7 @@ export class AuthController {
   @Post('confirm-email-code')
   @RouteAccess({ allowUnverified: true, role: 'STANDARD' })
   sendConfirmEmailCode(@Req() request: Request) {
-    return this.authService.sendConfirmEmailCode(request.user!, request.user!.locale);
+    return this.authService.sendConfirmEmailCode(request.user!, request.locale);
   }
 
   @ApiOperation({ description: 'Verify an account using a verification code', summary: 'Verify Account' })
