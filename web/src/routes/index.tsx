@@ -1,15 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-const Index = () => {
-  return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-    </div>
-  );
-};
+import { LandingPage } from '@/features/landing';
+
+// const Landing = () => {
+//   return <h1>Landing Page</h1>
+// }
 
 const Route = createFileRoute('/')({
-  component: Index
+  component: LandingPage
 });
 
 export { Route };

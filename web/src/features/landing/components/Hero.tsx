@@ -1,7 +1,7 @@
 import { Button } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 
 import { HeroIcon } from './HeroIcon';
 
@@ -28,7 +28,7 @@ export const Hero: React.FC<{ onLearnMore: () => void }> = ({ onLearnMore }) => 
             size="lg"
             type="button"
             onClick={() => {
-              navigate('/auth/create-account');
+              void navigate({ to: '/auth/create-account' });
             }}
           />
           <Button

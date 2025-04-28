@@ -11,20 +11,34 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
-import { Route as AboutImport } from './routes/about';
 import { Route as IndexImport } from './routes/index';
+import { Route as PublicDatasetsImport } from './routes/public/datasets';
+import { Route as AuthLoginImport } from './routes/auth/login';
+import { Route as AuthCreateAccountImport } from './routes/auth/create-account';
 
 // Create/Update Routes
-
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRoute
-} as any);
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute
+} as any);
+
+const PublicDatasetsRoute = PublicDatasetsImport.update({
+  id: '/public/datasets',
+  path: '/public/datasets',
+  getParentRoute: () => rootRoute
+} as any);
+
+const AuthLoginRoute = AuthLoginImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRoute
+} as any);
+
+const AuthCreateAccountRoute = AuthCreateAccountImport.update({
+  id: '/auth/create-account',
+  path: '/auth/create-account',
   getParentRoute: () => rootRoute
 } as any);
 
@@ -39,11 +53,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
-    '/about': {
-      id: '/about';
-      path: '/about';
-      fullPath: '/about';
-      preLoaderRoute: typeof AboutImport;
+    '/auth/create-account': {
+      id: '/auth/create-account';
+      path: '/auth/create-account';
+      fullPath: '/auth/create-account';
+      preLoaderRoute: typeof AuthCreateAccountImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/auth/login': {
+      id: '/auth/login';
+      path: '/auth/login';
+      fullPath: '/auth/login';
+      preLoaderRoute: typeof AuthLoginImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/public/datasets': {
+      id: '/public/datasets';
+      path: '/public/datasets';
+      fullPath: '/public/datasets';
+      preLoaderRoute: typeof PublicDatasetsImport;
       parentRoute: typeof rootRoute;
     };
   }
@@ -53,37 +81,47 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
+  '/auth/create-account': typeof AuthCreateAccountRoute;
+  '/auth/login': typeof AuthLoginRoute;
+  '/public/datasets': typeof PublicDatasetsRoute;
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
+  '/auth/create-account': typeof AuthCreateAccountRoute;
+  '/auth/login': typeof AuthLoginRoute;
+  '/public/datasets': typeof PublicDatasetsRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
+  '/auth/create-account': typeof AuthCreateAccountRoute;
+  '/auth/login': typeof AuthLoginRoute;
+  '/public/datasets': typeof PublicDatasetsRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/about';
+  fullPaths: '/' | '/auth/create-account' | '/auth/login' | '/public/datasets';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/about';
-  id: '__root__' | '/' | '/about';
+  to: '/' | '/auth/create-account' | '/auth/login' | '/public/datasets';
+  id: '__root__' | '/' | '/auth/create-account' | '/auth/login' | '/public/datasets';
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
-  AboutRoute: typeof AboutRoute;
+  AuthCreateAccountRoute: typeof AuthCreateAccountRoute;
+  AuthLoginRoute: typeof AuthLoginRoute;
+  PublicDatasetsRoute: typeof PublicDatasetsRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute
+  AuthCreateAccountRoute: AuthCreateAccountRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  PublicDatasetsRoute: PublicDatasetsRoute
 };
 
 export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
@@ -95,14 +133,22 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/about"
+        "/auth/create-account",
+        "/auth/login",
+        "/public/datasets"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/about": {
-      "filePath": "about.tsx"
+    "/auth/create-account": {
+      "filePath": "auth/create-account.tsx"
+    },
+    "/auth/login": {
+      "filePath": "auth/login.tsx"
+    },
+    "/public/datasets": {
+      "filePath": "public/datasets.tsx"
     }
   }
 }
