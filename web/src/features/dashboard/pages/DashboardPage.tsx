@@ -1,6 +1,5 @@
 import { Heading } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import type { RouteObject } from 'react-router-dom';
 
 import { PageHeading } from '@/components/PageHeading';
 
@@ -24,7 +23,4 @@ const DashboardPage = () => {
   );
 };
 
-export const dashboardRoute: RouteObject = {
-  element: <DashboardPage />,
-  path: 'dashboard'
-};
+export { DashboardPage };

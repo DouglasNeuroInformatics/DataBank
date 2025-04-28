@@ -1,9 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/auth/create-account')({
-  component: RouteComponent
-});
+import { CreateAccountPage } from '@/features/auth/pages/CreateAccountPage';
 
-function RouteComponent() {
-  return <div>Hello "/auth/create-account"!</div>;
-}
+export const Route = createFileRoute('/auth/create-account')({
+  component: CreateAccountPage
+});

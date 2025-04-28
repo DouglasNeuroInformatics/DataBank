@@ -4,9 +4,8 @@ import { useEffect, useState } from 'react';
 import type { DatasetCardProps } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 
 import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
@@ -43,7 +42,15 @@ const ViewDatasetsPage = () => {
       <Card>
         <Card.Header>
           <Card.Title className="text-3xl"></Card.Title>
-          <Button className="m-2" variant={'secondary'} onClick={() => navigate('/portal/createDataset')}>
+          <Button
+            className="m-2"
+            variant={'secondary'}
+            onClick={() =>
+              void navigate({
+                to: '/portal/datasets/create-dataset'
+              })
+            }
+          >
             Create Dataset
           </Button>
         </Card.Header>
@@ -84,7 +91,4 @@ const ViewDatasetsPage = () => {
   );
 };
 
-export const viewDatasetsRoute: RouteObject = {
-  path: 'datasets',
-  element: <ViewDatasetsPage />
-};
+export { ViewDatasetsPage };

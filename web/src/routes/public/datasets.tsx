@@ -1,9 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/public/datasets')({
-  component: RouteComponent
-});
+import { ViewPublicDatasetsPage } from '@/features/dataset/pages/ViewPublicDatasetsPage';
 
-function RouteComponent() {
-  return <div>Hello "/public/datasets"!</div>;
-}
+export const Route = createFileRoute('/public/datasets')({
+  component: ViewPublicDatasetsPage
+});

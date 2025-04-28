@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 
 import { Logo } from '@/components';
 

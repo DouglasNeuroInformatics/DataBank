@@ -11,12 +11,25 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
+import { Route as PortalImport } from './routes/portal';
 import { Route as IndexImport } from './routes/index';
 import { Route as PublicDatasetsImport } from './routes/public/datasets';
 import { Route as AuthLoginImport } from './routes/auth/login';
 import { Route as AuthCreateAccountImport } from './routes/auth/create-account';
+import { Route as AuthConfirmEmailCodeImport } from './routes/auth/confirm-email-code';
+import { Route as PortalUserIndexImport } from './routes/portal/user/index';
+import { Route as PortalDatasetsIndexImport } from './routes/portal/datasets/index';
+import { Route as PortalDashboardIndexImport } from './routes/portal/dashboard/index';
+import { Route as PublicDatasetDatasetIdImport } from './routes/public/dataset.$datasetId';
+import { Route as PortalDatasetsCreateDatasetImport } from './routes/portal/datasets/create-dataset';
 
 // Create/Update Routes
+
+const PortalRoute = PortalImport.update({
+  id: '/portal',
+  path: '/portal',
+  getParentRoute: () => rootRoute
+} as any);
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -42,6 +55,42 @@ const AuthCreateAccountRoute = AuthCreateAccountImport.update({
   getParentRoute: () => rootRoute
 } as any);
 
+const AuthConfirmEmailCodeRoute = AuthConfirmEmailCodeImport.update({
+  id: '/auth/confirm-email-code',
+  path: '/auth/confirm-email-code',
+  getParentRoute: () => rootRoute
+} as any);
+
+const PortalUserIndexRoute = PortalUserIndexImport.update({
+  id: '/user/',
+  path: '/user/',
+  getParentRoute: () => PortalRoute
+} as any);
+
+const PortalDatasetsIndexRoute = PortalDatasetsIndexImport.update({
+  id: '/datasets/',
+  path: '/datasets/',
+  getParentRoute: () => PortalRoute
+} as any);
+
+const PortalDashboardIndexRoute = PortalDashboardIndexImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => PortalRoute
+} as any);
+
+const PublicDatasetDatasetIdRoute = PublicDatasetDatasetIdImport.update({
+  id: '/public/dataset/$datasetId',
+  path: '/public/dataset/$datasetId',
+  getParentRoute: () => rootRoute
+} as any);
+
+const PortalDatasetsCreateDatasetRoute = PortalDatasetsCreateDatasetImport.update({
+  id: '/datasets/create-dataset',
+  path: '/datasets/create-dataset',
+  getParentRoute: () => PortalRoute
+} as any);
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -51,6 +100,20 @@ declare module '@tanstack/react-router' {
       path: '/';
       fullPath: '/';
       preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/portal': {
+      id: '/portal';
+      path: '/portal';
+      fullPath: '/portal';
+      preLoaderRoute: typeof PortalImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/auth/confirm-email-code': {
+      id: '/auth/confirm-email-code';
+      path: '/auth/confirm-email-code';
+      fullPath: '/auth/confirm-email-code';
+      preLoaderRoute: typeof AuthConfirmEmailCodeImport;
       parentRoute: typeof rootRoute;
     };
     '/auth/create-account': {
@@ -74,54 +137,166 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicDatasetsImport;
       parentRoute: typeof rootRoute;
     };
+    '/portal/datasets/create-dataset': {
+      id: '/portal/datasets/create-dataset';
+      path: '/datasets/create-dataset';
+      fullPath: '/portal/datasets/create-dataset';
+      preLoaderRoute: typeof PortalDatasetsCreateDatasetImport;
+      parentRoute: typeof PortalImport;
+    };
+    '/public/dataset/$datasetId': {
+      id: '/public/dataset/$datasetId';
+      path: '/public/dataset/$datasetId';
+      fullPath: '/public/dataset/$datasetId';
+      preLoaderRoute: typeof PublicDatasetDatasetIdImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/portal/dashboard/': {
+      id: '/portal/dashboard/';
+      path: '/dashboard';
+      fullPath: '/portal/dashboard';
+      preLoaderRoute: typeof PortalDashboardIndexImport;
+      parentRoute: typeof PortalImport;
+    };
+    '/portal/datasets/': {
+      id: '/portal/datasets/';
+      path: '/datasets';
+      fullPath: '/portal/datasets';
+      preLoaderRoute: typeof PortalDatasetsIndexImport;
+      parentRoute: typeof PortalImport;
+    };
+    '/portal/user/': {
+      id: '/portal/user/';
+      path: '/user';
+      fullPath: '/portal/user';
+      preLoaderRoute: typeof PortalUserIndexImport;
+      parentRoute: typeof PortalImport;
+    };
   }
 }
 
 // Create and export the route tree
 
+interface PortalRouteChildren {
+  PortalDatasetsCreateDatasetRoute: typeof PortalDatasetsCreateDatasetRoute;
+  PortalDashboardIndexRoute: typeof PortalDashboardIndexRoute;
+  PortalDatasetsIndexRoute: typeof PortalDatasetsIndexRoute;
+  PortalUserIndexRoute: typeof PortalUserIndexRoute;
+}
+
+const PortalRouteChildren: PortalRouteChildren = {
+  PortalDatasetsCreateDatasetRoute: PortalDatasetsCreateDatasetRoute,
+  PortalDashboardIndexRoute: PortalDashboardIndexRoute,
+  PortalDatasetsIndexRoute: PortalDatasetsIndexRoute,
+  PortalUserIndexRoute: PortalUserIndexRoute
+};
+
+const PortalRouteWithChildren = PortalRoute._addFileChildren(PortalRouteChildren);
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
+  '/portal': typeof PortalRouteWithChildren;
+  '/auth/confirm-email-code': typeof AuthConfirmEmailCodeRoute;
   '/auth/create-account': typeof AuthCreateAccountRoute;
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
+  '/portal/datasets/create-dataset': typeof PortalDatasetsCreateDatasetRoute;
+  '/public/dataset/$datasetId': typeof PublicDatasetDatasetIdRoute;
+  '/portal/dashboard': typeof PortalDashboardIndexRoute;
+  '/portal/datasets': typeof PortalDatasetsIndexRoute;
+  '/portal/user': typeof PortalUserIndexRoute;
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
+  '/portal': typeof PortalRouteWithChildren;
+  '/auth/confirm-email-code': typeof AuthConfirmEmailCodeRoute;
   '/auth/create-account': typeof AuthCreateAccountRoute;
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
+  '/portal/datasets/create-dataset': typeof PortalDatasetsCreateDatasetRoute;
+  '/public/dataset/$datasetId': typeof PublicDatasetDatasetIdRoute;
+  '/portal/dashboard': typeof PortalDashboardIndexRoute;
+  '/portal/datasets': typeof PortalDatasetsIndexRoute;
+  '/portal/user': typeof PortalUserIndexRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   '/': typeof IndexRoute;
+  '/portal': typeof PortalRouteWithChildren;
+  '/auth/confirm-email-code': typeof AuthConfirmEmailCodeRoute;
   '/auth/create-account': typeof AuthCreateAccountRoute;
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
+  '/portal/datasets/create-dataset': typeof PortalDatasetsCreateDatasetRoute;
+  '/public/dataset/$datasetId': typeof PublicDatasetDatasetIdRoute;
+  '/portal/dashboard/': typeof PortalDashboardIndexRoute;
+  '/portal/datasets/': typeof PortalDatasetsIndexRoute;
+  '/portal/user/': typeof PortalUserIndexRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/auth/create-account' | '/auth/login' | '/public/datasets';
+  fullPaths:
+    | '/'
+    | '/portal'
+    | '/auth/confirm-email-code'
+    | '/auth/create-account'
+    | '/auth/login'
+    | '/public/datasets'
+    | '/portal/datasets/create-dataset'
+    | '/public/dataset/$datasetId'
+    | '/portal/dashboard'
+    | '/portal/datasets'
+    | '/portal/user';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/auth/create-account' | '/auth/login' | '/public/datasets';
-  id: '__root__' | '/' | '/auth/create-account' | '/auth/login' | '/public/datasets';
+  to:
+    | '/'
+    | '/portal'
+    | '/auth/confirm-email-code'
+    | '/auth/create-account'
+    | '/auth/login'
+    | '/public/datasets'
+    | '/portal/datasets/create-dataset'
+    | '/public/dataset/$datasetId'
+    | '/portal/dashboard'
+    | '/portal/datasets'
+    | '/portal/user';
+  id:
+    | '__root__'
+    | '/'
+    | '/portal'
+    | '/auth/confirm-email-code'
+    | '/auth/create-account'
+    | '/auth/login'
+    | '/public/datasets'
+    | '/portal/datasets/create-dataset'
+    | '/public/dataset/$datasetId'
+    | '/portal/dashboard/'
+    | '/portal/datasets/'
+    | '/portal/user/';
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  PortalRoute: typeof PortalRouteWithChildren;
+  AuthConfirmEmailCodeRoute: typeof AuthConfirmEmailCodeRoute;
   AuthCreateAccountRoute: typeof AuthCreateAccountRoute;
   AuthLoginRoute: typeof AuthLoginRoute;
   PublicDatasetsRoute: typeof PublicDatasetsRoute;
+  PublicDatasetDatasetIdRoute: typeof PublicDatasetDatasetIdRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PortalRoute: PortalRouteWithChildren,
+  AuthConfirmEmailCodeRoute: AuthConfirmEmailCodeRoute,
   AuthCreateAccountRoute: AuthCreateAccountRoute,
   AuthLoginRoute: AuthLoginRoute,
-  PublicDatasetsRoute: PublicDatasetsRoute
+  PublicDatasetsRoute: PublicDatasetsRoute,
+  PublicDatasetDatasetIdRoute: PublicDatasetDatasetIdRoute
 };
 
 export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
@@ -133,13 +308,28 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/portal",
+        "/auth/confirm-email-code",
         "/auth/create-account",
         "/auth/login",
-        "/public/datasets"
+        "/public/datasets",
+        "/public/dataset/$datasetId"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/portal": {
+      "filePath": "portal.tsx",
+      "children": [
+        "/portal/datasets/create-dataset",
+        "/portal/dashboard/",
+        "/portal/datasets/",
+        "/portal/user/"
+      ]
+    },
+    "/auth/confirm-email-code": {
+      "filePath": "auth/confirm-email-code.tsx"
     },
     "/auth/create-account": {
       "filePath": "auth/create-account.tsx"
@@ -149,6 +339,25 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     },
     "/public/datasets": {
       "filePath": "public/datasets.tsx"
+    },
+    "/portal/datasets/create-dataset": {
+      "filePath": "portal/datasets/create-dataset.tsx",
+      "parent": "/portal"
+    },
+    "/public/dataset/$datasetId": {
+      "filePath": "public/dataset.$datasetId.tsx"
+    },
+    "/portal/dashboard/": {
+      "filePath": "portal/dashboard/index.tsx",
+      "parent": "/portal"
+    },
+    "/portal/datasets/": {
+      "filePath": "portal/datasets/index.tsx",
+      "parent": "/portal"
+    },
+    "/portal/user/": {
+      "filePath": "portal/user/index.tsx",
+      "parent": "/portal"
     }
   }
 }

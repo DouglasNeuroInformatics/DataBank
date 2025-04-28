@@ -1,5 +1,5 @@
 import { LanguageToggle, ThemeToggle, Tooltip } from '@douglasneuroinformatics/libui/components';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from '@tanstack/react-router';
 
 import { Logo } from '@/components';
 
@@ -30,7 +30,7 @@ export const DesktopSidebar = ({ isLogIn, navigation }: DesktopSidebarProps) => 
                   size="icon"
                   type="button"
                   variant="ghost"
-                  onClick={() => navigate(item.href)}
+                  onClick={() => void navigate({ to: item.href })}
                 >
                   <div className="flex h-14 w-14 items-center justify-center rounded-lg hover:bg-slate-700">
                     <item.icon className="h-6 w-6" />

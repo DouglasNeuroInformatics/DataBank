@@ -9,7 +9,6 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { PageHeading } from '@/components/PageHeading';
@@ -179,7 +178,4 @@ const ViewOnePublicDatasetPage = () => {
   );
 };
 
-export const ViewOnePublicDatasetRoute: RouteObject = {
-  path: 'dataset/:datasetId',
-  element: <ViewOnePublicDatasetPage />
-};
+export { ViewOnePublicDatasetPage };
