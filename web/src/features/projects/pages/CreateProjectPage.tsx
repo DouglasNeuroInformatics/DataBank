@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 import { z } from 'zod';
 
 import { LoadingFallback } from '@/components';
@@ -41,7 +40,7 @@ const CreateProjectPage = () => {
       ...projectData
     });
     notifications.addNotification({ message: t('createDatasetSuccess'), type: 'success' });
-    navigate('/portal/projects');
+    void navigate({ to: '/portal/projects' });
   };
 
   return (
@@ -105,7 +104,4 @@ const CreateProjectPage = () => {
   );
 };
 
-export const createProjectRoute: RouteObject = {
-  element: <CreateProjectPage />,
-  path: 'createProject'
-};
+export { CreateProjectPage };
