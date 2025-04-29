@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root';
 import { Route as PortalImport } from './routes/portal';
 import { Route as IndexImport } from './routes/index';
+import { Route as SetupIndexImport } from './routes/setup/index';
 import { Route as PublicDatasetsImport } from './routes/public/datasets';
 import { Route as AuthLoginImport } from './routes/auth/login';
 import { Route as AuthCreateAccountImport } from './routes/auth/create-account';
@@ -34,6 +35,12 @@ const PortalRoute = PortalImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute
+} as any);
+
+const SetupIndexRoute = SetupIndexImport.update({
+  id: '/setup/',
+  path: '/setup/',
   getParentRoute: () => rootRoute
 } as any);
 
@@ -137,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicDatasetsImport;
       parentRoute: typeof rootRoute;
     };
+    '/setup/': {
+      id: '/setup/';
+      path: '/setup';
+      fullPath: '/setup';
+      preLoaderRoute: typeof SetupIndexImport;
+      parentRoute: typeof rootRoute;
+    };
     '/portal/datasets/create-dataset': {
       id: '/portal/datasets/create-dataset';
       path: '/datasets/create-dataset';
@@ -200,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/auth/create-account': typeof AuthCreateAccountRoute;
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
+  '/setup': typeof SetupIndexRoute;
   '/portal/datasets/create-dataset': typeof PortalDatasetsCreateDatasetRoute;
   '/public/dataset/$datasetId': typeof PublicDatasetDatasetIdRoute;
   '/portal/dashboard': typeof PortalDashboardIndexRoute;
@@ -214,6 +229,7 @@ export interface FileRoutesByTo {
   '/auth/create-account': typeof AuthCreateAccountRoute;
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
+  '/setup': typeof SetupIndexRoute;
   '/portal/datasets/create-dataset': typeof PortalDatasetsCreateDatasetRoute;
   '/public/dataset/$datasetId': typeof PublicDatasetDatasetIdRoute;
   '/portal/dashboard': typeof PortalDashboardIndexRoute;
@@ -229,6 +245,7 @@ export interface FileRoutesById {
   '/auth/create-account': typeof AuthCreateAccountRoute;
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
+  '/setup/': typeof SetupIndexRoute;
   '/portal/datasets/create-dataset': typeof PortalDatasetsCreateDatasetRoute;
   '/public/dataset/$datasetId': typeof PublicDatasetDatasetIdRoute;
   '/portal/dashboard/': typeof PortalDashboardIndexRoute;
@@ -245,6 +262,7 @@ export interface FileRouteTypes {
     | '/auth/create-account'
     | '/auth/login'
     | '/public/datasets'
+    | '/setup'
     | '/portal/datasets/create-dataset'
     | '/public/dataset/$datasetId'
     | '/portal/dashboard'
@@ -258,6 +276,7 @@ export interface FileRouteTypes {
     | '/auth/create-account'
     | '/auth/login'
     | '/public/datasets'
+    | '/setup'
     | '/portal/datasets/create-dataset'
     | '/public/dataset/$datasetId'
     | '/portal/dashboard'
@@ -271,6 +290,7 @@ export interface FileRouteTypes {
     | '/auth/create-account'
     | '/auth/login'
     | '/public/datasets'
+    | '/setup/'
     | '/portal/datasets/create-dataset'
     | '/public/dataset/$datasetId'
     | '/portal/dashboard/'
@@ -286,6 +306,7 @@ export interface RootRouteChildren {
   AuthCreateAccountRoute: typeof AuthCreateAccountRoute;
   AuthLoginRoute: typeof AuthLoginRoute;
   PublicDatasetsRoute: typeof PublicDatasetsRoute;
+  SetupIndexRoute: typeof SetupIndexRoute;
   PublicDatasetDatasetIdRoute: typeof PublicDatasetDatasetIdRoute;
 }
 
@@ -296,6 +317,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCreateAccountRoute: AuthCreateAccountRoute,
   AuthLoginRoute: AuthLoginRoute,
   PublicDatasetsRoute: PublicDatasetsRoute,
+  SetupIndexRoute: SetupIndexRoute,
   PublicDatasetDatasetIdRoute: PublicDatasetDatasetIdRoute
 };
 
@@ -313,6 +335,7 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
         "/auth/create-account",
         "/auth/login",
         "/public/datasets",
+        "/setup/",
         "/public/dataset/$datasetId"
       ]
     },
@@ -339,6 +362,9 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     },
     "/public/datasets": {
       "filePath": "public/datasets.tsx"
+    },
+    "/setup/": {
+      "filePath": "setup/index.tsx"
     },
     "/portal/datasets/create-dataset": {
       "filePath": "portal/datasets/create-dataset.tsx",
