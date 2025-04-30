@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import type { DatasetCardProps } from '@databank/core';
 import { Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { useParams } from '@tanstack/react-router';
+import { getRouteApi } from '@tanstack/react-router';
 import axios from 'axios';
 
 import AddProjectDatasetCard from '../components/AddProjectDatasetCard';
@@ -11,7 +11,8 @@ import AddProjectDatasetCard from '../components/AddProjectDatasetCard';
 const AddProjectDatasetPage = () => {
   const { t } = useTranslation('common');
   const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
-  const params = useParams({ strict: false });
+  const route = getRouteApi('/portal/projects/add-dataset/$projectId');
+  const params = route.useParams();
 
   useEffect(() => {
     axios

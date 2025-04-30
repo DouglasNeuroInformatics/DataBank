@@ -1,4 +1,3 @@
-/* eslint-disable perfectionist/sort-objects */
 import { useState } from 'react';
 
 import type { DatasetViewPagination, TabularDataset } from '@databank/core';

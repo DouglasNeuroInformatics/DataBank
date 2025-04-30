@@ -1,4 +1,3 @@
-/* eslint-disable perfectionist/sort-objects */
 import { useEffect, useState } from 'react';
 
 import type { DatasetCardProps } from '@databank/core';
