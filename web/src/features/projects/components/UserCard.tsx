@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import type { User } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -38,7 +38,7 @@ const UserCard = ({ projectId, userId, userNumber }: UserCardProps) => {
           message: `User with Id ${userIdToRemove} has been removed from the project`,
           type: 'success'
         });
-        navigate(`/portal/project/${projectId}`);
+        void navigate({ to: `/portal/projects/${projectId}` });
       })
       .catch(console.error);
   };

@@ -47,7 +47,7 @@ const ViewDatasetsPage = () => {
             variant={'secondary'}
             onClick={() =>
               void navigate({
-                to: '/portal/datasets/create-dataset'
+                to: '/portal/datasets/create'
               })
             }
           >

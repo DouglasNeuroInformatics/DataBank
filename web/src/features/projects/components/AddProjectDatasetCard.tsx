@@ -1,6 +1,6 @@
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 
 type AddProjectDatasetCardProps = {
   createdAt: Date;
@@ -39,7 +39,10 @@ const AddProjectDatasetCard = ({
           </ul>
         </Card.Content>
         <Card.Footer className="flex justify-between">
-          <Button variant={'primary'} onClick={() => navigate(`/portal/project/add-columns/${projectId}/${datasetId}`)}>
+          <Button
+            variant={'primary'}
+            onClick={() => void navigate({ to: `/portal/projects/add-columns/${projectId}/${datasetId}` })}
+          >
             {t('selectDataset')}
           </Button>
         </Card.Footer>

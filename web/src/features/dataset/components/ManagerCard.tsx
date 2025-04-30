@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import type { User } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -38,7 +38,7 @@ const ManagerCard = ({ datasetId, isManager, managerId }: ManagerCardProps) => {
           message: `User with Id ${managerIdToRemove} has been removed from the dataset`,
           type: 'success'
         });
-        navigate(`/portal/datasets`);
+        void navigate({ to: `/portal/datasets` });
       })
       .catch(console.error);
   };

@@ -7,8 +7,8 @@ import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/compo
 import { useDownload, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
+import { useParams } from '@tanstack/react-router';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { PageHeading } from '@/components/PageHeading';
@@ -18,7 +18,7 @@ import { DatasetTable } from '../components/DatasetTable';
 
 const ViewOnePublicDatasetPage = () => {
   const { t } = useTranslation('common');
-  const params = useParams<'datasetId'>();
+  const params = useParams({ strict: false });
   const download = useDownload();
 
   const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPagination>({

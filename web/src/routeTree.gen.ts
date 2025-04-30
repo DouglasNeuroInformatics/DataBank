@@ -23,8 +23,17 @@ import { Route as PortalProjectsIndexImport } from './routes/portal/projects/ind
 import { Route as PortalDatasetsIndexImport } from './routes/portal/datasets/index';
 import { Route as PortalDashboardIndexImport } from './routes/portal/dashboard/index';
 import { Route as PublicDatasetDatasetIdImport } from './routes/public/dataset.$datasetId';
+import { Route as PortalProjectsManageUsersImport } from './routes/portal/projects/manage-users';
 import { Route as PortalProjectsCreateImport } from './routes/portal/projects/create';
+import { Route as PortalProjectsProjectIdImport } from './routes/portal/projects/$projectId';
+import { Route as PortalDatasetsManageManagersImport } from './routes/portal/datasets/manage-managers';
 import { Route as PortalDatasetsCreateImport } from './routes/portal/datasets/create';
+import { Route as PortalDatasetsDatasetIdImport } from './routes/portal/datasets/$datasetId';
+import { Route as PortalProjectsEditInfoProjectIdImport } from './routes/portal/projects/edit-info.$projectId';
+import { Route as PortalProjectsAddDatasetProjectIdImport } from './routes/portal/projects/add-dataset.$projectId';
+import { Route as PortalProjectsProjectIdDatasetIdImport } from './routes/portal/projects/$projectId.$datasetId';
+import { Route as PortalDatasetsEditInfoDatasetIdImport } from './routes/portal/datasets/edit-info.$datasetId';
+import { Route as PortalProjectsAddColumnsProjectIdDatasetIdImport } from './routes/portal/projects/add-columns.$projectId.$datasetId';
 
 // Create/Update Routes
 
@@ -100,15 +109,69 @@ const PublicDatasetDatasetIdRoute = PublicDatasetDatasetIdImport.update({
   getParentRoute: () => rootRoute
 } as any);
 
+const PortalProjectsManageUsersRoute = PortalProjectsManageUsersImport.update({
+  id: '/projects/manage-users',
+  path: '/projects/manage-users',
+  getParentRoute: () => PortalRoute
+} as any);
+
 const PortalProjectsCreateRoute = PortalProjectsCreateImport.update({
   id: '/projects/create',
   path: '/projects/create',
   getParentRoute: () => PortalRoute
 } as any);
 
+const PortalProjectsProjectIdRoute = PortalProjectsProjectIdImport.update({
+  id: '/projects/$projectId',
+  path: '/projects/$projectId',
+  getParentRoute: () => PortalRoute
+} as any);
+
+const PortalDatasetsManageManagersRoute = PortalDatasetsManageManagersImport.update({
+  id: '/datasets/manage-managers',
+  path: '/datasets/manage-managers',
+  getParentRoute: () => PortalRoute
+} as any);
+
 const PortalDatasetsCreateRoute = PortalDatasetsCreateImport.update({
   id: '/datasets/create',
   path: '/datasets/create',
+  getParentRoute: () => PortalRoute
+} as any);
+
+const PortalDatasetsDatasetIdRoute = PortalDatasetsDatasetIdImport.update({
+  id: '/datasets/$datasetId',
+  path: '/datasets/$datasetId',
+  getParentRoute: () => PortalRoute
+} as any);
+
+const PortalProjectsEditInfoProjectIdRoute = PortalProjectsEditInfoProjectIdImport.update({
+  id: '/projects/edit-info/$projectId',
+  path: '/projects/edit-info/$projectId',
+  getParentRoute: () => PortalRoute
+} as any);
+
+const PortalProjectsAddDatasetProjectIdRoute = PortalProjectsAddDatasetProjectIdImport.update({
+  id: '/projects/add-dataset/$projectId',
+  path: '/projects/add-dataset/$projectId',
+  getParentRoute: () => PortalRoute
+} as any);
+
+const PortalProjectsProjectIdDatasetIdRoute = PortalProjectsProjectIdDatasetIdImport.update({
+  id: '/$datasetId',
+  path: '/$datasetId',
+  getParentRoute: () => PortalProjectsProjectIdRoute
+} as any);
+
+const PortalDatasetsEditInfoDatasetIdRoute = PortalDatasetsEditInfoDatasetIdImport.update({
+  id: '/datasets/edit-info/$datasetId',
+  path: '/datasets/edit-info/$datasetId',
+  getParentRoute: () => PortalRoute
+} as any);
+
+const PortalProjectsAddColumnsProjectIdDatasetIdRoute = PortalProjectsAddColumnsProjectIdDatasetIdImport.update({
+  id: '/projects/add-columns/$projectId/$datasetId',
+  path: '/projects/add-columns/$projectId/$datasetId',
   getParentRoute: () => PortalRoute
 } as any);
 
@@ -165,6 +228,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SetupIndexImport;
       parentRoute: typeof rootRoute;
     };
+    '/portal/datasets/$datasetId': {
+      id: '/portal/datasets/$datasetId';
+      path: '/datasets/$datasetId';
+      fullPath: '/portal/datasets/$datasetId';
+      preLoaderRoute: typeof PortalDatasetsDatasetIdImport;
+      parentRoute: typeof PortalImport;
+    };
     '/portal/datasets/create': {
       id: '/portal/datasets/create';
       path: '/datasets/create';
@@ -172,11 +242,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalDatasetsCreateImport;
       parentRoute: typeof PortalImport;
     };
+    '/portal/datasets/manage-managers': {
+      id: '/portal/datasets/manage-managers';
+      path: '/datasets/manage-managers';
+      fullPath: '/portal/datasets/manage-managers';
+      preLoaderRoute: typeof PortalDatasetsManageManagersImport;
+      parentRoute: typeof PortalImport;
+    };
+    '/portal/projects/$projectId': {
+      id: '/portal/projects/$projectId';
+      path: '/projects/$projectId';
+      fullPath: '/portal/projects/$projectId';
+      preLoaderRoute: typeof PortalProjectsProjectIdImport;
+      parentRoute: typeof PortalImport;
+    };
     '/portal/projects/create': {
       id: '/portal/projects/create';
       path: '/projects/create';
       fullPath: '/portal/projects/create';
       preLoaderRoute: typeof PortalProjectsCreateImport;
+      parentRoute: typeof PortalImport;
+    };
+    '/portal/projects/manage-users': {
+      id: '/portal/projects/manage-users';
+      path: '/projects/manage-users';
+      fullPath: '/portal/projects/manage-users';
+      preLoaderRoute: typeof PortalProjectsManageUsersImport;
       parentRoute: typeof PortalImport;
     };
     '/public/dataset/$datasetId': {
@@ -214,27 +305,90 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalUserIndexImport;
       parentRoute: typeof PortalImport;
     };
+    '/portal/datasets/edit-info/$datasetId': {
+      id: '/portal/datasets/edit-info/$datasetId';
+      path: '/datasets/edit-info/$datasetId';
+      fullPath: '/portal/datasets/edit-info/$datasetId';
+      preLoaderRoute: typeof PortalDatasetsEditInfoDatasetIdImport;
+      parentRoute: typeof PortalImport;
+    };
+    '/portal/projects/$projectId/$datasetId': {
+      id: '/portal/projects/$projectId/$datasetId';
+      path: '/$datasetId';
+      fullPath: '/portal/projects/$projectId/$datasetId';
+      preLoaderRoute: typeof PortalProjectsProjectIdDatasetIdImport;
+      parentRoute: typeof PortalProjectsProjectIdImport;
+    };
+    '/portal/projects/add-dataset/$projectId': {
+      id: '/portal/projects/add-dataset/$projectId';
+      path: '/projects/add-dataset/$projectId';
+      fullPath: '/portal/projects/add-dataset/$projectId';
+      preLoaderRoute: typeof PortalProjectsAddDatasetProjectIdImport;
+      parentRoute: typeof PortalImport;
+    };
+    '/portal/projects/edit-info/$projectId': {
+      id: '/portal/projects/edit-info/$projectId';
+      path: '/projects/edit-info/$projectId';
+      fullPath: '/portal/projects/edit-info/$projectId';
+      preLoaderRoute: typeof PortalProjectsEditInfoProjectIdImport;
+      parentRoute: typeof PortalImport;
+    };
+    '/portal/projects/add-columns/$projectId/$datasetId': {
+      id: '/portal/projects/add-columns/$projectId/$datasetId';
+      path: '/projects/add-columns/$projectId/$datasetId';
+      fullPath: '/portal/projects/add-columns/$projectId/$datasetId';
+      preLoaderRoute: typeof PortalProjectsAddColumnsProjectIdDatasetIdImport;
+      parentRoute: typeof PortalImport;
+    };
   }
 }
 
 // Create and export the route tree
 
+interface PortalProjectsProjectIdRouteChildren {
+  PortalProjectsProjectIdDatasetIdRoute: typeof PortalProjectsProjectIdDatasetIdRoute;
+}
+
+const PortalProjectsProjectIdRouteChildren: PortalProjectsProjectIdRouteChildren = {
+  PortalProjectsProjectIdDatasetIdRoute: PortalProjectsProjectIdDatasetIdRoute
+};
+
+const PortalProjectsProjectIdRouteWithChildren = PortalProjectsProjectIdRoute._addFileChildren(
+  PortalProjectsProjectIdRouteChildren
+);
+
 interface PortalRouteChildren {
+  PortalDatasetsDatasetIdRoute: typeof PortalDatasetsDatasetIdRoute;
   PortalDatasetsCreateRoute: typeof PortalDatasetsCreateRoute;
+  PortalDatasetsManageManagersRoute: typeof PortalDatasetsManageManagersRoute;
+  PortalProjectsProjectIdRoute: typeof PortalProjectsProjectIdRouteWithChildren;
   PortalProjectsCreateRoute: typeof PortalProjectsCreateRoute;
+  PortalProjectsManageUsersRoute: typeof PortalProjectsManageUsersRoute;
   PortalDashboardIndexRoute: typeof PortalDashboardIndexRoute;
   PortalDatasetsIndexRoute: typeof PortalDatasetsIndexRoute;
   PortalProjectsIndexRoute: typeof PortalProjectsIndexRoute;
   PortalUserIndexRoute: typeof PortalUserIndexRoute;
+  PortalDatasetsEditInfoDatasetIdRoute: typeof PortalDatasetsEditInfoDatasetIdRoute;
+  PortalProjectsAddDatasetProjectIdRoute: typeof PortalProjectsAddDatasetProjectIdRoute;
+  PortalProjectsEditInfoProjectIdRoute: typeof PortalProjectsEditInfoProjectIdRoute;
+  PortalProjectsAddColumnsProjectIdDatasetIdRoute: typeof PortalProjectsAddColumnsProjectIdDatasetIdRoute;
 }
 
 const PortalRouteChildren: PortalRouteChildren = {
+  PortalDatasetsDatasetIdRoute: PortalDatasetsDatasetIdRoute,
   PortalDatasetsCreateRoute: PortalDatasetsCreateRoute,
+  PortalDatasetsManageManagersRoute: PortalDatasetsManageManagersRoute,
+  PortalProjectsProjectIdRoute: PortalProjectsProjectIdRouteWithChildren,
   PortalProjectsCreateRoute: PortalProjectsCreateRoute,
+  PortalProjectsManageUsersRoute: PortalProjectsManageUsersRoute,
   PortalDashboardIndexRoute: PortalDashboardIndexRoute,
   PortalDatasetsIndexRoute: PortalDatasetsIndexRoute,
   PortalProjectsIndexRoute: PortalProjectsIndexRoute,
-  PortalUserIndexRoute: PortalUserIndexRoute
+  PortalUserIndexRoute: PortalUserIndexRoute,
+  PortalDatasetsEditInfoDatasetIdRoute: PortalDatasetsEditInfoDatasetIdRoute,
+  PortalProjectsAddDatasetProjectIdRoute: PortalProjectsAddDatasetProjectIdRoute,
+  PortalProjectsEditInfoProjectIdRoute: PortalProjectsEditInfoProjectIdRoute,
+  PortalProjectsAddColumnsProjectIdDatasetIdRoute: PortalProjectsAddColumnsProjectIdDatasetIdRoute
 };
 
 const PortalRouteWithChildren = PortalRoute._addFileChildren(PortalRouteChildren);
@@ -247,13 +401,22 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
   '/setup': typeof SetupIndexRoute;
+  '/portal/datasets/$datasetId': typeof PortalDatasetsDatasetIdRoute;
   '/portal/datasets/create': typeof PortalDatasetsCreateRoute;
+  '/portal/datasets/manage-managers': typeof PortalDatasetsManageManagersRoute;
+  '/portal/projects/$projectId': typeof PortalProjectsProjectIdRouteWithChildren;
   '/portal/projects/create': typeof PortalProjectsCreateRoute;
+  '/portal/projects/manage-users': typeof PortalProjectsManageUsersRoute;
   '/public/dataset/$datasetId': typeof PublicDatasetDatasetIdRoute;
   '/portal/dashboard': typeof PortalDashboardIndexRoute;
   '/portal/datasets': typeof PortalDatasetsIndexRoute;
   '/portal/projects': typeof PortalProjectsIndexRoute;
   '/portal/user': typeof PortalUserIndexRoute;
+  '/portal/datasets/edit-info/$datasetId': typeof PortalDatasetsEditInfoDatasetIdRoute;
+  '/portal/projects/$projectId/$datasetId': typeof PortalProjectsProjectIdDatasetIdRoute;
+  '/portal/projects/add-dataset/$projectId': typeof PortalProjectsAddDatasetProjectIdRoute;
+  '/portal/projects/edit-info/$projectId': typeof PortalProjectsEditInfoProjectIdRoute;
+  '/portal/projects/add-columns/$projectId/$datasetId': typeof PortalProjectsAddColumnsProjectIdDatasetIdRoute;
 }
 
 export interface FileRoutesByTo {
@@ -264,13 +427,22 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
   '/setup': typeof SetupIndexRoute;
+  '/portal/datasets/$datasetId': typeof PortalDatasetsDatasetIdRoute;
   '/portal/datasets/create': typeof PortalDatasetsCreateRoute;
+  '/portal/datasets/manage-managers': typeof PortalDatasetsManageManagersRoute;
+  '/portal/projects/$projectId': typeof PortalProjectsProjectIdRouteWithChildren;
   '/portal/projects/create': typeof PortalProjectsCreateRoute;
+  '/portal/projects/manage-users': typeof PortalProjectsManageUsersRoute;
   '/public/dataset/$datasetId': typeof PublicDatasetDatasetIdRoute;
   '/portal/dashboard': typeof PortalDashboardIndexRoute;
   '/portal/datasets': typeof PortalDatasetsIndexRoute;
   '/portal/projects': typeof PortalProjectsIndexRoute;
   '/portal/user': typeof PortalUserIndexRoute;
+  '/portal/datasets/edit-info/$datasetId': typeof PortalDatasetsEditInfoDatasetIdRoute;
+  '/portal/projects/$projectId/$datasetId': typeof PortalProjectsProjectIdDatasetIdRoute;
+  '/portal/projects/add-dataset/$projectId': typeof PortalProjectsAddDatasetProjectIdRoute;
+  '/portal/projects/edit-info/$projectId': typeof PortalProjectsEditInfoProjectIdRoute;
+  '/portal/projects/add-columns/$projectId/$datasetId': typeof PortalProjectsAddColumnsProjectIdDatasetIdRoute;
 }
 
 export interface FileRoutesById {
@@ -282,13 +454,22 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
   '/setup/': typeof SetupIndexRoute;
+  '/portal/datasets/$datasetId': typeof PortalDatasetsDatasetIdRoute;
   '/portal/datasets/create': typeof PortalDatasetsCreateRoute;
+  '/portal/datasets/manage-managers': typeof PortalDatasetsManageManagersRoute;
+  '/portal/projects/$projectId': typeof PortalProjectsProjectIdRouteWithChildren;
   '/portal/projects/create': typeof PortalProjectsCreateRoute;
+  '/portal/projects/manage-users': typeof PortalProjectsManageUsersRoute;
   '/public/dataset/$datasetId': typeof PublicDatasetDatasetIdRoute;
   '/portal/dashboard/': typeof PortalDashboardIndexRoute;
   '/portal/datasets/': typeof PortalDatasetsIndexRoute;
   '/portal/projects/': typeof PortalProjectsIndexRoute;
   '/portal/user/': typeof PortalUserIndexRoute;
+  '/portal/datasets/edit-info/$datasetId': typeof PortalDatasetsEditInfoDatasetIdRoute;
+  '/portal/projects/$projectId/$datasetId': typeof PortalProjectsProjectIdDatasetIdRoute;
+  '/portal/projects/add-dataset/$projectId': typeof PortalProjectsAddDatasetProjectIdRoute;
+  '/portal/projects/edit-info/$projectId': typeof PortalProjectsEditInfoProjectIdRoute;
+  '/portal/projects/add-columns/$projectId/$datasetId': typeof PortalProjectsAddColumnsProjectIdDatasetIdRoute;
 }
 
 export interface FileRouteTypes {
@@ -301,13 +482,22 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/public/datasets'
     | '/setup'
+    | '/portal/datasets/$datasetId'
     | '/portal/datasets/create'
+    | '/portal/datasets/manage-managers'
+    | '/portal/projects/$projectId'
     | '/portal/projects/create'
+    | '/portal/projects/manage-users'
     | '/public/dataset/$datasetId'
     | '/portal/dashboard'
     | '/portal/datasets'
     | '/portal/projects'
-    | '/portal/user';
+    | '/portal/user'
+    | '/portal/datasets/edit-info/$datasetId'
+    | '/portal/projects/$projectId/$datasetId'
+    | '/portal/projects/add-dataset/$projectId'
+    | '/portal/projects/edit-info/$projectId'
+    | '/portal/projects/add-columns/$projectId/$datasetId';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
@@ -317,13 +507,22 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/public/datasets'
     | '/setup'
+    | '/portal/datasets/$datasetId'
     | '/portal/datasets/create'
+    | '/portal/datasets/manage-managers'
+    | '/portal/projects/$projectId'
     | '/portal/projects/create'
+    | '/portal/projects/manage-users'
     | '/public/dataset/$datasetId'
     | '/portal/dashboard'
     | '/portal/datasets'
     | '/portal/projects'
-    | '/portal/user';
+    | '/portal/user'
+    | '/portal/datasets/edit-info/$datasetId'
+    | '/portal/projects/$projectId/$datasetId'
+    | '/portal/projects/add-dataset/$projectId'
+    | '/portal/projects/edit-info/$projectId'
+    | '/portal/projects/add-columns/$projectId/$datasetId';
   id:
     | '__root__'
     | '/'
@@ -333,13 +532,22 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/public/datasets'
     | '/setup/'
+    | '/portal/datasets/$datasetId'
     | '/portal/datasets/create'
+    | '/portal/datasets/manage-managers'
+    | '/portal/projects/$projectId'
     | '/portal/projects/create'
+    | '/portal/projects/manage-users'
     | '/public/dataset/$datasetId'
     | '/portal/dashboard/'
     | '/portal/datasets/'
     | '/portal/projects/'
-    | '/portal/user/';
+    | '/portal/user/'
+    | '/portal/datasets/edit-info/$datasetId'
+    | '/portal/projects/$projectId/$datasetId'
+    | '/portal/projects/add-dataset/$projectId'
+    | '/portal/projects/edit-info/$projectId'
+    | '/portal/projects/add-columns/$projectId/$datasetId';
   fileRoutesById: FileRoutesById;
 }
 
@@ -389,12 +597,20 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     "/portal": {
       "filePath": "portal.tsx",
       "children": [
+        "/portal/datasets/$datasetId",
         "/portal/datasets/create",
+        "/portal/datasets/manage-managers",
+        "/portal/projects/$projectId",
         "/portal/projects/create",
+        "/portal/projects/manage-users",
         "/portal/dashboard/",
         "/portal/datasets/",
         "/portal/projects/",
-        "/portal/user/"
+        "/portal/user/",
+        "/portal/datasets/edit-info/$datasetId",
+        "/portal/projects/add-dataset/$projectId",
+        "/portal/projects/edit-info/$projectId",
+        "/portal/projects/add-columns/$projectId/$datasetId"
       ]
     },
     "/auth/confirm-email-code": {
@@ -412,12 +628,31 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     "/setup/": {
       "filePath": "setup/index.tsx"
     },
+    "/portal/datasets/$datasetId": {
+      "filePath": "portal/datasets/$datasetId.tsx",
+      "parent": "/portal"
+    },
     "/portal/datasets/create": {
       "filePath": "portal/datasets/create.tsx",
       "parent": "/portal"
     },
+    "/portal/datasets/manage-managers": {
+      "filePath": "portal/datasets/manage-managers.tsx",
+      "parent": "/portal"
+    },
+    "/portal/projects/$projectId": {
+      "filePath": "portal/projects/$projectId.tsx",
+      "parent": "/portal",
+      "children": [
+        "/portal/projects/$projectId/$datasetId"
+      ]
+    },
     "/portal/projects/create": {
       "filePath": "portal/projects/create.tsx",
+      "parent": "/portal"
+    },
+    "/portal/projects/manage-users": {
+      "filePath": "portal/projects/manage-users.tsx",
       "parent": "/portal"
     },
     "/public/dataset/$datasetId": {
@@ -437,6 +672,26 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     },
     "/portal/user/": {
       "filePath": "portal/user/index.tsx",
+      "parent": "/portal"
+    },
+    "/portal/datasets/edit-info/$datasetId": {
+      "filePath": "portal/datasets/edit-info.$datasetId.tsx",
+      "parent": "/portal"
+    },
+    "/portal/projects/$projectId/$datasetId": {
+      "filePath": "portal/projects/$projectId.$datasetId.tsx",
+      "parent": "/portal/projects/$projectId"
+    },
+    "/portal/projects/add-dataset/$projectId": {
+      "filePath": "portal/projects/add-dataset.$projectId.tsx",
+      "parent": "/portal"
+    },
+    "/portal/projects/edit-info/$projectId": {
+      "filePath": "portal/projects/edit-info.$projectId.tsx",
+      "parent": "/portal"
+    },
+    "/portal/projects/add-columns/$projectId/$datasetId": {
+      "filePath": "portal/projects/add-columns.$projectId.$datasetId.tsx",
       "parent": "/portal"
     }
   }

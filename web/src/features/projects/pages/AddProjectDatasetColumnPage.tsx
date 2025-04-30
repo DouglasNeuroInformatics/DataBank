@@ -7,13 +7,12 @@ import { useEffect, useState } from 'react';
 
 import type { AddProjectDatasetColumns, ProjectColumn, ProjectDataset } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 import { z } from 'zod';
 
 const AddProjectDatasetColumnPage = () => {
-  const params = useParams();
+  const params = useParams({ strict: false });
   const [columns, setColumns] = useState<AddProjectDatasetColumns | null>(null);
   const navigate = useNavigate();
 
@@ -274,13 +273,10 @@ const AddProjectDatasetColumnPage = () => {
     void axios.post(`/v1/projects/add-dataset/${params.projectId}`, {
       projectDatasetDto
     });
-    navigate(`/portal/project/${params.projectId}`);
+    void navigate({ to: `/portal/project/${params.projectId}` });
   };
 
   return <Form content={formContent} validationSchema={formValidation} onSubmit={(data) => handleSubmit(data)} />;
 };
 
-export const addProjectDatasetColumnRoute: RouteObject = {
-  element: <AddProjectDatasetColumnPage />,
-  path: 'project/add-columns/:projectId/:datasetId'
-};
+export { AddProjectDatasetColumnPage };
