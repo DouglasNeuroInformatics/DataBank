@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { AuthPayload, EmailConfirmationProcedureInfo } from '@databank/core';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { useAuthStore } from '@/stores/auth-store';
@@ -29,7 +29,7 @@ export const ConfirmEmailPage = () => {
 
   useEffect(() => {
     if (auth.currentUser?.confirmedAt) {
-      navigate('/');
+      void navigate({ to: '/' });
     }
   }, [auth.currentUser]);
 
@@ -43,7 +43,7 @@ export const ConfirmEmailPage = () => {
     const response = await axios.post<AuthPayload>('/v1/auth/verify-account', { code });
     notifications.addNotification({ type: 'success' });
     auth.setAccessToken(response.data.accessToken);
-    navigate('/portal/dashboard');
+    void navigate({ to: '/portal/dashboard' });
   };
 
   return seconds ? (

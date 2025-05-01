@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -19,9 +19,9 @@ export const CreateAccountPage = () => {
 
   useEffect(() => {
     if (auth.accessToken && auth.currentUser?.confirmedAt) {
-      navigate('/portal/dashboard');
+      void navigate({ to: '/portal/dashboard' });
     } else if (auth.accessToken) {
-      navigate('/auth/confirm-email-code');
+      void navigate({ to: '/auth/confirm-email-code' });
     }
   }, [auth.accessToken]);
 
@@ -29,7 +29,7 @@ export const CreateAccountPage = () => {
     await axios.post('/v1/auth/account', data);
     notifications.addNotification({ message: t('pleaseSignIn'), type: 'success' });
     auth.logout();
-    navigate('/auth/login');
+    void navigate({ to: '/auth/login' });
   };
 
   return (

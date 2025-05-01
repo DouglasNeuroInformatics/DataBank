@@ -1,6 +1,6 @@
 import type { DatasetCardProps } from '@databank/core';
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 
 const DatasetCard = ({
   createdAt,
@@ -40,15 +40,9 @@ const DatasetCard = ({
           </ul>
         </Card.Content>
         <Card.Footer className="flex justify-between">
-          {isManager ? (
-            <Button variant={'primary'} onClick={() => navigate(`/portal/dataset/${id}`)}>
-              Manage Dataset
-            </Button>
-          ) : (
-            <Button variant={'primary'} onClick={() => navigate(`/portal/dataset/${id}`, {})}>
-              View Dataset
-            </Button>
-          )}
+          <Button variant={'primary'} onClick={() => void navigate({ to: `/portal/datasets/${id}` })}>
+            {isManager ? 'Manage Dataset' : 'View Dataset'}
+          </Button>
         </Card.Footer>
       </Card>
     </>

@@ -1,6 +1,6 @@
 import { Card, Heading, LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { cn } from '@douglasneuroinformatics/libui/utils';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 
 import { Logo } from '@/components';
 

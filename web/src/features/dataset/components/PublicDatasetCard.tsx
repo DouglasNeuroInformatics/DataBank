@@ -1,6 +1,6 @@
 import type { DatasetCardProps } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 
 const PublicDatasetCard = ({ createdAt, description, id, license, name, updatedAt }: DatasetCardProps) => {
   const navigate = useNavigate();
@@ -21,7 +21,14 @@ const PublicDatasetCard = ({ createdAt, description, id, license, name, updatedA
           </ul>
         </Card.Content>
         <Card.Footer className="flex justify-between">
-          <Button variant={'primary'} onClick={() => navigate(`/public/dataset/${id}`)}>
+          <Button
+            variant={'primary'}
+            onClick={() =>
+              void navigate({
+                to: `/public/dataset/${id}`
+              })
+            }
+          >
             View Dataset
           </Button>
         </Card.Footer>

@@ -1,12 +1,9 @@
-/* eslint-disable perfectionist/sort-objects */
-
 import { useEffect, useState } from 'react';
 
 import type { DatasetCardProps } from '@databank/core';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 
 import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
@@ -21,7 +18,9 @@ const ViewPublicDatasetsPage = () => {
 
   useEffect(() => {
     if (auth.accessToken) {
-      navigate('/portal/datasets');
+      void navigate({
+        to: '/portal/datasets'
+      });
     }
     axios
       .get<DatasetCardProps[]>('/v1/datasets/public')
@@ -61,7 +60,4 @@ const ViewPublicDatasetsPage = () => {
   );
 };
 
-export const ViewPublicDatasetsRoute: RouteObject = {
-  path: 'datasets',
-  element: <ViewPublicDatasetsPage />
-};
+export { ViewPublicDatasetsPage };

@@ -3,16 +3,25 @@ import { Suspense } from 'react';
 import { NotificationHub } from '@douglasneuroinformatics/libui/components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { LoadingFallback } from './components';
 import { ErrorPage } from './components/ErrorPage.js';
-import { SetupProvider } from './features/setup';
-import { Router } from './Router.js';
+// Import the generated route tree
+import { routeTree } from './routeTree.gen';
 import { queryClient } from './services/react-query.js';
 
-import './services/axios';
-import './services/i18n';
+// Create a new router instance
+const router = createRouter({ routeTree });
+
+// Register the router instance for type safety
+declare module '@tanstack/react-router' {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface Register {
+    router: typeof router;
+  }
+}
 
 export const App = () => {
   return (
@@ -20,9 +29,7 @@ export const App = () => {
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <QueryClientProvider client={queryClient}>
           <NotificationHub />
-          <SetupProvider>
-            <Router />
-          </SetupProvider>
+          <RouterProvider router={router} />
           <ReactQueryDevtools />
         </QueryClientProvider>
       </ErrorBoundary>

@@ -4,8 +4,8 @@ import { LanguageToggle, ThemeToggle } from '@douglasneuroinformatics/libui/comp
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { cn } from '@douglasneuroinformatics/libui/utils';
 import { Bars3Icon } from '@heroicons/react/24/solid';
+import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 
 import { Logo } from '@/components/Logo';
 

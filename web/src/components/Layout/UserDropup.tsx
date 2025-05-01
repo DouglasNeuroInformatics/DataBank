@@ -1,8 +1,8 @@
 import { DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { useNavigate } from '@tanstack/react-router';
 import { LogOutIcon, SettingsIcon } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -26,7 +26,7 @@ export const UserDropup = () => {
           <DropdownMenu.Item
             className="gap-2 hover:bg-slate-700 hover:text-slate-100 focus:bg-slate-700 focus:text-slate-100 focus:ring-0"
             onClick={() => {
-              navigate('/about');
+              void navigate({ to: '/portal/user' });
             }}
           >
             <SettingsIcon />
@@ -36,6 +36,7 @@ export const UserDropup = () => {
             className="gap-2 hover:bg-slate-700 hover:text-slate-100 focus:bg-slate-700 focus:text-slate-100 focus:ring-0"
             onClick={() => {
               auth.logout();
+              void navigate({ to: '/' });
             }}
           >
             <LogOutIcon />

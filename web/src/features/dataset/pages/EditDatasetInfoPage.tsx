@@ -3,10 +3,9 @@
 import type { EditDatasetInfo } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 import { z } from 'zod';
 
 const $EditDatasetInfoDto = z.object({
@@ -17,7 +16,7 @@ const $EditDatasetInfoDto = z.object({
 });
 
 const EditDatasetInfoPage = () => {
-  const params = useParams();
+  const params = useParams({ strict: false });
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
 
@@ -40,7 +39,7 @@ const EditDatasetInfoPage = () => {
       })
       .then(() => {
         notifications.addNotification({ message: 'Dataset Information Updated!', type: 'success' });
-        navigate(-1);
+        void navigate({ to: '..' });
       })
       .catch(console.error);
   };
@@ -95,7 +94,7 @@ const EditDatasetInfoPage = () => {
                 label="Back"
                 variant={'secondary'}
                 onClick={() => {
-                  navigate(-1);
+                  void navigate({ to: '..' });
                 }}
               />
             </motion.div>
@@ -106,7 +105,4 @@ const EditDatasetInfoPage = () => {
   );
 };
 
-export const editDatasetInfoRoute: RouteObject = {
-  element: <EditDatasetInfoPage />,
-  path: 'dataset/edit-info/:datasetId'
-};
+export { EditDatasetInfoPage };

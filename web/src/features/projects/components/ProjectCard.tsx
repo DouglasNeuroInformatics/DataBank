@@ -1,5 +1,5 @@
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 
 export type ProjectCardProps = {
   createdAt: Date;
@@ -53,11 +53,11 @@ export const ProjectCard = ({
         </Card.Content>
         <Card.Footer className="flex justify-between">
           {isProjectManager ? (
-            <Button variant={'primary'} onClick={() => navigate(`/portal/project/${id}`)}>
+            <Button variant={'primary'} onClick={() => void navigate({ to: `/portal/projects/${id}` })}>
               Manage Project
             </Button>
           ) : (
-            <Button variant={'primary'} onClick={() => navigate(`/portal/project/${id}`)}>
+            <Button variant={'primary'} onClick={() => void navigate({ to: `/portal/projects/${id}` })}>
               View Project
             </Button>
           )}

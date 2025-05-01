@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ArrowRightEndOnRectangleIcon, HomeIcon, UsersIcon } from '@heroicons/react/24/outline';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from '@tanstack/react-router';
 
 import { DesktopSidebar } from './DesktopSidebar';
 import { MobileNavbar } from './MobileNavbar';

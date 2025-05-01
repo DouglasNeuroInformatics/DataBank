@@ -2,6 +2,7 @@ import path from 'path';
 
 import importMetaEnv from '@import-meta-env/unplugin';
 import tailwindcss from '@tailwindcss/vite';
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react-swc';
 import { defineConfig } from 'vite';
 
@@ -19,6 +20,7 @@ export default defineConfig({
     force: true
   },
   plugins: [
+    TanStackRouterVite({ autoCodeSplitting: true, target: 'react' }),
     react(),
     tailwindcss(),
     importMetaEnv.vite({

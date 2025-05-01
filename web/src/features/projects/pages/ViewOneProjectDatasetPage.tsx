@@ -5,9 +5,8 @@ import type { DatasetViewPagination, TabularDataset } from '@databank/core';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { useAuthStore } from '@/stores/auth-store';
@@ -19,7 +18,7 @@ const ViewOneProjectDatasetPage = () => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
-  const params = useParams();
+  const params = useParams({ strict: false });
   const [dataset, setDataset] = useState<null | TabularDataset>(null);
   const download = useDownload();
   const { currentUser } = useAuthStore();
@@ -59,7 +58,7 @@ const ViewOneProjectDatasetPage = () => {
           type: 'success',
           message: `Dataset with Id ${params.datasetId} has been deleted`
         });
-        navigate(-1);
+        void navigate({ to: `/portal/projects/${params.projectId}` });
       })
       .catch(console.error);
   };
@@ -186,7 +185,4 @@ const ViewOneProjectDatasetPage = () => {
   );
 };
 
-export const viewOneProjectDatasetRoute: RouteObject = {
-  path: 'project/dataset/:projectId/:datasetId',
-  element: <ViewOneProjectDatasetPage />
-};
+export { ViewOneProjectDatasetPage };
