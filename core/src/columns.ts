@@ -271,6 +271,17 @@ type CreateTabularColumn =
   | CreateIntColumn
   | CreateStringColumn;
 
+const $RawQueryProps = z.object({
+  __modelName: z.literal('TabularColumn'),
+  _id: z.object({
+    oid: z.string()
+  })
+});
+
+const $RawQueryColumn = $RawQueryProps.and($CreateTabularColumn);
+
+type RawQueryColumn = z.infer<typeof $RawQueryColumn>;
+
 type UpdateTabularColumn =
   | UpdateDatetimeColumn
   | UpdateEnumColumn
@@ -288,6 +299,7 @@ export {
   $EnumColumn,
   $FloatColumn,
   $IntColumn,
+  $RawQueryColumn,
   $TabularColumn,
   $UpdateDatetimeColumn,
   $UpdateEnumColumn,
@@ -308,6 +320,7 @@ export type {
   EnumColumn,
   FloatColumn,
   IntColumn,
+  RawQueryColumn,
   StringColumn,
   TabularColumn,
   UpdateDatetimeColumn,

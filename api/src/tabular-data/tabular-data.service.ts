@@ -214,9 +214,6 @@ export class TabularDataService {
     columnPagination: DatasetViewPagination
   ) {
     const tabularData = await this.tabularDataModel.findUnique({
-      include: {
-        columns: true
-      },
       where: {
         id: tabularDataId
       }
@@ -226,16 +223,22 @@ export class TabularDataService {
       throw new NotFoundException('No tabular data found!');
     }
 
+    const columnsFromDB = await this.columnsService.findManyByTabularDataId(tabularDataId, columnPagination);
+
+    if (!columnsFromDB || columnsFromDB.length === 0) {
+      throw new NotFoundException('No column found in this tabular dataset!');
+    }
+
     const columnIdsModifyData: string[] = [];
     const columnIdsModifyMetadata: string[] = [];
 
     if (userStatus === 'VERIFIED') {
-      tabularData.columns.forEach((col) => {
-        if (col.dataPermission === 'MANAGER') {
-          columnIdsModifyData.push(col.id);
+      columnsFromDB.forEach((col) => {
+        if (col.dataPermission.permission === 'MANAGER') {
+          columnIdsModifyData.push(col._id.oid);
         }
-        if (col.summaryPermission === 'MANAGER') {
-          columnIdsModifyMetadata.push(col.id);
+        if (col.summaryPermission.permission === 'MANAGER') {
+          columnIdsModifyMetadata.push(col._id.oid);
         }
       });
     } else if (userStatus === 'LOGIN') {
@@ -248,16 +251,20 @@ export class TabularDataService {
         }
       });
     } else if (userStatus === 'PUBLIC') {
-      tabularData.columns.forEach((col) => {
-        if (col.dataPermission === 'MANAGER' || col.dataPermission === 'LOGIN' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyData.push(col.id);
+      columnsFromDB.forEach((col) => {
+        if (
+          col.dataPermission.permission === 'MANAGER' ||
+          col.dataPermission.permission === 'LOGIN' ||
+          col.dataPermission.permission === 'VERIFIED'
+        ) {
+          columnIdsModifyData.push(col._id.oid);
         }
         if (
-          col.summaryPermission === 'MANAGER' ||
-          col.summaryPermission === 'VERIFIED' ||
-          col.summaryPermission === 'LOGIN'
+          col.summaryPermission.permission === 'MANAGER' ||
+          col.summaryPermission.permission === 'VERIFIED' ||
+          col.summaryPermission.permission === 'LOGIN'
         ) {
-          columnIdsModifyMetadata.push(col.id);
+          columnIdsModifyMetadata.push(col._id.oid);
         }
       });
     }
@@ -266,15 +273,10 @@ export class TabularDataService {
     const columns: string[] = [];
 
     const rows: { [key: string]: boolean | null | number | string }[] = [];
-    if (!tabularData.columns[0]?.id) {
-      throw new NotFoundException('No columns in this tabular data.');
-    }
 
     const rowStart = (rowPagination.currentPage - 1) * rowPagination.itemsPerPage;
     const rowEnd = rowPagination.currentPage * rowPagination.itemsPerPage;
-    const numberOfRows = await this.columnsService.getLengthById(tabularData.columns[0]?.id);
-    const columnStart = (columnPagination.currentPage - 1) * columnPagination.itemsPerPage;
-    const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage;
+    const numberOfRows = await this.columnsService.getLengthById(columnsFromDB[0]!._id.oid);
 
     for (let i = rowStart; i < rowEnd; i++) {
       rows.push({});
@@ -282,50 +284,50 @@ export class TabularDataService {
 
     const metaData: { [key: string]: ColumnSummary } = {};
 
-    for (const col of tabularData.columns.slice(columnStart, columnEnd)) {
-      columnIds[col.name] = col.id;
+    for (const col of columnsFromDB) {
+      columnIds[col.name] = col._id.oid;
       columns.push(col.name);
 
-      switch (col.kind) {
-        case 'BOOLEAN':
-          col.booleanData.slice(rowStart, rowEnd).map((entry, i) => {
-            rows[i] ??= {};
-            if (columnIdsModifyData.includes(col.id)) {
-              rows[i][col.name] = 'Hidden';
-            } else {
-              rows[i][col.name] = entry.value;
-            }
-          });
+      switch (col.kind.type) {
+        // case 'BOOLEAN':
+        //   col.booleanData.slice(rowStart, rowEnd).map((entry, i) => {
+        //     rows[i] ??= {};
+        //     if (columnIdsModifyData.includes(col._id.oid)) {
+        //       rows[i][col.name] = 'Hidden';
+        //     } else {
+        //       rows[i][col.name] = entry.value;
+        //     }
+        //   });
 
-          if (columnIdsModifyMetadata.includes(col.id)) {
-            metaData[col.name] = {
-              count: 0,
-              kind: { type: 'BOOLEAN' },
-              nullCount: 0,
-              trueCount: 0
-            };
-          } else {
-            metaData[col.name] = {
-              count: col.summary.count,
-              kind: { type: 'BOOLEAN' },
-              nullCount: col.summary.nullCount,
-              // BUG: trueCount doesn't work
-              // trueCount: col.summary.enumSummary?.distribution
-              trueCount: 0
-            };
-          }
-          break;
+        //   if (columnIdsModifyMetadata.includes(col._id.oid)) {
+        //     metaData[col.name] = {
+        //       count: 0,
+        //       kind: { type: 'BOOLEAN' },
+        //       nullCount: 0,
+        //       trueCount: 0
+        //     };
+        //   } else {
+        //     metaData[col.name] = {
+        //       count: col.summary.count,
+        //       kind: { type: 'BOOLEAN' },
+        //       nullCount: col.summary.nullCount,
+        //       // BUG: trueCount doesn't work
+        //       // trueCount: col.summary.enumSummary?.distribution
+        //       trueCount: 0
+        //     };
+        //   }
+        //   break;
         case 'DATETIME':
           col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col.id)) {
+            if (columnIdsModifyData.includes(col._id.oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value?.toISOString() ?? null;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col.id)) {
+          if (columnIdsModifyMetadata.includes(col._id.oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'DATETIME' },
@@ -347,14 +349,14 @@ export class TabularDataService {
           col.enumData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (columnIdsModifyData.includes(col.id)) {
+            if (columnIdsModifyData.includes(col._id.oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col.id)) {
+          if (columnIdsModifyMetadata.includes(col._id.oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'ENUM' },
@@ -371,14 +373,14 @@ export class TabularDataService {
         case 'FLOAT':
           col.floatData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col.id)) {
+            if (columnIdsModifyData.includes(col._id.oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col.id)) {
+          if (columnIdsModifyMetadata.includes(col._id.oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'FLOAT' },
@@ -405,13 +407,13 @@ export class TabularDataService {
         case 'INT':
           col.intData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col.id)) {
+            if (columnIdsModifyData.includes(col._id.oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
           });
-          if (columnIdsModifyMetadata.includes(col.id)) {
+          if (columnIdsModifyMetadata.includes(col._id.oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'INT' },
@@ -441,14 +443,14 @@ export class TabularDataService {
           col.stringData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (columnIdsModifyData.includes(col.id)) {
+            if (columnIdsModifyData.includes(col._id.oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col.id)) {
+          if (columnIdsModifyMetadata.includes(col._id.oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'STRING' },
@@ -471,7 +473,7 @@ export class TabularDataService {
       metadata: metaData,
       primaryKeys: tabularData.primaryKeys,
       rows,
-      totalNumberOfColumns: tabularData.columns.length,
+      totalNumberOfColumns: columnsFromDB.length,
       totalNumberOfRows: numberOfRows
     };
 
