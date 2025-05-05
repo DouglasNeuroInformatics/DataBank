@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import * as React from 'react';
 
+import { useRouter } from '@tanstack/react-router';
+
 import { useSetupState } from '@/hooks/useSetupState';
 
 import { useCreateSetupState } from '../hooks/useCreateSetupState';
@@ -10,10 +12,11 @@ import { SetupPage } from '../pages/SetupPage';
 export const SetupProvider = ({ children }: { children: React.ReactNode }) => {
   const setupStateQuery = useSetupState();
   const createSetupStateMutation = useCreateSetupState();
+  const router = useRouter();
 
   useEffect(() => {
     if (setupStateQuery.data?.isSetup === false) {
-      window.history.replaceState({}, '', '/');
+      router.history.replace('/');
     }
   }, [setupStateQuery.data]);
 

@@ -198,6 +198,7 @@ export class ColumnsService {
     const columns = await this.columnModel.aggregateRaw({
       pipeline: [
         { $match: { tabularDataId: { $oid: tabularDataId } } },
+        { $sort: { _id: 1 } },
         { $skip: (columnPagination.currentPage - 1) * columnPagination.itemsPerPage },
         { $limit: columnPagination.itemsPerPage }
       ]
