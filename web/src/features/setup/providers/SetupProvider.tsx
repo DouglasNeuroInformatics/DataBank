@@ -18,7 +18,7 @@ export const SetupProvider = ({ children }: { children: React.ReactNode }) => {
     if (setupStateQuery.data?.isSetup === false) {
       router.history.replace('/');
     }
-  }, [setupStateQuery.data]);
+  }, [setupStateQuery.data, router]);
 
   if (setupStateQuery.data?.isSetup !== false) {
     return children;
