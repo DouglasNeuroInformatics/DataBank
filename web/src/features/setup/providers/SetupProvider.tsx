@@ -13,7 +13,7 @@ export const SetupProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (setupStateQuery.data?.isSetup === false) {
-      window.history.replaceState({}, '', '/setup');
+      window.history.replaceState({}, '', '/');
     }
   }, [setupStateQuery.data]);
 

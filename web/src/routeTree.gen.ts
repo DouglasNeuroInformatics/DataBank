@@ -13,8 +13,8 @@
 import { Route as rootRoute } from './routes/__root';
 import { Route as PublicImport } from './routes/public';
 import { Route as PortalImport } from './routes/portal';
+import { Route as SplatImport } from './routes/$';
 import { Route as IndexImport } from './routes/index';
-import { Route as SetupIndexImport } from './routes/setup/index';
 import { Route as PublicDatasetsImport } from './routes/public/datasets';
 import { Route as AuthLoginImport } from './routes/auth/login';
 import { Route as AuthCreateAccountImport } from './routes/auth/create-account';
@@ -50,15 +50,15 @@ const PortalRoute = PortalImport.update({
   getParentRoute: () => rootRoute
 } as any);
 
-const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+const SplatRoute = SplatImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRoute
 } as any);
 
-const SetupIndexRoute = SetupIndexImport.update({
-  id: '/setup/',
-  path: '/setup/',
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRoute
 } as any);
 
@@ -193,6 +193,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
+    '/$': {
+      id: '/$';
+      path: '/$';
+      fullPath: '/$';
+      preLoaderRoute: typeof SplatImport;
+      parentRoute: typeof rootRoute;
+    };
     '/portal': {
       id: '/portal';
       path: '/portal';
@@ -234,13 +241,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/public/datasets';
       preLoaderRoute: typeof PublicDatasetsImport;
       parentRoute: typeof PublicImport;
-    };
-    '/setup/': {
-      id: '/setup/';
-      path: '/setup';
-      fullPath: '/setup';
-      preLoaderRoute: typeof SetupIndexImport;
-      parentRoute: typeof rootRoute;
     };
     '/portal/datasets/$datasetId': {
       id: '/portal/datasets/$datasetId';
@@ -421,13 +421,13 @@ const PublicRouteWithChildren = PublicRoute._addFileChildren(PublicRouteChildren
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
+  '/$': typeof SplatRoute;
   '/portal': typeof PortalRouteWithChildren;
   '/public': typeof PublicRouteWithChildren;
   '/auth/confirm-email-code': typeof AuthConfirmEmailCodeRoute;
   '/auth/create-account': typeof AuthCreateAccountRoute;
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
-  '/setup': typeof SetupIndexRoute;
   '/portal/datasets/$datasetId': typeof PortalDatasetsDatasetIdRoute;
   '/portal/datasets/create': typeof PortalDatasetsCreateRoute;
   '/portal/datasets/manage-managers': typeof PortalDatasetsManageManagersRoute;
@@ -448,13 +448,13 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
+  '/$': typeof SplatRoute;
   '/portal': typeof PortalRouteWithChildren;
   '/public': typeof PublicRouteWithChildren;
   '/auth/confirm-email-code': typeof AuthConfirmEmailCodeRoute;
   '/auth/create-account': typeof AuthCreateAccountRoute;
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
-  '/setup': typeof SetupIndexRoute;
   '/portal/datasets/$datasetId': typeof PortalDatasetsDatasetIdRoute;
   '/portal/datasets/create': typeof PortalDatasetsCreateRoute;
   '/portal/datasets/manage-managers': typeof PortalDatasetsManageManagersRoute;
@@ -476,13 +476,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   '/': typeof IndexRoute;
+  '/$': typeof SplatRoute;
   '/portal': typeof PortalRouteWithChildren;
   '/public': typeof PublicRouteWithChildren;
   '/auth/confirm-email-code': typeof AuthConfirmEmailCodeRoute;
   '/auth/create-account': typeof AuthCreateAccountRoute;
   '/auth/login': typeof AuthLoginRoute;
   '/public/datasets': typeof PublicDatasetsRoute;
-  '/setup/': typeof SetupIndexRoute;
   '/portal/datasets/$datasetId': typeof PortalDatasetsDatasetIdRoute;
   '/portal/datasets/create': typeof PortalDatasetsCreateRoute;
   '/portal/datasets/manage-managers': typeof PortalDatasetsManageManagersRoute;
@@ -505,13 +505,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
     | '/'
+    | '/$'
     | '/portal'
     | '/public'
     | '/auth/confirm-email-code'
     | '/auth/create-account'
     | '/auth/login'
     | '/public/datasets'
-    | '/setup'
     | '/portal/datasets/$datasetId'
     | '/portal/datasets/create'
     | '/portal/datasets/manage-managers'
@@ -531,13 +531,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo;
   to:
     | '/'
+    | '/$'
     | '/portal'
     | '/public'
     | '/auth/confirm-email-code'
     | '/auth/create-account'
     | '/auth/login'
     | '/public/datasets'
-    | '/setup'
     | '/portal/datasets/$datasetId'
     | '/portal/datasets/create'
     | '/portal/datasets/manage-managers'
@@ -557,13 +557,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/$'
     | '/portal'
     | '/public'
     | '/auth/confirm-email-code'
     | '/auth/create-account'
     | '/auth/login'
     | '/public/datasets'
-    | '/setup/'
     | '/portal/datasets/$datasetId'
     | '/portal/datasets/create'
     | '/portal/datasets/manage-managers'
@@ -585,22 +585,22 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  SplatRoute: typeof SplatRoute;
   PortalRoute: typeof PortalRouteWithChildren;
   PublicRoute: typeof PublicRouteWithChildren;
   AuthConfirmEmailCodeRoute: typeof AuthConfirmEmailCodeRoute;
   AuthCreateAccountRoute: typeof AuthCreateAccountRoute;
   AuthLoginRoute: typeof AuthLoginRoute;
-  SetupIndexRoute: typeof SetupIndexRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SplatRoute: SplatRoute,
   PortalRoute: PortalRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
   AuthConfirmEmailCodeRoute: AuthConfirmEmailCodeRoute,
   AuthCreateAccountRoute: AuthCreateAccountRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  SetupIndexRoute: SetupIndexRoute
+  AuthLoginRoute: AuthLoginRoute
 };
 
 export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
@@ -612,16 +612,19 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/$",
         "/portal",
         "/public",
         "/auth/confirm-email-code",
         "/auth/create-account",
-        "/auth/login",
-        "/setup/"
+        "/auth/login"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/$": {
+      "filePath": "$.tsx"
     },
     "/portal": {
       "filePath": "portal.tsx",
@@ -661,9 +664,6 @@ export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileT
     "/public/datasets": {
       "filePath": "public/datasets.tsx",
       "parent": "/public"
-    },
-    "/setup/": {
-      "filePath": "setup/index.tsx"
     },
     "/portal/datasets/$datasetId": {
       "filePath": "portal/datasets/$datasetId.tsx",

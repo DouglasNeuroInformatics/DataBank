@@ -56,7 +56,6 @@ export class TabularDataService {
       df.insertAtIdx(0, indexSeries);
       primaryKeys.push('id');
     }
-
     if (!this.primaryKeyCheck(primaryKeys, df)) {
       throw new ForbiddenException('Dataset failed primary keys check!');
     }
@@ -235,10 +234,10 @@ export class TabularDataService {
     if (userStatus === 'VERIFIED') {
       columnsFromDB.forEach((col) => {
         if (col.dataPermission.permission === 'MANAGER') {
-          columnIdsModifyData.push(col._id.oid);
+          columnIdsModifyData.push(col._id.$oid);
         }
         if (col.summaryPermission.permission === 'MANAGER') {
-          columnIdsModifyMetadata.push(col._id.oid);
+          columnIdsModifyMetadata.push(col._id.$oid);
         }
       });
     } else if (userStatus === 'LOGIN') {
@@ -257,14 +256,14 @@ export class TabularDataService {
           col.dataPermission.permission === 'LOGIN' ||
           col.dataPermission.permission === 'VERIFIED'
         ) {
-          columnIdsModifyData.push(col._id.oid);
+          columnIdsModifyData.push(col._id.$oid);
         }
         if (
           col.summaryPermission.permission === 'MANAGER' ||
           col.summaryPermission.permission === 'VERIFIED' ||
           col.summaryPermission.permission === 'LOGIN'
         ) {
-          columnIdsModifyMetadata.push(col._id.oid);
+          columnIdsModifyMetadata.push(col._id.$oid);
         }
       });
     }
@@ -276,7 +275,7 @@ export class TabularDataService {
 
     const rowStart = (rowPagination.currentPage - 1) * rowPagination.itemsPerPage;
     const rowEnd = rowPagination.currentPage * rowPagination.itemsPerPage;
-    const numberOfRows = await this.columnsService.getLengthById(columnsFromDB[0]!._id.oid);
+    const numberOfRows = await this.columnsService.getLengthById(columnsFromDB[0]!._id.$oid);
 
     for (let i = rowStart; i < rowEnd; i++) {
       rows.push({});
@@ -285,21 +284,21 @@ export class TabularDataService {
     const metaData: { [key: string]: ColumnSummary } = {};
 
     for (const col of columnsFromDB) {
-      columnIds[col.name] = col._id.oid;
+      columnIds[col.name] = col._id.$oid;
       columns.push(col.name);
 
-      switch (col.kind.type) {
+      switch (col.kind) {
         // case 'BOOLEAN':
         //   col.booleanData.slice(rowStart, rowEnd).map((entry, i) => {
         //     rows[i] ??= {};
-        //     if (columnIdsModifyData.includes(col._id.oid)) {
+        //     if (columnIdsModifyData.includes(col._id.$oid)) {
         //       rows[i][col.name] = 'Hidden';
         //     } else {
         //       rows[i][col.name] = entry.value;
         //     }
         //   });
 
-        //   if (columnIdsModifyMetadata.includes(col._id.oid)) {
+        //   if (columnIdsModifyMetadata.includes(col._id.$oid)) {
         //     metaData[col.name] = {
         //       count: 0,
         //       kind: { type: 'BOOLEAN' },
@@ -320,14 +319,14 @@ export class TabularDataService {
         case 'DATETIME':
           col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col._id.oid)) {
+            if (columnIdsModifyData.includes(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value?.toISOString() ?? null;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.oid)) {
+          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'DATETIME' },
@@ -349,14 +348,14 @@ export class TabularDataService {
           col.enumData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (columnIdsModifyData.includes(col._id.oid)) {
+            if (columnIdsModifyData.includes(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.oid)) {
+          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'ENUM' },
@@ -373,14 +372,14 @@ export class TabularDataService {
         case 'FLOAT':
           col.floatData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col._id.oid)) {
+            if (columnIdsModifyData.includes(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.oid)) {
+          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'FLOAT' },
@@ -407,13 +406,13 @@ export class TabularDataService {
         case 'INT':
           col.intData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col._id.oid)) {
+            if (columnIdsModifyData.includes(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
           });
-          if (columnIdsModifyMetadata.includes(col._id.oid)) {
+          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'INT' },
@@ -443,14 +442,14 @@ export class TabularDataService {
           col.stringData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (columnIdsModifyData.includes(col._id.oid)) {
+            if (columnIdsModifyData.includes(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.oid)) {
+          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
               kind: { type: 'STRING' },

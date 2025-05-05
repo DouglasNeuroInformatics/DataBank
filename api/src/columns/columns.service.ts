@@ -797,7 +797,7 @@ export class ColumnsService {
             median: currSeries.median(),
             min: currSeries.min(),
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
+            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0]
           },
           intSummary: null,
           nullCount: currSeries.nullCount()
@@ -816,7 +816,7 @@ export class ColumnsService {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             mode: currSeries.filter(currSeries.isNotNull()).mode()[0],
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
+            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0]
           },
           nullCount: currSeries.nullCount()
         };

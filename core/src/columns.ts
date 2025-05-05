@@ -274,7 +274,7 @@ type CreateTabularColumn =
 const $RawQueryProps = z.object({
   __modelName: z.literal('TabularColumn'),
   _id: z.object({
-    oid: z.string()
+    $oid: z.string()
   })
 });
 
