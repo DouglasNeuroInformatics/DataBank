@@ -1,4 +1,4 @@
-import type { GetColumnViewDto } from '@databank/core';
+import type { DatasetViewPagination, GetColumnViewDto, RawQueryColumn } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -191,18 +191,28 @@ export class ColumnsService {
     });
   }
 
-  async findManyByTabularDataId(tabularDataId: string) {
-    const columns = await this.columnModel.findMany({
-      where: {
-        tabularDataId: tabularDataId
-      }
+  async findManyByTabularDataId(
+    tabularDataId: string,
+    columnPagination: DatasetViewPagination
+  ): Promise<RawQueryColumn[]> {
+    const columns = await this.columnModel.aggregateRaw({
+      // Pipeline stages:
+      // 1. $match: Filter columns by tabularDataId
+      // 2. $sort: Ensure consistent pagination order
+      // 3. $skip/$limit: Implement pagination based on currentPage and itemsPerPage
+      pipeline: [
+        { $match: { tabularDataId: { $oid: tabularDataId } } },
+        { $sort: { _id: 1 } },
+        { $skip: (columnPagination.currentPage - 1) * columnPagination.itemsPerPage },
+        { $limit: columnPagination.itemsPerPage }
+      ]
     });
 
-    if (!columns) {
+    if (columns.length === 0) {
       throw new NotFoundException('No columns found with the given tabular data id!');
     }
 
-    return columns;
+    return columns as unknown as RawQueryColumn[];
   }
 
   async getById(columnId: string) {
@@ -792,7 +802,7 @@ export class ColumnsService {
             median: currSeries.median(),
             min: currSeries.min(),
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
+            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0]
           },
           intSummary: null,
           nullCount: currSeries.nullCount()
@@ -811,7 +821,7 @@ export class ColumnsService {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             mode: currSeries.filter(currSeries.isNotNull()).mode()[0],
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
+            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0]
           },
           nullCount: currSeries.nullCount()
         };
