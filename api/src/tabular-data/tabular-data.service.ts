@@ -52,9 +52,9 @@ export class TabularDataService {
       for (let i = 0; i < df.shape.height; i++) {
         indexArray.push(i);
       }
-      const indexSeries = pl.Series('id', indexArray);
+      const indexSeries = pl.Series('autogen_id', indexArray);
       df.insertAtIdx(0, indexSeries);
-      primaryKeys.push('id');
+      primaryKeys.push('autogen_id');
     }
     if (!this.primaryKeyCheck(primaryKeys, df)) {
       throw new ForbiddenException('Dataset failed primary keys check!');
@@ -223,6 +223,7 @@ export class TabularDataService {
     }
 
     const columnsFromDB = await this.columnsService.findManyByTabularDataId(tabularDataId, columnPagination);
+    const numberOfColumns = await this.columnsService.getNumberOfColumns(tabularDataId);
 
     if (!columnsFromDB || columnsFromDB.length === 0) {
       throw new NotFoundException('No column found in this tabular dataset!');
@@ -472,7 +473,7 @@ export class TabularDataService {
       metadata: metaData,
       primaryKeys: tabularData.primaryKeys,
       rows,
-      totalNumberOfColumns: columnsFromDB.length,
+      totalNumberOfColumns: numberOfColumns,
       totalNumberOfRows: numberOfRows
     };
 

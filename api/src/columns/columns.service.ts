@@ -428,6 +428,14 @@ export class ColumnsService {
     throw new ForbiddenException('Column type does not match any expected types!');
   }
 
+  async getNumberOfColumns(tabularDataId: string) {
+    return await this.columnModel.count({
+      where: {
+        tabularDataId: tabularDataId
+      }
+    });
+  }
+
   async mutateColumnType(columnId: string, colType: ColumnType) {
     const col = await this.getById(columnId);
     if (col.kind === colType) {
@@ -708,24 +716,6 @@ export class ColumnsService {
     return (await this.prisma.$transaction([removeFromCol, addToCol])) as unknown[];
   }
 
-  async toggleColumnNullable(columnId: string) {
-    const col = await this.getById(columnId);
-    if (col.nullable && col.summary.nullCount !== 0) {
-      throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
-    }
-
-    const updateColumnNullable = this.columnModel.update({
-      data: {
-        nullable: !col.nullable
-      },
-      where: {
-        id: columnId
-      }
-    });
-
-    return await updateColumnNullable;
-  }
-
   // async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumn) {
   //   const columnsToUpdate = await this.columnModel.findMany({
   //     where: {
@@ -749,6 +739,24 @@ export class ColumnsService {
   //     });
   //   });
   // }
+
+  async toggleColumnNullable(columnId: string) {
+    const col = await this.getById(columnId);
+    if (col.nullable && col.summary.nullCount !== 0) {
+      throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
+    }
+
+    const updateColumnNullable = this.columnModel.update({
+      data: {
+        nullable: !col.nullable
+      },
+      where: {
+        id: columnId
+      }
+    });
+
+    return await updateColumnNullable;
+  }
 
   private calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
     // Need to correctly compute the distribution for boolean and enum column
