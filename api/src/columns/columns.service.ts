@@ -196,6 +196,10 @@ export class ColumnsService {
     columnPagination: DatasetViewPagination
   ): Promise<RawQueryColumn[]> {
     const columns = await this.columnModel.aggregateRaw({
+      // Pipeline stages:
+      // 1. $match: Filter columns by tabularDataId
+      // 2. $sort: Ensure consistent pagination order
+      // 3. $skip/$limit: Implement pagination based on currentPage and itemsPerPage
       pipeline: [
         { $match: { tabularDataId: { $oid: tabularDataId } } },
         { $sort: { _id: 1 } },
