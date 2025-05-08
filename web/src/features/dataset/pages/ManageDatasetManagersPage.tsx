@@ -23,7 +23,7 @@ const ManageDatasetManagersPage = () => {
           message: `User with Email ${managerEmailToAdd} has been added to the current dataset`,
           type: 'success'
         });
-        void navigate({ to: `/portal/dataset/${datasetId}` });
+        void navigate({ to: `/portal/datasets/${datasetId}` });
       })
       .catch(console.error);
   };
