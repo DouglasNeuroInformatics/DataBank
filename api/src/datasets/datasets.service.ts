@@ -1,5 +1,6 @@
 import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 import type { AddProjectDatasetColumns, ColumnDataType, DatasetCardProps, TabularDatasetView } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
@@ -165,9 +166,11 @@ export class DatasetsService {
     }
 
     // Add a job to the file-upload queue
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
     let dataset;
     if (typeof file !== 'string') {
-      const filePath = path.join(__dirname, 'uploads', file.filename);
+      const filePath = path.join(__dirname, '/uploads/', file.originalname);
       await fs.promises.writeFile(filePath, file.buffer);
       dataset = await this.datasetModel.create({
         data: {
