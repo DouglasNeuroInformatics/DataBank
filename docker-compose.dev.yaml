@@ -15,3 +15,11 @@ services:
     volumes:
       - ./data/configdb:/data/configdb
       - ./data/db:/data/db
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redis-data:/redis-data

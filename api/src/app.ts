@@ -1,5 +1,6 @@
 import { $BooleanLike, $NumberLike } from '@douglasneuroinformatics/libjs';
 import { $BaseEnv, acceptLanguage, AppFactory } from '@douglasneuroinformatics/libnest';
+import { BullModule } from '@nestjs/bullmq';
 import { z } from 'zod';
 
 import { AuthModule } from './auth/auth.module.js';
@@ -48,7 +49,13 @@ export default AppFactory.create({
     ProjectsModule,
     SetupModule,
     TabularDataModule,
-    UsersModule
+    UsersModule,
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379
+      }
+    })
   ],
   prisma: {
     dbPrefix: 'data-bank'
