@@ -185,7 +185,8 @@ export class DatasetsService {
       });
       await this.fileUploadQueue.add('handle-file-upload', {
         datasetId: dataset.id,
-        filePath
+        filePath,
+        isJSON: createTabularDatasetDto.isJSON.toLowerCase() === 'true'
       });
     } else {
       dataset = await this.datasetModel.create({
@@ -201,6 +202,7 @@ export class DatasetsService {
       });
       await this.fileUploadQueue.add('handle-string-upload', {
         datasetId: dataset.id,
+        isJSON: createTabularDatasetDto.isJSON.toLowerCase() === 'true',
         uploadedString: file
       });
     }
