@@ -45,6 +45,8 @@ type ColumnDataType = z.infer<typeof $ColumnDataType>;
 
 type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
 
+type DatasetStatus = 'Fail' | 'Processing' | 'Success';
+
 type DatasetInfo = {
   createdAt: Date;
   datasetType: DatasetType;
@@ -55,6 +57,7 @@ type DatasetInfo = {
   managerIds: string[];
   name: string;
   permission: PermissionLevel;
+  status: DatasetStatus;
   updatedAt: Date;
 };
 

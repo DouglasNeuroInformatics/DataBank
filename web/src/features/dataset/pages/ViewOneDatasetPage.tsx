@@ -16,6 +16,7 @@ import { useAuthStore } from '@/stores/auth-store';
 
 import { DatasetPagination } from '../components/DatasetPagination';
 import { DatasetTable } from '../components/DatasetTable';
+import { useDeleteDataset } from '../hooks/useDeleteDataset';
 
 const ViewOneDatasetPage = () => {
   const { t } = useTranslation('common');
@@ -23,6 +24,7 @@ const ViewOneDatasetPage = () => {
   const notifications = useNotificationsStore();
   const params = useParams({ strict: false });
   const download = useDownload();
+  const deleteDataset = useDeleteDataset();
   const { currentUser } = useAuthStore();
 
   const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPagination>({
@@ -48,19 +50,6 @@ const ViewOneDatasetPage = () => {
 
   const dataset = datasetQuery.data;
   const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
-
-  const deleteDataset = (datasetId: string) => {
-    axios
-      .delete(`/v1/datasets/${datasetId}`)
-      .then(() => {
-        notifications.addNotification({
-          type: 'success',
-          message: `Dataset with Id ${datasetId} has been deleted`
-        });
-        void navigate({ to: '/portal/datasets' });
-      })
-      .catch(console.error);
-  };
 
   const handleDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
@@ -176,6 +165,7 @@ const ViewOneDatasetPage = () => {
               permission={dataset.permission}
               primaryKeys={dataset.primaryKeys}
               rows={dataset.rows}
+              status={dataset.status}
               totalNumberOfColumns={dataset.columns.length}
               totalNumberOfRows={dataset.totalNumberOfRows}
               updatedAt={dataset.updatedAt}

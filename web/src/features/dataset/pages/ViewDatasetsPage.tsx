@@ -11,9 +11,6 @@ import { useAuthStore } from '@/stores/auth-store';
 
 import DatasetCard from '../components/DatasetCard';
 
-// the dataset card should show a list of user emails and when the manager clicks remove user,
-// there should be a callback function for the
-
 const ViewDatasetsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -76,6 +73,7 @@ const ViewDatasetsPage = () => {
                       managerIds={datasetInfo.managerIds}
                       name={datasetInfo.name}
                       permission={datasetInfo.permission}
+                      status={datasetInfo.status}
                       updatedAt={datasetInfo.updatedAt}
                     />
                   </li>

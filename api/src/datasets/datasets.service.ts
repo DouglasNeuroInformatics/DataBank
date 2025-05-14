@@ -676,6 +676,8 @@ export class DatasetsService {
         managerIds: publicDataset.managerIds,
         name: publicDataset.name,
         permission: { permission: publicDataset.permission },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        status: publicDataset.status,
         updatedAt: publicDataset.updatedAt
       });
     });
