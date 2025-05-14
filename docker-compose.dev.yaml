@@ -16,10 +16,10 @@ services:
       - ./data/configdb:/data/configdb
       - ./data/db:/data/db
 
-  redis:
-    image: redis:7
-    container_name: redis
+  valkey:
+    image: valkey/valkey:latest
+    container_name: valkey
     ports:
       - '6379:6379'
     volumes:
-      - ./redis-data:/redis-data
+      - ./valkey-data:/valkey-data
