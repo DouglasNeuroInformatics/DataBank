@@ -16,7 +16,13 @@ export const useDeleteDataset = () => {
         });
         void navigate({ to: '/portal/datasets' });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        notifications.addNotification({
+          message: `Failed to delete dataset: ${error.response?.data?.message || 'Unknown error'}`,
+          type: 'error'
+        });
+      });
   };
 
   return deleteDataset;
