@@ -1,31 +1,26 @@
-import { useEffect, useState } from 'react';
-
-import type { DatasetCardProps } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 
+import { LoadingFallback } from '@/components';
 import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
 
 import DatasetCard from '../components/DatasetCard';
+import { useDatasetsQuery } from '../hooks/useDatasetsQuery';
 
 const ViewDatasetsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { currentUser } = useAuthStore();
 
-  const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
+  const datasetsInfoQuery = useDatasetsQuery();
 
-  useEffect(() => {
-    axios
-      .get<DatasetCardProps[]>('/v1/datasets')
-      .then((response) => {
-        setDatasetsInfoArray(response.data);
-      })
-      .catch(console.error);
-  }, []);
+  if (!datasetsInfoQuery.data) {
+    return <LoadingFallback />;
+  }
+
+  const datasetsInfoArray = datasetsInfoQuery.data;
 
   return (
     <>

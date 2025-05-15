@@ -186,7 +186,8 @@ export class DatasetsService {
       await this.fileUploadQueue.add('handle-file-upload', {
         datasetId: dataset.id,
         filePath,
-        isJSON: createTabularDatasetDto.isJSON.toLowerCase() === 'true'
+        isJSON: createTabularDatasetDto.isJSON.toLowerCase() === 'true',
+        primaryKeys: createTabularDatasetDto.primaryKeys
       });
     } else {
       dataset = await this.datasetModel.create({
@@ -203,6 +204,7 @@ export class DatasetsService {
       await this.fileUploadQueue.add('handle-string-upload', {
         datasetId: dataset.id,
         isJSON: createTabularDatasetDto.isJSON.toLowerCase() === 'true',
+        primaryKeys: createTabularDatasetDto.primaryKeys,
         uploadedString: file
       });
     }
@@ -249,10 +251,7 @@ export class DatasetsService {
       );
     }
 
-    if (dataset.datasetType === 'TABULAR') {
-      if (!dataset.tabularData) {
-        throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
-      }
+    if (dataset.datasetType === 'TABULAR' && dataset.tabularData) {
       const deleteColumns = this.columnService.deleteByTabularDataId(dataset.tabularData.id);
       const deleteTabularData = this.tabularDataService.deleteById(dataset.tabularData.id);
       return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
@@ -676,7 +675,6 @@ export class DatasetsService {
         managerIds: publicDataset.managerIds,
         name: publicDataset.name,
         permission: { permission: publicDataset.permission },
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         status: publicDataset.status,
         updatedAt: publicDataset.updatedAt
       });
