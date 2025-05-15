@@ -61,7 +61,7 @@ type DatasetInfo = {
   updatedAt: Date;
 };
 
-type DatasetCardProps = DatasetInfo & { isManager: boolean };
+type DatasetCardProps = DatasetInfo & { isManager: boolean; isPublic: boolean };
 
 type TabularDataRow = {
   [key: string]: boolean | Date | number | string;

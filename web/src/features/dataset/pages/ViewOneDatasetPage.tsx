@@ -18,7 +18,11 @@ import { DatasetPagination } from '../components/DatasetPagination';
 import { DatasetTable } from '../components/DatasetTable';
 import { useDeleteDataset } from '../hooks/useDeleteDataset';
 
-const ViewOneDatasetPage = () => {
+type ViewOneDatasetPageProps = {
+  isPublic: boolean;
+};
+
+const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
@@ -26,6 +30,9 @@ const ViewOneDatasetPage = () => {
   const download = useDownload();
   const deleteDataset = useDeleteDataset();
   const { currentUser } = useAuthStore();
+  const dataQueryUrl = isPublic ? `/v1/datasets/public/${params.datasetId}` : `/v1/datasets/${params.datasetId}`;
+  const downloadDataUrl = isPublic ? `/v1/datasets/public/download-data/` : `/v1/datasets/download-data/`;
+  const downloadMetaDataUrl = isPublic ? `/v1/datasets/public/download-metadata/` : `/v1/datasets/download-metadata/`;
 
   const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPagination>({
     currentPage: 1,
@@ -39,7 +46,7 @@ const ViewOneDatasetPage = () => {
 
   const datasetQuery = useQuery({
     queryFn: async () => {
-      const response = await axios.post<TabularDataset>(`/v1/datasets/${params.datasetId}`, {
+      const response = await axios.post<TabularDataset>(dataQueryUrl, {
         columnPaginationDto,
         rowPaginationDto
       });
@@ -49,12 +56,12 @@ const ViewOneDatasetPage = () => {
   });
 
   const dataset = datasetQuery.data;
-  const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
+  const isManager = currentUser ? Boolean(dataset?.managerIds.includes(currentUser.id)) : false;
 
   const handleDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     axios
-      .get<string>(`/v1/datasets/download-data/${data.id}/${format}`)
+      .get<string>(downloadDataUrl + `${data.id}/${format}`)
       .then((response) => {
         void download(filename, response.data);
       })
@@ -64,7 +71,7 @@ const ViewOneDatasetPage = () => {
   const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     axios
-      .get<string>(`/v1/datasets/download-metadata/${data.id}/${format}`)
+      .get<string>(downloadMetaDataUrl + `${data.id}/${format}`)
       .then((response) => {
         void download(filename, response.data);
       })
@@ -197,43 +204,42 @@ const ViewOneDatasetPage = () => {
                   {t('setDatasetSharable')}
                 </Button>
               )}
-
-              {dataset.datasetType === 'TABULAR' && (
-                <>
-                  <DropdownMenu>
-                    <DropdownMenu.Trigger asChild className="m-2 flex items-center justify-between gap-3">
-                      <Button variant="secondary">
-                        {t('downloadDataset')}
-                        <ChevronDownIcon className="size-[1rem]" />
-                      </Button>
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Content className="w-48">
-                      <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
-                        {t('downloadTsv')}
-                      </DropdownMenu.Item>
-                      <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
-                        {t('downloadCsv')}
-                      </DropdownMenu.Item>
-                    </DropdownMenu.Content>
-                  </DropdownMenu>
-                  <DropdownMenu>
-                    <DropdownMenu.Trigger asChild className="m-2 flex items-center justify-between gap-3">
-                      <Button variant="secondary">
-                        {t('downloadMetadata')}
-                        <ChevronDownIcon className="size-[1rem]" />
-                      </Button>
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Content className="w-48">
-                      <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
-                        {t('downloadTsv')}
-                      </DropdownMenu.Item>
-                      <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
-                        {t('downloadCsv')}
-                      </DropdownMenu.Item>
-                    </DropdownMenu.Content>
-                  </DropdownMenu>
-                </>
-              )}
+            </>
+          )}
+          {dataset.datasetType === 'TABULAR' && (
+            <>
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild className="m-2 flex items-center justify-between gap-3">
+                  <Button variant="secondary">
+                    {t('downloadDataset')}
+                    <ChevronDownIcon className="size-[1rem]" />
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content className="w-48">
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('TSV', dataset)}>
+                    {t('downloadTsv')}
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item onClick={() => void handleDataDownload('CSV', dataset)}>
+                    {t('downloadCsv')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild className="m-2 flex items-center justify-between gap-3">
+                  <Button variant="secondary">
+                    {t('downloadMetadata')}
+                    <ChevronDownIcon className="size-[1rem]" />
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content className="w-48">
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV', dataset)}>
+                    {t('downloadTsv')}
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV', dataset)}>
+                    {t('downloadCsv')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
             </>
           )}
         </Card.Footer>

@@ -8,13 +8,18 @@ import { useAuthStore } from '@/stores/auth-store';
 
 import DatasetCard from '../components/DatasetCard';
 import { useDatasetsQuery } from '../hooks/useDatasetsQuery';
+import { usePublicDatasetsQuery } from '../hooks/usePublicDatasetsQuery';
 
-const ViewDatasetsPage = () => {
+type ViewDatasetsPageProps = {
+  isPublic: boolean;
+};
+
+const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { currentUser } = useAuthStore();
 
-  const datasetsInfoQuery = useDatasetsQuery();
+  const datasetsInfoQuery = isPublic ? usePublicDatasetsQuery() : useDatasetsQuery();
 
   if (!datasetsInfoQuery.data) {
     return <LoadingFallback />;
@@ -33,17 +38,19 @@ const ViewDatasetsPage = () => {
       <Card>
         <Card.Header>
           <Card.Title className="text-3xl"></Card.Title>
-          <Button
-            className="m-2"
-            variant={'secondary'}
-            onClick={() =>
-              void navigate({
-                to: '/portal/datasets/create'
-              })
-            }
-          >
-            Create Dataset
-          </Button>
+          {!isPublic && (
+            <Button
+              className="m-2"
+              variant={'secondary'}
+              onClick={() =>
+                void navigate({
+                  to: '/portal/datasets/create'
+                })
+              }
+            >
+              Create Dataset
+            </Button>
+          )}
         </Card.Header>
         <Card.Content>
           <ul>
@@ -63,6 +70,7 @@ const ViewDatasetsPage = () => {
                       description={datasetInfo.description}
                       id={datasetInfo.id}
                       isManager={isManager}
+                      isPublic={isPublic}
                       isReadyToShare={false}
                       license={datasetInfo.license}
                       managerIds={datasetInfo.managerIds}

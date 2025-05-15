@@ -10,6 +10,7 @@ const DatasetCard = ({
   description,
   id,
   isManager,
+  isPublic,
   license,
   managerIds,
   name,
@@ -19,6 +20,7 @@ const DatasetCard = ({
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   const deleteDataset = useDeleteDataset();
+  const viewDatasetUrl = isPublic ? `/public/dataset/` : `/portal/datasets/`;
   return (
     <>
       <Card className="my-3">
@@ -51,7 +53,7 @@ const DatasetCard = ({
           <Button
             disabled={status !== 'Success'}
             variant={'primary'}
-            onClick={() => void navigate({ to: `/portal/datasets/${id}` })}
+            onClick={() => void navigate({ to: viewDatasetUrl + `${id}` })}
           >
             {isManager ? t('manageDataset') : t('viewDataset')}
           </Button>
