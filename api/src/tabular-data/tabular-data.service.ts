@@ -234,35 +234,31 @@ export class TabularDataService {
 
     if (userStatus === 'VERIFIED') {
       columnsFromDB.forEach((col) => {
-        if (col.dataPermission.permission === 'MANAGER') {
+        if (col.dataPermission === 'MANAGER') {
           columnIdsModifyData.push(col._id.$oid);
         }
-        if (col.summaryPermission.permission === 'MANAGER') {
+        if (col.summaryPermission === 'MANAGER') {
           columnIdsModifyMetadata.push(col._id.$oid);
         }
       });
     } else if (userStatus === 'LOGIN') {
-      tabularData.columns.forEach((col) => {
+      columnsFromDB.forEach((col) => {
         if (col.dataPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyData.push(col.id);
+          columnIdsModifyData.push(col._id.$oid);
         }
         if (col.summaryPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyMetadata.push(col.id);
+          columnIdsModifyMetadata.push(col._id.$oid);
         }
       });
     } else if (userStatus === 'PUBLIC') {
       columnsFromDB.forEach((col) => {
-        if (
-          col.dataPermission.permission === 'MANAGER' ||
-          col.dataPermission.permission === 'LOGIN' ||
-          col.dataPermission.permission === 'VERIFIED'
-        ) {
+        if (col.dataPermission === 'MANAGER' || col.dataPermission === 'LOGIN' || col.dataPermission === 'VERIFIED') {
           columnIdsModifyData.push(col._id.$oid);
         }
         if (
-          col.summaryPermission.permission === 'MANAGER' ||
-          col.summaryPermission.permission === 'VERIFIED' ||
-          col.summaryPermission.permission === 'LOGIN'
+          col.summaryPermission === 'MANAGER' ||
+          col.summaryPermission === 'VERIFIED' ||
+          col.summaryPermission === 'LOGIN'
         ) {
           columnIdsModifyMetadata.push(col._id.$oid);
         }

@@ -670,6 +670,7 @@ export class DatasetsService {
         description: publicDataset.description,
         id: publicDataset.id,
         isManager: false,
+        isPublic: true,
         isReadyToShare: publicDataset.isReadyToShare,
         license: publicDataset.license,
         managerIds: publicDataset.managerIds,
