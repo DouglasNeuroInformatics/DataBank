@@ -40,12 +40,12 @@
     "fr": "Voir la base de données"
   },
   "totalDatasets": {
-    "en": "Total Datasets",
-    "fr": "Total des bases de données"
+    "en": "Total Datasets Owned",
+    "fr": "Total des bases de données détenus"
   },
   "totalProjects": {
-    "en": "Total Projects",
-    "fr": "Total des projets"
+    "en": "Total Projects Owned",
+    "fr": "Total des projets détenus"
   },
   "manageDatasetManagers": {
     "en": "Manage Dataset Managers",

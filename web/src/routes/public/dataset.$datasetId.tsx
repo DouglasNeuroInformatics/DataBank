@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { ViewOnePublicDatasetPage } from '@/features/dataset/pages/ViewOnePublicDatasetPage';
+import { ViewOneDatasetPage } from '@/features/dataset/pages/ViewOneDatasetPage';
 
 export const Route = createFileRoute('/public/dataset/$datasetId')({
-  component: ViewOnePublicDatasetPage
+  component: () => <ViewOneDatasetPage isPublic={true} />
 });

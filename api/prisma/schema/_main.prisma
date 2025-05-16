@@ -48,6 +48,12 @@ enum UserRole {
 }
 
 // ---------------- Dataset ----------------
+enum DatasetStatus {
+  Processing
+  Success
+  Fail
+}
+
 model Dataset {
   id             String          @id @default(auto()) @map("_id") @db.ObjectId
   name           String
@@ -61,6 +67,7 @@ model Dataset {
   permission     PermissionLevel
   isReadyToShare Boolean
   tabularData    TabularData?
+  status         DatasetStatus
   // binaryData       BinaryData?
 }
 

@@ -29,7 +29,7 @@ export const ConfirmEmailPage = () => {
 
   useEffect(() => {
     if (auth.currentUser?.confirmedAt) {
-      void navigate({ to: '/' });
+      void navigate({ to: '/portal/dashboard' });
     }
   }, [auth.currentUser]);
 

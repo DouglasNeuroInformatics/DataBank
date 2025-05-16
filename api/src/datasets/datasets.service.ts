@@ -1,10 +1,16 @@
+import fs from 'fs';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
 import type { AddProjectDatasetColumns, ColumnDataType, DatasetCardProps, TabularDatasetView } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
+import { InjectQueue } from '@nestjs/bullmq';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
-import type { DataFrame } from 'nodejs-polars';
-import pl from 'nodejs-polars';
+// import type { DataFrame } from 'nodejs-polars';
+// import pl from 'nodejs-polars';
+import { Queue } from 'bullmq';
 
 import { ColumnsService } from '@/columns/columns.service.js';
 import type { ProjectDatasetDto } from '@/projects/dto/projects.dto.js';
@@ -20,7 +26,8 @@ export class DatasetsService {
     @InjectPrismaClient() private prisma: PrismaClient,
     private readonly usersService: UsersService,
     private readonly columnService: ColumnsService,
-    private readonly tabularDataService: TabularDataService
+    private readonly tabularDataService: TabularDataService,
+    @InjectQueue('file-upload') private fileUploadQueue: Queue
   ) {}
 
   async addManager(datasetId: string, managerId: string, managerEmailToAdd: string) {
@@ -145,7 +152,8 @@ export class DatasetsService {
           isReadyToShare: false,
           managerIds: [managerId],
           name: createTabularDatasetDto.name,
-          permission: 'MANAGER'
+          permission: 'MANAGER',
+          status: 'Success'
         }
       });
 
@@ -157,54 +165,48 @@ export class DatasetsService {
       return baseDataset;
     }
 
-    let csvString: string;
-    let df: DataFrame;
-    let separator = ',';
-
-    if (typeof file === 'string') {
-      csvString = file;
-    } else {
-      // file received through the network is stored in memory buffer which is converted to a string
-      separator = file.originalname.endsWith('.tsv') ? '\t' : ',';
-      csvString = file.buffer.toString(); // polars has a bug parsing tsv, this is a hack for it to work
-    }
-
-    if (createTabularDatasetDto.isJSON.toLowerCase() === 'true') {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      df = pl.readJSON(JSON.stringify(JSON.parse(csvString).data));
-    } else {
-      df = pl.readCSV(csvString, { quoteChar: '"', sep: separator, tryParseDates: true });
-      // df = pl.readJSON(JSON.stringify(typedObjs));
-    }
-
-    const dataset = await this.datasetModel.create({
-      data: {
-        datasetType: createTabularDatasetDto.datasetType,
-        description: createTabularDatasetDto.description,
-        isReadyToShare: createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true',
-        managerIds: [managerId],
-        name: createTabularDatasetDto.name,
-        permission: createTabularDatasetDto.permission
-      }
-    });
-    try {
-      // prepare the primary keys array
-      if (createTabularDatasetDto.primaryKeys) {
-        const primaryKeysArray = createTabularDatasetDto.primaryKeys.split(',');
-        primaryKeysArray.map((primaryKey) => {
-          primaryKey.trim();
-        });
-        await this.tabularDataService.create(df, dataset.id, primaryKeysArray);
-      } else {
-        await this.tabularDataService.create(df, dataset.id, []);
-      }
-    } catch {
-      await this.datasetModel.delete({
-        where: {
-          id: dataset.id
+    // Add a job to the file-upload queue
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    let dataset;
+    if (typeof file !== 'string') {
+      const filePath = path.join(__dirname, '/uploads/', file.originalname);
+      await fs.promises.writeFile(filePath, file.buffer);
+      dataset = await this.datasetModel.create({
+        data: {
+          datasetType: createTabularDatasetDto.datasetType,
+          description: createTabularDatasetDto.description,
+          isReadyToShare: createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true',
+          managerIds: [managerId],
+          name: createTabularDatasetDto.name,
+          permission: createTabularDatasetDto.permission,
+          status: 'Processing'
         }
       });
-      throw new ForbiddenException('Cannot create dataset!');
+      await this.fileUploadQueue.add('handle-file-upload', {
+        datasetId: dataset.id,
+        filePath,
+        isJSON: createTabularDatasetDto.isJSON.toLowerCase() === 'true',
+        primaryKeys: createTabularDatasetDto.primaryKeys
+      });
+    } else {
+      dataset = await this.datasetModel.create({
+        data: {
+          datasetType: createTabularDatasetDto.datasetType,
+          description: createTabularDatasetDto.description,
+          isReadyToShare: createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true',
+          managerIds: [managerId],
+          name: createTabularDatasetDto.name,
+          permission: createTabularDatasetDto.permission,
+          status: 'Processing'
+        }
+      });
+      await this.fileUploadQueue.add('handle-string-upload', {
+        datasetId: dataset.id,
+        isJSON: createTabularDatasetDto.isJSON.toLowerCase() === 'true',
+        primaryKeys: createTabularDatasetDto.primaryKeys,
+        uploadedString: file
+      });
     }
 
     datasetIdArr.push(dataset.id);
@@ -249,10 +251,7 @@ export class DatasetsService {
       );
     }
 
-    if (dataset.datasetType === 'TABULAR') {
-      if (!dataset.tabularData) {
-        throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
-      }
+    if (dataset.datasetType === 'TABULAR' && dataset.tabularData) {
       const deleteColumns = this.columnService.deleteByTabularDataId(dataset.tabularData.id);
       const deleteTabularData = this.tabularDataService.deleteById(dataset.tabularData.id);
       return await this.prisma.$transaction([deleteColumns, deleteTabularData, ...updateManagers, deleteTargetDataset]);
@@ -536,6 +535,24 @@ export class DatasetsService {
     return columnsNamesAndIds;
   }
 
+  async getDatasetStatus(datasetId: string) {
+    const dataset = await this.datasetModel.findUnique({
+      select: {
+        status: true
+      },
+      where: {
+        id: datasetId
+      }
+    });
+    if (!dataset) {
+      throw new NotFoundException('Dataset cannot be found!');
+    } else if (!dataset.status) {
+      throw new NotFoundException('Dataset status does not exist!');
+    }
+
+    return dataset.status as string;
+  }
+
   async getOnePublicById(
     datasetId: string,
     rowPaginationDto: DatasetViewPaginationDto,
@@ -653,11 +670,13 @@ export class DatasetsService {
         description: publicDataset.description,
         id: publicDataset.id,
         isManager: false,
+        isPublic: true,
         isReadyToShare: publicDataset.isReadyToShare,
         license: publicDataset.license,
         managerIds: publicDataset.managerIds,
         name: publicDataset.name,
         permission: { permission: publicDataset.permission },
+        status: publicDataset.status,
         updatedAt: publicDataset.updatedAt
       });
     });
@@ -851,6 +870,17 @@ export class DatasetsService {
     }
 
     return this.columnService.toggleColumnNullable(columnId);
+  }
+
+  async updateDatasetStatus(datasetId: string, status: 'Fail' | 'Processing' | 'Success') {
+    return await this.datasetModel.update({
+      data: {
+        status: status
+      },
+      where: {
+        id: datasetId
+      }
+    });
   }
 
   private formatDataDownloadString(format: 'CSV' | 'TSV', datasetView: TabularDatasetView) {

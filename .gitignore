@@ -139,3 +139,7 @@ dist
 
 # test emails
 testemails.txt
+
+# uploaded datasets
+*.tsv
+*.csv
