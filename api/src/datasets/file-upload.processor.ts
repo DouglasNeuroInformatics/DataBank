@@ -6,9 +6,9 @@ import { Job } from 'bullmq';
 import { pl } from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
 
-import { TabularDataService } from '@/tabular-data/tabular-data.service.ts';
+import { TabularDataService } from '@/tabular-data/tabular-data.service';
 
-import { DatasetsService } from './datasets.service.ts';
+import { DatasetsService } from './datasets.service';
 
 @Processor('file-upload')
 export class FileUploadProcessor extends WorkerHost {
