@@ -54,10 +54,7 @@ export class FileUploadProcessor extends WorkerHost {
     try {
       // prepare the primary keys array
       if (jobData.primaryKeys) {
-        const primaryKeysArray = jobData.primaryKeys.split(',');
-        primaryKeysArray.map((primaryKey) => {
-          primaryKey.trim();
-        });
+        const primaryKeysArray = jobData.primaryKeys.split(',').map((key) => key.trim());
         await this.tabularDataService.create(df, jobData.datasetId, primaryKeysArray);
       } else {
         await this.tabularDataService.create(df, jobData.datasetId, []);
