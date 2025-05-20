@@ -9,9 +9,10 @@ import type { DataFrame } from 'nodejs-polars';
 
 import { TabularDataService } from '@/tabular-data/tabular-data.service';
 
+import { FileUploadQueueName } from './datasets.constants';
 import { DatasetsService } from './datasets.service';
 
-@Processor('file-upload')
+@Processor(FileUploadQueueName)
 export class FileUploadProcessor extends WorkerHost {
   constructor(
     private readonly datasetsService: DatasetsService,

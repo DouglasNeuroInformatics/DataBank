@@ -1,3 +1,4 @@
+import { ConfigService } from '@douglasneuroinformatics/libnest';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 
@@ -16,8 +17,13 @@ import { FileUploadProcessor } from './file-upload.processor.js';
     UsersModule,
     ColumnsModule,
     TabularDataModule,
-    BullModule.registerQueue({
-      name: 'file-upload'
+    BullModule.registerQueueAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          name: configService.get('FILE_UPLOAD_QUEUE_NAME')
+        };
+      }
     })
   ],
   providers: [DatasetsService, FileUploadProcessor]

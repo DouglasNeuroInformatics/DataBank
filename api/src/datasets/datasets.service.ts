@@ -14,8 +14,6 @@ import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnes
 import { InjectQueue } from '@nestjs/bullmq';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
-// import type { DataFrame } from 'nodejs-polars';
-// import pl from 'nodejs-polars';
 import { Queue } from 'bullmq';
 
 import { ColumnsService } from '@/columns/columns.service.js';
@@ -23,6 +21,7 @@ import type { ProjectDatasetDto } from '@/projects/dto/projects.dto.js';
 import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 
+import { FileUploadQueueName } from './datasets.constants.js';
 import { CreateDatasetDto, DatasetViewPaginationDto, EditDatasetInfoDto } from './dto/datasets.dto.js';
 
 @Injectable()
@@ -33,7 +32,7 @@ export class DatasetsService {
     private readonly usersService: UsersService,
     private readonly columnService: ColumnsService,
     private readonly tabularDataService: TabularDataService,
-    @InjectQueue('file-upload') private fileUploadQueue: Queue
+    @InjectQueue(FileUploadQueueName) private fileUploadQueue: Queue
   ) {}
 
   async addManager(datasetId: string, managerId: string, managerEmailToAdd: string) {
