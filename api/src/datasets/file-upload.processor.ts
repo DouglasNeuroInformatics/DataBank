@@ -1,5 +1,6 @@
 import fs from 'fs';
 
+import { LoggingService } from '@douglasneuroinformatics/libnest';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { ForbiddenException } from '@nestjs/common';
 import { Job } from 'bullmq';
@@ -14,7 +15,8 @@ import { DatasetsService } from './datasets.service';
 export class FileUploadProcessor extends WorkerHost {
   constructor(
     private readonly datasetsService: DatasetsService,
-    private readonly tabularDataService: TabularDataService
+    private readonly tabularDataService: TabularDataService,
+    private readonly logger: LoggingService
   ) {
     super();
   }
@@ -60,9 +62,10 @@ export class FileUploadProcessor extends WorkerHost {
         await this.tabularDataService.create(df, jobData.datasetId, []);
       }
       await this.datasetsService.updateDatasetStatus(jobData.datasetId, 'Success');
-    } catch {
+    } catch (error) {
+      this.logger.error(`Error processing file upload: ${(error as Error).message}`, error, FileUploadProcessor.name);
       await this.datasetsService.updateDatasetStatus(jobData.datasetId, 'Fail');
-      throw new ForbiddenException('Cannot create dataset!');
+      throw new ForbiddenException(`Cannot create dataset: ${(error as Error).message}`);
     }
   }
 }
