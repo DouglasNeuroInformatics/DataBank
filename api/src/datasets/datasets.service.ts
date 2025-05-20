@@ -2,7 +2,13 @@ import fs from 'fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
 
-import type { AddProjectDatasetColumns, ColumnDataType, DatasetCardProps, TabularDatasetView } from '@databank/core';
+import type {
+  AddProjectDatasetColumns,
+  ColumnDataType,
+  DatasetCardProps,
+  DatasetStatus,
+  TabularDatasetView
+} from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -881,7 +887,7 @@ export class DatasetsService {
     return this.columnService.toggleColumnNullable(columnId);
   }
 
-  async updateDatasetStatus(datasetId: string, status: 'Fail' | 'Processing' | 'Success') {
+  async updateDatasetStatus(datasetId: string, status: DatasetStatus) {
     return await this.datasetModel.update({
       data: {
         status: status

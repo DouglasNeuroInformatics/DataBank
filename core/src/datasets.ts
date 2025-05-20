@@ -117,6 +117,7 @@ export type {
   CreateDataset,
   DatasetCardProps,
   DatasetInfo,
+  DatasetStatus,
   DatasetViewPagination,
   EditDatasetInfo,
   PermissionLevel,
