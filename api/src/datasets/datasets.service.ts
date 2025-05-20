@@ -208,7 +208,10 @@ export class DatasetsService {
         data: {
           datasetType: createTabularDatasetDto.datasetType,
           description: createTabularDatasetDto.description,
-          isReadyToShare: createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true',
+          isReadyToShare:
+            typeof createTabularDatasetDto.isReadyToShare === 'string'
+              ? createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true'
+              : Boolean(createTabularDatasetDto.isReadyToShare),
           managerIds: [managerId],
           name: createTabularDatasetDto.name,
           permission: createTabularDatasetDto.permission,
@@ -217,7 +220,10 @@ export class DatasetsService {
       });
       await this.fileUploadQueue.add('handle-string-upload', {
         datasetId: dataset.id,
-        isJSON: createTabularDatasetDto.isJSON.toLowerCase() === 'true',
+        isJSON:
+          typeof createTabularDatasetDto.isJSON === 'string'
+            ? createTabularDatasetDto.isJSON.toLowerCase() === 'true'
+            : Boolean(createTabularDatasetDto.isJSON),
         primaryKeys: createTabularDatasetDto.primaryKeys,
         uploadedString: file
       });
