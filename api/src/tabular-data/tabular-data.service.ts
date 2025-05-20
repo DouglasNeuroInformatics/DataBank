@@ -246,7 +246,7 @@ export class TabularDataService {
         if (col.dataPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
           columnIdsModifyData.push(col._id.$oid);
         }
-        if (col.summaryPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
+        if (col.summaryPermission === 'MANAGER' || col.summaryPermission === 'VERIFIED') {
           columnIdsModifyMetadata.push(col._id.$oid);
         }
       });
