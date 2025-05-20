@@ -19,6 +19,11 @@ services:
   valkey:
     image: valkey/valkey:latest
     container_name: valkey
+    healthcheck:
+      test: ['CMD', 'valkey-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - '6379:6379'
     volumes:
