@@ -52,9 +52,9 @@ export class TabularDataService {
       for (let i = 0; i < df.shape.height; i++) {
         indexArray.push(i);
       }
-      const indexSeries = pl.Series('autogen_id', indexArray);
+      const indexSeries = pl.Series('__autogen_id', indexArray);
       df.insertAtIdx(0, indexSeries);
-      primaryKeys.push('autogen_id');
+      primaryKeys.push('__autogen_id');
     }
     if (!this.primaryKeyCheck(primaryKeys, df)) {
       throw new ForbiddenException('Dataset failed primary keys check!');
