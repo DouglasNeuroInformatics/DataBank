@@ -1,6 +1,6 @@
 import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import crypto from 'node:crypto';
+import path from 'node:path';
 
 import type { AddProjectDatasetColumns, ColumnDataType, DatasetCardProps, TabularDatasetView } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
@@ -166,11 +166,14 @@ export class DatasetsService {
     }
 
     // Add a job to the file-upload queue
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
     let dataset;
     if (typeof file !== 'string') {
-      const filePath = path.join(__dirname, '/uploads/', file.originalname);
+      // Resolve once from configuration or env
+      const uploadsDir = path.resolve(process.cwd(), 'uploads');
+      await fs.promises.mkdir(uploadsDir, { recursive: true });
+      // Generate a collision-free, sanitised filename
+      const safeName = crypto.randomUUID() + path.extname(file.originalname);
+      const filePath = path.join(uploadsDir, safeName);
       await fs.promises.writeFile(filePath, file.buffer);
       dataset = await this.datasetModel.create({
         data: {
