@@ -52,9 +52,9 @@ export class TabularDataService {
       for (let i = 0; i < df.shape.height; i++) {
         indexArray.push(i);
       }
-      const indexSeries = pl.Series('id', indexArray);
+      const indexSeries = pl.Series('__autogen_id', indexArray);
       df.insertAtIdx(0, indexSeries);
-      primaryKeys.push('id');
+      primaryKeys.push('__autogen_id');
     }
     if (!this.primaryKeyCheck(primaryKeys, df)) {
       throw new ForbiddenException('Dataset failed primary keys check!');
@@ -223,6 +223,7 @@ export class TabularDataService {
     }
 
     const columnsFromDB = await this.columnsService.findManyByTabularDataId(tabularDataId, columnPagination);
+    const numberOfColumns = await this.columnsService.getNumberOfColumns(tabularDataId);
 
     if (!columnsFromDB || columnsFromDB.length === 0) {
       throw new NotFoundException('No column found in this tabular dataset!');
@@ -233,35 +234,31 @@ export class TabularDataService {
 
     if (userStatus === 'VERIFIED') {
       columnsFromDB.forEach((col) => {
-        if (col.dataPermission.permission === 'MANAGER') {
+        if (col.dataPermission === 'MANAGER') {
           columnIdsModifyData.push(col._id.$oid);
         }
-        if (col.summaryPermission.permission === 'MANAGER') {
+        if (col.summaryPermission === 'MANAGER') {
           columnIdsModifyMetadata.push(col._id.$oid);
         }
       });
     } else if (userStatus === 'LOGIN') {
-      tabularData.columns.forEach((col) => {
+      columnsFromDB.forEach((col) => {
         if (col.dataPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyData.push(col.id);
+          columnIdsModifyData.push(col._id.$oid);
         }
-        if (col.summaryPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyMetadata.push(col.id);
+        if (col.summaryPermission === 'MANAGER' || col.summaryPermission === 'VERIFIED') {
+          columnIdsModifyMetadata.push(col._id.$oid);
         }
       });
     } else if (userStatus === 'PUBLIC') {
       columnsFromDB.forEach((col) => {
-        if (
-          col.dataPermission.permission === 'MANAGER' ||
-          col.dataPermission.permission === 'LOGIN' ||
-          col.dataPermission.permission === 'VERIFIED'
-        ) {
+        if (col.dataPermission === 'MANAGER' || col.dataPermission === 'LOGIN' || col.dataPermission === 'VERIFIED') {
           columnIdsModifyData.push(col._id.$oid);
         }
         if (
-          col.summaryPermission.permission === 'MANAGER' ||
-          col.summaryPermission.permission === 'VERIFIED' ||
-          col.summaryPermission.permission === 'LOGIN'
+          col.summaryPermission === 'MANAGER' ||
+          col.summaryPermission === 'VERIFIED' ||
+          col.summaryPermission === 'LOGIN'
         ) {
           columnIdsModifyMetadata.push(col._id.$oid);
         }
@@ -472,7 +469,7 @@ export class TabularDataService {
       metadata: metaData,
       primaryKeys: tabularData.primaryKeys,
       rows,
-      totalNumberOfColumns: columnsFromDB.length,
+      totalNumberOfColumns: numberOfColumns,
       totalNumberOfRows: numberOfRows
     };
 

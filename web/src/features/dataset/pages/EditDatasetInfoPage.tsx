@@ -39,7 +39,7 @@ const EditDatasetInfoPage = () => {
       })
       .then(() => {
         notifications.addNotification({ message: 'Dataset Information Updated!', type: 'success' });
-        void navigate({ to: '..' });
+        void navigate({ to: `/portal/datasets/${params.datasetId}` });
       })
       .catch(console.error);
   };
@@ -94,7 +94,7 @@ const EditDatasetInfoPage = () => {
                 label="Back"
                 variant={'secondary'}
                 onClick={() => {
-                  void navigate({ to: '..' });
+                  void navigate({ to: `/portal/datasets/${params.datasetId}` });
                 }}
               />
             </motion.div>

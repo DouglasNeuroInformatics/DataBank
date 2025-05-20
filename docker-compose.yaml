@@ -20,6 +20,7 @@ services:
       dockerfile: ./api/Dockerfile
     depends_on:
       - mongo
+      - valkey
     environment:
       - NODE_ENV=production
       - MONGO_URI=mongodb://mongo:27017
@@ -48,10 +49,10 @@ services:
     expose:
       - 80
   mongo:
-    image: mongo:7.0
+    image: mongo:${MONGO_VERSION}
     command: ['--replSet', 'rs0', '--bind_ip_all', '--port', '27017']
     expose:
-      - 27017
+      - ${MONGO_PORT}
     restart: unless-stopped
     healthcheck:
       test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'localhost:27017'}]}) }" | mongosh --port 27017 --quiet
@@ -63,3 +64,15 @@ services:
     volumes:
       - ./mongo/config:/data/configdb
       - ./mongo/data:/data/db
+  valkey:
+    image: valkey/valkey:${VALKEY_VERSION}
+    container_name: valkey
+    healthcheck:
+      test: ['CMD', 'valkey-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - ${VALKEY_PORT}:${VALKEY_PORT}
+    volumes:
+      - ./valkey-data:/valkey-data
