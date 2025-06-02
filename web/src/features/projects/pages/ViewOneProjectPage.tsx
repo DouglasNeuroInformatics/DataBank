@@ -4,9 +4,8 @@ import { useEffect, useState } from 'react';
 import type { DatasetCardProps } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 
@@ -25,7 +24,7 @@ type Project = {
 };
 
 const ViewOneProjectPage = () => {
-  const params = useParams();
+  const { projectId } = useParams({ strict: false });
   const [project, setProject] = useState<null | Project>(null);
   const notifications = useNotificationsStore();
   const [isManager, setIsManager] = useState(false);
@@ -43,33 +42,33 @@ const ViewOneProjectPage = () => {
           type: 'success',
           message: `Project with Id ${projectId} has been deleted`
         });
-        navigate('/portal/projects');
+        void navigate({ to: '/portal/projects' });
       })
       .catch(console.error);
   };
 
   useEffect(() => {
     axios
-      .get<Project>(`/v1/projects/${params.projectId}`)
+      .get<Project>(`/v1/projects/${projectId}`)
       .then((response) => {
         setProject(response.data);
       })
       .catch(console.error);
 
     axios
-      .get<boolean>(`/v1/projects/is-manager/${params.projectId}`)
+      .get<boolean>(`/v1/projects/is-manager/${projectId}`)
       .then((response) => {
         setIsManager(response.data);
       })
       .catch(console.error);
 
     axios
-      .get<DatasetCardProps[]>(`/v1/projects/datasets/${params.projectId}`)
+      .get<DatasetCardProps[]>(`/v1/projects/datasets/${projectId}`)
       .then((response) => {
         setDatasetsInfoArray(response.data);
       })
       .catch(console.error);
-  }, [params.projectId]);
+  }, [projectId]);
 
   return (
     <>
@@ -85,8 +84,9 @@ const ViewOneProjectPage = () => {
                     className="m-2"
                     variant={'secondary'}
                     onClick={() =>
-                      navigate(`/portal/manageProjectUsers`, {
-                        state: {
+                      void navigate({
+                        to: `/portal/projects/manage-users`,
+                        search: {
                           projectId: project.id,
                           userIds: project.userIds
                         }
@@ -96,7 +96,7 @@ const ViewOneProjectPage = () => {
                     {t('manageProjectUsers')}
                   </Button>
 
-                  <Button className="m-2" variant={'danger'} onClick={() => deleteProject(params.projectId!)}>
+                  <Button className="m-2" variant={'danger'} onClick={() => deleteProject(projectId!)}>
                     {t('deleteProject')}
                   </Button>
                 </div>
@@ -116,7 +116,7 @@ const ViewOneProjectPage = () => {
                     <Button
                       className="m-2"
                       variant={'secondary'}
-                      onClick={() => navigate(`/portal/project/addDataset/${project.id}`)}
+                      onClick={() => void navigate({ to: `/portal/projects/add-dataset/${project.id}` })}
                     >
                       Add Dataset to Current Project
                     </Button>
@@ -152,7 +152,7 @@ const ViewOneProjectPage = () => {
                 <Button
                   className="m-2"
                   variant={'primary'}
-                  onClick={() => navigate(`/portal/project/edit-info/${project.id}`)}
+                  onClick={() => void navigate({ to: `/portal/projects/edit-info/${project.id}` })}
                 >
                   Edit Project Information
                 </Button>
@@ -167,7 +167,4 @@ const ViewOneProjectPage = () => {
   );
 };
 
-export const viewOneProjectRoute: RouteObject = {
-  path: 'project/:projectId',
-  element: <ViewOneProjectPage />
-};
+export { ViewOneProjectPage };

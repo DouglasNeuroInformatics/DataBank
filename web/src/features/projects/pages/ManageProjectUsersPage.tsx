@@ -1,19 +1,16 @@
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 import { z } from 'zod';
 
 import UserCard from '../components/UserCard';
 
 const ManageProjectUsersPage = () => {
-  const location = useLocation();
+  const route = getRouteApi('/portal/projects/manage-users');
+  const { projectId, userIds } = route.useSearch();
   const { t } = useTranslation('common');
-  const { projectId, userIds } = location.state as {
-    projectId: string;
-    userIds: string[];
-  };
+
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
 
@@ -27,7 +24,7 @@ const ManageProjectUsersPage = () => {
           message: `User with Email ${userEmailToAdd} has been added to the current project`,
           type: 'success'
         });
-        navigate(`/portal/project/${projectId}`);
+        void navigate({ to: `/portal/project/${projectId}` });
       })
       .catch(console.error);
   };
@@ -63,7 +60,4 @@ const ManageProjectUsersPage = () => {
   );
 };
 
-export const manageProjectUsersRoute: RouteObject = {
-  element: <ManageProjectUsersPage />,
-  path: 'manageProjectUsers'
-};
+export { ManageProjectUsersPage };

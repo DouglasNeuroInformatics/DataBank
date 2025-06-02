@@ -1,8 +1,7 @@
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 import { z } from 'zod';
 
 import { PageHeading } from '@/components/PageHeading';
@@ -10,13 +9,9 @@ import { PageHeading } from '@/components/PageHeading';
 import ManagerCard from '../components/ManagerCard';
 
 const ManageDatasetManagersPage = () => {
-  const location = useLocation();
+  const route = getRouteApi('/portal/datasets/manage-managers');
   const { t } = useTranslation('common');
-  const { datasetId, isManager, managerIds } = location.state as {
-    datasetId: string;
-    isManager: boolean;
-    managerIds: string[];
-  };
+  const { datasetId, isManager, managerIds } = route.useSearch();
   const notifications = useNotificationsStore();
   const navigate = useNavigate();
 
@@ -28,7 +23,7 @@ const ManageDatasetManagersPage = () => {
           message: `User with Email ${managerEmailToAdd} has been added to the current dataset`,
           type: 'success'
         });
-        navigate(`/portal/dataset/${datasetId}`);
+        void navigate({ to: `/portal/datasets/${datasetId}` });
       })
       .catch(console.error);
   };
@@ -69,7 +64,4 @@ const ManageDatasetManagersPage = () => {
   );
 };
 
-export const manageDatasetManagersRoute: RouteObject = {
-  element: <ManageDatasetManagersPage />,
-  path: 'manageDatasetManager'
-};
+export { ManageDatasetManagersPage };

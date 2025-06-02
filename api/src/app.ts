@@ -1,9 +1,9 @@
-import { $BooleanLike, $NumberLike } from '@douglasneuroinformatics/libjs';
-import { $BaseEnv, acceptLanguage, AppFactory } from '@douglasneuroinformatics/libnest';
-import { z } from 'zod';
+import { acceptLanguage, AppFactory } from '@douglasneuroinformatics/libnest';
+import { BullModule } from '@nestjs/bullmq';
 
 import { AuthModule } from './auth/auth.module.js';
 import { ColumnsModule } from './columns/columns.module.js';
+import { $Env } from './core/env.schema.js';
 import { DatasetsModule } from './datasets/datasets.module.js';
 import { I18nModule } from './i18n/i18n.module.js';
 import { ProjectsModule } from './projects/projects.module';
@@ -30,16 +30,7 @@ export default AppFactory.create({
     path: '/',
     title: 'Douglas Data Bank'
   },
-  envSchema: $BaseEnv.extend({
-    MAX_VALIDATION_ATTEMPTS: $NumberLike.pipe(z.number().positive().int()),
-    SMTP_AUTH_PASSWORD: z.string().min(1),
-    SMTP_AUTH_USERNAME: z.string().min(1),
-    SMTP_HOST: z.string().min(1),
-    SMTP_PORT: $NumberLike.pipe(z.union([z.literal(25), z.literal(465), z.literal(587)])),
-    SMTP_SECURE: $BooleanLike,
-    SMTP_SENDER: z.string().min(1).email(),
-    VALIDATION_TIMEOUT: $NumberLike.pipe(z.number().positive().int())
-  }),
+  envSchema: $Env,
   imports: [
     AuthModule,
     ColumnsModule,
@@ -48,7 +39,13 @@ export default AppFactory.create({
     ProjectsModule,
     SetupModule,
     TabularDataModule,
-    UsersModule
+    UsersModule,
+    BullModule.forRoot({
+      connection: {
+        host: process.env.VALKEY_HOST,
+        port: parseInt(process.env.VALKEY_PORT!)
+      }
+    })
   ],
   prisma: {
     dbPrefix: 'data-bank'

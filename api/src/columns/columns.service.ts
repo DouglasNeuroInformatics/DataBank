@@ -1,4 +1,4 @@
-import type { GetColumnViewDto } from '@databank/core';
+import type { DatasetViewPagination, GetColumnViewDto, RawQueryColumn } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -191,18 +191,28 @@ export class ColumnsService {
     });
   }
 
-  async findManyByTabularDataId(tabularDataId: string) {
-    const columns = await this.columnModel.findMany({
-      where: {
-        tabularDataId: tabularDataId
-      }
+  async findManyByTabularDataId(
+    tabularDataId: string,
+    columnPagination: DatasetViewPagination
+  ): Promise<RawQueryColumn[]> {
+    const columns = await this.columnModel.aggregateRaw({
+      // Pipeline stages:
+      // 1. $match: Filter columns by tabularDataId
+      // 2. $sort: Ensure consistent pagination order
+      // 3. $skip/$limit: Implement pagination based on currentPage and itemsPerPage
+      pipeline: [
+        { $match: { tabularDataId: { $oid: tabularDataId } } },
+        { $sort: { _id: 1 } },
+        { $skip: (columnPagination.currentPage - 1) * columnPagination.itemsPerPage },
+        { $limit: columnPagination.itemsPerPage }
+      ]
     });
 
-    if (!columns) {
+    if (columns.length === 0) {
       throw new NotFoundException('No columns found with the given tabular data id!');
     }
 
-    return columns;
+    return columns as unknown as RawQueryColumn[];
   }
 
   async getById(columnId: string) {
@@ -420,6 +430,14 @@ export class ColumnsService {
       return col.enumData.length;
     }
     throw new ForbiddenException('Column type does not match any expected types!');
+  }
+
+  async getNumberOfColumns(tabularDataId: string) {
+    return await this.columnModel.count({
+      where: {
+        tabularDataId: tabularDataId
+      }
+    });
   }
 
   async mutateColumnType(columnId: string, colType: ColumnType) {
@@ -702,24 +720,6 @@ export class ColumnsService {
     return (await this.prisma.$transaction([removeFromCol, addToCol])) as unknown[];
   }
 
-  async toggleColumnNullable(columnId: string) {
-    const col = await this.getById(columnId);
-    if (col.nullable && col.summary.nullCount !== 0) {
-      throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
-    }
-
-    const updateColumnNullable = this.columnModel.update({
-      data: {
-        nullable: !col.nullable
-      },
-      where: {
-        id: columnId
-      }
-    });
-
-    return await updateColumnNullable;
-  }
-
   // async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumn) {
   //   const columnsToUpdate = await this.columnModel.findMany({
   //     where: {
@@ -743,6 +743,24 @@ export class ColumnsService {
   //     });
   //   });
   // }
+
+  async toggleColumnNullable(columnId: string) {
+    const col = await this.getById(columnId);
+    if (col.nullable && col.summary.nullCount !== 0) {
+      throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
+    }
+
+    const updateColumnNullable = this.columnModel.update({
+      data: {
+        nullable: !col.nullable
+      },
+      where: {
+        id: columnId
+      }
+    });
+
+    return await updateColumnNullable;
+  }
 
   private calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
     // Need to correctly compute the distribution for boolean and enum column
@@ -792,7 +810,7 @@ export class ColumnsService {
             median: currSeries.median(),
             min: currSeries.min(),
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
+            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0]
           },
           intSummary: null,
           nullCount: currSeries.nullCount()
@@ -811,7 +829,7 @@ export class ColumnsService {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             mode: currSeries.filter(currSeries.isNotNull()).mode()[0],
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: currSeries.filter(currSeries.isNotNull()).rollingStd(currSeries.len() - currSeries.nullCount())[-1]
+            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0]
           },
           nullCount: currSeries.nullCount()
         };

@@ -45,6 +45,8 @@ type ColumnDataType = z.infer<typeof $ColumnDataType>;
 
 type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
 
+type DatasetStatus = 'Fail' | 'Processing' | 'Success';
+
 type DatasetInfo = {
   createdAt: Date;
   datasetType: DatasetType;
@@ -55,10 +57,11 @@ type DatasetInfo = {
   managerIds: string[];
   name: string;
   permission: PermissionLevel;
+  status: DatasetStatus;
   updatedAt: Date;
 };
 
-type DatasetCardProps = DatasetInfo & { isManager: boolean };
+type DatasetCardProps = DatasetInfo & { isManager: boolean; isPublic: boolean };
 
 type TabularDataRow = {
   [key: string]: boolean | Date | number | string;
@@ -114,6 +117,7 @@ export type {
   CreateDataset,
   DatasetCardProps,
   DatasetInfo,
+  DatasetStatus,
   DatasetViewPagination,
   EditDatasetInfo,
   PermissionLevel,

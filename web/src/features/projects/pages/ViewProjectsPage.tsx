@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react';
 
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 
 import { LoadingFallback } from '@/components';
 import { PageHeading } from '@/components/PageHeading';
@@ -34,7 +33,7 @@ const ViewProjectsPage = () => {
 
   const handleCreateProject = () => {
     if (currentUser?.datasetId.length && currentUser?.datasetId.length > 0) {
-      navigate('/portal/createProject');
+      void navigate({ to: '/portal/projects/create' });
     } else {
       notifications.addNotification({
         type: 'error',
@@ -83,7 +82,4 @@ const ViewProjectsPage = () => {
   );
 };
 
-export const viewProjectsRoute: RouteObject = {
-  path: 'projects',
-  element: <ViewProjectsPage />
-};
+export { ViewProjectsPage };

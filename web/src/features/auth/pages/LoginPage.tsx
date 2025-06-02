@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 import type { AuthPayload, LoginCredentials } from '@databank/core';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -17,9 +17,13 @@ export const LoginPage = () => {
 
   useEffect(() => {
     if (auth.accessToken && auth.currentUser?.confirmedAt) {
-      navigate('/portal/dashboard');
+      void navigate({
+        to: '/portal/dashboard'
+      });
     } else if (auth.accessToken) {
-      navigate('/auth/confirm-email-code');
+      void navigate({
+        to: '/auth/confirm-email-code'
+      });
     }
   }, [auth.accessToken]);
 

@@ -1,6 +1,6 @@
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { UserIcon, UsersIcon } from '@heroicons/react/24/solid';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from '@tanstack/react-router';
 
 import { LoadingFallback } from '@/components/LoadingFallback';
 import { useAuthStore } from '@/stores/auth-store';

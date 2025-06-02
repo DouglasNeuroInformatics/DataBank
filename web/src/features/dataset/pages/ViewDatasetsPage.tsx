@@ -1,36 +1,31 @@
-/* eslint-disable perfectionist/sort-objects */
-import { useEffect, useState } from 'react';
-
-import type { DatasetCardProps } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 
+import { LoadingFallback } from '@/components';
 import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
 
 import DatasetCard from '../components/DatasetCard';
+import { useDatasetsQuery } from '../hooks/useDatasetsQuery';
+import { usePublicDatasetsQuery } from '../hooks/usePublicDatasetsQuery';
 
-// the dataset card should show a list of user emails and when the manager clicks remove user,
-// there should be a callback function for the
+type ViewDatasetsPageProps = {
+  isPublic: boolean;
+};
 
-const ViewDatasetsPage = () => {
+const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { currentUser } = useAuthStore();
 
-  const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
+  const datasetsInfoQuery = isPublic ? usePublicDatasetsQuery() : useDatasetsQuery();
 
-  useEffect(() => {
-    axios
-      .get<DatasetCardProps[]>('/v1/datasets')
-      .then((response) => {
-        setDatasetsInfoArray(response.data);
-      })
-      .catch(console.error);
-  }, []);
+  if (!datasetsInfoQuery.data) {
+    return <LoadingFallback />;
+  }
+
+  const datasetsInfoArray = datasetsInfoQuery.data;
 
   return (
     <>
@@ -43,9 +38,19 @@ const ViewDatasetsPage = () => {
       <Card>
         <Card.Header>
           <Card.Title className="text-3xl"></Card.Title>
-          <Button className="m-2" variant={'secondary'} onClick={() => navigate('/portal/createDataset')}>
-            Create Dataset
-          </Button>
+          {!isPublic && (
+            <Button
+              className="m-2"
+              variant={'secondary'}
+              onClick={() =>
+                void navigate({
+                  to: '/portal/datasets/create'
+                })
+              }
+            >
+              Create Dataset
+            </Button>
+          )}
         </Card.Header>
         <Card.Content>
           <ul>
@@ -65,11 +70,13 @@ const ViewDatasetsPage = () => {
                       description={datasetInfo.description}
                       id={datasetInfo.id}
                       isManager={isManager}
+                      isPublic={isPublic}
                       isReadyToShare={false}
                       license={datasetInfo.license}
                       managerIds={datasetInfo.managerIds}
                       name={datasetInfo.name}
                       permission={datasetInfo.permission}
+                      status={datasetInfo.status}
                       updatedAt={datasetInfo.updatedAt}
                     />
                   </li>
@@ -84,7 +91,4 @@ const ViewDatasetsPage = () => {
   );
 };
 
-export const viewDatasetsRoute: RouteObject = {
-  path: 'datasets',
-  element: <ViewDatasetsPage />
-};
+export { ViewDatasetsPage };

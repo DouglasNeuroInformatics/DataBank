@@ -3,11 +3,10 @@ import { useCallback, useState } from 'react';
 
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
-import { useNavigate } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
 
@@ -57,7 +56,9 @@ const CreateDatasetPage = () => {
       notifications.addNotification({ type: 'error', message: t('createDatasetFailure') });
     }
 
-    navigate('/portal/datasets');
+    void navigate({
+      to: '/portal/datasets'
+    });
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -231,7 +232,4 @@ const CreateDatasetPage = () => {
   );
 };
 
-export const createDatasetRoute: RouteObject = {
-  element: <CreateDatasetPage />,
-  path: 'createDataset'
-};
+export { CreateDatasetPage };
