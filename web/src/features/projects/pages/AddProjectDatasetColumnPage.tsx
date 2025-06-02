@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable perfectionist/sort-objects */
-
 import { useEffect, useState } from 'react';
 
 import type { AddProjectDatasetColumns, ProjectColumn, ProjectDataset } from '@databank/core';
@@ -40,10 +35,10 @@ const AddProjectDatasetColumnPage = () => {
 
   const generateValidationSchema = (colNames: string[]) => {
     const resSchema: { [key: string]: any } = {
-      selected: z.set(z.string()),
-      useRowFilter: z.boolean(),
+      rowMax: z.number().optional(),
       rowMin: z.number().optional(),
-      rowMax: z.number().optional()
+      selected: z.set(z.string()),
+      useRowFilter: z.boolean()
     };
     colNames.forEach((colName) => {
       const useHashEntryName = colName + 'Hash';
@@ -70,16 +65,20 @@ const AddProjectDatasetColumnPage = () => {
 
   const generateContent = () => {
     const resContent: { [key: string]: any } = {
-      selected: {
-        kind: 'set',
-        label: 'Columns to Add',
-        options: formOptions,
-        variant: 'listbox'
-      },
-      useRowFilter: {
-        kind: 'boolean',
-        variant: 'radio',
-        label: 'Do you want to use row filter?'
+      rowMax: {
+        deps: ['useRowFilter'],
+        kind: 'dynamic',
+        render: (data: { useRowFilter: boolean | null }) => {
+          if (!data.useRowFilter) {
+            return null;
+          } else {
+            return {
+              kind: 'number',
+              label: 'Max Row Number',
+              variant: 'input'
+            };
+          }
+        }
       },
       rowMin: {
         deps: ['useRowFilter'],
@@ -96,20 +95,16 @@ const AddProjectDatasetColumnPage = () => {
           }
         }
       },
-      rowMax: {
-        deps: ['useRowFilter'],
-        kind: 'dynamic',
-        render: (data: { useRowFilter: boolean | null }) => {
-          if (!data.useRowFilter) {
-            return null;
-          } else {
-            return {
-              kind: 'number',
-              label: 'Max Row Number',
-              variant: 'input'
-            };
-          }
-        }
+      selected: {
+        kind: 'set',
+        label: 'Columns to Add',
+        options: formOptions,
+        variant: 'listbox'
+      },
+      useRowFilter: {
+        kind: 'boolean',
+        label: 'Do you want to use row filter?',
+        variant: 'radio'
       }
     };
 
@@ -236,8 +231,8 @@ const AddProjectDatasetColumnPage = () => {
   const handleSubmit = (data: { [x: string]: any }) => {
     const projectDatasetDto: ProjectDataset = {
       columns: [],
-      dataTypeFilters: [],
       datasetId: params.datasetId!,
+      dataTypeFilters: [],
       rowFilter: {
         rowMax: (data.rowMax as number) ?? null,
         rowMin: (data.rowMin as number) ?? null
@@ -255,15 +250,15 @@ const AddProjectDatasetColumnPage = () => {
 
       if (data[colName + 'Hash']) {
         currProjectColumn.hash = {
-          salt: data[colName + 'HashSalt'],
-          length: data[colName + 'HashLength']
+          length: data[colName + 'HashLength'],
+          salt: data[colName + 'HashSalt']
         };
       }
 
       if (data[colName + 'Trim']) {
         currProjectColumn.trim = {
-          start: data[colName + 'TrimStart'],
-          end: data[colName + 'TrimEnd']
+          end: data[colName + 'TrimEnd'],
+          start: data[colName + 'TrimStart']
         };
       }
 
