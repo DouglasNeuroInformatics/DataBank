@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type {
-  ColumnSummary,
   DatasetViewPagination,
   GetColumnViewDto,
   ProjectTabularDatasetView,
+  TabularColumnSummary,
   TabularDatasetView,
   UpdatePrimaryKeys
 } from '@databank/core';
@@ -156,12 +155,6 @@ export class TabularDataService {
       };
 
       switch (currColumnView.kind) {
-        case 'BOOLEAN':
-          currColumnView.booleanData.map((entry, i) => {
-            rows[i] ??= {};
-            rows[i][currColumnView.name] = entry.value!;
-          });
-          break;
         case 'DATETIME':
           currColumnView.datetimeData.map((entry, i) => {
             rows[i] ??= {};
@@ -222,6 +215,7 @@ export class TabularDataService {
       throw new NotFoundException('No tabular data found!');
     }
 
+    // type RawQueryColumns
     const columnsFromDB = await this.columnsService.findManyByTabularDataId(tabularDataId, columnPagination);
     const numberOfColumns = await this.columnsService.getNumberOfColumns(tabularDataId);
 
@@ -278,41 +272,13 @@ export class TabularDataService {
       rows.push({});
     }
 
-    const metaData: { [key: string]: ColumnSummary } = {};
+    const metaData: { [key: string]: TabularColumnSummary } = {};
 
     for (const col of columnsFromDB) {
       columnIds[col.name] = col._id.$oid;
       columns.push(col.name);
 
       switch (col.kind) {
-        // case 'BOOLEAN':
-        //   col.booleanData.slice(rowStart, rowEnd).map((entry, i) => {
-        //     rows[i] ??= {};
-        //     if (columnIdsModifyData.includes(col._id.$oid)) {
-        //       rows[i][col.name] = 'Hidden';
-        //     } else {
-        //       rows[i][col.name] = entry.value;
-        //     }
-        //   });
-
-        //   if (columnIdsModifyMetadata.includes(col._id.$oid)) {
-        //     metaData[col.name] = {
-        //       count: 0,
-        //       kind: { type: 'BOOLEAN' },
-        //       nullCount: 0,
-        //       trueCount: 0
-        //     };
-        //   } else {
-        //     metaData[col.name] = {
-        //       count: col.summary.count,
-        //       kind: { type: 'BOOLEAN' },
-        //       nullCount: col.summary.nullCount,
-        //       // BUG: trueCount doesn't work
-        //       // trueCount: col.summary.enumSummary?.distribution
-        //       trueCount: 0
-        //     };
-        //   }
-        //   break;
         case 'DATETIME':
           col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
@@ -326,18 +292,21 @@ export class TabularDataService {
           if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
-              kind: { type: 'DATETIME' },
-              max: new Date(0),
-              min: new Date(0),
+              datetimeSummary: {
+                max: new Date(0),
+                min: new Date(0)
+              },
+              kind: 'DATETIME',
+              nullable: col.nullable,
               nullCount: 0
             };
           } else {
             metaData[col.name] = {
-              count: col.summary.count,
-              kind: { type: 'DATETIME' },
-              max: col.summary.datetimeSummary?.max ?? new Date(),
-              min: col.summary.datetimeSummary?.min ?? new Date(),
-              nullCount: col.summary.nullCount
+              count: col.count,
+              datetimeSummary: col.datetimeSummary,
+              kind: 'DATETIME',
+              nullable: col.nullable,
+              nullCount: col.nullCount
             };
           }
           break;
@@ -348,21 +317,27 @@ export class TabularDataService {
             if (columnIdsModifyData.includes(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
-              rows[i][col.name] = entry.value;
+              rows[i][col.name] = entry.value ?? null;
             }
           });
 
           if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
-              kind: { type: 'ENUM' },
+              enumSummary: {
+                distribution: {}
+              },
+              kind: 'ENUM',
+              nullable: col.nullable,
               nullCount: 0
             };
           } else {
             metaData[col.name] = {
-              count: col.summary.count,
-              kind: { type: 'ENUM' },
-              nullCount: col.summary.nullCount
+              count: 0,
+              enumSummary: col.enumSummary,
+              kind: 'ENUM',
+              nullable: col.nullable,
+              nullCount: 0
             };
           }
           break;
@@ -372,31 +347,31 @@ export class TabularDataService {
             if (columnIdsModifyData.includes(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
-              rows[i][col.name] = entry.value;
+              rows[i][col.name] = entry.value ?? null;
             }
           });
 
           if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
-              kind: { type: 'FLOAT' },
-              max: 0,
-              mean: 0,
-              median: 0,
-              min: 0,
-              nullCount: 0,
-              std: 0
+              floatSummary: {
+                max: 0,
+                mean: 0,
+                median: 0,
+                min: 0,
+                std: 0
+              },
+              kind: 'FLOAT',
+              nullable: col.nullable,
+              nullCount: col.nullCount
             };
           } else {
             metaData[col.name] = {
-              count: col.summary.count,
-              kind: { type: 'FLOAT' },
-              max: col.summary.floatSummary?.max,
-              mean: col.summary.floatSummary?.mean,
-              median: col.summary.floatSummary?.median,
-              min: col.summary.floatSummary?.min,
-              nullCount: col.summary.nullCount,
-              std: col.summary.floatSummary?.std
+              count: 0,
+              floatSummary: col.floatSummary,
+              kind: 'FLOAT',
+              nullable: col.nullable,
+              nullCount: col.nullCount
             };
           }
           break;
@@ -406,32 +381,31 @@ export class TabularDataService {
             if (columnIdsModifyData.includes(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
-              rows[i][col.name] = entry.value;
+              rows[i][col.name] = entry.value ?? null;
             }
           });
           if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
-              kind: { type: 'INT' },
-              max: 0,
-              mean: 0,
-              median: 0,
-              min: 0,
-              mode: 0,
-              nullCount: 0,
-              std: 0
+              intSummary: {
+                max: 0,
+                mean: 0,
+                median: 0,
+                min: 0,
+                mode: 0,
+                std: 0
+              },
+              kind: 'INT',
+              nullable: col.nullable,
+              nullCount: 0
             };
           } else {
             metaData[col.name] = {
-              count: col.summary.count,
-              kind: { type: 'INT' },
-              max: col.summary.intSummary?.max,
-              mean: col.summary.intSummary?.mean,
-              median: col.summary.intSummary?.median,
-              min: col.summary.intSummary?.min,
-              mode: col.summary.intSummary?.mode,
-              nullCount: col.summary.nullCount,
-              std: col.summary.intSummary?.std
+              count: col.count,
+              intSummary: col.intSummary,
+              kind: 'INT',
+              nullable: col.nullable,
+              nullCount: col.nullCount
             };
           }
           break;
@@ -442,21 +416,23 @@ export class TabularDataService {
             if (columnIdsModifyData.includes(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
-              rows[i][col.name] = entry.value;
+              rows[i][col.name] = entry.value ?? null;
             }
           });
 
           if (columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: 0,
-              kind: { type: 'STRING' },
+              kind: 'STRING',
+              nullable: col.nullable,
               nullCount: 0
             };
           } else {
             metaData[col.name] = {
-              count: col.summary.count,
-              kind: { type: 'STRING' },
-              nullCount: col.summary.nullCount
+              count: col.count,
+              kind: 'STRING',
+              nullable: col.nullable,
+              nullCount: col.nullCount
             };
           }
           break;
@@ -498,10 +474,10 @@ export class TabularDataService {
       }
     }
 
-    const checkPrimaryKeysArray: boolean[] = df
+    const checkPrimaryKeysArray = df
       .select(...primaryKeys)
       .isUnique()
-      .toArray();
+      .toTypedArray() as boolean[];
     return checkPrimaryKeysArray.reduce((prev, curr) => prev && curr);
   }
 }

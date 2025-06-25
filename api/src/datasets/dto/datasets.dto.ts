@@ -1,29 +1,36 @@
 import {
-  $ColumnDataType,
+  $ColumnType,
   $CreateDataset,
   $DatasetViewPagination,
   $EditDatasetInfo,
   $PermissionLevel
 } from '@databank/core';
-import type {
-  ColumnDataType,
-  CreateDataset,
-  DatasetViewPagination,
-  EditDatasetInfo,
-  PermissionLevel
-} from '@databank/core';
-import { DataTransferObject } from '@douglasneuroinformatics/libnest';
+import type { CreateDataset, DatasetViewPagination, EditDatasetInfo, PermissionLevel } from '@databank/core';
+import { DataTransferObject, ValidationSchema } from '@douglasneuroinformatics/libnest';
+import { ApiProperty } from '@nestjs/swagger';
+import { z } from 'zod';
 
 class DatasetViewPaginationDto extends DataTransferObject($DatasetViewPagination) implements DatasetViewPagination {}
-
-// TO-DO:
 
 class CreateDatasetDto extends DataTransferObject($CreateDataset) implements CreateDataset {}
 
 class EditDatasetInfoDto extends DataTransferObject($EditDatasetInfo) implements EditDatasetInfo {}
 
-class PermissionLevelDto extends DataTransferObject($PermissionLevel) implements PermissionLevel {}
+const $PermissionLevelObj = z.object({
+  permission: $PermissionLevel
+});
+type PermissionLevelObj = z.infer<typeof $PermissionLevelObj>;
 
-class ColumnDataTypeDto extends DataTransferObject($ColumnDataType) implements ColumnDataType {}
+@ValidationSchema($PermissionLevelObj)
+class PermissionLevelDto implements PermissionLevelObj {
+  @ApiProperty()
+  permission: PermissionLevel;
+}
+
+const $ColumnDataDto = z.object({
+  kind: $ColumnType
+});
+type ColumnDataDto = z.infer<typeof $ColumnDataDto>;
+class ColumnDataTypeDto extends DataTransferObject($ColumnDataDto) implements ColumnDataDto {}
 
 export { ColumnDataTypeDto, CreateDatasetDto, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevelDto };

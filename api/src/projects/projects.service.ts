@@ -1,4 +1,4 @@
-import type { DatasetInfo, DatasetViewPagination } from '@databank/core';
+import type { DatasetInfo, DatasetViewPagination, TabularDataDownloadFormat } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -140,7 +140,7 @@ export class ProjectsService {
     projectId: string,
     datasetId: string,
     currentUserId: string,
-    format: 'CSV' | 'TSV'
+    format: TabularDataDownloadFormat
   ) {
     const project = await this.getProjectById(currentUserId, projectId);
     const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
@@ -175,60 +175,11 @@ export class ProjectsService {
         itemsPerPage: projectDatasetDto.columns.length
       }
     );
-    const delimiter = format === 'CSV' ? ',' : '\t';
-    const metaDataHeader = [
-      'column_name',
-      'column_type',
-      'nullable',
-      'count',
-      'nullCount',
-      'max',
-      'min',
-      'mean',
-      'median',
-      'mode',
-      'std',
-      'distribution'
-    ];
 
-    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-    for (const columnName of Object.keys(projectDatasetView.metadata)) {
-      metadataRowsString +=
-        columnName +
-        delimiter +
-        projectDatasetView.metadata[columnName]?.kind.type +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.nullable +
-        delimiter +
-        projectDatasetView.metadata[columnName]?.count +
-        delimiter +
-        projectDatasetView.metadata[columnName]?.nullCount +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.max +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.min +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.mean +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.median +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.mode +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.std +
-        delimiter +
-        // @ts-expect-error - see issue
-        JSON.stringify(projectDatasetView.metadata[columnName]?.distribution) +
-        delimiter +
-        '\n';
-    }
-    return metadataRowsString;
+    return this.datasetService.formatMetadataDownloadString(format, {
+      ...projectDatasetView,
+      primaryKeys: []
+    });
   }
 
   async getAllProjects(currentUserId: string) {
@@ -331,7 +282,8 @@ export class ProjectsService {
 
       projectDatasetsInfo.push({
         ...projectDatasetInfo,
-        permission: { permission: projectDatasetInfo?.permission }
+        createAt: projectDatasetInfo.createdAt,
+        permission: projectDatasetInfo?.permission
       });
     }
 

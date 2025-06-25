@@ -113,7 +113,6 @@ model TabularColumn {
   floatData                FloatEntry[]
   enumData                 StringEntry[]
   datetimeData             DateTimeEntry[]
-  booleanData              BooleanEntry[]
   // column validation
   stringColumnValidation   StringColumnValidation?
   numericColumnValidation  NumericColumnValidation?
@@ -141,12 +140,7 @@ type DateTimeEntry {
   value DateTime?
 }
 
-type BooleanEntry {
-  value Boolean?
-}
-
 enum ColumnType {
-  BOOLEAN
   STRING
   INT
   FLOAT

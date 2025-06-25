@@ -1,8 +1,14 @@
-import type { DatasetViewPagination, GetColumnViewDto, RawQueryColumn } from '@databank/core';
+import type {
+  ColumnType,
+  DatasetViewPagination,
+  GetColumnViewDto,
+  PermissionLevel,
+  RawQueryColumn
+} from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { ColumnType, PermissionLevel, PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { Series } from 'nodejs-polars';
 
@@ -97,15 +103,15 @@ export class ColumnsService {
 
     // create a boolean column
     if (colSeries.isBoolean()) {
-      const enumSummary = this.calculateSummaryOnSeries('BOOLEAN', colSeries);
+      const enumSummary = this.calculateSummaryOnSeries('ENUM', colSeries);
       if (!enumSummary?.enumSummary) {
         throw new NotFoundException('Enum summary NOT FOUND!');
       }
       await this.columnModel.create({
         data: {
-          booleanData: dataArray,
           dataPermission: 'MANAGER',
-          kind: 'BOOLEAN',
+          enumData: dataArray,
+          kind: 'ENUM',
           name: colSeries.name,
           nullable: colSeries.nullCount() != 0,
           // numericColumnValidation: {
@@ -250,8 +256,7 @@ export class ColumnsService {
         }
         currSeries = pl.Series(
           currSeries.toArray().map((entry) => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            return entry + getColumnViewDto.hash?.salt;
+            return (entry + getColumnViewDto.hash?.salt) as string;
           })
         );
       }
@@ -279,7 +284,16 @@ export class ColumnsService {
       }
     }
     // recalculate the summary for the column
-    columnView.summary = this.calculateSummaryOnSeries(columnView.kind, currSeries);
+    const newColumnSummary = this.calculateSummaryOnSeries(columnView.kind, currSeries);
+    columnView.summary = {
+      count: newColumnSummary.count,
+      datetimeSummary: columnView.kind == 'DATETIME' ? (newColumnSummary.datetimeSummary ?? null) : null,
+      enumSummary: columnView.kind == 'ENUM' ? (newColumnSummary.enumSummary ?? null) : null,
+      floatSummary: columnView.kind == 'FLOAT' ? (newColumnSummary.floatSummary ?? null) : null,
+      intSummary: columnView.kind == 'INT' ? (newColumnSummary.intSummary ?? null) : null,
+      nullCount: newColumnSummary.nullCount
+    };
+
     type ColumnMetadata = {
       count: number;
       distribution?: { [key: string]: number }[];
@@ -301,17 +315,6 @@ export class ColumnsService {
       nullCount: 0
     };
     switch (columnView.kind) {
-      case 'BOOLEAN':
-        columnView.booleanData = currSeries.toArray().map((entry) => {
-          return {
-            value: entry as boolean
-          };
-        });
-        columnMetadata.count = columnView.summary.count;
-        columnMetadata.nullCount = columnView.summary.nullCount;
-        columnMetadata.kind = 'BOOLEAN';
-        columnMetadata.nullable = columnView.nullable;
-        break;
       case 'DATETIME':
         columnView.datetimeData = currSeries.toArray().map((entry) => {
           return {
@@ -383,7 +386,6 @@ export class ColumnsService {
     }
 
     return {
-      booleanData: columnView.booleanData,
       count: columnView.summary.count,
       datetimeData: columnView.datetimeData,
       enumData: columnView.enumData,
@@ -411,9 +413,6 @@ export class ColumnsService {
       }
     });
 
-    if (col?.kind === 'BOOLEAN') {
-      return col.booleanData.length;
-    }
     if (col?.kind === 'STRING') {
       return col.stringData.length;
     }
@@ -452,23 +451,6 @@ export class ColumnsService {
     let data;
     let removeFromCol;
     switch (col.kind) {
-      case 'BOOLEAN':
-        data = pl.Series(col.booleanData.map((entry) => Object.values(entry)[0]));
-        removeFromCol = this.columnModel.update({
-          data: {
-            booleanData: undefined,
-            enumColumnValidation: undefined,
-            summary: {
-              count: data.len() - data.nullCount(),
-              enumSummary: undefined,
-              nullCount: data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
       case 'DATETIME':
         data = pl.Series(col.datetimeData.map((entry) => Object.values(entry)[0]));
         removeFromCol = this.columnModel.update({
@@ -559,30 +541,6 @@ export class ColumnsService {
     // if the cast is passed, add new data, summary, and validation to the column
     let addToCol;
     switch (colType) {
-      case 'BOOLEAN':
-        data = data.cast(pl.Bool, true);
-        addToCol = this.columnModel.update({
-          data: {
-            booleanData: data.toArray().map((entry: boolean) => {
-              return { value: entry };
-            }),
-            enumColumnValidation: {},
-            kind: colType,
-            summary: {
-              count: data.len() - data.nullCount(),
-              // valueCounts() function always return null.
-              // issue opened on nodejs-polars github
-              enumSummary: {
-                distribution: data.valueCounts().toJSON()
-              },
-              nullCount: data.nullCount()
-            }
-          },
-          where: {
-            id: col.id
-          }
-        });
-        break;
       case 'DATETIME':
         data = data.cast(pl.Date, true);
         addToCol = this.columnModel.update({
@@ -765,17 +723,6 @@ export class ColumnsService {
   private calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
     // Need to correctly compute the distribution for boolean and enum column
     switch (colType) {
-      case 'BOOLEAN':
-        return {
-          count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
-          enumSummary: {
-            distribution: currSeries.valueCounts().toRecords() as unknown as { [key: string]: number }
-          },
-          floatSummary: null,
-          intSummary: null,
-          nullCount: currSeries.nullCount()
-        };
       case 'DATETIME':
         return {
           count: currSeries.len() - currSeries.nullCount(),
@@ -783,53 +730,38 @@ export class ColumnsService {
             max: new Date(currSeries.max() * 24 * 3600 * 1000),
             min: new Date(currSeries.min() * 24 * 3600 * 1000)
           },
-          enumSummary: null,
-          floatSummary: null,
-          intSummary: null,
           nullCount: currSeries.nullCount()
         };
       case 'ENUM':
         return {
           count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
           enumSummary: {
             distribution: currSeries.valueCounts().toRecords() as unknown as { [key: string]: number }
           },
-          floatSummary: null,
-          intSummary: null,
           nullCount: currSeries.nullCount()
         };
       case 'FLOAT':
         return {
           count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
-          enumSummary: null,
           floatSummary: {
             max: currSeries.max(),
             mean: currSeries.mean(),
             median: currSeries.median(),
             min: currSeries.min(),
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0]
+            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0] as number
           },
-          intSummary: null,
           nullCount: currSeries.nullCount()
         };
       case 'INT':
         return {
           count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: null,
-          enumSummary: null,
-          floatSummary: null,
           intSummary: {
             max: currSeries.max(),
             mean: currSeries.mean(),
             median: currSeries.median(),
             min: currSeries.min(),
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            mode: currSeries.filter(currSeries.isNotNull()).mode()[0],
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0]
+            mode: currSeries.filter(currSeries.isNotNull()).mode()[0] as number,
+            std: pl.DataFrame({ dummy: currSeries }).std().getColumn('dummy')[0] as number
           },
           nullCount: currSeries.nullCount()
         };
@@ -850,12 +782,6 @@ export class ColumnsService {
 
     // store column data in a polars series according to the type
     switch (column.kind) {
-      case 'BOOLEAN': {
-        const arr = column.booleanData.map((entry) => {
-          return entry.value;
-        });
-        return pl.Series(arr);
-      }
       case 'DATETIME': {
         const arr = column.datetimeData.map((entry) => {
           return entry.value;

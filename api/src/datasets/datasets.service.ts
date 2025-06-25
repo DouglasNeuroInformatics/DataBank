@@ -3,10 +3,12 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 
 import type {
-  AddProjectDatasetColumns,
-  ColumnDataType,
+  ColumnType,
   DatasetCardProps,
   DatasetStatus,
+  ProjectColumn,
+  TabularColumnSummary,
+  TabularDataDownloadFormat,
   TabularDatasetView
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
@@ -14,6 +16,7 @@ import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnes
 import { InjectQueue } from '@nestjs/bullmq';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
+import type { TabularColumn } from '@prisma/client';
 import { Queue } from 'bullmq';
 
 import { ColumnsService } from '@/columns/columns.service.js';
@@ -280,7 +283,7 @@ export class DatasetsService {
     return await this.prisma.$transaction([...updateManagers, deleteTargetDataset]);
   }
 
-  async downloadDataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
+  async downloadDataById(datasetId: string, currentUserId: string, format: TabularDataDownloadFormat) {
     const userStatus = await this.getUserStatusById(currentUserId, datasetId);
 
     const dataset = await this.datasetModel.findUnique({
@@ -327,7 +330,7 @@ export class DatasetsService {
     return this.formatDataDownloadString(format, datasetView);
   }
 
-  async downloadMetadataById(datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
+  async downloadMetadataById(datasetId: string, currentUserId: string, format: TabularDataDownloadFormat) {
     const userStatus = await this.getUserStatusById(currentUserId, datasetId);
 
     const dataset = await this.datasetModel.findUnique({
@@ -374,7 +377,7 @@ export class DatasetsService {
     return this.formatMetadataDownloadString(format, datasetView);
   }
 
-  async downloadPublicDataById(datasetId: string, format: 'CSV' | 'TSV') {
+  async downloadPublicDataById(datasetId: string, format: TabularDataDownloadFormat) {
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: {
@@ -419,7 +422,7 @@ export class DatasetsService {
     return this.formatDataDownloadString(format, datasetView);
   }
 
-  async downloadPublicMetadataById(datasetId: string, format: 'CSV' | 'TSV') {
+  async downloadPublicMetadataById(datasetId: string, format: TabularDataDownloadFormat) {
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: {
@@ -473,6 +476,31 @@ export class DatasetsService {
     });
   }
 
+  formatMetadataDownloadString(format: TabularDataDownloadFormat, datasetView: TabularDatasetView) {
+    const delimiter = format === 'CSV' ? ',' : '\t';
+
+    const metaDataHeader = [
+      'column_name',
+      'column_type',
+      'nullable',
+      'count',
+      'nullCount',
+      'max',
+      'min',
+      'mean',
+      'median',
+      'mode',
+      'std',
+      'distribution'
+    ];
+
+    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
+    for (const [columnName, metadata] of Object.entries(datasetView.metadata)) {
+      metadataRowsString += this.formatMetadataBodyString(delimiter, columnName, metadata);
+    }
+    return metadataRowsString;
+  }
+
   async getAllByManagerId(currentUserId: string) {
     return await this.datasetModel.findMany({
       where: {
@@ -501,14 +529,14 @@ export class DatasetsService {
 
     if (!currentUser.verifiedAt) {
       return availableDatasets.filter((dataset) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        dataset.managerIds.includes(currentUserId) || dataset.permission == 'LOGIN' || dataset.permission == 'PUBLIC';
+        return (
+          dataset.managerIds.includes(currentUserId) || dataset.permission == 'LOGIN' || dataset.permission == 'PUBLIC'
+        );
       });
     }
 
     availableDatasets.forEach((dataset) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      dataset.managerIds.includes(currentUserId) || dataset.permission !== 'MANAGER' ? dataset : null;
+      return dataset.managerIds.includes(currentUserId) || dataset.permission !== 'MANAGER' ? dataset : null;
     });
     return availableDatasets;
   }
@@ -548,11 +576,12 @@ export class DatasetsService {
       throw new NotFoundException(`No colums are found with dataset ID ${datasetId}`);
     }
 
-    const columnsNamesAndIds: AddProjectDatasetColumns = {};
+    const projectColumn: ProjectColumn[] = [];
     dataset.tabularData.columns.forEach((column) => {
-      columnsNamesAndIds[column.name] = column.id;
+      const currProjectColumn = this.formatProjectColumn(column);
+      projectColumn.push(currProjectColumn);
     });
-    return columnsNamesAndIds;
+    return projectColumn;
   }
 
   async getDatasetStatus(datasetId: string) {
@@ -685,7 +714,7 @@ export class DatasetsService {
     const resDatasetsInfo: DatasetCardProps[] = [];
     publicDatasets.forEach((publicDataset) => {
       resDatasetsInfo.push({
-        createdAt: publicDataset.createdAt,
+        createAt: publicDataset.createdAt,
         datasetType: publicDataset.datasetType,
         description: publicDataset.description,
         id: publicDataset.id,
@@ -695,7 +724,7 @@ export class DatasetsService {
         license: publicDataset.license,
         managerIds: publicDataset.managerIds,
         name: publicDataset.name,
-        permission: { permission: publicDataset.permission },
+        permission: publicDataset.permission,
         status: publicDataset.status,
         updatedAt: publicDataset.updatedAt
       });
@@ -826,14 +855,14 @@ export class DatasetsService {
     };
   }
 
-  async mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: ColumnDataType) {
+  async mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: ColumnType) {
     const dataset = await this.canModifyDataset(datasetId, userId);
 
     if (!dataset.tabularData) {
       throw new NotFoundException(`There is no tabular data in this dataset with id ${datasetId}`);
     }
 
-    return await this.columnService.mutateColumnType(columnId, columnType.type);
+    return await this.columnService.mutateColumnType(columnId, columnType);
   }
 
   async removeManager(datasetId: string, managerId: string, managerIdToRemove: string) {
@@ -903,7 +932,7 @@ export class DatasetsService {
     });
   }
 
-  private formatDataDownloadString(format: 'CSV' | 'TSV', datasetView: TabularDatasetView) {
+  private formatDataDownloadString(format: TabularDataDownloadFormat, datasetView: TabularDatasetView) {
     const delimiter = format === 'CSV' ? ',' : '\t';
     let resultString = datasetView.columns.join(delimiter) + '\n';
     for (const row of datasetView.rows) {
@@ -913,61 +942,156 @@ export class DatasetsService {
     return resultString;
   }
 
-  private formatMetadataDownloadString(format: 'CSV' | 'TSV', datasetView: TabularDatasetView) {
-    const delimiter = format === 'CSV' ? ',' : '\t';
+  private formatMetadataBodyString(delimiter: ',' | '\t', columnName: string, datasetMetadata: TabularColumnSummary) {
+    const metadata_row = [];
+    switch (datasetMetadata.kind) {
+      case 'DATETIME':
+        metadata_row.push(
+          ...[
+            columnName,
+            datasetMetadata.kind,
+            datasetMetadata.nullable,
+            datasetMetadata.count,
+            datasetMetadata.nullCount,
+            datasetMetadata.datetimeSummary.max,
+            datasetMetadata.datetimeSummary.min,
+            '',
+            '',
+            '',
+            '',
+            ''
+          ]
+        );
+        break;
+      case 'ENUM':
+        metadata_row.push(
+          ...[
+            columnName,
+            datasetMetadata.kind,
+            datasetMetadata.nullable,
+            datasetMetadata.count,
+            datasetMetadata.nullCount,
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            JSON.stringify(datasetMetadata.enumSummary.distribution)
+          ]
+        );
+        break;
+      case 'FLOAT':
+        metadata_row.push(
+          ...[
+            columnName,
+            datasetMetadata.kind,
+            datasetMetadata.nullable,
+            datasetMetadata.count,
+            datasetMetadata.nullCount,
+            datasetMetadata.floatSummary.max,
+            datasetMetadata.floatSummary.min,
+            datasetMetadata.floatSummary.mean,
+            datasetMetadata.floatSummary.median,
+            '',
+            datasetMetadata.floatSummary.std,
+            ''
+          ]
+        );
+        break;
+      case 'INT':
+        metadata_row.push(
+          ...[
+            columnName,
+            datasetMetadata.kind,
+            datasetMetadata.nullable,
+            datasetMetadata.count,
+            datasetMetadata.nullCount,
+            datasetMetadata.intSummary.max,
+            datasetMetadata.intSummary.min,
+            datasetMetadata.intSummary.mean,
+            datasetMetadata.intSummary.median,
+            datasetMetadata.intSummary.mode,
+            datasetMetadata.intSummary.std,
+            ''
+          ]
+        );
+        break;
 
-    const metaDataHeader = [
-      'column_name',
-      'column_type',
-      'nullable',
-      'count',
-      'nullCount',
-      'max',
-      'min',
-      'mean',
-      'median',
-      'mode',
-      'std',
-      'distribution'
-    ];
-
-    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-    for (const columnName of Object.keys(datasetView.metadata)) {
-      metadataRowsString +=
-        columnName +
-        delimiter +
-        datasetView.metadata[columnName]?.kind.type +
-        delimiter +
-        // @ts-expect-error - see issue
-        datasetView.metadata[columnName]?.nullable +
-        delimiter +
-        datasetView.metadata[columnName]?.count +
-        delimiter +
-        datasetView.metadata[columnName]?.nullCount +
-        delimiter +
-        // @ts-expect-error - see issue
-        datasetView.metadata[columnName]?.max +
-        delimiter +
-        // @ts-expect-error - see issue
-        datasetView.metadata[columnName]?.min +
-        delimiter +
-        // @ts-expect-error - see issue
-        datasetView.metadata[columnName]?.mean +
-        delimiter +
-        // @ts-expect-error - see issue
-        datasetView.metadata[columnName]?.median +
-        delimiter +
-        // @ts-expect-error - see issue
-        datasetView.metadata[columnName]?.mode +
-        delimiter +
-        // @ts-expect-error - see issue
-        datasetView.metadata[columnName]?.std +
-        delimiter +
-        // @ts-expect-error - see issue
-        JSON.stringify(datasetView.metadata[columnName]?.distribution) +
-        delimiter +
-        '\n';
+      case 'STRING':
+        metadata_row.push(
+          ...[
+            columnName,
+            datasetMetadata.kind,
+            datasetMetadata.nullable,
+            datasetMetadata.count,
+            datasetMetadata.nullCount,
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            ''
+          ]
+        );
     }
-    return metadataRowsString;
+    return metadata_row.join(delimiter) + '\n';
+  }
+
+  private formatProjectColumn(column: TabularColumn): ProjectColumn {
+    switch (column.kind) {
+      case 'DATETIME':
+        return {
+          count: column.summary.count,
+          datetimeSummary: column.summary.datetimeSummary,
+          id: column.id,
+          kind: 'DATETIME',
+          name: column.name,
+          nullable: column.nullable,
+          nullCount: column.summary.nullCount
+        };
+      case 'ENUM':
+        return {
+          count: column.summary.count,
+          enumSummary: column.summary.enumSummary,
+          id: column.id,
+          kind: 'ENUM',
+          name: column.name,
+          nullable: column.nullable,
+          nullCount: column.summary.nullCount
+        };
+      case 'FLOAT':
+        return {
+          count: column.summary.count,
+          floatSummary: column.summary.floatSummary,
+          id: column.id,
+          kind: 'FLOAT',
+          name: column.name,
+          nullable: column.nullable,
+          nullCount: column.summary.nullCount
+        };
+      case 'INT':
+        return {
+          count: column.summary.count,
+          id: column.id,
+          intSummary: column.summary.intSummary,
+          kind: 'INT',
+          name: column.name,
+          nullable: column.nullable,
+          nullCount: column.summary.nullCount
+        };
+      case 'STRING':
+        return {
+          count: column.summary.count,
+          id: column.id,
+          kind: 'STRING',
+          name: column.name,
+          nullable: column.nullable,
+          nullCount: column.summary.nullCount
+        };
+      default:
+        throw new ForbiddenException('Unexpected Column Type');
+    }
   }
 }
