@@ -6,7 +6,7 @@ import type {
   ColumnType,
   DatasetCardProps,
   DatasetStatus,
-  ProjectColumn,
+  ProjectColumnSummary,
   TabularColumnSummary,
   TabularDataDownloadFormat,
   TabularDatasetView
@@ -576,7 +576,7 @@ export class DatasetsService {
       throw new NotFoundException(`No colums are found with dataset ID ${datasetId}`);
     }
 
-    const projectColumn: ProjectColumn[] = [];
+    const projectColumn: TabularColumnSummary[] = [];
     dataset.tabularData.columns.forEach((column) => {
       const currProjectColumn = this.formatProjectColumn(column);
       projectColumn.push(currProjectColumn);
@@ -714,7 +714,7 @@ export class DatasetsService {
     const resDatasetsInfo: DatasetCardProps[] = [];
     publicDatasets.forEach((publicDataset) => {
       resDatasetsInfo.push({
-        createAt: publicDataset.createdAt,
+        createdAt: publicDataset.createdAt,
         datasetType: publicDataset.datasetType,
         description: publicDataset.description,
         id: publicDataset.id,
@@ -1039,12 +1039,12 @@ export class DatasetsService {
     return metadata_row.join(delimiter) + '\n';
   }
 
-  private formatProjectColumn(column: TabularColumn): ProjectColumn {
+  private formatProjectColumn(column: TabularColumn): ProjectColumnSummary {
     switch (column.kind) {
       case 'DATETIME':
         return {
           count: column.summary.count,
-          datetimeSummary: column.summary.datetimeSummary,
+          datetimeSummary: column.summary.datetimeSummary!,
           id: column.id,
           kind: 'DATETIME',
           name: column.name,
@@ -1054,7 +1054,7 @@ export class DatasetsService {
       case 'ENUM':
         return {
           count: column.summary.count,
-          enumSummary: column.summary.enumSummary,
+          enumSummary: { distribution: {} }, // FIX THIS LATER
           id: column.id,
           kind: 'ENUM',
           name: column.name,
@@ -1064,7 +1064,7 @@ export class DatasetsService {
       case 'FLOAT':
         return {
           count: column.summary.count,
-          floatSummary: column.summary.floatSummary,
+          floatSummary: column.summary.floatSummary!,
           id: column.id,
           kind: 'FLOAT',
           name: column.name,
@@ -1075,7 +1075,7 @@ export class DatasetsService {
         return {
           count: column.summary.count,
           id: column.id,
-          intSummary: column.summary.intSummary,
+          intSummary: column.summary.intSummary!,
           kind: 'INT',
           name: column.name,
           nullable: column.nullable,

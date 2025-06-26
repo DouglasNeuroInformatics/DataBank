@@ -1,17 +1,14 @@
 import { z } from 'zod';
 
-import { $TabularColumnSummary } from './columns';
+import { $PermissionLevel, $TabularColumnSummary } from './columns';
 
-import type { ColumnType } from './columns';
+import type { ColumnType, PermissionLevel } from './columns';
 
 const $DatasetViewPagination = z.object({
   currentPage: z.number(),
   itemsPerPage: z.number()
 });
 type DatasetViewPagination = z.infer<typeof $DatasetViewPagination>;
-
-const $PermissionLevel = z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']);
-type PermissionLevel = z.infer<typeof $PermissionLevel>;
 
 const $DatasetType = z.enum(['BASE', 'BINARY', 'TABULAR']);
 type DatasetType = z.infer<typeof $DatasetType>;
@@ -42,7 +39,7 @@ const $EditDatasetInfo = z.object({
 type EditDatasetInfo = z.infer<typeof $EditDatasetInfo>;
 
 const $DatasetInfo = z.object({
-  createAt: z.date(),
+  createdAt: z.date(),
   datasetType: $DatasetType,
   description: z.string().nullable(),
   id: z.string(),

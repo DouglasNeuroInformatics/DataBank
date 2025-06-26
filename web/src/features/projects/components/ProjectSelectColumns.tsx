@@ -1,7 +1,8 @@
-import type { ProjectColumn } from '@databank/core';
+import type { ProjectColumnSummary } from '@databank/core';
+import { ArrowToggle, Button, Checkbox } from '@douglasneuroinformatics/libui/components';
 import type { ColumnDef } from '@tanstack/react-table';
 
-const formatSummary = (column: ProjectColumn): string => {
+const formatSummary = (column: ProjectColumnSummary): string => {
   switch (column.kind) {
     case 'DATETIME':
       return `min: ${column.datetimeSummary.min.toISOString()}, max: ${column.datetimeSummary.max.toISOString()}`;
@@ -33,10 +34,36 @@ const formatSummary = (column: ProjectColumn): string => {
   }
 };
 
-export const projectColumnDefs: ColumnDef<ProjectColumn>[] = [
+export const projectColumnDefs: ColumnDef<ProjectColumnSummary>[] = [
+  {
+    cell: ({ row }) => (
+      <Checkbox
+        aria-label="Select row"
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+      />
+    ),
+    enableHiding: false,
+    enableSorting: false,
+    header: ({ table }) => (
+      <Checkbox
+        aria-label="Select all"
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+      />
+    ),
+    id: 'select'
+  },
   {
     accessorKey: 'name',
-    header: 'Name'
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          Column Name
+          <ArrowToggle position={'down'} />
+        </Button>
+      );
+    }
   },
   {
     accessorKey: 'kind',
@@ -54,10 +81,6 @@ export const projectColumnDefs: ColumnDef<ProjectColumn>[] = [
   {
     accessorKey: 'nullCount',
     header: 'Null Count'
-  },
-  {
-    cell: ({ row }) => row.original.description ?? 'None',
-    header: 'Description'
   },
   {
     cell: ({ row }) => formatSummary(row.original),

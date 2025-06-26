@@ -1,9 +1,10 @@
 import { z } from 'zod';
 
-import { $PermissionLevel } from './datasets';
-
 const $ColumnType = z.enum(['STRING', 'INT', 'FLOAT', 'ENUM', 'DATETIME']);
 type ColumnType = z.infer<typeof $ColumnType>;
+
+const $PermissionLevel = z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']);
+type PermissionLevel = z.infer<typeof $PermissionLevel>;
 
 const $BasicSummary = z.object({
   count: z.number().int().gte(0),
@@ -139,6 +140,7 @@ export {
   $EnumColumn,
   $FloatColumn,
   $IntColumn,
+  $PermissionLevel,
   $RawQueryColumn,
   $StringColumn,
   $TabularColumn,
@@ -152,6 +154,7 @@ export type {
   EnumColumn,
   FloatColumn,
   IntColumn,
+  PermissionLevel,
   RawQueryColumn,
   RawQueryProps,
   StringColumn,

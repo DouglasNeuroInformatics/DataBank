@@ -1,12 +1,15 @@
 import { z } from 'zod';
 
-import {
-  $DatetimeColumnSummary,
-  $EnumColumnSummary,
-  $FloatColumnSummary,
-  $IntColumnSummary,
-  $TabularColumnInfo
-} from './columns';
+import { $TabularColumnInfo, $TabularColumnSummary } from './columns';
+
+//===================== Project Column Transformation ========================
+const $ProjectColumnSummary = $TabularColumnSummary.and(
+  z.object({
+    id: z.string(),
+    name: z.string()
+  })
+);
+type ProjectColumnSummary = z.infer<typeof $ProjectColumnSummary>;
 
 //===================== Project Column Transformation ========================
 const $ProjectRowFilter = z.object({
@@ -67,40 +70,6 @@ const $ProjectColumnInfo = $TabularColumnInfo.omit({
   tabularDataId: true
 });
 
-const $ProjectStringColumn = z.object({
-  kind: z.literal('STRING')
-});
-type ProjectStringColumn = z.infer<typeof $ProjectStringColumn>;
-
-const $ProjectIntColumn = z.object({
-  intSummary: $IntColumnSummary,
-  kind: z.literal('INT')
-});
-type ProjectIntColumn = z.infer<typeof $ProjectIntColumn>;
-
-const $ProjectFloatColumn = z.object({
-  floatSummary: $FloatColumnSummary,
-  kind: z.literal('FLOAT')
-});
-type ProjectFloatColumn = z.infer<typeof $ProjectFloatColumn>;
-
-const $ProjectEnumColumn = z.object({
-  enumSummary: $EnumColumnSummary,
-  kind: z.literal('ENUM')
-});
-type ProjectEnumColumn = z.infer<typeof $ProjectEnumColumn>;
-
-const $ProjectDatetimeColumn = z.object({
-  datetimeSummary: $DatetimeColumnSummary,
-  kind: z.literal('DATETIME')
-});
-type ProjectDatetimeColumn = z.infer<typeof $ProjectDatetimeColumn>;
-
-const $ProjectColumn = z
-  .union([$ProjectStringColumn, $ProjectIntColumn, $ProjectFloatColumn, $ProjectDatetimeColumn, $ProjectEnumColumn])
-  .and($ProjectColumnInfo);
-type ProjectColumn = z.infer<typeof $ProjectColumn>;
-
 //===================== Project Dataset Column View ========================
 const $GetColumnViewDto = $ProjectColumnTransformation.and($ProjectRowFilter);
 type GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;
@@ -108,34 +77,24 @@ type GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;
 export {
   $CreateProject,
   $GetColumnViewDto,
-  $ProjectColumn,
   $ProjectColumnHash,
   $ProjectColumnInfo,
+  $ProjectColumnSummary,
   $ProjectColumnTransformation,
   $ProjectColumnTrim,
   $ProjectDataset,
-  $ProjectDatetimeColumn,
-  $ProjectEnumColumn,
-  $ProjectFloatColumn,
-  $ProjectIntColumn,
   $ProjectRowFilter,
-  $ProjectStringColumn,
   $UpdateProject
 };
 
 export type {
   CreateProject,
   GetColumnViewDto,
-  ProjectColumn,
   ProjectColumnHash,
+  ProjectColumnSummary,
   ProjectColumnTransformation,
   ProjectColumnTrim,
   ProjectDataset,
-  ProjectDatetimeColumn,
-  ProjectEnumColumn,
-  ProjectFloatColumn,
-  ProjectIntColumn,
   ProjectRowFilter,
-  ProjectStringColumn,
   UpdateProject
 };

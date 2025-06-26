@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
-import type { ColumnDataType, PermissionLevel, TabularDataset } from '@databank/core';
+import type { ColumnType, PermissionLevel, TabularDataset } from '@databank/core';
 import { DropdownMenu, Table } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -45,7 +45,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     });
   };
 
-  const handleChangeColumnType = async (columnId: string, type: ColumnDataType) => {
+  const handleChangeColumnType = async (columnId: string, type: ColumnType) => {
     await axios.patch(`/v1/datasets/column-type/${tabularDataset.id}/${columnId}`, { type });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
@@ -108,9 +108,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                   <DropdownMenu.Item
                                     key={option}
                                     onClick={() =>
-                                      void handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, {
-                                        permission: option
-                                      })
+                                      void handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, option)
                                     }
                                   >
                                     {option}
@@ -127,9 +125,10 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                   <DropdownMenu.Item
                                     key={option}
                                     onClick={() =>
-                                      void handleSetColumnMetadataPermissionLevel(tabularDataset.columnIds[column]!, {
-                                        permission: option
-                                      })
+                                      void handleSetColumnMetadataPermissionLevel(
+                                        tabularDataset.columnIds[column]!,
+                                        option
+                                      )
                                     }
                                   >
                                     {option}
@@ -144,15 +143,13 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                 <DropdownMenu.SubTrigger>{t('changeColumnType')}</DropdownMenu.SubTrigger>
                                 <DropdownMenu.Portal>
                                   <DropdownMenu.SubContent>
-                                    {(['INT', 'FLOAT', 'STRING', 'BOOLEAN', 'DATETIME', 'ENUM'] as const)
-                                      .filter((x) => x !== tabularDataset.metadata[column]?.kind.type)
+                                    {(['INT', 'FLOAT', 'STRING', 'DATETIME', 'ENUM'] as const)
+                                      .filter((x) => x !== tabularDataset.metadata[column]?.kind)
                                       .map((option) => (
                                         <DropdownMenu.Item
                                           key={option}
                                           onClick={() =>
-                                            void handleChangeColumnType(tabularDataset.columnIds[column]!, {
-                                              type: option
-                                            })
+                                            void handleChangeColumnType(tabularDataset.columnIds[column]!, option)
                                           }
                                         >
                                           {option}
@@ -173,7 +170,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                           <DropdownMenu.SubContent>
                             <div className="flex justify-between space-x-4 p-2">
                               <div className="space-y-2 text-sm font-medium">
-                                <h4>{`Data Type: ${tabularDataset.metadata[column]?.kind.type}`}</h4>
+                                <h4>{`Data Type: ${tabularDataset.metadata[column]?.kind}`}</h4>
                                 <h4>{`Null Count: ${tabularDataset.metadata[column]?.nullCount}`}</h4>
                                 <h4>{`Count: ${tabularDataset.metadata[column]?.count}`}</h4>
                                 {(tabularDataset.metadata[column]?.min ||
