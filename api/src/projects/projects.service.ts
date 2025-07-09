@@ -1,12 +1,13 @@
-import type { DatasetInfo, DatasetViewPagination, TabularDataDownloadFormat } from '@databank/core';
+import type { $ProjectDataset, DatasetInfo, DatasetViewPagination, TabularDataDownloadFormat } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import type { ProjectColumnConfig, ProjectDataset } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
 
-import { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './dto/projects.dto';
+import { CreateProjectDto, UpdateProjectDto } from './dto/projects.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -16,7 +17,7 @@ export class ProjectsService {
     private readonly datasetService: DatasetsService
   ) {}
 
-  async addDataset(currentUserId: string, projectId: string, projectDatasetDto: ProjectDatasetDto) {
+  async addDataset(currentUserId: string, projectId: string, projectDataset: $ProjectDataset) {
     const project = await this.getProjectById(currentUserId, projectId);
 
     if (!project) {
@@ -25,11 +26,42 @@ export class ProjectsService {
 
     const projectDatasets = project.datasets;
     projectDatasets.forEach((dataset) => {
-      if (dataset.datasetId === projectDatasetDto.datasetId) {
-        throw new ForbiddenException(`Dataset with ID ${projectDatasetDto.datasetId} already exists in the Project!`);
+      if (dataset.datasetId === projectDataset.datasetId) {
+        throw new ForbiddenException(`Dataset with ID ${projectDataset.datasetId} already exists in the Project!`);
       }
     });
-    projectDatasets.push(projectDatasetDto);
+
+    const newProjectDataset: ProjectDataset = {
+      columnConfigurations: [],
+      columnIds: projectDataset.columnIds,
+      datasetId: projectDataset.datasetId,
+      rowFilter: {
+        rowMax: null,
+        rowMin: 0
+      }
+    };
+
+    const newColumnConfig = [];
+
+    for (const colId of Object.keys(projectDataset.columnConfigs)) {
+      const currentColumnConfig: ProjectColumnConfig = {
+        columnId: colId,
+        hash: {
+          length: projectDataset.columnConfigs[colId]!.hash.length,
+          salt: projectDataset.columnConfigs[colId]!.hash.salt ?? null
+        },
+        trim: {
+          end: projectDataset.columnConfigs[colId]!.trim.end ?? null,
+          start: projectDataset.columnConfigs[colId]!.trim.start
+        }
+      };
+
+      newColumnConfig.push(currentColumnConfig);
+    }
+
+    newProjectDataset.columnConfigurations = newColumnConfig;
+
+    projectDatasets.push(newProjectDataset);
     return await this.projectModel.update({
       data: {
         datasets: projectDatasets
@@ -99,8 +131,14 @@ export class ProjectsService {
       throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
     }
 
+    if ((projectDatasetDto.columnIds as string[]).length === 0) {
+      throw new ForbiddenException(`project ${projectId} dataset ${datasetId} has no columns`);
+    }
+
     // set initial row number to number of entries in a column
-    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDatasetDto.columns[0]!.columnId);
+    let rowNumber: number = await this.datasetService.getColumnLengthById(
+      (projectDatasetDto.columnIds as string[])[0]!
+    );
     if (projectDatasetDto.rowFilter) {
       if (projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
         rowNumber = projectDatasetDto.rowFilter.rowMax - projectDatasetDto.rowFilter.rowMin;

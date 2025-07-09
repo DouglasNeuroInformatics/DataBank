@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import type { ColumnType } from '@databank/core';
 import { Button, SearchBar, Table } from '@douglasneuroinformatics/libui/components';
 import {
   flexRender,
@@ -11,23 +12,32 @@ import {
 } from '@tanstack/react-table';
 import type { ColumnDef, ColumnFiltersState, SortingState } from '@tanstack/react-table';
 
+import type { SelectedColumnsRecord } from '../store/useProjectDatasetConfigStoreFactory';
+
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  setSelectedColumns: (selectedColumns: SelectedColumnsRecord) => void;
 };
 
-export const ProjectColumnsTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
+export const ProjectColumnsTable = <TData, TValue>({
+  columns,
+  data,
+  setSelectedColumns
+}: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
   const handleSubmitSelection = () => {
-    const selectedColumnIds: TData[] = [];
+    const selectedColumns: SelectedColumnsRecord = {};
     table.getFilteredSelectedRowModel().rows.map((row) => {
-      selectedColumnIds.push(row.original);
+      selectedColumns[row.original.id as string] = {
+        kind: row.original.kind as ColumnType,
+        name: row.original.name as string
+      };
     });
-    console.error(selectedColumnIds);
-    // send the selected columnIds to the backend
+    setSelectedColumns(selectedColumns);
   };
 
   const table = useReactTable({
@@ -48,7 +58,7 @@ export const ProjectColumnsTable = <TData, TValue>({ columns, data }: DataTableP
   });
 
   return (
-    <div>
+    <div className="w-full">
       <div className="flex-col-2 flex items-center py-4">
         <SearchBar
           placeholder="Filter column names..."
@@ -61,9 +71,9 @@ export const ProjectColumnsTable = <TData, TValue>({ columns, data }: DataTableP
         </div>
       </div>
 
-      <div className="rounded-md border">
+      <div className="w-full rounded-md border">
         <Table className="w-full">
-          <Table.Header>
+          <Table.Header className="w-full">
             {table.getHeaderGroups().map((headerGroup) => (
               <Table.Row key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -76,7 +86,7 @@ export const ProjectColumnsTable = <TData, TValue>({ columns, data }: DataTableP
               </Table.Row>
             ))}
           </Table.Header>
-          <Table.Body>
+          <Table.Body className="w-full">
             {table.getRowModel().rows.map((row) => (
               <Table.Row data-state={row.getIsSelected() && 'selected'} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
@@ -85,11 +95,11 @@ export const ProjectColumnsTable = <TData, TValue>({ columns, data }: DataTableP
               </Table.Row>
             ))}
           </Table.Body>
-          <Table.Footer>
-            <Table.Row>
+          <Table.Footer className="w-full">
+            <Table.Row className="w-full">
               <Table.Cell>
                 <Button size="sm" variant="primary" onClick={() => handleSubmitSelection()}>
-                  Finish Selection
+                  Finish Column Selection
                 </Button>
               </Table.Cell>
 

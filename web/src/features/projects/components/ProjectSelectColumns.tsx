@@ -5,27 +5,30 @@ import type { ColumnDef } from '@tanstack/react-table';
 const formatSummary = (column: ProjectColumnSummary): string => {
   switch (column.kind) {
     case 'DATETIME':
-      return `min: ${column.datetimeSummary.min.toISOString()}, max: ${column.datetimeSummary.max.toISOString()}`;
+      return `
+      min: ${column.datetimeSummary.min.toISOString()} \n
+       max: ${column.datetimeSummary.max.toISOString()}
+       `;
     case 'ENUM':
       return Object.entries(column.enumSummary.distribution)
         .map(([k, v]) => `${k}: ${v}`)
         .join(', ');
     case 'FLOAT':
       return `
-            min: ${column.floatSummary.min.toFixed(2)}, 
-            max: ${column.floatSummary.max.toFixed(2)},
-            mean: ${column.floatSummary.mean.toFixed(2)},
-            median: ${column.floatSummary.median.toFixed(2)},
-            std: ${column.floatSummary.std.toFixed(2)},
+            min: ${column.floatSummary.min.toFixed(2)} \n
+            max: ${column.floatSummary.max.toFixed(2)} \n
+            mean: ${column.floatSummary.mean.toFixed(2)} \n
+            median: ${column.floatSummary.median.toFixed(2)} \n
+            std: ${column.floatSummary.std.toFixed(2)}
             `;
     case 'INT':
       return `
-            min: ${column.intSummary.min}, 
-            max: ${column.intSummary.max},
-            mean: ${column.intSummary.mean},
-            median: ${column.intSummary.median},
-            std: ${column.intSummary.std},
-            mode: ${column.intSummary.mode},
+            min: ${column.intSummary.min} \n
+            max: ${column.intSummary.max} \n
+            mean: ${column.intSummary.mean} \n
+            median: ${column.intSummary.median} \n
+            std: ${column.intSummary.std} \n
+            mode: ${column.intSummary.mode}
             `;
     case 'STRING':
       return 'N/A';
@@ -36,6 +39,7 @@ const formatSummary = (column: ProjectColumnSummary): string => {
 
 export const projectColumnDefs: ColumnDef<ProjectColumnSummary>[] = [
   {
+    accessorKey: 'select',
     cell: ({ row }) => (
       <Checkbox
         aria-label="Select row"
@@ -83,6 +87,7 @@ export const projectColumnDefs: ColumnDef<ProjectColumnSummary>[] = [
     header: 'Null Count'
   },
   {
+    accessorKey: 'summary',
     cell: ({ row }) => formatSummary(row.original),
     header: 'Summary'
   }

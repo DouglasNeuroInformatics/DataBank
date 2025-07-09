@@ -1,3 +1,4 @@
+import type { $ProjectDataset } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -5,7 +6,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 import { DatasetViewPaginationDto } from '@/datasets/dto/datasets.dto';
 
-import { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './dto/projects.dto';
+import { CreateProjectDto, UpdateProjectDto } from './dto/projects.dto';
 import { ProjectsService } from './projects.service';
 
 @ApiTags('Projects')
@@ -19,7 +20,7 @@ export class ProjectsController {
   addDatasetToProject(
     @CurrentUser('id') currentUserId: string,
     @Param('projectId') projectId: string,
-    @Body('projectDatasetDto') projectDatasetDto: ProjectDatasetDto
+    @Body('projectDatasetDto') projectDatasetDto: $ProjectDataset
   ) {
     return this.projectsService.addDataset(currentUserId, projectId, projectDatasetDto);
   }
