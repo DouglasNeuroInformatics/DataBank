@@ -1,4 +1,5 @@
 import type {
+  $ProjectDataset,
   DatasetViewPagination,
   GetColumnViewDto,
   ProjectTabularDatasetView,
@@ -14,7 +15,6 @@ import pl from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
 
 import { ColumnsService } from '@/columns/columns.service';
-import type { ProjectDatasetDto } from '@/projects/dto/projects.dto';
 
 @Injectable()
 export class TabularDataService {
@@ -118,7 +118,7 @@ export class TabularDataService {
   }
 
   async getProjectDatasetView(
-    projectDatasetDto: ProjectDatasetDto,
+    projectDataset: $ProjectDataset,
     rowPagination: DatasetViewPagination,
     columnPagination: DatasetViewPagination
   ) {
@@ -132,12 +132,30 @@ export class TabularDataService {
     const columnStart = (columnPagination.currentPage - 1) * columnPagination.itemsPerPage;
     const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage;
 
-    for (const col of projectDatasetDto.columns.slice(columnStart, columnEnd)) {
-      const getColumnViewDto: GetColumnViewDto = {
-        ...col,
-        rowMax: projectDatasetDto.rowFilter ? projectDatasetDto.rowFilter.rowMax : null,
-        rowMin: projectDatasetDto.rowFilter ? projectDatasetDto.rowFilter.rowMin : 0
-      };
+    for (const col of projectDataset.columnIds.slice(columnStart, columnEnd)) {
+      let getColumnViewDto: GetColumnViewDto;
+
+      if (col in projectDataset.columnConfigs) {
+        getColumnViewDto = {
+          columnId: col,
+          hash: {
+            length: projectDataset.columnConfigs[col]!.hash.length ?? 10,
+            salt: projectDataset.columnConfigs[col]!.hash.salt ?? ''
+          },
+          rowMin: projectDataset.rowConfig.rowMin ?? 0,
+          trim: {
+            end: projectDataset.columnConfigs[col]!.trim.end ?? undefined,
+            start: projectDataset.columnConfigs[col]!.trim.start ?? 0
+          }
+        };
+      } else {
+        getColumnViewDto = {
+          columnId: col,
+          rowMax: projectDataset.rowConfig.rowMax ?? undefined,
+          rowMin: 0
+        };
+      }
+
       const currColumnView = await this.columnsService.getColumnView(getColumnViewDto);
       columns.push(currColumnView.name);
       columnIds[currColumnView.name] = currColumnView.id;
@@ -193,7 +211,7 @@ export class TabularDataService {
       columns,
       metadata: metaData,
       rows: rows.slice(rowStart, rowEnd),
-      totalNumberOfColumns: projectDatasetDto.columns.length,
+      totalNumberOfColumns: projectDataset.columnIds.length,
       totalNumberOfRows: rows.length
     };
     return dataView;

@@ -57,12 +57,40 @@ const $CreateProject = z.object({
   name: z.string().min(1),
   userIds: z.string().array().min(1)
 });
-type CreateProject = z.infer<typeof $CreateProject>;
 
 //===================== Update Project ========================
-const $UpdateProject = $CreateProject.partial();
-type UpdateProject = z.infer<typeof $UpdateProject>;
-
+const $UpdateProject = z
+  .object({
+    datasets: z
+      .object({
+        columnConfigurations: z
+          .object({
+            columnId: z.string(),
+            hash: z.object({
+              length: z.number(),
+              salt: z.string().nullable()
+            }),
+            trim: z.object({
+              end: z.number().nullable(),
+              start: z.number()
+            })
+          })
+          .array(),
+        columnIds: z.string().array(),
+        datasetId: z.string(),
+        rowFilter: z.object({
+          rowMax: z.number().nullable(),
+          rowMin: z.number()
+        })
+      })
+      .array(),
+    description: z.string().optional(),
+    expiry: z.coerce.date(),
+    externalId: z.string().optional(),
+    name: z.string().min(1),
+    userIds: z.string().array().min(1)
+  })
+  .partial();
 //===================== Project Column ========================
 const $ProjectColumnInfo = $TabularColumnInfo.omit({
   dataPermission: true,
@@ -71,7 +99,23 @@ const $ProjectColumnInfo = $TabularColumnInfo.omit({
 });
 
 //===================== Project Dataset Column View ========================
-const $GetColumnViewDto = $ProjectDatasetColumnConfig.and($ProjectDatasetRowConfig);
+const $GetColumnViewDto = z.object({
+  columnId: z.string(),
+  hash: z
+    .object({
+      length: z.number().int().gte(0),
+      salt: z.string().optional()
+    })
+    .optional(),
+  rowMax: z.number().int().gte(0).optional(),
+  rowMin: z.number().int().gte(0).optional(),
+  trim: z
+    .object({
+      end: z.number().int().gte(0).optional(),
+      start: z.number().int().gte(0)
+    })
+    .optional()
+});
 type GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;
 
 //===================== Project Add Dataset Config =========================
@@ -105,7 +149,6 @@ export {
 };
 
 export type {
-  CreateProject,
   GetColumnViewDto,
   ProjectAddDatasetConfig,
   ProjectColumnSummary,
@@ -114,8 +157,9 @@ export type {
   ProjectDatasetColumnTrim,
   ProjectDatasetConfigStep,
   ProjectDatasetRowConfig,
-  ProjectDatasetSelectedColumn,
-  UpdateProject
+  ProjectDatasetSelectedColumn
 };
 
 export type $ProjectDataset = z.infer<typeof $ProjectDataset>;
+export type $CreateProject = z.infer<typeof $CreateProject>;
+export type $UpdateProject = z.infer<typeof $UpdateProject>;

@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 
 import type {
+  $ProjectDataset,
   ColumnType,
   DatasetCardProps,
   DatasetStatus,
@@ -20,7 +21,6 @@ import type { TabularColumn } from '@prisma/client';
 import { Queue } from 'bullmq';
 
 import { ColumnsService } from '@/columns/columns.service.js';
-import type { ProjectDatasetDto } from '@/projects/dto/projects.dto.js';
 import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 
@@ -663,7 +663,7 @@ export class DatasetsService {
   }
 
   async getProjectDatasetViewById(
-    projectDatasetDto: ProjectDatasetDto,
+    projectDataset: $ProjectDataset,
     rowPagination: DatasetViewPaginationDto,
     columnPagination: DatasetViewPaginationDto
   ) {
@@ -672,7 +672,7 @@ export class DatasetsService {
         tabularData: true
       },
       where: {
-        id: projectDatasetDto.datasetId
+        id: projectDataset.datasetId
       }
     });
 
@@ -684,7 +684,7 @@ export class DatasetsService {
       throw new NotFoundException('No such tabular data available!');
     }
     const datasetView = await this.tabularDataService.getProjectDatasetView(
-      projectDatasetDto,
+      projectDataset,
       rowPagination,
       columnPagination
     );

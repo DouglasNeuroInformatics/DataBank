@@ -1,4 +1,11 @@
-import type { $ProjectDataset, DatasetInfo, DatasetViewPagination, TabularDataDownloadFormat } from '@databank/core';
+import type {
+  $CreateProject,
+  $ProjectDataset,
+  $UpdateProject,
+  DatasetInfo,
+  DatasetViewPagination,
+  TabularDataDownloadFormat
+} from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
@@ -6,8 +13,6 @@ import type { ProjectColumnConfig, ProjectDataset } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
-
-import { CreateProjectDto, UpdateProjectDto } from './dto/projects.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -96,7 +101,7 @@ export class ProjectsService {
     });
   }
 
-  async createProject(currentUserId: string, createProjectDto: CreateProjectDto) {
+  async createProject(currentUserId: string, createProjectDto: $CreateProject) {
     if (!(await this.usersService.isOwnerOfDatasets(currentUserId))) {
       throw new ForbiddenException('Only dataset owners can create project!');
     }
@@ -106,7 +111,7 @@ export class ProjectsService {
     }
 
     return await this.projectModel.create({
-      data: createProjectDto
+      data: { ...createProjectDto, datasets: [] }
     });
   }
 
@@ -126,42 +131,40 @@ export class ProjectsService {
 
   async downloadDatasetById(projectId: string, datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
     const project = await this.getProjectById(currentUserId, projectId);
-    const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
-    if (!projectDatasetDto) {
+    const projectDataset = project.datasets.find((dataset) => dataset.datasetId === datasetId);
+    if (!projectDataset) {
       throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
     }
 
-    if ((projectDatasetDto.columnIds as string[]).length === 0) {
+    if (projectDataset.columnIds.length === 0) {
       throw new ForbiddenException(`project ${projectId} dataset ${datasetId} has no columns`);
     }
 
     // set initial row number to number of entries in a column
-    let rowNumber: number = await this.datasetService.getColumnLengthById(
-      (projectDatasetDto.columnIds as string[])[0]!
-    );
-    if (projectDatasetDto.rowFilter) {
-      if (projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = projectDatasetDto.rowFilter.rowMax - projectDatasetDto.rowFilter.rowMin;
-      } else if (!projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = rowNumber - projectDatasetDto.rowFilter.rowMin;
+    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
+    if (projectDataset.rowFilter) {
+      if (projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
+        rowNumber = projectDataset.rowFilter.rowMax - projectDataset.rowFilter.rowMin;
+      } else if (!projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
+        rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
           throw new ForbiddenException('Row number per page is nagative! Check the row min value');
         }
-      } else if (projectDatasetDto.rowFilter.rowMax && !projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = projectDatasetDto.rowFilter.rowMax;
+      } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
+        rowNumber = projectDataset.rowFilter.rowMax;
       }
     }
 
     const projectDatasetView = await this.datasetService.getProjectDatasetViewById(
-      projectDatasetDto,
+      this.formatProjectDataset(projectDataset),
       {
         currentPage: 1,
         itemsPerPage: rowNumber
       },
       {
         currentPage: 1,
-        itemsPerPage: projectDatasetDto.columns.length
+        itemsPerPage: projectDataset.columnIds.length
       }
     );
 
@@ -181,36 +184,39 @@ export class ProjectsService {
     format: TabularDataDownloadFormat
   ) {
     const project = await this.getProjectById(currentUserId, projectId);
-    const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
-    if (!projectDatasetDto) {
+    const projectDataset = project.datasets.find((dataset) => dataset.datasetId === datasetId);
+    if (!projectDataset) {
       throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
     }
 
+    if (projectDataset.columnIds.length === 0) {
+      throw new ForbiddenException(`project ${projectId} dataset ${datasetId} has no columns`);
+    }
     // set initial row number to number of entries in a column
-    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDatasetDto.columns[0]!.columnId);
-    if (projectDatasetDto.rowFilter) {
-      if (projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = projectDatasetDto.rowFilter.rowMax - projectDatasetDto.rowFilter.rowMin;
-      } else if (!projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = rowNumber - projectDatasetDto.rowFilter.rowMin;
+    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
+    if (projectDataset.rowFilter) {
+      if (projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
+        rowNumber = projectDataset.rowFilter.rowMax - projectDataset.rowFilter.rowMin;
+      } else if (!projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
+        rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
           throw new ForbiddenException('Row number per page is nagative! Check the row min value');
         }
-      } else if (projectDatasetDto.rowFilter.rowMax && !projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = projectDatasetDto.rowFilter.rowMax;
+      } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
+        rowNumber = projectDataset.rowFilter.rowMax;
       }
     }
 
     const projectDatasetView = await this.datasetService.getProjectDatasetViewById(
-      projectDatasetDto,
+      this.formatProjectDataset(projectDataset),
       {
         currentPage: 1,
         itemsPerPage: rowNumber
       },
       {
         currentPage: 1,
-        itemsPerPage: projectDatasetDto.columns.length
+        itemsPerPage: projectDataset.columnIds.length
       }
     );
 
@@ -264,13 +270,13 @@ export class ProjectsService {
       throw new NotFoundException('Project Not Found!');
     }
 
-    const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
-    if (!projectDatasetDto) {
+    const projectDataset = project.datasets.find((dataset) => dataset.datasetId === datasetId);
+    if (!projectDataset) {
       throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
     }
 
     return await this.datasetService.getProjectDatasetViewById(
-      projectDatasetDto,
+      this.formatProjectDataset(projectDataset),
       rowPaginationDto,
       columnPaginationDto
     );
@@ -320,7 +326,7 @@ export class ProjectsService {
 
       projectDatasetsInfo.push({
         ...projectDatasetInfo,
-        createAt: projectDatasetInfo.createdAt,
+        createdAt: projectDatasetInfo.createdAt,
         permission: projectDatasetInfo?.permission
       });
     }
@@ -390,7 +396,7 @@ export class ProjectsService {
     });
   }
 
-  async updateProject(currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {
+  async updateProject(currentUserId: string, projectId: string, updateProjectDto: $UpdateProject) {
     const isProjectManager = await this.isProjectManager(currentUserId, projectId);
     if (!isProjectManager) {
       throw new ForbiddenException('The current user has no right to manipulate this project!');
@@ -403,5 +409,30 @@ export class ProjectsService {
       }
     });
     return updateProject;
+  }
+
+  private formatProjectDataset(projectDatasetData: ProjectDataset): $ProjectDataset {
+    const columnConfigs: { [key: string]: any } = {};
+    for (const colConfig of projectDatasetData.columnConfigurations) {
+      columnConfigs[colConfig.columnId] = {
+        hash: {
+          length: colConfig.hash.length,
+          salt: colConfig.hash.salt
+        },
+        trim: {
+          end: colConfig.trim.end,
+          start: colConfig.trim.start
+        }
+      };
+    }
+    return {
+      columnConfigs: columnConfigs,
+      columnIds: projectDatasetData.columnIds,
+      datasetId: projectDatasetData.datasetId,
+      rowConfig: {
+        rowMax: projectDatasetData.rowFilter.rowMax ?? undefined,
+        rowMin: projectDatasetData.rowFilter.rowMin
+      }
+    };
   }
 }

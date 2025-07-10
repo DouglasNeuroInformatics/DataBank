@@ -1,4 +1,4 @@
-import type { $ProjectDataset } from '@databank/core';
+import type { $CreateProject, $ProjectDataset, $UpdateProject } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -6,7 +6,6 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 import { DatasetViewPaginationDto } from '@/datasets/dto/datasets.dto';
 
-import { CreateProjectDto, UpdateProjectDto } from './dto/projects.dto';
 import { ProjectsService } from './projects.service';
 
 @ApiTags('Projects')
@@ -39,7 +38,7 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Get All Available Projects' })
   @Post('create')
   @RouteAccess({ role: 'STANDARD' })
-  createProject(@CurrentUser('id') currentUserId: string, @Body() createProjectDto: CreateProjectDto) {
+  createProject(@CurrentUser('id') currentUserId: string, @Body() createProjectDto: $CreateProject) {
     return this.projectsService.createProject(currentUserId, createProjectDto);
   }
 
@@ -149,7 +148,7 @@ export class ProjectsController {
   updateProject(
     @CurrentUser('id') currentUserId: string,
     @Param('id') projectId: string,
-    @Body('updateProjectDto') updateProjectDto: UpdateProjectDto
+    @Body('updateProjectDto') updateProjectDto: $UpdateProject
   ) {
     return this.projectsService.updateProject(currentUserId, projectId, updateProjectDto);
   }

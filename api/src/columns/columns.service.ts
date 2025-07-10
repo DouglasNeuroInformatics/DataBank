@@ -241,24 +241,16 @@ export class ColumnsService {
     // check if there is a row max and min bound
     if (getColumnViewDto.rowMax && getColumnViewDto.rowMin) {
       currSeries = currSeries.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax - getColumnViewDto.rowMin + 1);
-    } else if (getColumnViewDto.rowMin && !getColumnViewDto.rowMax) {
+    } else if (getColumnViewDto.rowMin) {
       currSeries = currSeries.slice(getColumnViewDto.rowMin);
-    } else if (getColumnViewDto.rowMax && !getColumnViewDto.rowMin) {
+    } else if (getColumnViewDto.rowMax) {
       currSeries = currSeries.slice(0, getColumnViewDto.rowMax);
     }
     // check for hash, do the hashing
     if (getColumnViewDto.hash) {
       currSeries = currSeries.cast(pl.String);
       if (getColumnViewDto.hash.salt) {
-        const saltArr: string[] = [];
-        for (let i = 0; i < currSeries.len(); i++) {
-          saltArr.push(getColumnViewDto.hash.salt);
-        }
-        currSeries = pl.Series(
-          currSeries.toArray().map((entry) => {
-            return (entry + getColumnViewDto.hash?.salt) as string;
-          })
-        );
+        currSeries = currSeries.add(getColumnViewDto.hash.salt);
       }
 
       currSeries = currSeries.hash().cast(pl.String);
