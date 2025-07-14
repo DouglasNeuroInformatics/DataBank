@@ -1,5 +1,6 @@
 import type { $ProjectDataset } from '@databank/core';
 import { Button, Card, Heading } from '@douglasneuroinformatics/libui/components';
+import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { useStore } from 'zustand';
@@ -12,11 +13,6 @@ import { ConfigProjectDatasetRowPage } from './ConfigProjectDatasetRowPage';
 import { SelectProjectDatasetColumnsPage } from './SelectProjectDatasetColumnsPage';
 
 const AddProjectDatasetColumnPage = () => {
-  // need to get the projectID and datasetID from the route params
-  // check projectID_datasetID combination in Zustand store, if not in store,
-  // Init to the first step
-
-  // The third page: config columns depends on the first page where we select or unselect columns
   const params = useParams({ strict: false });
   const projectDatasetStore = useProjectDatasetConfigStoreFactory(params.projectId!, params.datasetId!);
   const {
@@ -36,6 +32,7 @@ const AddProjectDatasetColumnPage = () => {
   } = useStore(projectDatasetStore);
 
   const navigate = useNavigate();
+  const notifications = useNotificationsStore();
 
   const handlePreviousStep = (currentStep: 'configColumns' | 'configRows' | 'selectColumns') => {
     switch (currentStep) {
@@ -90,8 +87,17 @@ const AddProjectDatasetColumnPage = () => {
       datasetId: params.datasetId!,
       rowConfig: rowConfig
     };
-    void axios.post(`/v1/projects/add-dataset/${params.projectId}`, projectDatasetConfig);
-    void navigate({ to: `/portal/project/${params.projectId}` });
+
+    axios
+      .post(`/v1/projects/add-dataset/${params.projectId}`, projectDatasetConfig)
+      .then(() => {
+        notifications.addNotification({
+          message: `Added dataset ${params.datasetId} to project ${params.projectId}`,
+          type: 'success'
+        });
+        void navigate({ to: `/portal/projects/${params.projectId}` });
+      })
+      .catch(console.error);
   };
 
   const selectedColumnsIdArray = Object.keys(selectedColumns);

@@ -5,9 +5,8 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 import { DatasetViewPaginationDto } from '@/datasets/dto/datasets.dto';
 
+import { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './dto/projects.dto';
 import { ProjectsService } from './projects.service';
-
-import type { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './dto/projects.dto';
 
 @ApiTags('Projects')
 @Controller('projects')

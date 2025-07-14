@@ -16,7 +16,7 @@ type ProjectDataset {
     rowFilter            ProjectRowFilter
     datasetId            String
     columnConfigurations ProjectColumnConfig[]
-    columnIds    String[]
+    columnIds            String[]
 }
 
 type ProjectRowFilter {

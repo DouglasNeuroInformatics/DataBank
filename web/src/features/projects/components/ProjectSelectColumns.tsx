@@ -1,6 +1,9 @@
+import { useState } from 'react';
+
 import type { ProjectColumnSummary } from '@databank/core';
-import { ArrowToggle, Button, Checkbox } from '@douglasneuroinformatics/libui/components';
+import { Button, Checkbox } from '@douglasneuroinformatics/libui/components';
 import type { ColumnDef } from '@tanstack/react-table';
+import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 
 const formatSummary = (column: ProjectColumnSummary): string => {
   switch (column.kind) {
@@ -61,11 +64,24 @@ export const projectColumnDefs: ColumnDef<ProjectColumnSummary>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => {
+      const [isToggleDown, setIsToggleDown] = useState(true);
       return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Column Name
-          <ArrowToggle position={'down'} />
-        </Button>
+        <div className="flex">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              column.toggleSorting(column.getIsSorted() === 'asc');
+              setIsToggleDown(!isToggleDown);
+            }}
+          >
+            Column Name
+            {isToggleDown ? (
+              <ChevronDownIcon className="transform-gpu transition-transform" data-testid="arrow-down-icon" />
+            ) : (
+              <ChevronUpIcon className="transform-gpu transition-transform" data-testid="arrow-up-icon" />
+            )}
+          </Button>
+        </div>
       );
     }
   },
