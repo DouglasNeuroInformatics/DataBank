@@ -31,7 +31,7 @@ export const ProjectColumnsTable = <TData, TValue>({
 
   const handleSubmitSelection = () => {
     const selectedColumns: SelectedColumnsRecord = {};
-    table.getFilteredSelectedRowModel().rows.map((row) => {
+    table.getFilteredSelectedRowModel().rows.forEach((row) => {
       selectedColumns[row.original.id as string] = {
         kind: row.original.kind as ColumnType,
         name: row.original.name as string
