@@ -40,25 +40,24 @@ export class ProjectsService {
       }
     };
 
-    const newColumnConfig = [];
-
-    for (const colId of Object.keys(projectDataset.columnConfigs)) {
-      const currentColumnConfig: ProjectColumnConfig = {
-        columnId: colId,
-        hash: {
-          length: projectDataset.columnConfigs[colId]!.hash.length,
-          salt: projectDataset.columnConfigs[colId]!.hash.salt ?? null
-        },
-        trim: {
-          end: projectDataset.columnConfigs[colId]!.trim.end ?? null,
-          start: projectDataset.columnConfigs[colId]!.trim.start
+    newProjectDataset.columnConfigurations = Object.entries(projectDataset.columnConfigs).map(
+      ([colId, config]) => {
+        if (!config) {
+          throw new Error(`Column configuration not found for column ID: ${colId}`);
         }
-      };
-
-      newColumnConfig.push(currentColumnConfig);
-    }
-
-    newProjectDataset.columnConfigurations = newColumnConfig;
+        return {
+          columnId: colId,
+          hash: {
+            length: config.hash.length,
+            salt: config.hash.salt ?? null
+          },
+          trim: {
+            end: config.trim.end ?? null,
+            start: config.trim.start
+          }
+        };
+      }
+    );
 
     projectDatasets.push(newProjectDataset);
     return await this.projectModel.update({
