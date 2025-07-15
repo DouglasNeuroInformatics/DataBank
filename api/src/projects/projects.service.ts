@@ -405,7 +405,11 @@ export class ProjectsService {
   }
 
   private formatProjectDataset(projectDatasetData: ProjectDataset): $ProjectDataset {
-    const columnConfigs: { [key: string]: any } = {};
+-    const columnConfigs: { [key: string]: any } = {};
++    const columnConfigs: Record<string, {
++      hash: { length: number; salt: string | null | undefined };
++      trim: { start: number; end: number | null | undefined };
++    }> = {};
     for (const colConfig of projectDatasetData.columnConfigurations) {
       columnConfigs[colConfig.columnId] = {
         hash: {
