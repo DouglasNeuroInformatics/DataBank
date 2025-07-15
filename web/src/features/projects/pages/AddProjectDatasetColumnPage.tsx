@@ -89,7 +89,7 @@ const AddProjectDatasetColumnPage = () => {
     };
 
     axios
-      .post(`/v1/projects/add-dataset/${params.projectId}`, projectDatasetConfig)
+      .post(`/v1/projects/add-dataset/${params.projectId}`, { projectDatasetDto: projectDatasetConfig })
       .then(() => {
         notifications.addNotification({
           message: `Added dataset ${params.datasetId} to project ${params.projectId}`,
