@@ -1,6 +1,7 @@
+import { isPlainObject } from '@douglasneuroinformatics/libjs';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
 export const useDeleteDataset = () => {
   const notifications = useNotificationsStore();
@@ -18,8 +19,14 @@ export const useDeleteDataset = () => {
       })
       .catch((error) => {
         console.error(error);
+        let message: string;
+        if (isAxiosError(error) && isPlainObject(error.response?.data)) {
+          message = String(error.response.data.message);
+        } else {
+          message = 'Unknown Error';
+        }
         notifications.addNotification({
-          message: `Failed to delete dataset: ${error.response?.data?.message || 'Unknown error'}`,
+          message: `Failed to delete dataset: ${message}`,
           type: 'error'
         });
       });
