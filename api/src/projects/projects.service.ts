@@ -1,4 +1,9 @@
-import type { DatasetInfo, DatasetViewPagination, TabularDataDownloadFormat } from '@databank/core';
+import type {
+  DatasetInfo,
+  DatasetViewPagination,
+  ProjectDatasetColumnConfig,
+  TabularDataDownloadFormat
+} from '@databank/core';
 import { $CreateProject, $ProjectDataset, $UpdateProject } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
@@ -41,9 +46,6 @@ export class ProjectsService {
     };
 
     newProjectDataset.columnConfigurations = Object.entries(projectDataset.columnConfigs).map(([colId, config]) => {
-      if (!config) {
-        throw new Error(`Column configuration not found for column ID: ${colId}`);
-      }
       return {
         columnId: colId,
         hash: {
@@ -294,7 +296,7 @@ export class ProjectsService {
     return project;
   }
 
-  async getProjectDatasets(projectId: string) {
+  async getProjectDatasets(projectId: string): Promise<DatasetInfo[]> {
     const project = await this.projectModel.findUnique({
       where: {
         id: projectId
@@ -404,10 +406,7 @@ export class ProjectsService {
 
   private formatProjectDataset(projectDatasetData: ProjectDataset): $ProjectDataset {
     const columnConfigs: {
-      [key: string]: {
-        hash: { length: number; salt: string };
-        trim: { end: number | undefined; start: number };
-      };
+      [key: string]: ProjectDatasetColumnConfig;
     } = {};
     for (const colConfig of projectDatasetData.columnConfigurations) {
       columnConfigs[colConfig.columnId] = {
