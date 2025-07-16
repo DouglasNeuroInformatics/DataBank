@@ -3,7 +3,7 @@ import { $CreateProject, $ProjectDataset, $UpdateProject } from '@databank/core'
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { ProjectColumnConfig, ProjectDataset } from '@prisma/client';
+import type { ProjectDataset } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
@@ -405,7 +405,7 @@ export class ProjectsService {
   private formatProjectDataset(projectDatasetData: ProjectDataset): $ProjectDataset {
     const columnConfigs: {
       [key: string]: {
-        hash: { length: number; salt: string | undefined };
+        hash: { length: number; salt: string };
         trim: { end: number | undefined; start: number };
       };
     } = {};
@@ -413,7 +413,7 @@ export class ProjectsService {
       columnConfigs[colConfig.columnId] = {
         hash: {
           length: colConfig.hash.length,
-          salt: colConfig.hash.salt ?? undefined
+          salt: colConfig.hash.salt ?? ''
         },
         trim: {
           end: colConfig.trim.end ?? undefined,
