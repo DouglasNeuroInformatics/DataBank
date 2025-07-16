@@ -1,4 +1,5 @@
 import type { ProjectDatasetColumnConfig } from '@databank/core';
+import type FormTypes from '@douglasneuroinformatics/libui-form-types';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { z } from 'zod';
 
@@ -26,20 +27,14 @@ export const ConfigProjectDatasetColumnsPage = ({
       formValidationObject[columnId + 'TrimStart'] = z.number().int().gte(0).optional();
       formValidationObject[columnId + 'TrimEnd'] = z.number().int().gte(0).optional();
     }
-    return z.object(formValidationObject);
-  };
-
-  type GroupedFormContent = {
-    description?: string;
-    fields: { [key: string]: { [key: string]: any } };
-    title: string;
+    return z.object(formValidationObject) as z.ZodType<FormTypes.Data>;
   };
 
   const generateContent = (selectedColumns: SelectedColumnsRecord) => {
     const resContent = [];
 
     for (const columnId in selectedColumns) {
-      const currContent: GroupedFormContent = {
+      const currContent: FormTypes.FieldsGroup<FormTypes.Data> = {
         description:
           selectedColumns[columnId]?.description ?? `Configuration for column "${selectedColumns[columnId]!.name}"`,
         fields: {},
