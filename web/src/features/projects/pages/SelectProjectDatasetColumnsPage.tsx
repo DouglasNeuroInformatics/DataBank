@@ -32,7 +32,7 @@ export const SelectProjectDatasetColumnsPage = ({
         setData(response.data);
       })
       .catch(console.error);
-  }, [projectId, datasetId]);
+  }, [datasetId]);
 
   return (
     <div className="container mx-auto py-10">
