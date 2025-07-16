@@ -351,7 +351,7 @@ export class TabularDataService {
             };
           } else {
             metaData[col.name] = {
-              count: 0,
+              count: col.count,
               enumSummary: col.enumSummary,
               kind: 'ENUM',
               nullable: col.nullable,
@@ -385,7 +385,7 @@ export class TabularDataService {
             };
           } else {
             metaData[col.name] = {
-              count: 0,
+              count: col.count,
               floatSummary: col.floatSummary,
               kind: 'FLOAT',
               nullable: col.nullable,

@@ -143,7 +143,7 @@ export class ProjectsService {
         rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
-          throw new ForbiddenException('Row number per page is nagative! Check the row min value');
+          throw new ForbiddenException('Row number per page is negative! Check the row min value');
         }
       } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
         rowNumber = projectDataset.rowFilter.rowMax;
@@ -195,7 +195,7 @@ export class ProjectsService {
         rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
-          throw new ForbiddenException('Row number per page is nagative! Check the row min value');
+          throw new ForbiddenException('Row number per page is negative! Check the row min value');
         }
       } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
         rowNumber = projectDataset.rowFilter.rowMax;
