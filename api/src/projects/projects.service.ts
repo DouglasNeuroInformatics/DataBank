@@ -1,12 +1,12 @@
-import type { DatasetInfo, DatasetViewPagination } from '@databank/core';
+import type { DatasetInfo, DatasetViewPagination, TabularDataDownloadFormat } from '@databank/core';
+import { $CreateProject, $ProjectDataset, $UpdateProject } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import type { ProjectColumnConfig, ProjectDataset } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
-
-import { CreateProjectDto, ProjectDatasetDto, UpdateProjectDto } from './dto/projects.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -16,7 +16,7 @@ export class ProjectsService {
     private readonly datasetService: DatasetsService
   ) {}
 
-  async addDataset(currentUserId: string, projectId: string, projectDatasetDto: ProjectDatasetDto) {
+  async addDataset(currentUserId: string, projectId: string, projectDataset: $ProjectDataset) {
     const project = await this.getProjectById(currentUserId, projectId);
 
     if (!project) {
@@ -25,11 +25,39 @@ export class ProjectsService {
 
     const projectDatasets = project.datasets;
     projectDatasets.forEach((dataset) => {
-      if (dataset.datasetId === projectDatasetDto.datasetId) {
-        throw new ForbiddenException(`Dataset with ID ${projectDatasetDto.datasetId} already exists in the Project!`);
+      if (dataset.datasetId === projectDataset.datasetId) {
+        throw new ForbiddenException(`Dataset with ID ${projectDataset.datasetId} already exists in the Project!`);
       }
     });
-    projectDatasets.push(projectDatasetDto);
+
+    const newProjectDataset: ProjectDataset = {
+      columnConfigurations: [],
+      columnIds: projectDataset.columnIds,
+      datasetId: projectDataset.datasetId,
+      rowFilter: {
+        rowMax: null,
+        rowMin: 0
+      }
+    };
+
+    newProjectDataset.columnConfigurations = Object.entries(projectDataset.columnConfigs).map(([colId, config]) => {
+      if (!config) {
+        throw new Error(`Column configuration not found for column ID: ${colId}`);
+      }
+      return {
+        columnId: colId,
+        hash: {
+          length: config.hash.length,
+          salt: config.hash.salt ?? null
+        },
+        trim: {
+          end: config.trim.end ?? null,
+          start: config.trim.start
+        }
+      };
+    });
+
+    projectDatasets.push(newProjectDataset);
     return await this.projectModel.update({
       data: {
         datasets: projectDatasets
@@ -64,7 +92,7 @@ export class ProjectsService {
     });
   }
 
-  async createProject(currentUserId: string, createProjectDto: CreateProjectDto) {
+  async createProject(currentUserId: string, createProjectDto: $CreateProject) {
     if (!(await this.usersService.isOwnerOfDatasets(currentUserId))) {
       throw new ForbiddenException('Only dataset owners can create project!');
     }
@@ -74,7 +102,7 @@ export class ProjectsService {
     }
 
     return await this.projectModel.create({
-      data: createProjectDto
+      data: { ...createProjectDto, datasets: [] }
     });
   }
 
@@ -94,36 +122,40 @@ export class ProjectsService {
 
   async downloadDatasetById(projectId: string, datasetId: string, currentUserId: string, format: 'CSV' | 'TSV') {
     const project = await this.getProjectById(currentUserId, projectId);
-    const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
-    if (!projectDatasetDto) {
+    const projectDataset = project.datasets.find((dataset) => dataset.datasetId === datasetId);
+    if (!projectDataset) {
       throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
     }
 
+    if (projectDataset.columnIds.length === 0) {
+      throw new ForbiddenException(`project ${projectId} dataset ${datasetId} has no columns`);
+    }
+
     // set initial row number to number of entries in a column
-    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDatasetDto.columns[0]!.columnId);
-    if (projectDatasetDto.rowFilter) {
-      if (projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = projectDatasetDto.rowFilter.rowMax - projectDatasetDto.rowFilter.rowMin;
-      } else if (!projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = rowNumber - projectDatasetDto.rowFilter.rowMin;
+    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
+    if (projectDataset.rowFilter) {
+      if (projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
+        rowNumber = projectDataset.rowFilter.rowMax - projectDataset.rowFilter.rowMin;
+      } else if (!projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
+        rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
-          throw new ForbiddenException('Row number per page is nagative! Check the row min value');
+          throw new ForbiddenException('Row number per page is negative! Check the row min value');
         }
-      } else if (projectDatasetDto.rowFilter.rowMax && !projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = projectDatasetDto.rowFilter.rowMax;
+      } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
+        rowNumber = projectDataset.rowFilter.rowMax;
       }
     }
 
     const projectDatasetView = await this.datasetService.getProjectDatasetViewById(
-      projectDatasetDto,
+      this.formatProjectDataset(projectDataset),
       {
         currentPage: 1,
         itemsPerPage: rowNumber
       },
       {
         currentPage: 1,
-        itemsPerPage: projectDatasetDto.columns.length
+        itemsPerPage: projectDataset.columnIds.length
       }
     );
 
@@ -140,95 +172,49 @@ export class ProjectsService {
     projectId: string,
     datasetId: string,
     currentUserId: string,
-    format: 'CSV' | 'TSV'
+    format: TabularDataDownloadFormat
   ) {
     const project = await this.getProjectById(currentUserId, projectId);
-    const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
-    if (!projectDatasetDto) {
+    const projectDataset = project.datasets.find((dataset) => dataset.datasetId === datasetId);
+    if (!projectDataset) {
       throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
     }
 
+    if (projectDataset.columnIds.length === 0) {
+      throw new ForbiddenException(`project ${projectId} dataset ${datasetId} has no columns`);
+    }
     // set initial row number to number of entries in a column
-    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDatasetDto.columns[0]!.columnId);
-    if (projectDatasetDto.rowFilter) {
-      if (projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = projectDatasetDto.rowFilter.rowMax - projectDatasetDto.rowFilter.rowMin;
-      } else if (!projectDatasetDto.rowFilter.rowMax && projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = rowNumber - projectDatasetDto.rowFilter.rowMin;
+    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
+    if (projectDataset.rowFilter) {
+      if (projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
+        rowNumber = projectDataset.rowFilter.rowMax - projectDataset.rowFilter.rowMin;
+      } else if (!projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
+        rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
-          throw new ForbiddenException('Row number per page is nagative! Check the row min value');
+          throw new ForbiddenException('Row number per page is negative! Check the row min value');
         }
-      } else if (projectDatasetDto.rowFilter.rowMax && !projectDatasetDto.rowFilter.rowMin) {
-        rowNumber = projectDatasetDto.rowFilter.rowMax;
+      } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
+        rowNumber = projectDataset.rowFilter.rowMax;
       }
     }
 
     const projectDatasetView = await this.datasetService.getProjectDatasetViewById(
-      projectDatasetDto,
+      this.formatProjectDataset(projectDataset),
       {
         currentPage: 1,
         itemsPerPage: rowNumber
       },
       {
         currentPage: 1,
-        itemsPerPage: projectDatasetDto.columns.length
+        itemsPerPage: projectDataset.columnIds.length
       }
     );
-    const delimiter = format === 'CSV' ? ',' : '\t';
-    const metaDataHeader = [
-      'column_name',
-      'column_type',
-      'nullable',
-      'count',
-      'nullCount',
-      'max',
-      'min',
-      'mean',
-      'median',
-      'mode',
-      'std',
-      'distribution'
-    ];
 
-    let metadataRowsString = metaDataHeader.join(delimiter) + '\n';
-    for (const columnName of Object.keys(projectDatasetView.metadata)) {
-      metadataRowsString +=
-        columnName +
-        delimiter +
-        projectDatasetView.metadata[columnName]?.kind.type +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.nullable +
-        delimiter +
-        projectDatasetView.metadata[columnName]?.count +
-        delimiter +
-        projectDatasetView.metadata[columnName]?.nullCount +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.max +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.min +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.mean +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.median +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.mode +
-        delimiter +
-        // @ts-expect-error - see issue
-        projectDatasetView.metadata[columnName]?.std +
-        delimiter +
-        // @ts-expect-error - see issue
-        JSON.stringify(projectDatasetView.metadata[columnName]?.distribution) +
-        delimiter +
-        '\n';
-    }
-    return metadataRowsString;
+    return this.datasetService.formatMetadataDownloadString(format, {
+      ...projectDatasetView,
+      primaryKeys: []
+    });
   }
 
   async getAllProjects(currentUserId: string) {
@@ -275,13 +261,13 @@ export class ProjectsService {
       throw new NotFoundException('Project Not Found!');
     }
 
-    const projectDatasetDto = project.datasets.find((dataset) => dataset.datasetId === datasetId);
-    if (!projectDatasetDto) {
+    const projectDataset = project.datasets.find((dataset) => dataset.datasetId === datasetId);
+    if (!projectDataset) {
       throw new NotFoundException(`Cannot find dataset with ID ${datasetId} in the project`);
     }
 
     return await this.datasetService.getProjectDatasetViewById(
-      projectDatasetDto,
+      this.formatProjectDataset(projectDataset),
       rowPaginationDto,
       columnPaginationDto
     );
@@ -331,7 +317,8 @@ export class ProjectsService {
 
       projectDatasetsInfo.push({
         ...projectDatasetInfo,
-        permission: { permission: projectDatasetInfo?.permission }
+        createdAt: projectDatasetInfo.createdAt,
+        permission: projectDatasetInfo?.permission
       });
     }
 
@@ -400,7 +387,7 @@ export class ProjectsService {
     });
   }
 
-  async updateProject(currentUserId: string, projectId: string, updateProjectDto: UpdateProjectDto) {
+  async updateProject(currentUserId: string, projectId: string, updateProjectDto: $UpdateProject) {
     const isProjectManager = await this.isProjectManager(currentUserId, projectId);
     if (!isProjectManager) {
       throw new ForbiddenException('The current user has no right to manipulate this project!');
@@ -413,5 +400,35 @@ export class ProjectsService {
       }
     });
     return updateProject;
+  }
+
+  private formatProjectDataset(projectDatasetData: ProjectDataset): $ProjectDataset {
+    const columnConfigs: {
+      [key: string]: {
+        hash: { length: number; salt: string | undefined };
+        trim: { end: number | undefined; start: number };
+      };
+    } = {};
+    for (const colConfig of projectDatasetData.columnConfigurations) {
+      columnConfigs[colConfig.columnId] = {
+        hash: {
+          length: colConfig.hash.length,
+          salt: colConfig.hash.salt ?? undefined
+        },
+        trim: {
+          end: colConfig.trim.end ?? undefined,
+          start: colConfig.trim.start
+        }
+      };
+    }
+    return {
+      columnConfigs: columnConfigs,
+      columnIds: projectDatasetData.columnIds,
+      datasetId: projectDatasetData.datasetId,
+      rowConfig: {
+        rowMax: projectDatasetData.rowFilter.rowMax ?? undefined,
+        rowMin: projectDatasetData.rowFilter.rowMin
+      }
+    };
   }
 }

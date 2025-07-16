@@ -29,7 +29,7 @@ const AddProjectDatasetPage = () => {
         <Card.Title className="text-3xl">{t('datasetsAvailableToAdd')}</Card.Title>
       </Card.Header>
       <Card.Content>
-        <ul>
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {datasetsInfoArray?.map((datasetInfo, i) => {
             return (
               datasetInfo && (

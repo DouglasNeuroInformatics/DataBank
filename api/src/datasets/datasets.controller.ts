@@ -221,7 +221,7 @@ export class DatasetsController {
     @CurrentUser('id') userId: string,
     @Body('type') columnType: ColumnDataTypeDto
   ) {
-    return this.datasetsService.mutateColumnType(datasetId, columnId, userId, columnType);
+    return this.datasetsService.mutateColumnType(datasetId, columnId, userId, columnType.kind);
   }
 
   @ApiOperation({ summary: 'Toggle Column Data Nullable' })

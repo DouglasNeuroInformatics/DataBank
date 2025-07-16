@@ -25,7 +25,7 @@ const AddProjectDatasetCard = ({
   const { t } = useTranslation('common');
   return (
     <>
-      <Card className="my-3">
+      <Card className="my-3 h-[300px]">
         <Card.Header>
           <Card.Title>{name}</Card.Title>
           <Card.Description>{description}</Card.Description>

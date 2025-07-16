@@ -113,7 +113,6 @@ model TabularColumn {
   floatData                FloatEntry[]
   enumData                 StringEntry[]
   datetimeData             DateTimeEntry[]
-  booleanData              BooleanEntry[]
   // column validation
   stringColumnValidation   StringColumnValidation?
   numericColumnValidation  NumericColumnValidation?
@@ -141,12 +140,7 @@ type DateTimeEntry {
   value DateTime?
 }
 
-type BooleanEntry {
-  value Boolean?
-}
-
 enum ColumnType {
-  BOOLEAN
   STRING
   INT
   FLOAT
@@ -218,46 +212,3 @@ type DatetimeColumnValidation {
   max DateTime?
 }
 
-// ---------------- Project ----------------
-model Project {
-  id          String           @id @default(auto()) @map("_id") @db.ObjectId
-  externalId  String?
-  name        String
-  description String?
-  userIds     String[]
-  createdAt   DateTime         @default(now()) @db.Date
-  updatedAt   DateTime         @default(now()) @updatedAt @db.Date
-  expiry      DateTime
-  // Each project dataset should contain filters on columns 
-  datasets    ProjectDataset[]
-}
-
-type ProjectDataset {
-  useRowFilter      Boolean
-  useDataTypeFilter Boolean
-  rowFilter         ProjectRowFilter?
-  dataTypeFilters   ColumnType[]
-  datasetId         String
-  columns           ProjectColumn[]
-}
-
-type ProjectRowFilter {
-  rowMin Int?
-  rowMax Int?
-}
-
-type ProjectColumn {
-  columnId String
-  hash     ProjectColumnHash?
-  trim     ProjectColumnTrim?
-}
-
-type ProjectColumnHash {
-  salt   String
-  length Int?
-}
-
-type ProjectColumnTrim {
-  start Int?
-  end   Int?
-}

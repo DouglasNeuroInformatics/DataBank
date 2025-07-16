@@ -1,0 +1,41 @@
+// ---------------- Project ----------------
+model Project {
+    id          String           @id @default(auto()) @map("_id") @db.ObjectId
+    externalId  String?
+    name        String
+    description String?
+    userIds     String[]
+    createdAt   DateTime         @default(now()) @db.Date
+    updatedAt   DateTime         @default(now()) @updatedAt @db.Date
+    expiry      DateTime
+    // Each project dataset should contain filters on columns 
+    datasets    ProjectDataset[]
+}
+
+type ProjectDataset {
+    rowFilter            ProjectRowFilter
+    datasetId            String
+    columnConfigurations ProjectColumnConfig[]
+    columnIds            String[]
+}
+
+type ProjectRowFilter {
+    rowMin Int
+    rowMax Int?
+}
+
+type ProjectColumnConfig {
+    columnId String
+    hash     ProjectColumnHash
+    trim     ProjectColumnTrim
+}
+
+type ProjectColumnHash {
+    salt   String?
+    length Int
+}
+
+type ProjectColumnTrim {
+    start Int
+    end   Int?
+}
