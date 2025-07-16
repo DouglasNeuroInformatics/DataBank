@@ -40,24 +40,22 @@ export class ProjectsService {
       }
     };
 
-    newProjectDataset.columnConfigurations = Object.entries(projectDataset.columnConfigs).map(
-      ([colId, config]) => {
-        if (!config) {
-          throw new Error(`Column configuration not found for column ID: ${colId}`);
-        }
-        return {
-          columnId: colId,
-          hash: {
-            length: config.hash.length,
-            salt: config.hash.salt ?? null
-          },
-          trim: {
-            end: config.trim.end ?? null,
-            start: config.trim.start
-          }
-        };
+    newProjectDataset.columnConfigurations = Object.entries(projectDataset.columnConfigs).map(([colId, config]) => {
+      if (!config) {
+        throw new Error(`Column configuration not found for column ID: ${colId}`);
       }
-    );
+      return {
+        columnId: colId,
+        hash: {
+          length: config.hash.length,
+          salt: config.hash.salt ?? null
+        },
+        trim: {
+          end: config.trim.end ?? null,
+          start: config.trim.start
+        }
+      };
+    });
 
     projectDatasets.push(newProjectDataset);
     return await this.projectModel.update({
@@ -405,19 +403,20 @@ export class ProjectsService {
   }
 
   private formatProjectDataset(projectDatasetData: ProjectDataset): $ProjectDataset {
--    const columnConfigs: { [key: string]: any } = {};
-+    const columnConfigs: Record<string, {
-+      hash: { length: number; salt: string | null | undefined };
-+      trim: { start: number; end: number | null | undefined };
-+    }> = {};
+    const columnConfigs: {
+      [key: string]: {
+        hash: { length: number; salt: string | undefined };
+        trim: { end: number | undefined; start: number };
+      };
+    } = {};
     for (const colConfig of projectDatasetData.columnConfigurations) {
       columnConfigs[colConfig.columnId] = {
         hash: {
           length: colConfig.hash.length,
-          salt: colConfig.hash.salt
+          salt: colConfig.hash.salt ?? undefined
         },
         trim: {
-          end: colConfig.trim.end,
+          end: colConfig.trim.end ?? undefined,
           start: colConfig.trim.start
         }
       };

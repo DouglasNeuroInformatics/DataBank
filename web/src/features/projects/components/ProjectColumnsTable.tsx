@@ -39,7 +39,6 @@ export const ProjectColumnsTable = <TData, TValue>({
           name
         };
       }
-      }
     });
     setSelectedColumns(selectedColumns);
   };

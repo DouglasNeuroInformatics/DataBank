@@ -124,10 +124,10 @@ export const ConfigProjectDatasetColumnsPage = ({
   const formValidation = generateValidationSchema(selectedColumns);
   const formContent = generateContent(selectedColumns);
 
-  const handleSubmit = (data: { [key: string]: any }) => {
+  const handleSubmit = (data: z.infer<ReturnType<typeof generateValidationSchema>>) => {
     for (const columnId in selectedColumns) {
       if (data[columnId]) {
-        const currentColumnCofig: ProjectDatasetColumnConfig = {
+        const currentColumnConfig: ProjectDatasetColumnConfig = {
           hash: {
             length: 0,
             salt: ''
@@ -136,13 +136,13 @@ export const ConfigProjectDatasetColumnsPage = ({
             start: 0
           }
         };
-        currentColumnCofig.hash.length = (data[columnId + 'HashLength'] as number) ?? 0;
-        currentColumnCofig.hash.salt = (data[columnId + 'HashSalt'] as string) ?? '';
-        currentColumnCofig.trim.start = (data[columnId + 'TrimStart'] as number) ?? 0;
+        currentColumnConfig.hash.length = (data[columnId + 'HashLength'] as number) ?? 0;
+        currentColumnConfig.hash.salt = (data[columnId + 'HashSalt'] as string) ?? '';
+        currentColumnConfig.trim.start = (data[columnId + 'TrimStart'] as number) ?? 0;
         if (data[columnId + 'TrimEnd']) {
-          currentColumnCofig.trim.end = data[columnId + 'TrimEnd'] as number;
+          currentColumnConfig.trim.end = data[columnId + 'TrimEnd'] as number;
         }
-        setColumnsConfig(columnId, currentColumnCofig);
+        setColumnsConfig(columnId, currentColumnConfig);
       }
     }
   };
