@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { ColumnType } from '@databank/core';
+import type { ProjectDatasetSelectedColumn } from '@databank/core';
 import { Button, SearchBar, Table } from '@douglasneuroinformatics/libui/components';
 import {
   flexRender,
@@ -14,13 +14,13 @@ import type { ColumnDef, ColumnFiltersState, SortingState } from '@tanstack/reac
 
 import type { SelectedColumnsRecord } from '../store/useProjectDatasetConfigStoreFactory';
 
-type DataTableProps<TData, TValue> = {
+type DataTableProps<TData extends ProjectDatasetSelectedColumn & { id: string }, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   setSelectedColumns: (selectedColumns: SelectedColumnsRecord) => void;
 };
 
-export const ProjectColumnsTable = <TData, TValue>({
+export const ProjectColumnsTable = <TData extends ProjectDatasetSelectedColumn & { id: string }, TValue>({
   columns,
   data,
   setSelectedColumns
@@ -28,20 +28,6 @@ export const ProjectColumnsTable = <TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
-
-  const handleSubmitSelection = () => {
-    const selectedColumns: SelectedColumnsRecord = {};
-    table.getFilteredSelectedRowModel().rows.forEach((row) => {
-      const { id, kind, name } = row.original;
-      if (typeof id === 'string' && kind && typeof name === 'string') {
-        selectedColumns[id] = {
-          kind: kind as ColumnType,
-          name
-        };
-      }
-    });
-    setSelectedColumns(selectedColumns);
-  };
 
   const table = useReactTable({
     columns,
@@ -59,6 +45,20 @@ export const ProjectColumnsTable = <TData, TValue>({
       sorting
     }
   });
+
+  const handleSubmitSelection = () => {
+    const selectedColumns: SelectedColumnsRecord = {};
+    table.getFilteredSelectedRowModel().rows.forEach((row) => {
+      const { id, kind, name } = row.original;
+      if (typeof id === 'string' && kind && typeof name === 'string') {
+        selectedColumns[id] = {
+          kind: kind,
+          name
+        };
+      }
+    });
+    setSelectedColumns(selectedColumns);
+  };
 
   return (
     <div className="w-full">
