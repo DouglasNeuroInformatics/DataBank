@@ -20,7 +20,6 @@ type SelectProjectDatasetColumnsPagePros = {
 
 export const SelectProjectDatasetColumnsPage = ({
   datasetId,
-  projectId,
   setSelectedColumns
 }: SelectProjectDatasetColumnsPagePros) => {
   const [data, setData] = useState<ProjectColumnSummary[]>([]);
