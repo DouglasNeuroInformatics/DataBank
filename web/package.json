@@ -38,6 +38,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@douglasneuroinformatics/libui-form-types": "^0.11.0",
     "@import-meta-env/unplugin": "^0.6.2",
     "@storybook/addon-essentials": "^8.6.11",
     "@storybook/addon-interactions": "^8.6.11",
