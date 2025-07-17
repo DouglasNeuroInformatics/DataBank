@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import type { ProjectDatasetColumnConfig } from '@databank/core';
 import type FormTypes from '@douglasneuroinformatics/libui-form-types';
 import { Form } from '@douglasneuroinformatics/libui/components';
@@ -17,7 +19,7 @@ export const ConfigProjectDatasetColumnsPage = ({
   selectedColumns,
   setColumnsConfig
 }: ConfigProjectDatasetColumnsPageProps) => {
-  const generateValidationSchema = (selectedColumns: SelectedColumnsRecord) => {
+  const generateValidationSchema = useCallback(() => {
     const formValidationObject: { [key: string]: any } = {};
 
     for (const columnId in selectedColumns) {
@@ -28,9 +30,9 @@ export const ConfigProjectDatasetColumnsPage = ({
       formValidationObject[columnId + 'TrimEnd'] = z.number().int().gte(0).optional();
     }
     return z.object(formValidationObject) as z.ZodType<FormTypes.Data>;
-  };
+  }, [selectedColumns]);
 
-  const generateContent = (selectedColumns: SelectedColumnsRecord) => {
+  const generateContent = useCallback(() => {
     const resContent = [];
 
     for (const columnId in selectedColumns) {
@@ -114,10 +116,10 @@ export const ConfigProjectDatasetColumnsPage = ({
     }
 
     return resContent;
-  };
+  }, []);
 
-  const formValidation = generateValidationSchema(selectedColumns);
-  const formContent = generateContent(selectedColumns);
+  const formValidation = generateValidationSchema();
+  const formContent = generateContent();
 
   const handleSubmit = (data: z.infer<ReturnType<typeof generateValidationSchema>>) => {
     for (const columnId in selectedColumns) {
