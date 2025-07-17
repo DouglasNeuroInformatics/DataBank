@@ -535,10 +535,10 @@ export class DatasetsService {
       });
     }
 
-    availableDatasets.forEach((dataset) => {
-      return dataset.managerIds.includes(currentUserId) || dataset.permission !== 'MANAGER' ? dataset : null;
-    });
-    return availableDatasets;
+    const filtered = availableDatasets.filter(
+      (dataset) => dataset.managerIds.includes(currentUserId) || dataset.permission !== 'MANAGER'
+    );
+    return filtered;
   }
 
   async getById(datasetId: string) {

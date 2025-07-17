@@ -8,14 +8,14 @@ type ConfigProjectDatasetRowPageProps = {
 };
 
 export const ConfigProjectDatasetRowPage = ({ setRowConfig }: ConfigProjectDatasetRowPageProps) => {
-  const handleSubmitRowConfig = (data: { [key: string]: any }) => {
+  const handleSubmitRowConfig = (data: ProjectDatasetRowConfig) => {
     const rowConfigObject: ProjectDatasetRowConfig = {
       rowMin: 0
     };
     if (data.rowMax) {
-      rowConfigObject.rowMax = data.rowMax as number;
+      rowConfigObject.rowMax = data.rowMax;
     }
-    rowConfigObject.rowMin = data.rowMin as number;
+    rowConfigObject.rowMin = data.rowMin;
     setRowConfig(rowConfigObject);
   };
 
