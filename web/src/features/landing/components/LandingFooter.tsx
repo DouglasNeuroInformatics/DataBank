@@ -2,8 +2,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 export const LandingFooter = () => {
   return (
-    <footer className="text-muted-foreground container py-3 text-sm">
-      <hr className="my-3 border-slate-200 dark:border-slate-700" />
+    <footer className="text-muted-foreground bg-white py-3 text-sm shadow-sm dark:bg-slate-800">
       <div className="flex items-center justify-center">
         <div className="mb-1 flex flex-row flex-wrap font-medium lg:flex-nowrap">
           <div className="flex w-1/2 items-center justify-center lg:w-auto">

@@ -144,12 +144,5 @@ export const ConfigProjectDatasetColumnsPage = ({
     }
   };
 
-  return (
-    <Form
-      className="w-full"
-      content={formContent}
-      validationSchema={formValidation}
-      onSubmit={(data) => handleSubmit(data)}
-    />
-  );
+  return <Form className="w-full" content={formContent} validationSchema={formValidation} onSubmit={handleSubmit} />;
 };
