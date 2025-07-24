@@ -241,38 +241,38 @@ export class TabularDataService {
       throw new NotFoundException('No column found in this tabular dataset!');
     }
 
-    const columnIdsModifyData: string[] = [];
-    const columnIdsModifyMetadata: string[] = [];
+    const columnIdsModifyData = new Set<string>();
+    const columnIdsModifyMetadata = new Set<string>();
 
     if (userStatus === 'VERIFIED') {
       columnsFromDB.forEach((col) => {
         if (col.dataPermission === 'MANAGER') {
-          columnIdsModifyData.push(col._id.$oid);
+          columnIdsModifyData.add(col._id.$oid);
         }
         if (col.summaryPermission === 'MANAGER') {
-          columnIdsModifyMetadata.push(col._id.$oid);
+          columnIdsModifyMetadata.add(col._id.$oid);
         }
       });
     } else if (userStatus === 'LOGIN') {
       columnsFromDB.forEach((col) => {
         if (col.dataPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyData.push(col._id.$oid);
+          columnIdsModifyData.add(col._id.$oid);
         }
         if (col.summaryPermission === 'MANAGER' || col.summaryPermission === 'VERIFIED') {
-          columnIdsModifyMetadata.push(col._id.$oid);
+          columnIdsModifyMetadata.add(col._id.$oid);
         }
       });
     } else if (userStatus === 'PUBLIC') {
       columnsFromDB.forEach((col) => {
         if (col.dataPermission === 'MANAGER' || col.dataPermission === 'LOGIN' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyData.push(col._id.$oid);
+          columnIdsModifyData.add(col._id.$oid);
         }
         if (
           col.summaryPermission === 'MANAGER' ||
           col.summaryPermission === 'VERIFIED' ||
           col.summaryPermission === 'LOGIN'
         ) {
-          columnIdsModifyMetadata.push(col._id.$oid);
+          columnIdsModifyMetadata.add(col._id.$oid);
         }
       });
     }
@@ -300,14 +300,14 @@ export class TabularDataService {
         case 'DATETIME':
           col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (col._id.$oid in columnIdsModifyData) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value?.toISOString() ?? null;
             }
           });
 
-          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
               count: col.count,
               datetimeSummary: col.datetimeSummary,
@@ -321,14 +321,14 @@ export class TabularDataService {
           col.enumData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (col._id.$oid in columnIdsModifyData) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
 
-          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
               count: col.count,
               enumSummary: col.enumSummary,
@@ -341,14 +341,14 @@ export class TabularDataService {
         case 'FLOAT':
           col.floatData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (col._id.$oid in columnIdsModifyData) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
 
-          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
               count: col.count,
               floatSummary: col.floatSummary,
@@ -361,13 +361,13 @@ export class TabularDataService {
         case 'INT':
           col.intData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (col._id.$oid in columnIdsModifyData) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
-          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
               count: col.count,
               intSummary: col.intSummary,
@@ -381,14 +381,14 @@ export class TabularDataService {
           col.stringData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (col._id.$oid in columnIdsModifyData) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
 
-          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
               count: col.count,
               kind: 'STRING',

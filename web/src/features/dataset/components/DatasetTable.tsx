@@ -18,7 +18,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
-      message: `Column with Id ${columnId} has been modified`,
+      message: `The metadata permission level of column with Id ${columnId} has been modified`,
       type: 'success'
     });
   };
@@ -29,7 +29,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
-      message: `Column with Id ${columnId} has been modified`,
+      message: `The data permission level of column with Id ${columnId} has been modified`,
       type: 'success'
     });
   };
@@ -38,7 +38,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     await axios.patch(`/v1/datasets/column-nullable/${tabularDataset.id}/${columnId}`);
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
-      message: `Column with Id ${columnId} has been modified`,
+      message: `The nullability of column with Id ${columnId} has been modified`,
       type: 'success'
     });
   };
@@ -47,7 +47,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     await axios.patch(`/v1/datasets/column-type/${tabularDataset.id}/${columnId}`, { type });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
-      message: `Column with Id ${columnId} has been modified`,
+      message: `The column type of column with Id ${columnId} has been modified`,
       type: 'success'
     });
   };
