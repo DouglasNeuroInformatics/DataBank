@@ -1,11 +1,13 @@
 import { isPlainObject } from '@douglasneuroinformatics/libjs';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import axios, { isAxiosError } from 'axios';
 
 export const useDeleteDataset = () => {
   const notifications = useNotificationsStore();
   const queryClient = useQueryClient();
+  const navigation = useNavigate();
 
   const deleteDataset = (datasetId: string) => {
     axios
@@ -16,6 +18,9 @@ export const useDeleteDataset = () => {
           type: 'success'
         });
         void queryClient.invalidateQueries({ queryKey: ['datasets-info'] });
+        void navigation({
+          to: '/portal/datasets'
+        });
       })
       .catch((error) => {
         console.error(error);
