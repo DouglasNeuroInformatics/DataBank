@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-
 import type { ColumnType, PermissionLevel, TabularDataset } from '@databank/core';
 import { DropdownMenu, Table } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -166,44 +164,56 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                     <DropdownMenu.Group>
                       <DropdownMenu.Sub>
                         <DropdownMenu.SubTrigger>Metadata</DropdownMenu.SubTrigger>
-                        <DropdownMenu.Portal>
-                          <DropdownMenu.SubContent>
-                            <div className="flex justify-between space-x-4 p-2">
-                              <div className="space-y-2 text-sm font-medium">
-                                <h4>{`Data Type: ${tabularDataset.metadata[column]?.kind}`}</h4>
-                                <h4>{`Null Count: ${tabularDataset.metadata[column]?.nullCount}`}</h4>
-                                <h4>{`Count: ${tabularDataset.metadata[column]?.count}`}</h4>
-                                {(tabularDataset.metadata[column]?.min ||
-                                  tabularDataset.metadata[column]?.min === 0) && (
-                                  <h4>{`Min: ${tabularDataset.metadata[column]?.min}`}</h4>
-                                )}
-                                {(tabularDataset.metadata[column]?.max ||
-                                  tabularDataset.metadata[column]?.max === 0) && (
-                                  <h4>{`Max: ${tabularDataset.metadata[column]?.max}`}</h4>
-                                )}
-                                {(tabularDataset.metadata[column]?.mean ||
-                                  tabularDataset.metadata[column]?.mean === 0) && (
-                                  <h4>{`Mean: ${tabularDataset.metadata[column]?.mean}`}</h4>
-                                )}
-                                {(tabularDataset.metadata[column]?.median ||
-                                  tabularDataset.metadata[column]?.median === 0) && (
-                                  <h4>{`Median: ${tabularDataset.metadata[column]?.median}`}</h4>
-                                )}
-                                {(tabularDataset.metadata[column]?.mode ||
-                                  tabularDataset.metadata[column]?.mode === 0) && (
-                                  <h4>{`Mode: ${tabularDataset.metadata[column]?.mode}`}</h4>
-                                )}
-                                {(tabularDataset.metadata[column]?.std ||
-                                  tabularDataset.metadata[column]?.std === 0) && (
-                                  <h4>{`Standard deviation: ${tabularDataset.metadata[column]?.std}`}</h4>
-                                )}
-                                {tabularDataset.metadata[column]?.distribution && (
-                                  <h4>{`Distribution: ${JSON.stringify(tabularDataset.metadata[column]?.distribution)}`}</h4>
-                                )}
+                        {column in tabularDataset.metadata ? (
+                          <DropdownMenu.Portal>
+                            <DropdownMenu.SubContent>
+                              <div className="flex justify-between space-x-4 p-2">
+                                <div className="space-y-2 text-sm font-medium">
+                                  <h4>{`Data Type: ${tabularDataset.metadata[column]?.kind}`}</h4>
+                                  <h4>{`Null Count: ${tabularDataset.metadata[column]?.nullCount}`}</h4>
+                                  <h4>{`Count: ${tabularDataset.metadata[column]?.count}`}</h4>
+                                  {(tabularDataset.metadata[column]?.min ??
+                                    tabularDataset.metadata[column]?.min === 0) && (
+                                    <h4>{`Min: ${tabularDataset.metadata[column]?.min}`}</h4>
+                                  )}
+                                  {(tabularDataset.metadata[column]?.max ??
+                                    tabularDataset.metadata[column]?.max === 0) && (
+                                    <h4>{`Max: ${tabularDataset.metadata[column]?.max}`}</h4>
+                                  )}
+                                  {(tabularDataset.metadata[column]?.mean ??
+                                    tabularDataset.metadata[column]?.mean === 0) && (
+                                    <h4>{`Mean: ${tabularDataset.metadata[column]?.mean}`}</h4>
+                                  )}
+                                  {(tabularDataset.metadata[column]?.median ??
+                                    tabularDataset.metadata[column]?.median === 0) && (
+                                    <h4>{`Median: ${tabularDataset.metadata[column]?.median}`}</h4>
+                                  )}
+                                  {(tabularDataset.metadata[column]?.mode ??
+                                    tabularDataset.metadata[column]?.mode === 0) && (
+                                    <h4>{`Mode: ${tabularDataset.metadata[column]?.mode}`}</h4>
+                                  )}
+                                  {(tabularDataset.metadata[column]?.std ??
+                                    tabularDataset.metadata[column]?.std === 0) && (
+                                    <h4>{`Standard deviation: ${tabularDataset.metadata[column]?.std}`}</h4>
+                                  )}
+                                  {tabularDataset.metadata[column]?.distribution && (
+                                    <h4>{`Distribution: ${JSON.stringify(tabularDataset.metadata[column]?.distribution)}`}</h4>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          </DropdownMenu.SubContent>
-                        </DropdownMenu.Portal>
+                            </DropdownMenu.SubContent>
+                          </DropdownMenu.Portal>
+                        ) : (
+                          <DropdownMenu.Portal>
+                            <DropdownMenu.SubContent>
+                              <div className="flex justify-between space-x-4 p-2">
+                                <div className="space-y-2 text-sm font-medium">
+                                  <h4>{`No Permission`}</h4>
+                                </div>
+                              </div>
+                            </DropdownMenu.SubContent>
+                          </DropdownMenu.Portal>
+                        )}
                       </DropdownMenu.Sub>
                     </DropdownMenu.Group>
                   </DropdownMenu.Content>

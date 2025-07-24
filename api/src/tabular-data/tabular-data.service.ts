@@ -307,18 +307,7 @@ export class TabularDataService {
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
-            metaData[col.name] = {
-              count: 0,
-              datetimeSummary: {
-                max: new Date(0),
-                min: new Date(0)
-              },
-              kind: 'DATETIME',
-              nullable: col.nullable,
-              nullCount: 0
-            };
-          } else {
+          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: col.count,
               datetimeSummary: col.datetimeSummary,
@@ -339,17 +328,7 @@ export class TabularDataService {
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
-            metaData[col.name] = {
-              count: 0,
-              enumSummary: {
-                distribution: {}
-              },
-              kind: 'ENUM',
-              nullable: col.nullable,
-              nullCount: 0
-            };
-          } else {
+          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: col.count,
               enumSummary: col.enumSummary,
@@ -369,21 +348,7 @@ export class TabularDataService {
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
-            metaData[col.name] = {
-              count: 0,
-              floatSummary: {
-                max: 0,
-                mean: 0,
-                median: 0,
-                min: 0,
-                std: 0
-              },
-              kind: 'FLOAT',
-              nullable: col.nullable,
-              nullCount: col.nullCount
-            };
-          } else {
+          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: col.count,
               floatSummary: col.floatSummary,
@@ -402,22 +367,7 @@ export class TabularDataService {
               rows[i][col.name] = entry.value ?? null;
             }
           });
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
-            metaData[col.name] = {
-              count: 0,
-              intSummary: {
-                max: 0,
-                mean: 0,
-                median: 0,
-                min: 0,
-                mode: 0,
-                std: 0
-              },
-              kind: 'INT',
-              nullable: col.nullable,
-              nullCount: 0
-            };
-          } else {
+          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: col.count,
               intSummary: col.intSummary,
@@ -438,14 +388,7 @@ export class TabularDataService {
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
-            metaData[col.name] = {
-              count: 0,
-              kind: 'STRING',
-              nullable: col.nullable,
-              nullCount: 0
-            };
-          } else {
+          if (!columnIdsModifyMetadata.includes(col._id.$oid)) {
             metaData[col.name] = {
               count: col.count,
               kind: 'STRING',

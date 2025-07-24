@@ -1007,12 +1007,12 @@ export class DatasetsService {
             datasetMetadata.nullable,
             datasetMetadata.count,
             datasetMetadata.nullCount,
-            datasetMetadata.intSummary.max,
-            datasetMetadata.intSummary.min,
-            datasetMetadata.intSummary.mean,
-            datasetMetadata.intSummary.median,
-            datasetMetadata.intSummary.mode,
-            datasetMetadata.intSummary.std,
+            datasetMetadata.intSummary ? datasetMetadata.intSummary.max : 'No Permission',
+            datasetMetadata.intSummary ? datasetMetadata.intSummary.min : 'No Permission',
+            datasetMetadata.intSummary ? datasetMetadata.intSummary.mean : 'No Permission',
+            datasetMetadata.intSummary ? datasetMetadata.intSummary.median : 'No Permission',
+            datasetMetadata.intSummary ? datasetMetadata.intSummary.mode : 'No Permission',
+            datasetMetadata.intSummary ? datasetMetadata.intSummary.std : 'No Permission',
             ''
           ]
         );
