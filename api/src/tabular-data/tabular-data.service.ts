@@ -233,7 +233,6 @@ export class TabularDataService {
       throw new NotFoundException('No tabular data found!');
     }
 
-    // type RawQueryColumns
     const columnsFromDB = await this.columnsService.findManyByTabularDataId(tabularDataId, columnPagination);
     const numberOfColumns = await this.columnsService.getNumberOfColumns(tabularDataId);
 

@@ -30,8 +30,7 @@ export class FileUploadProcessor extends WorkerHost {
       primaryKeys: string;
       uploadedString?: string;
     };
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const jobData: FileUploadJobData = job.data;
+    const jobData: FileUploadJobData = job.data as FileUploadJobData;
     let csvString: string;
     let df: DataFrame;
     let separator = ',';

@@ -58,7 +58,6 @@ const DatasetCard = ({
             {isManager ? t('manageDataset') : t('viewDataset')}
           </Button>
 
-          {/* onClick delete dataset */}
           <Button hidden={status !== 'Fail' || !isManager} variant={'danger'} onClick={() => deleteDataset(id)}>
             {t('delete')}
           </Button>
