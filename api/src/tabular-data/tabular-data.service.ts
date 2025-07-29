@@ -9,7 +9,7 @@ import type {
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
-import { ForbiddenException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import type { PermissionLevel } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
