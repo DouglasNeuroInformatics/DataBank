@@ -9,7 +9,7 @@ import type {
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import type { PermissionLevel } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
@@ -56,7 +56,7 @@ export class TabularDataService {
       primaryKeys.push('__autogen_id');
     }
     if (!this.primaryKeyCheck(primaryKeys, df)) {
-      throw new ForbiddenException('Dataset failed primary keys check!');
+      throw new UnprocessableEntityException('Dataset failed primary keys check!');
     }
 
     const tabularData = await this.tabularDataModel.create({
@@ -77,7 +77,7 @@ export class TabularDataService {
           id: tabularData.id
         }
       });
-      throw new ForbiddenException('Cannot create Tabular Dataset!');
+      throw new UnprocessableEntityException('Cannot create Tabular Dataset!');
     }
 
     return tabularData;
@@ -437,7 +437,8 @@ export class TabularDataService {
     const checkPrimaryKeysArray = df
       .select(...primaryKeys)
       .isUnique()
-      .toTypedArray() as boolean[];
+      .toArray() as boolean[];
+
     return checkPrimaryKeysArray.reduce((prev, curr) => prev && curr);
   }
 }

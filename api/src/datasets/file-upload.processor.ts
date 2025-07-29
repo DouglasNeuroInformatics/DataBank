@@ -2,7 +2,7 @@ import fs from 'fs';
 
 import { LoggingService } from '@douglasneuroinformatics/libnest';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, UnprocessableEntityException } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { pl } from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
@@ -65,7 +65,7 @@ export class FileUploadProcessor extends WorkerHost {
     } catch (error) {
       this.logger.error(`Error processing file upload: ${(error as Error).message}`, error, FileUploadProcessor.name);
       await this.datasetsService.updateDatasetStatus(jobData.datasetId, 'Fail');
-      throw new ForbiddenException(`Cannot create dataset: ${(error as Error).message}`);
+      throw new UnprocessableEntityException(`Cannot create dataset: ${(error as Error).message}`);
     }
   }
 }

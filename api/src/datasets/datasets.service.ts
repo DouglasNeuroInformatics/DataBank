@@ -15,7 +15,7 @@ import type {
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { InjectQueue } from '@nestjs/bullmq';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 import type { TabularColumn } from '@prisma/client';
 import { Queue } from 'bullmq';
@@ -786,7 +786,7 @@ export class DatasetsService {
     }
 
     if (!dataset.isReadyToShare && !dataset.managerIds.includes(currentUserId)) {
-      throw new ForbiddenException('The dataset is not ready for share!');
+      throw new UnprocessableEntityException('The dataset is not ready for share!');
     }
 
     let datasetView: TabularDatasetView;
