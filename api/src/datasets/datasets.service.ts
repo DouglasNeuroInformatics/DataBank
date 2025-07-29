@@ -560,7 +560,15 @@ export class DatasetsService {
       include: {
         tabularData: {
           include: {
-            columns: true
+            columns: {
+              select: {
+                id: true,
+                kind: true,
+                name: true,
+                nullable: true,
+                summary: true
+              }
+            }
           }
         }
       },

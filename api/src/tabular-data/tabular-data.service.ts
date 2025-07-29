@@ -240,6 +240,8 @@ export class TabularDataService {
       throw new NotFoundException('No column found in this tabular dataset!');
     }
 
+    console.error(columnsFromDB);
+
     const columnIdsModifyData = new Set<string>();
     const columnIdsModifyMetadata = new Set<string>();
 
@@ -308,7 +310,7 @@ export class TabularDataService {
 
           if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
-              count: col.count,
+              count: col.summary.count,
               datetimeSummary: col.datetimeSummary,
               kind: 'DATETIME',
               nullable: col.nullable,
@@ -408,6 +410,8 @@ export class TabularDataService {
       totalNumberOfColumns: numberOfColumns,
       totalNumberOfRows: numberOfRows
     };
+
+    console.error(dataView);
 
     return dataView;
   }
