@@ -5,7 +5,7 @@ import type { CreateAdminData, SetupOptions, SetupState } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { Injectable } from '@nestjs/common';
-import { ForbiddenException, ServiceUnavailableException } from '@nestjs/common/exceptions';
+import { ConflictException, ServiceUnavailableException } from '@nestjs/common/exceptions';
 import type { SetupConfig, User, UserVerificationStrategy } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
@@ -30,7 +30,7 @@ export class SetupService {
 
   async initApp({ admin, setupConfig }: SetupOptions): Promise<{ success: true }> {
     if (await this.isSetup()) {
-      throw new ForbiddenException();
+      throw new ConflictException();
     }
     const adminUser = await this.createAdmin(admin);
 

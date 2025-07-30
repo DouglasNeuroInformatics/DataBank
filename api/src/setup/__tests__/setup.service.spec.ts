@@ -70,10 +70,10 @@ describe('SetupService', () => {
       }
     };
 
-    it('should throw a ForbiddenException if the app is already setup', async () => {
+    it('should throw a ConflictException if the app is already setup', async () => {
       setupConfigModel.count.mockReturnValueOnce(1);
       await expect(setupService.initApp(setupOptions)).rejects.toMatchObject({
-        status: HttpStatus.FORBIDDEN
+        status: HttpStatus.CONFLICT
       });
     });
 

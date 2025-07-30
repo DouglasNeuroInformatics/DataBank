@@ -7,7 +7,7 @@ import type {
 import { $CreateProject, $ProjectDataset, $UpdateProject } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { UnprocessableEntityException, Injectable, NotFoundException } from '@nestjs/common';
 import type { ProjectDataset } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service';
@@ -31,7 +31,9 @@ export class ProjectsService {
     const projectDatasets = project.datasets;
     projectDatasets.forEach((dataset) => {
       if (dataset.datasetId === projectDataset.datasetId) {
-        throw new ForbiddenException(`Dataset with ID ${projectDataset.datasetId} already exists in the Project!`);
+        throw new UnprocessableEntityException(
+          `Dataset with ID ${projectDataset.datasetId} already exists in the Project!`
+        );
       }
     });
 
@@ -72,7 +74,7 @@ export class ProjectsService {
 
   async addUser(currentUserId: string, projectId: string, newUserEmail: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
-      throw new ForbiddenException('Only project managers can add new users!');
+      throw new UnprocessableEntityException('Only project managers can add new users!');
     }
 
     const project = await this.getProjectById(currentUserId, projectId);
@@ -96,11 +98,11 @@ export class ProjectsService {
 
   async createProject(currentUserId: string, createProjectDto: $CreateProject) {
     if (!(await this.usersService.isOwnerOfDatasets(currentUserId))) {
-      throw new ForbiddenException('Only dataset owners can create project!');
+      throw new UnprocessableEntityException('Only dataset owners can create project!');
     }
 
     if (!createProjectDto.userIds.includes(currentUserId)) {
-      throw new ForbiddenException('Creator of the project must be a user of the project!');
+      throw new UnprocessableEntityException('Creator of the project must be a user of the project!');
     }
 
     return await this.projectModel.create({
@@ -110,7 +112,7 @@ export class ProjectsService {
 
   async deleteProject(currentUserId: string, projectId: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
-      throw new ForbiddenException('The current user has no right to delete this project!');
+      throw new UnprocessableEntityException('The current user has no right to delete this project!');
     }
 
     const deletedProject = await this.projectModel.delete({
@@ -130,7 +132,7 @@ export class ProjectsService {
     }
 
     if (projectDataset.columnIds.length === 0) {
-      throw new ForbiddenException(`project ${projectId} dataset ${datasetId} has no columns`);
+      throw new UnprocessableEntityException(`project ${projectId} dataset ${datasetId} has no columns`);
     }
 
     // set initial row number to number of entries in a column
@@ -142,7 +144,7 @@ export class ProjectsService {
         rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
-          throw new ForbiddenException('Row number per page is negative! Check the row min value');
+          throw new UnprocessableEntityException('Row number per page is negative! Check the row min value');
         }
       } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
         rowNumber = projectDataset.rowFilter.rowMax;
@@ -183,7 +185,7 @@ export class ProjectsService {
     }
 
     if (projectDataset.columnIds.length === 0) {
-      throw new ForbiddenException(`project ${projectId} dataset ${datasetId} has no columns`);
+      throw new UnprocessableEntityException(`project ${projectId} dataset ${datasetId} has no columns`);
     }
     // set initial row number to number of entries in a column
     let rowNumber: number = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
@@ -194,7 +196,7 @@ export class ProjectsService {
         rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
-          throw new ForbiddenException('Row number per page is negative! Check the row min value');
+          throw new UnprocessableEntityException('Row number per page is negative! Check the row min value');
         }
       } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
         rowNumber = projectDataset.rowFilter.rowMax;
@@ -360,7 +362,7 @@ export class ProjectsService {
 
   async removeDataset(currentUserId: string, projectId: string, datasetId: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
-      throw new ForbiddenException('Only project managers can remove dataset!');
+      throw new UnprocessableEntityException('Only project managers can remove dataset!');
     }
 
     const project = await this.getProjectById(currentUserId, projectId);
@@ -372,7 +374,7 @@ export class ProjectsService {
 
   async removeUser(currentUserId: string, projectId: string, userIdToRemove: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
-      throw new ForbiddenException('Only project managers can remove users!');
+      throw new UnprocessableEntityException('Only project managers can remove users!');
     }
 
     const project = await this.getProjectById(currentUserId, projectId);
@@ -392,7 +394,7 @@ export class ProjectsService {
   async updateProject(currentUserId: string, projectId: string, updateProjectDto: $UpdateProject) {
     const isProjectManager = await this.isProjectManager(currentUserId, projectId);
     if (!isProjectManager) {
-      throw new ForbiddenException('The current user has no right to manipulate this project!');
+      throw new UnprocessableEntityException('The current user has no right to manipulate this project!');
     }
 
     const updateProject = await this.projectModel.update({

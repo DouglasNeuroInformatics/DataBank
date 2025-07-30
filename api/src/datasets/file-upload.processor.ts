@@ -2,7 +2,7 @@ import fs from 'fs';
 
 import { LoggingService } from '@douglasneuroinformatics/libnest';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { ForbiddenException, UnprocessableEntityException } from '@nestjs/common';
+import { UnprocessableEntityException } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { pl } from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
@@ -43,7 +43,7 @@ export class FileUploadProcessor extends WorkerHost {
       separator = jobData.filePath?.endsWith('.tsv') ? '\t' : ',';
       csvString = file.toString(); // polars has a bug parsing tsv, this is a hack for it to work
     } else {
-      throw new ForbiddenException('Cannot handle job without uploaded string and uploaded file!');
+      throw new UnprocessableEntityException('Cannot handle job without uploaded string and uploaded file!');
     }
     if (jobData.isJSON) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

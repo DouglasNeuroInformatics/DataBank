@@ -7,7 +7,7 @@ import type {
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import type { PrismaClient } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { Series } from 'nodejs-polars';
@@ -420,7 +420,7 @@ export class ColumnsService {
     if (col?.kind === 'ENUM') {
       return col.enumData.length;
     }
-    throw new ForbiddenException('Column type does not match any expected types!');
+    throw new UnprocessableEntityException('Column type does not match any expected types!');
   }
 
   async getNumberOfColumns(tabularDataId: string) {
@@ -697,7 +697,9 @@ export class ColumnsService {
   async toggleColumnNullable(columnId: string) {
     const col = await this.getById(columnId);
     if (col.nullable && col.summary.nullCount !== 0) {
-      throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
+      throw new UnprocessableEntityException(
+        'Cannot set this column to not nullable as it contains null values already!'
+      );
     }
 
     const updateColumnNullable = this.columnModel.update({

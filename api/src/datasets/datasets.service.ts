@@ -15,7 +15,7 @@ import type {
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { InjectQueue } from '@nestjs/bullmq';
-import { ForbiddenException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
 import type { TabularColumn } from '@prisma/client';
 import { Queue } from 'bullmq';
@@ -47,7 +47,9 @@ export class DatasetsService {
     }
 
     if (dataset.managerIds.includes(managerToAdd.id)) {
-      throw new ForbiddenException(`User with email ${managerEmailToAdd} is already a manager of the dataset`);
+      throw new UnprocessableEntityException(
+        `User with email ${managerEmailToAdd} is already a manager of the dataset`
+      );
     }
 
     const newDatasetIds = managerToAdd.datasetId;
@@ -85,7 +87,7 @@ export class DatasetsService {
       throw new NotFoundException();
     }
     if (!dataset.managerIds.includes(currentUserId)) {
-      throw new ForbiddenException('Only managers can modify this dataset!');
+      throw new UnprocessableEntityException('Only managers can modify this dataset!');
     }
     return dataset;
   }
@@ -135,7 +137,7 @@ export class DatasetsService {
   // async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
   //   const dataset = await this.canModifyDataset(datasetId, currentUserId);
   //   if (!dataset) {
-  //     throw new ForbiddenException(`The current user is not allowed to modify the dataset with id ${datasetId}`);
+  //     throw new UnprocessableEntityException(`The current user is not allowed to modify the dataset with id ${datasetId}`);
   //   }
   //   return await this.tabularDataService.changeTabularColumnsMetadataPermission(datasetId, permissionLevel);
   // }
@@ -628,7 +630,7 @@ export class DatasetsService {
       throw new NotFoundException();
     }
     if (dataset.permission !== 'PUBLIC') {
-      throw new ForbiddenException('The dataset is not public!');
+      throw new UnprocessableEntityException('The dataset is not public!');
     }
 
     if (!dataset.tabularData?.id) {
@@ -758,7 +760,7 @@ export class DatasetsService {
     } else if (user.confirmedAt) {
       return 'LOGIN';
     } else {
-      throw new ForbiddenException('Unexpected User Status!');
+      throw new UnprocessableEntityException('Unexpected User Status!');
     }
   }
 
@@ -790,7 +792,7 @@ export class DatasetsService {
     } else if (currUser.confirmedAt) {
       userStatus = 'LOGIN';
     } else {
-      throw new ForbiddenException('Unexpected user status!');
+      throw new UnprocessableEntityException('Unexpected user status!');
     }
 
     if (!dataset.isReadyToShare && !dataset.managerIds.includes(currentUserId)) {
@@ -905,7 +907,7 @@ export class DatasetsService {
   async setReadyToShare(datasetId: string, currentUserId: string) {
     const dataset = await this.canModifyDataset(datasetId, currentUserId);
     if (dataset.isReadyToShare) {
-      throw new ForbiddenException('This dataset is not found or is already set to ready to share!');
+      throw new UnprocessableEntityException('This dataset is not found or is already set to ready to share!');
     }
 
     const updateDataset = this.datasetModel.update({
@@ -1099,7 +1101,7 @@ export class DatasetsService {
           nullCount: column.summary.nullCount
         };
       default:
-        throw new ForbiddenException('Unexpected Column Type');
+        throw new UnprocessableEntityException('Unexpected Column Type');
     }
   }
 }
