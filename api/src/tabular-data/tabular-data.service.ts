@@ -311,10 +311,10 @@ export class TabularDataService {
           if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
               count: col.summary.count,
-              datetimeSummary: col.datetimeSummary,
+              datetimeSummary: col.summary.datetimeSummary,
               kind: 'DATETIME',
               nullable: col.nullable,
-              nullCount: col.nullCount
+              nullCount: col.summary.nullCount
             };
           }
           break;
@@ -331,11 +331,11 @@ export class TabularDataService {
 
           if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
-              count: col.count,
-              enumSummary: col.enumSummary,
+              count: col.summary.count,
+              enumSummary: col.summary.enumSummary,
               kind: 'ENUM',
               nullable: col.nullable,
-              nullCount: 0
+              nullCount: col.summary.nullCount
             };
           }
           break;
@@ -351,11 +351,11 @@ export class TabularDataService {
 
           if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
-              count: col.count,
-              floatSummary: col.floatSummary,
+              count: col.summary.count,
+              floatSummary: col.summary.floatSummary,
               kind: 'FLOAT',
               nullable: col.nullable,
-              nullCount: col.nullCount
+              nullCount: col.summary.nullCount
             };
           }
           break;
@@ -370,11 +370,11 @@ export class TabularDataService {
           });
           if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
-              count: col.count,
-              intSummary: col.intSummary,
+              count: col.summary.count,
+              intSummary: col.summary.intSummary,
               kind: 'INT',
               nullable: col.nullable,
-              nullCount: col.nullCount
+              nullCount: col.summary.nullCount
             };
           }
           break;
@@ -391,10 +391,10 @@ export class TabularDataService {
 
           if (!(col._id.$oid in columnIdsModifyMetadata)) {
             metaData[col.name] = {
-              count: col.count,
+              count: col.summary.count,
               kind: 'STRING',
               nullable: col.nullable,
-              nullCount: col.nullCount
+              nullCount: col.summary.nullCount
             };
           }
           break;

@@ -4,6 +4,7 @@ import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/
 import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { Key } from 'lucide-react';
 
 type DatasetTableProps = TabularDataset & { isManager: boolean };
 
@@ -59,6 +60,59 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
       message: `Column with Id ${columnId} has been deleted`,
       type: 'success'
     });
+  };
+
+  const getSummary = (columnName: string) => {
+    if (!(columnName in tabularDataset.metadata)) {
+      return (
+        <DropdownMenu.Portal>
+          <DropdownMenu.SubContent>
+            <div className="flex justify-between space-x-4 p-2">
+              <div className="space-y-2 text-sm font-medium">
+                <h4>{`No Permission`}</h4>
+              </div>
+            </div>
+          </DropdownMenu.SubContent>
+        </DropdownMenu.Portal>
+      );
+    }
+
+    const metadataObj = tabularDataset.metadata[columnName]!;
+    let summary;
+    switch (metadataObj.kind) {
+      case 'DATETIME':
+        summary = summary = metadataObj.datetimeSummary;
+        break;
+      case 'ENUM':
+        summary = summary = metadataObj.enumSummary;
+        break;
+      case 'FLOAT':
+        summary = summary = metadataObj.floatSummary;
+        break;
+      case 'INT':
+        summary = metadataObj.intSummary;
+        break;
+      case 'STRING':
+        summary = {};
+        break;
+    }
+
+    return (
+      <DropdownMenu.Portal>
+        <DropdownMenu.SubContent>
+          <div className="flex justify-between space-x-4 p-2">
+            <div className="space-y-2 text-sm font-medium">
+              <h4>{`Data Type: ${metadataObj.kind}`}</h4>
+              <h4>{`Null Count: ${metadataObj.nullCount}`}</h4>
+              <h4>{`Count: ${metadataObj.count}`}</h4>
+              {Object.entries(summary).map(([key, value]) => {
+                return <h4 key={key}>{`${key}: ${value}`}</h4>;
+              })}
+            </div>
+          </div>
+        </DropdownMenu.SubContent>
+      </DropdownMenu.Portal>
+    );
   };
 
   return (
@@ -164,56 +218,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                     <DropdownMenu.Group>
                       <DropdownMenu.Sub>
                         <DropdownMenu.SubTrigger>Metadata</DropdownMenu.SubTrigger>
-                        {column in tabularDataset.metadata ? (
-                          <DropdownMenu.Portal>
-                            <DropdownMenu.SubContent>
-                              <div className="flex justify-between space-x-4 p-2">
-                                <div className="space-y-2 text-sm font-medium">
-                                  <h4>{`Data Type: ${tabularDataset.metadata[column]?.kind}`}</h4>
-                                  <h4>{`Null Count: ${tabularDataset.metadata[column]?.nullCount}`}</h4>
-                                  <h4>{`Count: ${tabularDataset.metadata[column]?.count}`}</h4>
-                                  {(tabularDataset.metadata[column]?.min ??
-                                    tabularDataset.metadata[column]?.min === 0) && (
-                                    <h4>{`Min: ${tabularDataset.metadata[column]?.min}`}</h4>
-                                  )}
-                                  {(tabularDataset.metadata[column]?.max ??
-                                    tabularDataset.metadata[column]?.max === 0) && (
-                                    <h4>{`Max: ${tabularDataset.metadata[column]?.max}`}</h4>
-                                  )}
-                                  {(tabularDataset.metadata[column]?.mean ??
-                                    tabularDataset.metadata[column]?.mean === 0) && (
-                                    <h4>{`Mean: ${tabularDataset.metadata[column]?.mean}`}</h4>
-                                  )}
-                                  {(tabularDataset.metadata[column]?.median ??
-                                    tabularDataset.metadata[column]?.median === 0) && (
-                                    <h4>{`Median: ${tabularDataset.metadata[column]?.median}`}</h4>
-                                  )}
-                                  {(tabularDataset.metadata[column]?.mode ??
-                                    tabularDataset.metadata[column]?.mode === 0) && (
-                                    <h4>{`Mode: ${tabularDataset.metadata[column]?.mode}`}</h4>
-                                  )}
-                                  {(tabularDataset.metadata[column]?.std ??
-                                    tabularDataset.metadata[column]?.std === 0) && (
-                                    <h4>{`Standard deviation: ${tabularDataset.metadata[column]?.std}`}</h4>
-                                  )}
-                                  {tabularDataset.metadata[column]?.distribution && (
-                                    <h4>{`Distribution: ${JSON.stringify(tabularDataset.metadata[column]?.distribution)}`}</h4>
-                                  )}
-                                </div>
-                              </div>
-                            </DropdownMenu.SubContent>
-                          </DropdownMenu.Portal>
-                        ) : (
-                          <DropdownMenu.Portal>
-                            <DropdownMenu.SubContent>
-                              <div className="flex justify-between space-x-4 p-2">
-                                <div className="space-y-2 text-sm font-medium">
-                                  <h4>{`No Permission`}</h4>
-                                </div>
-                              </div>
-                            </DropdownMenu.SubContent>
-                          </DropdownMenu.Portal>
-                        )}
+                        {getSummary(column)}
                       </DropdownMenu.Sub>
                     </DropdownMenu.Group>
                   </DropdownMenu.Content>
