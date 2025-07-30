@@ -43,7 +43,7 @@ const ProjectDatasetCard = ({
         <Card.Footer className="flex justify-between">
           <Button
             variant={'primary'}
-            onClick={() => void navigate({ to: `/portal/projects/${projectId}/${datasetId}` })}
+            onClick={() => void navigate({ to: `/portal/projects/view-project-dataset/${projectId}/${datasetId}` })}
           >
             {isManager ? t('manageProjectDataset') : t('viewProjectDataset')}
           </Button>
