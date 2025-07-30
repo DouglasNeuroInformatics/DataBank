@@ -1,13 +1,14 @@
 /* eslint-disable perfectionist/sort-objects */
-import type { ProjectDatasetRowConfig } from '@databank/core';
+import type { ProjectDatasetConfigStep, ProjectDatasetRowConfig } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { z } from 'zod';
 
 type ConfigProjectDatasetRowPageProps = {
   setRowConfig: (rowConfig: ProjectDatasetRowConfig) => void;
+  setStep: (step: ProjectDatasetConfigStep) => void;
 };
 
-export const ConfigProjectDatasetRowPage = ({ setRowConfig }: ConfigProjectDatasetRowPageProps) => {
+export const ConfigProjectDatasetRowPage = ({ setRowConfig, setStep }: ConfigProjectDatasetRowPageProps) => {
   const handleSubmitRowConfig = (data: ProjectDatasetRowConfig) => {
     const rowConfigObject: ProjectDatasetRowConfig = {
       rowMin: 0
@@ -17,6 +18,7 @@ export const ConfigProjectDatasetRowPage = ({ setRowConfig }: ConfigProjectDatas
     }
     rowConfigObject.rowMin = data.rowMin;
     setRowConfig(rowConfigObject);
+    setStep('configColumns');
   };
 
   return (

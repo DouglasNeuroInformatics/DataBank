@@ -47,20 +47,6 @@ const AddProjectDatasetColumnPage = () => {
     }
   };
 
-  const handleNextStep = (currentStep: 'configColumns' | 'configRows' | 'selectColumns') => {
-    switch (currentStep) {
-      case 'configColumns':
-        console.error('Unable to go to the next step');
-        break;
-      case 'configRows':
-        setStep('configColumns');
-        break;
-      case 'selectColumns':
-        setStep('configRows');
-        break;
-    }
-  };
-
   const handlePreviousConfigColumnsPage = (currentColumnIdIndex: number) => {
     if (currentStep !== 'configColumns') {
       return;
@@ -153,15 +139,15 @@ const AddProjectDatasetColumnPage = () => {
               );
             }
             case 'configRows':
-              return <ConfigProjectDatasetRowPage setRowConfig={setRowConfig} />;
+              return <ConfigProjectDatasetRowPage setRowConfig={setRowConfig} setStep={setStep} />;
             case 'selectColumns':
               return (
                 <SelectProjectDatasetColumnsPage
                   datasetId={params.datasetId!}
                   projectId={params.projectId!}
                   reset={reset}
-                  setCurrentStep={setStep}
                   setSelectedColumns={setSelectedColumns}
+                  setStep={setStep}
                 />
               );
             default:
@@ -179,13 +165,6 @@ const AddProjectDatasetColumnPage = () => {
               onClick={() => handlePreviousStep(currentStep)}
             >
               Previous Config Step
-            </Button>
-            <Button
-              disabled={currentStep === 'configColumns'}
-              variant={'secondary'}
-              onClick={() => handleNextStep(currentStep)}
-            >
-              Next Config Step
             </Button>
           </div>
 

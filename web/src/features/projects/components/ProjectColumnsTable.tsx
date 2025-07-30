@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { ProjectDatasetSelectedColumn } from '@databank/core';
+import type { ProjectDatasetConfigStep, ProjectDatasetSelectedColumn } from '@databank/core';
 import { Button, SearchBar, Table } from '@douglasneuroinformatics/libui/components';
 import {
   flexRender,
@@ -18,12 +18,14 @@ type DataTableProps<TData extends ProjectDatasetSelectedColumn & { id: string },
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   setSelectedColumns: (selectedColumns: SelectedColumnsRecord) => void;
+  setStep: (step: ProjectDatasetConfigStep) => void;
 };
 
 export const ProjectColumnsTable = <TData extends ProjectDatasetSelectedColumn & { id: string }, TValue>({
   columns,
   data,
-  setSelectedColumns
+  setSelectedColumns,
+  setStep
 }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -58,6 +60,7 @@ export const ProjectColumnsTable = <TData extends ProjectDatasetSelectedColumn &
       }
     });
     setSelectedColumns(selectedColumns);
+    setStep('configRows');
   };
 
   return (

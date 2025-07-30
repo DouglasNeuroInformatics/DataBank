@@ -14,13 +14,14 @@ type SelectProjectDatasetColumnsPagePros = {
   datasetId: string;
   projectId: string;
   reset: () => void;
-  setCurrentStep: (step: ProjectDatasetConfigStep) => void;
   setSelectedColumns: (selectedColumnIds: SelectedColumnsRecord) => void;
+  setStep: (step: ProjectDatasetConfigStep) => void;
 };
 
 export const SelectProjectDatasetColumnsPage = ({
   datasetId,
-  setSelectedColumns
+  setSelectedColumns,
+  setStep
 }: SelectProjectDatasetColumnsPagePros) => {
   const [data, setData] = useState<ProjectColumnSummary[]>([]);
 
@@ -36,7 +37,12 @@ export const SelectProjectDatasetColumnsPage = ({
   return (
     <div className="container mx-auto py-10">
       {data.length > 0 ? (
-        <ProjectColumnsTable columns={projectColumnDefs} data={data} setSelectedColumns={setSelectedColumns} />
+        <ProjectColumnsTable
+          columns={projectColumnDefs}
+          data={data}
+          setSelectedColumns={setSelectedColumns}
+          setStep={setStep}
+        />
       ) : (
         <LoadingFallback />
       )}
