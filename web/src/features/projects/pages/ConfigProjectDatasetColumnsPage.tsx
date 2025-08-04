@@ -124,20 +124,23 @@ export const ConfigProjectDatasetColumnsPage = ({
   const handleSubmit = (data: z.infer<ReturnType<typeof generateValidationSchema>>) => {
     for (const columnId in selectedColumns) {
       if (data[columnId]) {
+        // if data[columnId] means that the user selected to add config to the column
         const currentColumnConfig: ProjectDatasetColumnConfig = {
-          hash: {
-            length: 0,
-            salt: ''
-          },
-          trim: {
-            start: 0
-          }
+          hash: null,
+          trim: null
         };
-        currentColumnConfig.hash.length = (data[columnId + 'HashLength'] as number) ?? 0;
-        currentColumnConfig.hash.salt = (data[columnId + 'HashSalt'] as string) ?? '';
-        currentColumnConfig.trim.start = (data[columnId + 'TrimStart'] as number) ?? 0;
-        if (data[columnId + 'TrimEnd']) {
-          currentColumnConfig.trim.end = data[columnId + 'TrimEnd'] as number;
+        if (data[columnId + 'HashLength']) {
+          currentColumnConfig.hash = {
+            length: data[columnId + 'HashLength'] as number,
+            salt: (data[columnId + 'HashSalt'] as string) ?? null
+          };
+        }
+
+        if (data[columnId + 'TrimStart']) {
+          currentColumnConfig.trim = {
+            end: (data[columnId + 'TrimEnd'] as number) ?? null,
+            start: data[columnId + 'TrimStart'] as number
+          };
         }
         setColumnsConfig(columnId, currentColumnConfig);
       }

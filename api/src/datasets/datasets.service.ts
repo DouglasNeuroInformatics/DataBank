@@ -1049,7 +1049,9 @@ export class DatasetsService {
     return metadata_row.join(delimiter) + '\n';
   }
 
-  private formatProjectColumn(column: TabularColumn): ProjectColumnSummary {
+  private formatProjectColumn(
+    column: Pick<TabularColumn, 'id' | 'kind' | 'name' | 'nullable' | 'summary'>
+  ): ProjectColumnSummary {
     switch (column.kind) {
       case 'DATETIME':
         return {

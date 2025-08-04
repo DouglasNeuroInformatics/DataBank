@@ -17,26 +17,26 @@ type ProjectColumnSummary = z.infer<typeof $ProjectColumnSummary>;
 
 //===================== Project Column Transformation ========================
 const $ProjectDatasetRowConfig = z.object({
-  rowMax: z.number().int().optional(),
+  rowMax: z.number().int().nullable(),
   rowMin: z.number().int().gte(0).default(0)
 });
 type ProjectDatasetRowConfig = z.infer<typeof $ProjectDatasetRowConfig>;
 
 const $ProjectDatasetColumnHash = z.object({
   length: z.number().int().default(10),
-  salt: z.string().default('')
+  salt: z.string().nullable()
 });
 type ProjectDatasetColumnHash = z.infer<typeof $ProjectDatasetColumnHash>;
 
 const $ProjectDatasetColumnTrim = z.object({
-  end: z.number().int().optional(),
+  end: z.number().int().nullable(),
   start: z.number().int().default(0)
 });
 type ProjectDatasetColumnTrim = z.infer<typeof $ProjectDatasetColumnTrim>;
 
 const $ProjectDatasetColumnConfig = z.object({
-  hash: $ProjectDatasetColumnHash,
-  trim: $ProjectDatasetColumnTrim
+  hash: $ProjectDatasetColumnHash.nullable(),
+  trim: $ProjectDatasetColumnTrim.nullable()
 });
 type ProjectDatasetColumnConfig = z.infer<typeof $ProjectDatasetColumnConfig>;
 
@@ -63,18 +63,12 @@ const $UpdateProject = z
   .object({
     datasets: z
       .object({
-        columnConfigurations: z
-          .object({
-            columnId: z.string(),
-            hash: z.object({
-              length: z.number(),
-              salt: z.string().nullable()
-            }),
-            trim: z.object({
-              end: z.number().nullable(),
-              start: z.number()
+        columnConfigurations: $ProjectDatasetColumnConfig
+          .and(
+            z.object({
+              columnId: z.string()
             })
-          })
+          )
           .array(),
         columnIds: z.string().array(),
         datasetId: z.string(),

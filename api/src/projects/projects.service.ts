@@ -7,7 +7,7 @@ import type {
 import { $CreateProject, $ProjectDataset, $UpdateProject } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
-import { UnprocessableEntityException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import type { ProjectDataset } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service';
@@ -50,14 +50,8 @@ export class ProjectsService {
     newProjectDataset.columnConfigurations = Object.entries(projectDataset.columnConfigs).map(([colId, config]) => {
       return {
         columnId: colId,
-        hash: {
-          length: config.hash.length,
-          salt: config.hash.salt ?? null
-        },
-        trim: {
-          end: config.trim.end ?? null,
-          start: config.trim.start
-        }
+        hash: config.hash ?? null,
+        trim: config.trim ?? null
       };
     });
 
@@ -369,7 +363,9 @@ export class ProjectsService {
 
     const newProjectDatasets = project.datasets.filter((dataset) => dataset.datasetId !== datasetId);
 
-    return await this.updateProject(currentUserId, projectId, { datasets: newProjectDatasets });
+    return await this.updateProject(currentUserId, projectId, {
+      datasets: newProjectDatasets
+    });
   }
 
   async removeUser(currentUserId: string, projectId: string, userIdToRemove: string) {
@@ -412,14 +408,8 @@ export class ProjectsService {
     } = {};
     for (const colConfig of projectDatasetData.columnConfigurations) {
       columnConfigs[colConfig.columnId] = {
-        hash: {
-          length: colConfig.hash.length,
-          salt: colConfig.hash.salt ?? ''
-        },
-        trim: {
-          end: colConfig.trim.end ?? undefined,
-          start: colConfig.trim.start
-        }
+        hash: colConfig.hash ?? null,
+        trim: colConfig.trim ?? null
       };
     }
     return {
@@ -427,7 +417,7 @@ export class ProjectsService {
       columnIds: projectDatasetData.columnIds,
       datasetId: projectDatasetData.datasetId,
       rowConfig: {
-        rowMax: projectDatasetData.rowFilter.rowMax ?? undefined,
+        rowMax: projectDatasetData.rowFilter.rowMax ?? null,
         rowMin: projectDatasetData.rowFilter.rowMin
       }
     };

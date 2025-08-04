@@ -121,7 +121,7 @@ export class TabularDataService {
     projectDataset: $ProjectDataset,
     rowPagination: DatasetViewPagination,
     columnPagination: DatasetViewPagination
-  ) {
+  ): Promise<ProjectTabularDatasetView> {
     const columnIds: { [key: string]: string } = {};
     const columns: string[] = [];
     const metaData: { [key: string]: any } = {};
@@ -222,7 +222,7 @@ export class TabularDataService {
     userStatus: PermissionLevel,
     rowPagination: DatasetViewPagination,
     columnPagination: DatasetViewPagination
-  ) {
+  ): Promise<TabularDatasetView> {
     const tabularData = await this.tabularDataModel.findUnique({
       where: {
         id: tabularDataId
@@ -239,8 +239,6 @@ export class TabularDataService {
     if (!columnsFromDB || columnsFromDB.length === 0) {
       throw new NotFoundException('No column found in this tabular dataset!');
     }
-
-    console.error(columnsFromDB);
 
     const columnIdsModifyData = new Set<string>();
     const columnIdsModifyMetadata = new Set<string>();
@@ -410,8 +408,6 @@ export class TabularDataService {
       totalNumberOfColumns: numberOfColumns,
       totalNumberOfRows: numberOfRows
     };
-
-    console.error(dataView);
 
     return dataView;
   }
