@@ -1,9 +1,8 @@
 import type {
-  $ProjectDataset,
   ColumnType,
   DatasetViewPagination,
+  GetColumnViewDto,
   PermissionLevel,
-  ProjectDatasetColumnConfig,
   RawQueryColumn
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
@@ -13,8 +12,21 @@ import type { PrismaClient } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { Series } from 'nodejs-polars';
 
-type ProjectColumnsFromDb = Awaited<ReturnType<Model<'TabularColumn'>['findMany']>>;
-type ProjectColumnFromDb = ProjectColumnsFromDb[number];
+type ProjectColumnView = Pick<
+  NonNullable<Awaited<ReturnType<Model<'TabularColumn'>['findUnique']>>>,
+  | 'datetimeData'
+  | 'description'
+  | 'enumData'
+  | 'floatData'
+  | 'id'
+  | 'intData'
+  | 'kind'
+  | 'name'
+  | 'nullable'
+  | 'stringData'
+  | 'summary'
+  | 'tabularDataId'
+>;
 
 @Injectable()
 export class ColumnsService {
@@ -271,24 +283,84 @@ export class ColumnsService {
     });
   }
 
-  async getProjectColumnsView(projectDataset: $ProjectDataset) {
-    const projectColumns = await this.columnModel.findMany({
+  async getProjectColumnView(getColumnViewDto: GetColumnViewDto): Promise<ProjectColumnView> {
+    const projectColumn = await this.columnModel.findUnique({
       where: {
-        id: {
-          in: projectDataset.columnIds
-        }
+        id: getColumnViewDto.columnId
       }
     });
 
-    const transformedProjectColumns: ProjectColumnsFromDb = projectColumns.map((column) => {
-      return this.transformProjectColumn(
-        column,
-        projectDataset.columnConfigs[column.id],
-        projectDataset.rowConfig.rowMin,
-        projectDataset.rowConfig.rowMax
-      );
-    });
-    return transformedProjectColumns;
+    if (!projectColumn) {
+      throw new NotFoundException(`Column with ID ${getColumnViewDto.columnId} cannot be found!`);
+    }
+
+    switch (projectColumn.kind) {
+      case 'DATETIME': {
+        // 1. make a series from the projectColumn.data.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax)
+        const datetimeSeries = pl.Series(
+          projectColumn.datetimeData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+
+        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+
+        const newDatetimeSummary = this.calculateSummaryOnSeries('DATETIME', datetimeSeries);
+        projectColumn.summary.datetimeSummary = newDatetimeSummary.datetimeSummary!;
+        projectColumn.summary.count = newDatetimeSummary.count;
+        projectColumn.summary.nullCount = newDatetimeSummary.nullCount;
+        break;
+      }
+      case 'ENUM': {
+        const enumSeries = pl.Series(
+          projectColumn.enumData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+        const newEnumSummary = this.calculateSummaryOnSeries('DATETIME', enumSeries);
+        projectColumn.summary.enumSummary = newEnumSummary.enumSummary!;
+        projectColumn.summary.count = newEnumSummary.count;
+        projectColumn.summary.nullCount = newEnumSummary.nullCount;
+        break;
+      }
+      case 'FLOAT': {
+        const floatSeries = pl.Series(
+          projectColumn.floatData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+        const newFloatSummary = this.calculateSummaryOnSeries('FLOAT', floatSeries);
+        projectColumn.summary.floatSummary = newFloatSummary.floatSummary!;
+        projectColumn.summary.count = newFloatSummary.count;
+        projectColumn.summary.nullCount = newFloatSummary.nullCount;
+        break;
+      }
+      case 'INT': {
+        const intSeries = pl.Series(
+          projectColumn.intData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+        const newIntSummary = this.calculateSummaryOnSeries('INT', intSeries);
+        projectColumn.summary.intSummary = newIntSummary.intSummary!;
+        projectColumn.summary.count = newIntSummary.count;
+        projectColumn.summary.nullCount = newIntSummary.nullCount;
+        break;
+      }
+      case 'STRING': {
+        const stringSeries = pl.Series(
+          projectColumn.stringData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+        const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+        projectColumn.summary.count = newStringSummary.count;
+        projectColumn.summary.nullCount = newStringSummary.nullCount;
+        break;
+      }
+    }
+
+    return projectColumn;
   }
 
   async mutateColumnType(columnId: string, colType: ColumnType) {
@@ -573,204 +645,6 @@ export class ColumnsService {
   //     });
   //   });
   // }
-
-  transformProjectColumn(
-    projectColumn: ProjectColumnFromDb,
-    columnConfigObj: null | ProjectDatasetColumnConfig,
-    rowMin: number,
-    rowMax: null | number
-  ): ProjectColumnFromDb {
-    // given 1 projectColumn, we want to perform row slice and column transformations on it
-    // according to the kind of the project column, we extract the data and the summary out
-    // 2. perform transformation on the project column data (hash and trim) => the new type should be string
-    // 3. recompute summary on the column
-    // output: should return the transformed project column view
-
-    // // check for hash, do the hashing
-    // if (getColumnViewDto.hash) {
-    //   currSeries = currSeries.cast(pl.String);
-    //   if (getColumnViewDto.hash.salt) {
-    //     currSeries = currSeries.add(getColumnViewDto.hash.salt);
-    //   }
-
-    //   currSeries = currSeries.hash().cast(pl.String);
-    //   if (getColumnViewDto.hash.length && getColumnViewDto.hash.length >= 0) {
-    //     currSeries = currSeries.str.slice(0, getColumnViewDto.hash.length);
-    //   }
-    //   currSeries.cast(pl.String);
-    //   columnView.kind = 'STRING';
-    // }
-
-    // if (getColumnViewDto.trim && columnView.kind === 'STRING') {
-    //   // trim the string in each cell of a string column
-    //   // the slice function takes two parameters: offset and length(optional)
-    //   if (getColumnViewDto.trim.start && getColumnViewDto.trim.end) {
-    //     currSeries = currSeries.str.slice(
-    //       getColumnViewDto.trim.start,
-    //       getColumnViewDto.trim.end - getColumnViewDto.trim.start + 1
-    //     );
-    //   } else if (getColumnViewDto.trim.start && !getColumnViewDto.trim.end) {
-    //     currSeries = currSeries.str.slice(getColumnViewDto.trim.start);
-    //   } else if (!getColumnViewDto.trim.start && getColumnViewDto.trim.end) {
-    //     currSeries = currSeries.str.slice(0, getColumnViewDto.trim.end + 1);
-    //   }
-    // }
-    // // recalculate the summary for the column
-    // const newColumnSummary = this.calculateSummaryOnSeries(columnView.kind, currSeries);
-    // columnView.summary = {
-    //   count: newColumnSummary.count,
-    //   datetimeSummary: columnView.kind == 'DATETIME' ? (newColumnSummary.datetimeSummary ?? null) : null,
-    //   enumSummary: columnView.kind == 'ENUM' ? (newColumnSummary.enumSummary ?? null) : null,
-    //   floatSummary: columnView.kind == 'FLOAT' ? (newColumnSummary.floatSummary ?? null) : null,
-    //   intSummary: columnView.kind == 'INT' ? (newColumnSummary.intSummary ?? null) : null,
-    //   nullCount: newColumnSummary.nullCount
-    // };
-
-    // type ColumnMetadata = {
-    //   count: number;
-    //   distribution?: { [key: string]: number }[];
-    //   kind: ColumnType;
-    //   max?: Date | number;
-    //   mean?: number;
-    //   median?: number;
-    //   min?: Date | number;
-    //   mode?: number;
-    //   nullable: boolean;
-    //   nullCount: number;
-    //   std?: number;
-    // };
-
-    // const columnMetadata: ColumnMetadata = {
-    //   count: 0,
-    //   kind: 'STRING',
-    //   nullable: false,
-    //   nullCount: 0
-    // };
-    // switch (columnView.kind) {
-    //   case 'DATETIME':
-    //     columnView.datetimeData = currSeries.toArray().map((entry) => {
-    //       return {
-    //         value: entry as Date
-    //       };
-    //     });
-    //     columnMetadata.count = columnView.summary.count;
-    //     columnMetadata.nullCount = columnView.summary.nullCount;
-    //     columnMetadata.kind = 'DATETIME';
-    //     columnMetadata.nullable = columnView.nullable;
-    //     columnMetadata.max = columnView.summary.datetimeSummary?.max;
-    //     columnMetadata.min = columnView.summary.datetimeSummary?.min;
-    //     break;
-    //   case 'ENUM':
-    //     columnView.enumData = currSeries.toArray().map((entry) => {
-    //       return {
-    //         value: entry as string
-    //       };
-    //     });
-    //     columnMetadata.count = columnView.summary.count;
-    //     columnMetadata.nullCount = columnView.summary.nullCount;
-    //     columnMetadata.kind = 'ENUM';
-    //     columnMetadata.nullable = columnView.nullable;
-    //     break;
-    //   case 'FLOAT':
-    //     columnView.floatData = currSeries.toArray().map((entry) => {
-    //       return {
-    //         value: entry as number
-    //       };
-    //     });
-    //     columnMetadata.count = columnView.summary.count;
-    //     columnMetadata.nullCount = columnView.summary.nullCount;
-    //     columnMetadata.kind = 'FLOAT';
-    //     columnMetadata.nullable = columnView.nullable;
-    //     columnMetadata.max = columnView.summary.floatSummary?.max;
-    //     columnMetadata.min = columnView.summary.floatSummary?.min;
-    //     columnMetadata.mean = columnView.summary.floatSummary?.mean;
-    //     columnMetadata.median = columnView.summary.floatSummary?.median;
-    //     columnMetadata.std = columnView.summary.floatSummary?.std;
-    //     break;
-    //   case 'INT':
-    //     columnView.intData = currSeries.toArray().map((entry) => {
-    //       return {
-    //         value: entry as number
-    //       };
-    //     });
-    //     columnMetadata.count = columnView.summary.count;
-    //     columnMetadata.nullCount = columnView.summary.nullCount;
-    //     columnMetadata.kind = 'INT';
-    //     columnMetadata.nullable = columnView.nullable;
-    //     columnMetadata.max = columnView.summary.intSummary?.max;
-    //     columnMetadata.min = columnView.summary.intSummary?.min;
-    //     columnMetadata.mean = columnView.summary.intSummary?.mean;
-    //     columnMetadata.mode = columnView.summary.intSummary?.mode;
-    //     columnMetadata.median = columnView.summary.intSummary?.median;
-    //     columnMetadata.std = columnView.summary.intSummary?.std;
-    //     break;
-    //   case 'STRING':
-    //     columnView.stringData = currSeries.toArray().map((entry) => {
-    //       return {
-    //         value: entry as string
-    //       };
-    //     });
-    //     columnMetadata.count = columnView.summary.count;
-    //     columnMetadata.nullCount = columnView.summary.nullCount;
-    //     columnMetadata.kind = 'STRING';
-    //     columnMetadata.nullable = columnView.nullable;
-    //     break;
-    // }
-
-    switch (projectColumn.kind) {
-      case 'DATETIME': {
-        const datetimeSeries = pl.Series(
-          projectColumn.datetimeData.slice(rowMin, rowMax).map((entry) => {
-            return entry.value;
-          })
-        );
-
-        const newDatetimeSummary = this.calculateSummaryOnSeries('DATETIME', datetimeSeries);
-        projectColumn.summary.datetimeSummary = newDatetimeSummary.datetimeSummary!;
-        projectColumn.summary.count = newDatetimeSummary.count;
-        projectColumn.summary.nullCount = newDatetimeSummary.nullCount;
-
-        if (columnConfigObj) {
-          // do the transformations on the pl series
-        }
-        break;
-      }
-      case 'ENUM': {
-        const enumSeries = pl.Series(
-          projectColumn.enumData.slice(rowMin, rowMax).map((entry) => {
-            return entry.value;
-          })
-        );
-        break;
-      }
-      case 'FLOAT': {
-        const floatSeries = pl.Series(
-          projectColumn.floatData.slice(rowMin, rowMax).map((entry) => {
-            return entry.value;
-          })
-        );
-        break;
-      }
-      case 'INT': {
-        const intSeries = pl.Series(
-          projectColumn.intData.slice(rowMin, rowMax).map((entry) => {
-            return entry.value;
-          })
-        );
-        break;
-      }
-      case 'STRING': {
-        const stringSeries = pl.Series(
-          projectColumn.stringData.slice(rowMin, rowMax).map((entry) => {
-            return entry.value;
-          })
-        );
-        break;
-      }
-    }
-
-    return projectColumn;
-  }
 
   private calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
     switch (colType) {

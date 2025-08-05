@@ -124,7 +124,7 @@ export class TabularDataService {
   ): Promise<ProjectTabularDatasetView> {
     const columnIds: { [key: string]: string } = {};
     const columns: string[] = [];
-    const metaData: { [key: string]: any } = {};
+    const metaData: { [key: string]: TabularColumnSummary } = {};
     const rows: { [key: string]: boolean | number | string }[] = [];
 
     const rowStart = (rowPagination.currentPage - 1) * rowPagination.itemsPerPage;
@@ -132,45 +132,32 @@ export class TabularDataService {
     const columnStart = (columnPagination.currentPage - 1) * columnPagination.itemsPerPage;
     const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage;
 
-    for (const col of projectDataset.columnIds.slice(columnStart, columnEnd)) {
-      let getColumnViewDto: GetColumnViewDto;
+    for (const colId of projectDataset.columnIds.slice(columnStart, columnEnd)) {
+      const getColumnViewDto: GetColumnViewDto = {
+        columnId: colId,
+        rowMax: projectDataset.rowConfig.rowMax ?? undefined,
+        rowMin: projectDataset.rowConfig.rowMin
+      };
 
-      if (col in projectDataset.columnConfigs) {
-        getColumnViewDto = {
-          columnId: col,
-          hash: {
-            length: projectDataset.columnConfigs[col]!.hash.length ?? 10,
-            salt: projectDataset.columnConfigs[col]!.hash.salt ?? ''
-          },
-          rowMin: projectDataset.rowConfig.rowMin ?? 0,
-          trim: {
-            end: projectDataset.columnConfigs[col]!.trim.end ?? undefined,
-            start: projectDataset.columnConfigs[col]!.trim.start ?? 0
-          }
-        };
-      } else {
-        getColumnViewDto = {
-          columnId: col,
-          rowMax: projectDataset.rowConfig.rowMax ?? undefined,
-          rowMin: 0
-        };
+      if (colId in projectDataset.columnConfigs) {
+        if (projectDataset.columnConfigs[colId]!.hash) {
+          getColumnViewDto.hash = {
+            length: projectDataset.columnConfigs[colId]!.hash.length,
+            salt: projectDataset.columnConfigs[colId]!.hash.salt ?? undefined
+          };
+        }
+
+        if (projectDataset.columnConfigs[colId]!.trim) {
+          getColumnViewDto.trim = {
+            end: projectDataset.columnConfigs[colId]!.trim.end ?? undefined,
+            start: projectDataset.columnConfigs[colId]!.trim.start
+          };
+        }
       }
 
-      const currColumnView = await this.columnsService.getColumnView(getColumnViewDto);
+      const currColumnView = await this.columnsService.getProjectColumnView(getColumnViewDto);
       columns.push(currColumnView.name);
       columnIds[currColumnView.name] = currColumnView.id;
-      metaData[currColumnView.name] = {
-        count: currColumnView.count,
-        kind: { type: currColumnView.kind },
-        max: currColumnView.max,
-        mean: currColumnView.mean,
-        median: currColumnView.median,
-        min: currColumnView.min,
-        mode: currColumnView.mode,
-        nullable: currColumnView.nullable,
-        nullCount: currColumnView.nullCount,
-        std: currColumnView.std
-      };
 
       switch (currColumnView.kind) {
         case 'DATETIME':
@@ -178,30 +165,64 @@ export class TabularDataService {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!.toDateString()!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            datetimeSummary: currColumnView.summary.datetimeSummary!,
+            kind: currColumnView.kind,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
         case 'ENUM':
           currColumnView.enumData.map((entry, i) => {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            enumSummary: { distribution: {} },
+            kind: currColumnView.kind,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
         case 'FLOAT':
           currColumnView.floatData.map((entry, i) => {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            floatSummary: currColumnView.summary.floatSummary!,
+            kind: currColumnView.kind,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
         case 'INT':
           currColumnView.intData.map((entry, i) => {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            intSummary: currColumnView.summary.intSummary!,
+            kind: currColumnView.kind,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
         case 'STRING':
           currColumnView.stringData.map((entry, i) => {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            kind: currColumnView.kind,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
       }
     }
@@ -214,6 +235,7 @@ export class TabularDataService {
       totalNumberOfColumns: projectDataset.columnIds.length,
       totalNumberOfRows: rows.length
     };
+
     return dataView;
   }
 

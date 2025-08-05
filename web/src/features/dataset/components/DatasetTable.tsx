@@ -81,13 +81,13 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     let summary;
     switch (metadataObj.kind) {
       case 'DATETIME':
-        summary = summary = metadataObj.datetimeSummary;
+        summary = metadataObj.datetimeSummary;
         break;
       case 'ENUM':
-        summary = summary = metadataObj.enumSummary;
+        summary = metadataObj.enumSummary;
         break;
       case 'FLOAT':
-        summary = summary = metadataObj.floatSummary;
+        summary = metadataObj.floatSummary;
         break;
       case 'INT':
         summary = metadataObj.intSummary;
