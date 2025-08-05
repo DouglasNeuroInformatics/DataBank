@@ -9,7 +9,7 @@ import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { ConflictException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import type { PrismaClient } from '@prisma/client';
-import pl from 'nodejs-polars';
+import pl, { Utf8 } from 'nodejs-polars';
 import type { Series } from 'nodejs-polars';
 
 type ProjectColumnView = Pick<
@@ -303,12 +303,54 @@ export class ColumnsService {
           })
         );
 
-        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+        let changedToString = false;
+        let stringSeries = pl.Series([]);
 
-        const newDatetimeSummary = this.calculateSummaryOnSeries('DATETIME', datetimeSeries);
-        projectColumn.summary.datetimeSummary = newDatetimeSummary.datetimeSummary!;
-        projectColumn.summary.count = newDatetimeSummary.count;
-        projectColumn.summary.nullCount = newDatetimeSummary.nullCount;
+        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+        if (getColumnViewDto.hash) {
+          // change the original series to type string to perform hash
+          projectColumn.kind = 'STRING';
+          changedToString = true;
+          stringSeries = datetimeSeries.cast(Utf8);
+
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) => {
+              return (entry + getColumnViewDto.hash!.salt) as string;
+            });
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          if (projectColumn.kind != 'STRING') {
+            // change the original series to type string to perform hash
+            projectColumn.kind = 'STRING';
+            changedToString = true;
+            stringSeries = datetimeSeries.cast(Utf8);
+          }
+
+          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+        }
+
+        if (!changedToString) {
+          const newDatetimeSummary = this.calculateSummaryOnSeries('DATETIME', datetimeSeries);
+          projectColumn.summary.datetimeSummary = newDatetimeSummary.datetimeSummary!;
+          projectColumn.summary.count = newDatetimeSummary.count;
+          projectColumn.summary.nullCount = newDatetimeSummary.nullCount;
+          projectColumn.datetimeData = datetimeSeries.toArray().map((entry) => {
+            return { value: entry as Date };
+          });
+        } else {
+          const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+          projectColumn.summary.count = newStringSummary.count;
+          projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.stringData = stringSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        }
         break;
       }
       case 'ENUM': {
@@ -317,10 +359,55 @@ export class ColumnsService {
             return entry.value;
           })
         );
-        const newEnumSummary = this.calculateSummaryOnSeries('DATETIME', enumSeries);
-        projectColumn.summary.enumSummary = newEnumSummary.enumSummary!;
-        projectColumn.summary.count = newEnumSummary.count;
-        projectColumn.summary.nullCount = newEnumSummary.nullCount;
+
+        let changedToString = false;
+        let stringSeries = pl.Series([]);
+
+        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+        if (getColumnViewDto.hash) {
+          // change the original series to type string to perform hash
+          projectColumn.kind = 'STRING';
+          changedToString = true;
+          stringSeries = enumSeries.cast(Utf8);
+
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) => {
+              return (entry + getColumnViewDto.hash!.salt) as string;
+            });
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          if (projectColumn.kind != 'STRING') {
+            // change the original series to type string to perform hash
+            projectColumn.kind = 'STRING';
+            changedToString = true;
+            stringSeries = enumSeries.cast(Utf8);
+          }
+
+          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+        }
+
+        if (!changedToString) {
+          const newEnumSummary = this.calculateSummaryOnSeries('DATETIME', enumSeries);
+          projectColumn.summary.enumSummary = newEnumSummary.enumSummary!;
+          projectColumn.summary.count = newEnumSummary.count;
+          projectColumn.summary.nullCount = newEnumSummary.nullCount;
+          projectColumn.enumData = enumSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        } else {
+          const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+          projectColumn.summary.count = newStringSummary.count;
+          projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.stringData = stringSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        }
         break;
       }
       case 'FLOAT': {
@@ -329,10 +416,54 @@ export class ColumnsService {
             return entry.value;
           })
         );
-        const newFloatSummary = this.calculateSummaryOnSeries('FLOAT', floatSeries);
-        projectColumn.summary.floatSummary = newFloatSummary.floatSummary!;
-        projectColumn.summary.count = newFloatSummary.count;
-        projectColumn.summary.nullCount = newFloatSummary.nullCount;
+        let changedToString = false;
+        let stringSeries = pl.Series([]);
+
+        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+        if (getColumnViewDto.hash) {
+          // change the original series to type string to perform hash
+          projectColumn.kind = 'STRING';
+          changedToString = true;
+          stringSeries = floatSeries.cast(Utf8);
+
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) => {
+              return (entry + getColumnViewDto.hash!.salt) as string;
+            });
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          if (projectColumn.kind != 'STRING') {
+            // change the original series to type string to perform hash
+            projectColumn.kind = 'STRING';
+            changedToString = true;
+            stringSeries = floatSeries.cast(Utf8);
+          }
+
+          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+        }
+
+        if (!changedToString) {
+          const newFloatSummary = this.calculateSummaryOnSeries('FLOAT', floatSeries);
+          projectColumn.summary.floatSummary = newFloatSummary.floatSummary!;
+          projectColumn.summary.count = newFloatSummary.count;
+          projectColumn.summary.nullCount = newFloatSummary.nullCount;
+          projectColumn.floatData = floatSeries.toArray().map((entry) => {
+            return { value: entry as number };
+          });
+        } else {
+          const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+          projectColumn.summary.count = newStringSummary.count;
+          projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.stringData = stringSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        }
         break;
       }
       case 'INT': {
@@ -341,21 +472,83 @@ export class ColumnsService {
             return entry.value;
           })
         );
-        const newIntSummary = this.calculateSummaryOnSeries('INT', intSeries);
-        projectColumn.summary.intSummary = newIntSummary.intSummary!;
-        projectColumn.summary.count = newIntSummary.count;
-        projectColumn.summary.nullCount = newIntSummary.nullCount;
+        let changedToString = false;
+        let stringSeries = pl.Series([]);
+
+        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+        if (getColumnViewDto.hash) {
+          // change the original series to type string to perform hash
+          projectColumn.kind = 'STRING';
+          changedToString = true;
+          stringSeries = intSeries.cast(Utf8);
+
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) => {
+              return (entry + getColumnViewDto.hash!.salt) as string;
+            });
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          if (projectColumn.kind != 'STRING') {
+            // change the original series to type string to perform hash
+            projectColumn.kind = 'STRING';
+            changedToString = true;
+            stringSeries = intSeries.cast(Utf8);
+          }
+
+          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+        }
+
+        if (!changedToString) {
+          const newIntSummary = this.calculateSummaryOnSeries('INT', intSeries);
+          projectColumn.summary.intSummary = newIntSummary.intSummary!;
+          projectColumn.summary.count = newIntSummary.count;
+          projectColumn.summary.nullCount = newIntSummary.nullCount;
+          projectColumn.intData = intSeries.toArray().map((entry) => {
+            return { value: entry as number };
+          });
+        } else {
+          const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+          projectColumn.summary.count = newStringSummary.count;
+          projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.stringData = stringSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        }
         break;
       }
       case 'STRING': {
-        const stringSeries = pl.Series(
+        let stringSeries = pl.Series(
           projectColumn.stringData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
             return entry.value;
           })
         );
+        if (getColumnViewDto.hash) {
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) => {
+              return (entry + getColumnViewDto.hash!.salt) as string;
+            });
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+        }
         const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
         projectColumn.summary.count = newStringSummary.count;
         projectColumn.summary.nullCount = newStringSummary.nullCount;
+        projectColumn.stringData = stringSeries.toArray().map((entry) => {
+          return { value: entry as string };
+        });
         break;
       }
     }

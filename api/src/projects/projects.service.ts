@@ -42,8 +42,8 @@ export class ProjectsService {
       columnIds: projectDataset.columnIds,
       datasetId: projectDataset.datasetId,
       rowFilter: {
-        rowMax: null,
-        rowMin: 0
+        rowMax: projectDataset.rowConfig.rowMax,
+        rowMin: projectDataset.rowConfig.rowMin
       }
     };
 

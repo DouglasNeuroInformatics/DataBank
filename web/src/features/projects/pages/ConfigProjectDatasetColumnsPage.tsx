@@ -129,14 +129,14 @@ export const ConfigProjectDatasetColumnsPage = ({
           hash: null,
           trim: null
         };
-        if (data[columnId + 'HashLength']) {
+        if (data[columnId + 'HashLength'] === 0 || data[columnId + 'HashLength']) {
           currentColumnConfig.hash = {
             length: data[columnId + 'HashLength'] as number,
             salt: (data[columnId + 'HashSalt'] as string) ?? null
           };
         }
 
-        if (data[columnId + 'TrimStart']) {
+        if (data[columnId + 'TrimStart'] === 0 || data[columnId + 'TrimStart']) {
           currentColumnConfig.trim = {
             end: (data[columnId + 'TrimEnd'] as number) ?? null,
             start: data[columnId + 'TrimStart'] as number
