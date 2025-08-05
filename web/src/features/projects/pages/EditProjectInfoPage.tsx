@@ -26,7 +26,7 @@ const EditProjectInfoPage = () => {
       })
       .then(() => {
         notifications.addNotification({ message: 'Project Information Updated!', type: 'success' });
-        void navigate({ to: '..' });
+        void navigate({ to: `/portal/projects/${params.projectId}` });
       })
       .catch(console.error);
   };
@@ -77,7 +77,7 @@ const EditProjectInfoPage = () => {
               label="Back"
               variant={'secondary'}
               onClick={() => {
-                void navigate({ to: '..' });
+                void navigate({ to: `/portal/projects/${params.projectId}` });
               }}
             />
           </motion.div>
