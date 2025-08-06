@@ -219,7 +219,7 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('type') columnType: ColumnDataTypeDto
+    @Body() columnType: ColumnDataTypeDto
   ) {
     return this.datasetsService.mutateColumnType(datasetId, columnId, userId, columnType.kind);
   }
