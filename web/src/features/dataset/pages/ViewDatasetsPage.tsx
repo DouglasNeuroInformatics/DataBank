@@ -1,4 +1,4 @@
-import { Button, Card } from '@douglasneuroinformatics/libui/components';
+import { Button, Card, Heading } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
 
@@ -53,37 +53,41 @@ const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
           )}
         </Card.Header>
         <Card.Content>
-          <ul>
-            {datasetsInfoArray?.map((datasetInfo, i) => {
-              let isManager: boolean;
-              if (!currentUser?.id) {
-                isManager = false;
-              } else {
-                isManager = datasetInfo.managerIds.includes(currentUser.id);
-              }
-              return (
-                datasetInfo && (
-                  <li key={i}>
-                    <DatasetCard
-                      createdAt={datasetInfo.createdAt}
-                      datasetType={datasetInfo.datasetType}
-                      description={datasetInfo.description}
-                      id={datasetInfo.id}
-                      isManager={isManager}
-                      isPublic={isPublic}
-                      isReadyToShare={false}
-                      license={datasetInfo.license}
-                      managerIds={datasetInfo.managerIds}
-                      name={datasetInfo.name}
-                      permission={datasetInfo.permission}
-                      status={datasetInfo.status}
-                      updatedAt={datasetInfo.updatedAt}
-                    />
-                  </li>
-                )
-              );
-            })}
-          </ul>
+          {datasetsInfoArray?.length === 0 ? (
+            <Heading variant={'h2'}>No Datasets Available</Heading>
+          ) : (
+            <ul>
+              {datasetsInfoArray?.map((datasetInfo, i) => {
+                let isManager: boolean;
+                if (!currentUser?.id) {
+                  isManager = false;
+                } else {
+                  isManager = datasetInfo.managerIds.includes(currentUser.id);
+                }
+                return (
+                  datasetInfo && (
+                    <li key={i}>
+                      <DatasetCard
+                        createdAt={datasetInfo.createdAt}
+                        datasetType={datasetInfo.datasetType}
+                        description={datasetInfo.description}
+                        id={datasetInfo.id}
+                        isManager={isManager}
+                        isPublic={isPublic}
+                        isReadyToShare={false}
+                        license={datasetInfo.license}
+                        managerIds={datasetInfo.managerIds}
+                        name={datasetInfo.name}
+                        permission={datasetInfo.permission}
+                        status={datasetInfo.status}
+                        updatedAt={datasetInfo.updatedAt}
+                      />
+                    </li>
+                  )
+                );
+              })}
+            </ul>
+          )}
         </Card.Content>
         <Card.Footer className="flex justify-between"></Card.Footer>
       </Card>
