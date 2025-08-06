@@ -4,7 +4,6 @@ import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/
 import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Key } from 'lucide-react';
 
 type DatasetTableProps = TabularDataset & { isManager: boolean };
 
@@ -63,7 +62,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   };
 
   const getSummary = (columnName: string) => {
-    if (!(columnName in tabularDataset.metadata)) {
+    if (!tabularDataset.metadata[columnName]) {
       return (
         <DropdownMenu.Portal>
           <DropdownMenu.SubContent>
@@ -77,7 +76,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
       );
     }
 
-    const metadataObj = tabularDataset.metadata[columnName]!;
+    const metadataObj = tabularDataset.metadata[columnName];
     let summary;
     switch (metadataObj.kind) {
       case 'DATETIME':

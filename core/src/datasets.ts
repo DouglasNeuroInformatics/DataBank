@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { $PermissionLevel, $TabularColumnSummary } from './columns';
 
-import type { ColumnType, PermissionLevel } from './columns';
+import type { PermissionLevel } from './columns';
 
 const $DatasetViewPagination = z.object({
   currentPage: z.number(),
@@ -74,29 +74,7 @@ const $ProjectTabularDatasetView = $TabularDatasetView.omit({
 });
 type ProjectTabularDatasetView = z.infer<typeof $ProjectTabularDatasetView>;
 
-type TabularDataset = DatasetInfo & {
-  columnIds: { [key: string]: string };
-  columns: string[];
-  metadata: {
-    [key: string]: {
-      count: number;
-      distribution?: { [key: string]: number };
-      kind: ColumnType;
-      max?: number;
-      mean?: number;
-      median?: number;
-      min?: number;
-      mode?: number;
-      nullable: boolean;
-      nullCount: number;
-      std?: number;
-    };
-  };
-  primaryKeys: string[];
-  rows: { [key: string]: string }[];
-  totalNumberOfColumns: number;
-  totalNumberOfRows: number;
-};
+type TabularDataset = DatasetInfo & TabularDatasetView;
 
 export {
   $CreateDataset,

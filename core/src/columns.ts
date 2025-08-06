@@ -123,15 +123,33 @@ const $TabularColumnSummary = z
   .and($BasicSummary);
 type TabularColumnSummary = z.infer<typeof $TabularColumnSummary>;
 
-const $RawQueryProps = z.object({
+const $RawQueryColumn = z.object({
   __modelName: z.literal('TabularColumn'),
   _id: z.object({
     $oid: z.string()
-  })
+  }),
+  dataPermission: $PermissionLevel,
+  datetimeData: z.object({ value: z.date().nullable() }).array().nullable(),
+  description: z.string().nullable(),
+  enumData: z.object({ value: z.string().nullable() }).array().nullable(),
+  floatData: z.object({ value: z.number().nullable() }).array().nullable(),
+  intData: z.object({ value: z.number().int().nullable() }).array().nullable(),
+  kind: $ColumnType,
+  name: z.string(),
+  nullable: z.boolean(),
+  // store the actual data in a pl.series(array) depending on the type of the column
+  stringData: z.object({ value: z.string().nullable() }).array().nullable(),
+  summary: z.object({
+    count: z.number().int().gte(0),
+    datetimeSummary: $DatetimeSummary.nullable(),
+    enumSummary: $EnumSummary.nullable(),
+    floatSummary: $FloatSummary.nullable(),
+    intSummary: $IntSummary.nullable(),
+    nullCount: z.number().int().gte(0)
+  }),
+  summaryPermission: $PermissionLevel,
+  tabularDataId: z.string()
 });
-type RawQueryProps = z.infer<typeof $RawQueryProps>;
-
-const $RawQueryColumn = $RawQueryProps.and($TabularColumn);
 type RawQueryColumn = z.infer<typeof $RawQueryColumn>;
 
 export {
@@ -156,7 +174,6 @@ export type {
   IntColumn,
   PermissionLevel,
   RawQueryColumn,
-  RawQueryProps,
   StringColumn,
   TabularColumn,
   TabularColumnInfo,
