@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import type { DatasetViewPagination, TabularDataset } from '@databank/core';
 import { capitalize } from '@douglasneuroinformatics/libjs';
-import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
+import { Button, Card, DropdownMenu, Heading } from '@douglasneuroinformatics/libui/components';
 import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
@@ -124,6 +124,16 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
               >
                 {t('manageDatasetManagers')}
               </Button>
+
+              {dataset.isReadyToShare ? (
+                <Heading className="bg-lime-500" variant={'h2'}>
+                  This Dataset is Ready to be shared
+                </Heading>
+              ) : (
+                <Heading className="bg-orange-500" variant={'h2'}>
+                  This Dataset is Staged and Not ready for sharing
+                </Heading>
+              )}
 
               <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(dataset.id)}>
                 {t('deleteDataset')}
