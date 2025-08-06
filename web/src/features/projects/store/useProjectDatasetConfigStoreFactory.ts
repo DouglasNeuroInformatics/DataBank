@@ -35,10 +35,11 @@ export const useProjectDatasetConfigStoreFactory = (projectId: string, datasetId
           currentColumnIdIndex: 0,
           currentStep: 'selectColumns',
           pageSize: 10,
-          rowConfig: { rowMin: 0 },
+          rowConfig: { rowMax: null, rowMin: 0 },
           selectedColumns: {}
         }),
       rowConfig: {
+        rowMax: null,
         rowMin: 0
       },
       selectedColumns: {},

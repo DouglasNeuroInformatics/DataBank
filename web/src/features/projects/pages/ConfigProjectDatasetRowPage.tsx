@@ -11,7 +11,8 @@ type ConfigProjectDatasetRowPageProps = {
 export const ConfigProjectDatasetRowPage = ({ setRowConfig, setStep }: ConfigProjectDatasetRowPageProps) => {
   const handleSubmitRowConfig = (data: ProjectDatasetRowConfig) => {
     const rowConfigObject: ProjectDatasetRowConfig = {
-      rowMin: 0
+      rowMin: 0,
+      rowMax: null
     };
     if (data.rowMax) {
       rowConfigObject.rowMax = data.rowMax;
@@ -39,7 +40,7 @@ export const ConfigProjectDatasetRowPage = ({ setRowConfig, setStep }: ConfigPro
         rowMin: z.number().int().gte(0),
         rowMax: z.number().int().gte(0).optional()
       })}
-      onSubmit={(data) => handleSubmitRowConfig(data)}
+      onSubmit={(data) => handleSubmitRowConfig({ rowMin: data.rowMin, rowMax: data.rowMax ?? null })}
     />
   );
 };
