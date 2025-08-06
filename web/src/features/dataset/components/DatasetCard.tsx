@@ -26,10 +26,12 @@ const DatasetCard = ({
       <Card className="my-3">
         <Card.Header>
           <Card.Title>{name}</Card.Title>
-          <Card.Description>{description}</Card.Description>
-          <Badge variant={status === 'Fail' ? 'destructive' : status === 'Processing' ? 'secondary' : 'default'}>
-            {status}
-          </Badge>
+          <Card.Description>Dataset Description : {description}</Card.Description>
+          {status !== 'Success' ? (
+            <Badge variant={status === 'Fail' ? 'destructive' : 'secondary'}>{status}</Badge>
+          ) : (
+            <></>
+          )}
         </Card.Header>
         <Card.Content>
           <ul>
