@@ -179,7 +179,7 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('newPermissionLevel') newPermissionLevel: PermissionLevelDto
+    @Body() newPermissionLevel: PermissionLevelDto
   ) {
     return this.datasetsService.changeColumnDataPermission(datasetId, columnId, userId, newPermissionLevel.permission);
   }
@@ -191,7 +191,7 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('newPermissionLevel') newPermissionLevel: PermissionLevelDto
+    @Body() newPermissionLevel: PermissionLevelDto
   ) {
     return this.datasetsService.changeColumnMetadataPermission(
       datasetId,

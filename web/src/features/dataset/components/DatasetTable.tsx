@@ -15,7 +15,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
 
   const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
     await axios.patch(`/v1/datasets/column-metadata-permission/${tabularDataset.id}/${columnId}`, {
-      newPermissionLevel
+      permission: newPermissionLevel
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
@@ -26,7 +26,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
 
   const handleSetColumnDataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
     await axios.patch(`/v1/datasets/column-data-permission/${tabularDataset.id}/${columnId}`, {
-      newPermissionLevel
+      permission: newPermissionLevel
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({

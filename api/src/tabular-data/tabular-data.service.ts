@@ -321,14 +321,14 @@ export class TabularDataService {
         case 'DATETIME':
           col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (col._id.$oid in columnIdsModifyData) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value?.toISOString() ?? null;
             }
           });
 
-          if (!(col._id.$oid in columnIdsModifyMetadata)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
               datetimeSummary: col.summary.datetimeSummary,
@@ -342,14 +342,14 @@ export class TabularDataService {
           col.enumData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (col._id.$oid in columnIdsModifyData) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
 
-          if (!(col._id.$oid in columnIdsModifyMetadata)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
               enumSummary: col.summary.enumSummary,
@@ -362,14 +362,14 @@ export class TabularDataService {
         case 'FLOAT':
           col.floatData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (col._id.$oid in columnIdsModifyData) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
 
-          if (!(col._id.$oid in columnIdsModifyMetadata)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
               floatSummary: col.summary.floatSummary,
@@ -382,13 +382,13 @@ export class TabularDataService {
         case 'INT':
           col.intData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (col._id.$oid in columnIdsModifyData) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
-          if (!(col._id.$oid in columnIdsModifyMetadata)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
               intSummary: col.summary.intSummary,
@@ -402,14 +402,14 @@ export class TabularDataService {
           col.stringData.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (col._id.$oid in columnIdsModifyData) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
 
-          if (!(col._id.$oid in columnIdsModifyMetadata)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
               kind: 'STRING',
