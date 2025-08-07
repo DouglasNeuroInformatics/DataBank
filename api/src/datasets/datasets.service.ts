@@ -977,8 +977,8 @@ export class DatasetsService {
         break;
       case 'ENUM': {
         const enumSummaryObj: { [key: string]: number } = {};
-        (datasetMetadata.enumSummary.distribution as unknown as [{ '': string; count: number }]).map((entry) => {
-          enumSummaryObj[entry['']] = entry.count;
+        Object.entries(datasetMetadata.enumSummary.distribution).forEach(([value, count]) => {
+          enumSummaryObj[value] = count;
         });
         metadata_row.push(
           ...[
