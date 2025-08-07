@@ -19,6 +19,14 @@
     "en": "View Datasets",
     "fr": "Voir les bases de données"
   },
+  "datasetReadyToShare": {
+    "en": "This dataset is ready to be shared",
+    "fr": "Ce jeu de données est prêt à être partagé"
+  },
+  "datasetNotReadyToShare": {
+    "en": "This dataset is staged and not ready to be shared",
+    "fr": "Ce jeu de données est en préparation et n'est pas prêt à être partagé"
+  },
   "home": {
     "en": "Home Page",
     "fr": "Page d'accueil"
