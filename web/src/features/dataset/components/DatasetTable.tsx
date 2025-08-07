@@ -1,6 +1,6 @@
 import type { ColumnType, PermissionLevel, TabularDataset } from '@databank/core';
 import { DropdownMenu, Table } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useDestructiveAction, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -52,14 +52,14 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     });
   };
 
-  const handleDeleteColumn = async (columnId: string) => {
+  const handleDeleteColumn = useDestructiveAction(async (columnId: string) => {
     await axios.delete(`/v1/datasets/column/${tabularDataset.id}/${columnId}`);
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({
       message: `Column with Id ${columnId} has been deleted`,
       type: 'success'
     });
-  };
+  });
 
   const getSummary = (columnName: string) => {
     if (!tabularDataset.metadata[columnName]) {
