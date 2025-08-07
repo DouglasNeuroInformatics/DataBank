@@ -116,7 +116,7 @@ export const ConfigProjectDatasetColumnsPage = ({
     }
 
     return resContent;
-  }, []);
+  }, [selectedColumns]);
 
   const formValidation = generateValidationSchema();
   const formContent = generateContent();
