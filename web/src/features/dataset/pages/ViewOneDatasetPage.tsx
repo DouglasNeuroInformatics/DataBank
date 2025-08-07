@@ -4,12 +4,7 @@ import { useState } from 'react';
 import type { DatasetViewPagination, TabularDataset } from '@databank/core';
 import { capitalize } from '@douglasneuroinformatics/libjs';
 import { Button, Card, DropdownMenu, Heading } from '@douglasneuroinformatics/libui/components';
-import {
-  useDestructiveAction,
-  useDownload,
-  useNotificationsStore,
-  useTranslation
-} from '@douglasneuroinformatics/libui/hooks';
+import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
@@ -140,7 +135,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
                 </Heading>
               )}
 
-              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(dataset.id)}>
+              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(params.datasetId!)}>
                 {t('deleteDataset')}
               </Button>
             </div>
