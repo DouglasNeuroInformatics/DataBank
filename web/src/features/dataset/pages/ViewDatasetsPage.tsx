@@ -54,7 +54,12 @@ const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
         </Card.Header>
         <Card.Content>
           {datasetsInfoArray?.length === 0 ? (
-            <Heading variant={'h2'}>No Datasets Available</Heading>
+            <Heading variant={'h2'}>
+              {t({
+                en: 'No Datasets Available',
+                fr: 'Aucun ensemble de données disponible'
+              })}
+            </Heading>
           ) : (
             <ul>
               {datasetsInfoArray?.map((datasetInfo, i) => {
