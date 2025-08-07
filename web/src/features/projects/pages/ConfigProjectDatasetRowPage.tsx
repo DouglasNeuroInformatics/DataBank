@@ -17,9 +17,6 @@ export const ConfigProjectDatasetRowPage = ({ setRowConfig, setStep }: ConfigPro
     setStep('configColumns');
   };
 
-  // …the rest of your component…
-};
-
   return (
     <Form
       content={{
