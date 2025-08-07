@@ -973,7 +973,11 @@ export class DatasetsService {
           ]
         );
         break;
-      case 'ENUM':
+      case 'ENUM': {
+        const enumSummaryObj: { [key: string]: number } = {};
+        (datasetMetadata.enumSummary.distribution as unknown as [{ '': string; count: number }]).map((entry) => {
+          enumSummaryObj[entry['']] = entry.count;
+        });
         metadata_row.push(
           ...[
             columnName,
@@ -987,10 +991,11 @@ export class DatasetsService {
             '',
             '',
             '',
-            JSON.stringify(datasetMetadata.enumSummary.distribution)
+            JSON.stringify(enumSummaryObj)
           ]
         );
         break;
+      }
       case 'FLOAT':
         metadata_row.push(
           ...[
