@@ -82,9 +82,14 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
       case 'DATETIME':
         summary = metadataObj.datetimeSummary;
         break;
-      case 'ENUM':
-        summary = metadataObj.enumSummary;
+      case 'ENUM': {
+        const enumSummaryObj: { [key: string]: number } = {};
+        (metadataObj.enumSummary.distribution as unknown as [{ '': string; count: number }]).map((entry) => {
+          enumSummaryObj[entry['']] = entry.count;
+        });
+        summary = enumSummaryObj;
         break;
+      }
       case 'FLOAT':
         summary = metadataObj.floatSummary;
         break;
@@ -104,6 +109,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
               <h4>{`Data Type: ${metadataObj.kind}`}</h4>
               <h4>{`Null Count: ${metadataObj.nullCount}`}</h4>
               <h4>{`Count: ${metadataObj.count}`}</h4>
+              <hr />
               {Object.entries(summary).map(([key, value]) => {
                 return <h4 key={key}>{`${key}: ${value}`}</h4>;
               })}
