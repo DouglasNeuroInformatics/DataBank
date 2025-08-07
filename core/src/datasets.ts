@@ -59,9 +59,7 @@ const $TabularDataRow = z.record(z.union([z.string().nullable(), z.number(), z.b
 type TabularDataRow = z.infer<typeof $TabularDataRow>;
 
 const $TabularDatasetView = z.object({
-  columnDataPermission: z.record($PermissionLevel),
   columnIds: z.record(z.string()),
-  columnMetadataPermission: z.record($PermissionLevel),
   columns: z.string().array(),
   metadata: z.record($TabularColumnSummary),
   primaryKeys: z.string().array(),
@@ -72,8 +70,6 @@ const $TabularDatasetView = z.object({
 type TabularDatasetView = z.infer<typeof $TabularDatasetView>;
 
 const $ProjectTabularDatasetView = $TabularDatasetView.omit({
-  columnDataPermission: true,
-  columnMetadataPermission: true,
   primaryKeys: true
 });
 type ProjectTabularDatasetView = z.infer<typeof $ProjectTabularDatasetView>;
