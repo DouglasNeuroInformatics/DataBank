@@ -1,5 +1,5 @@
 import { isPlainObject } from '@douglasneuroinformatics/libjs';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useDestructiveAction, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import axios, { isAxiosError } from 'axios';
@@ -9,7 +9,7 @@ export const useDeleteDataset = () => {
   const queryClient = useQueryClient();
   const navigation = useNavigate();
 
-  const deleteDataset = (datasetId: string) => {
+  return useDestructiveAction((datasetId: string) => {
     axios
       .delete(`/v1/datasets/${datasetId}`)
       .then(() => {
@@ -35,7 +35,5 @@ export const useDeleteDataset = () => {
           type: 'error'
         });
       });
-  };
-
-  return deleteDataset;
+  });
 };

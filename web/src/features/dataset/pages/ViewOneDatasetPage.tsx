@@ -4,7 +4,12 @@ import { useState } from 'react';
 import type { DatasetViewPagination, TabularDataset } from '@databank/core';
 import { capitalize } from '@douglasneuroinformatics/libjs';
 import { Button, Card, DropdownMenu, Heading } from '@douglasneuroinformatics/libui/components';
-import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import {
+  useDestructiveAction,
+  useDownload,
+  useNotificationsStore,
+  useTranslation
+} from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
