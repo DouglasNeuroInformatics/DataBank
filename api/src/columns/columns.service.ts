@@ -575,9 +575,7 @@ export class ColumnsService {
             datetimeColumnValidation: undefined,
             datetimeData: undefined,
             summary: {
-              count: data.len() - data.nullCount(),
-              datetimeSummary: undefined,
-              nullCount: data.nullCount()
+              datetimeSummary: undefined
             }
           },
           where: {
@@ -592,9 +590,7 @@ export class ColumnsService {
             enumColumnValidation: undefined,
             enumData: undefined,
             summary: {
-              count: data.len() - data.nullCount(),
-              enumSummary: undefined,
-              nullCount: data.nullCount()
+              enumSummary: undefined
             }
           },
           where: {
@@ -609,9 +605,7 @@ export class ColumnsService {
             floatData: undefined,
             numericColumnValidation: undefined,
             summary: {
-              count: data.len() - data.nullCount(),
-              floatSummary: undefined,
-              nullCount: data.nullCount()
+              floatSummary: undefined
             }
           },
           where: {
@@ -626,9 +620,7 @@ export class ColumnsService {
             intData: undefined,
             numericColumnValidation: undefined,
             summary: {
-              count: data.len() - data.nullCount(),
-              intSummary: undefined,
-              nullCount: data.nullCount()
+              intSummary: undefined
             }
           },
           where: {
@@ -641,11 +633,7 @@ export class ColumnsService {
         removeFromCol = this.columnModel.update({
           data: {
             stringColumnValidation: undefined,
-            stringData: undefined,
-            summary: {
-              count: data.len() - data.nullCount(),
-              nullCount: data.nullCount()
-            }
+            stringData: undefined
           },
           where: {
             id: col.id
@@ -658,8 +646,9 @@ export class ColumnsService {
     // if the cast is passed, add new data, summary, and validation to the column
     let addToCol;
     switch (colType) {
-      case 'DATETIME':
+      case 'DATETIME': {
         data = data.cast(pl.Date, true);
+        const newDatetimeSummary = this.calculateSummaryOnSeries('DATETIME', data);
         addToCol = this.columnModel.update({
           data: {
             datetimeColumnValidation: {
@@ -671,12 +660,9 @@ export class ColumnsService {
             }),
             kind: colType,
             summary: {
-              count: data.len() - data.nullCount(),
-              datetimeSummary: {
-                max: new Date(),
-                min: '1970-01-01'
-              },
-              nullCount: data.nullCount()
+              count: newDatetimeSummary.count,
+              datetimeSummary: newDatetimeSummary.datetimeSummary,
+              nullCount: newDatetimeSummary.nullCount
             }
           },
           where: {
@@ -684,8 +670,10 @@ export class ColumnsService {
           }
         });
         break;
-      case 'ENUM':
+      }
+      case 'ENUM': {
         data = data.cast(pl.Utf8, true);
+        const newEnumSummary = this.calculateSummaryOnSeries('ENUM', data);
         addToCol = this.columnModel.update({
           data: {
             enumData: data.toArray().map((entry: string) => {
@@ -693,13 +681,9 @@ export class ColumnsService {
             }),
             kind: colType,
             summary: {
-              count: data.len() - data.nullCount(),
-              // valueCounts() function always return null.
-              // issue opened on nodejs-polars github
-              // enumSummary: {
-              //   distribution: data.valueCounts().toJSON()
-              // },
-              nullCount: data.nullCount()
+              count: newEnumSummary.count,
+              enumSummary: newEnumSummary.enumSummary,
+              nullCount: newEnumSummary.nullCount
             }
           },
           where: {
@@ -707,8 +691,10 @@ export class ColumnsService {
           }
         });
         break;
-      case 'FLOAT':
+      }
+      case 'FLOAT': {
         data = data.cast(pl.Float64, true);
+        const newFloatSummary = this.calculateSummaryOnSeries('FLOAT', data);
         addToCol = this.columnModel.update({
           data: {
             floatData: data.toArray().map((entry: number) => {
@@ -720,16 +706,9 @@ export class ColumnsService {
               min: data.min()
             },
             summary: {
-              count: data.len() - data.nullCount(),
-              floatSummary: {
-                max: data.max(),
-                mean: data.mean(),
-                median: data.median(),
-                min: data.min(),
-                // @ts-expect-error - see issue
-                std: data.rollingStd(data.len())[-1]
-              },
-              nullCount: data.nullCount()
+              count: newFloatSummary.count,
+              floatSummary: newFloatSummary.floatSummary,
+              nullCount: newFloatSummary.nullCount
             }
           },
           where: {
@@ -737,8 +716,10 @@ export class ColumnsService {
           }
         });
         break;
-      case 'INT':
+      }
+      case 'INT': {
         data = data.cast(pl.Int64, true);
+        const newIntSummary = this.calculateSummaryOnSeries('INT', data);
         addToCol = this.columnModel.update({
           data: {
             intData: data.toArray().map((entry: number) => {
@@ -750,18 +731,9 @@ export class ColumnsService {
               min: data.min()
             },
             summary: {
-              count: data.len() - data.nullCount(),
-              intSummary: {
-                max: data.max(),
-                mean: data.mean(),
-                median: data.median(),
-                min: data.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                mode: data.mode()[0],
-                // @ts-expect-error - see issue
-                std: data.rollingStd(data.len())[-1]
-              },
-              nullCount: data.len()
+              count: newIntSummary.count,
+              intSummary: newIntSummary.intSummary,
+              nullCount: newIntSummary.nullCount
             }
           },
           where: {
@@ -769,8 +741,10 @@ export class ColumnsService {
           }
         });
         break;
-      case 'STRING':
+      }
+      case 'STRING': {
         data = data.cast(pl.Utf8, true);
+        const newStringSummary = this.calculateSummaryOnSeries('STRING', data);
         addToCol = this.columnModel.update({
           data: {
             kind: colType,
@@ -781,8 +755,8 @@ export class ColumnsService {
               return { value: entry };
             }),
             summary: {
-              count: data.len() - data.nullCount(),
-              nullCount: data.nullCount()
+              count: newStringSummary.count,
+              nullCount: newStringSummary.nullCount
             }
           },
           where: {
@@ -790,6 +764,7 @@ export class ColumnsService {
           }
         });
         break;
+      }
     }
 
     return (await this.prisma.$transaction([removeFromCol, addToCol])) as unknown[];
