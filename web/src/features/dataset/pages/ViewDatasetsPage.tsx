@@ -57,7 +57,7 @@ const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
             <Heading variant={'h2'}>No Datasets Available</Heading>
           ) : (
             <ul>
-              {datasetsInfoArray?.map((datasetInfo, i) => {
+              {datasetsInfoArray?.map((datasetInfo) => {
                 let isManager: boolean;
                 if (!currentUser?.id) {
                   isManager = false;
@@ -66,7 +66,7 @@ const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
                 }
                 return (
                   datasetInfo && (
-                    <li key={i}>
+                    <li key={datasetInfo.id}>
                       <DatasetCard
                         createdAt={datasetInfo.createdAt}
                         datasetType={datasetInfo.datasetType}
@@ -74,7 +74,7 @@ const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
                         id={datasetInfo.id}
                         isManager={isManager}
                         isPublic={isPublic}
-                        isReadyToShare={dataset.isReadyToShare}
+                        isReadyToShare={datasetInfo.isReadyToShare}
                         license={datasetInfo.license}
                         managerIds={datasetInfo.managerIds}
                         name={datasetInfo.name}
