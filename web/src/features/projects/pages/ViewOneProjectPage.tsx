@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import type { DatasetCardProps } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useDestructiveAction, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 
@@ -34,7 +34,7 @@ const ViewOneProjectPage = () => {
 
   const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
 
-  const deleteProject = (projectId: string) => {
+  const deleteProject = useDestructiveAction((projectId: string) => {
     axios
       .delete(`/v1/projects/${projectId}`)
       .then(() => {
@@ -45,7 +45,7 @@ const ViewOneProjectPage = () => {
         void navigate({ to: '/portal/projects' });
       })
       .catch(console.error);
-  };
+  });
 
   useEffect(() => {
     axios
