@@ -801,9 +801,7 @@ export class DatasetsService {
 
     let datasetView: TabularDatasetView;
     const emptyDatasetView = {
-      columnDataPermission: {},
       columnIds: {},
-      columnMetadataPermission: {},
       columns: [],
       metadata: {},
       primaryKeys: [],
