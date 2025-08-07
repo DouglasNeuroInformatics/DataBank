@@ -312,10 +312,14 @@ export class TabularDataService {
     }
 
     const metaData: { [key: string]: TabularColumnSummary } = {};
+    const columnDataPermission: { [key: string]: PermissionLevel } = {};
+    const columnMetadataPermission: { [key: string]: PermissionLevel } = {};
 
     for (const col of columnsFromDB) {
       columnIds[col.name] = col._id.$oid;
       columns.push(col.name);
+      columnDataPermission[col.name] = col.dataPermission;
+      columnMetadataPermission[col.name] = col.dataPermission;
 
       switch (col.kind) {
         case 'DATETIME':
@@ -422,7 +426,9 @@ export class TabularDataService {
     }
 
     const dataView: TabularDatasetView = {
+      columnDataPermission,
       columnIds,
+      columnMetadataPermission,
       columns,
       metadata: metaData,
       primaryKeys: tabularData.primaryKeys,
