@@ -10,17 +10,15 @@ type ConfigProjectDatasetRowPageProps = {
 
 export const ConfigProjectDatasetRowPage = ({ setRowConfig, setStep }: ConfigProjectDatasetRowPageProps) => {
   const handleSubmitRowConfig = (data: ProjectDatasetRowConfig) => {
-    const rowConfigObject: ProjectDatasetRowConfig = {
-      rowMin: 0,
-      rowMax: null
-    };
-    if (data.rowMax) {
-      rowConfigObject.rowMax = data.rowMax;
-    }
-    rowConfigObject.rowMin = data.rowMin;
-    setRowConfig(rowConfigObject);
+    setRowConfig({
+      rowMin: data.rowMin,
+      rowMax: data.rowMax ?? null
+    });
     setStep('configColumns');
   };
+
+  // …the rest of your component…
+};
 
   return (
     <Form
