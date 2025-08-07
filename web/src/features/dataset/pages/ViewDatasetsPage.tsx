@@ -74,7 +74,7 @@ const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
                         id={datasetInfo.id}
                         isManager={isManager}
                         isPublic={isPublic}
-                        isReadyToShare={false}
+                        isReadyToShare={dataset.isReadyToShare}
                         license={datasetInfo.license}
                         managerIds={datasetInfo.managerIds}
                         name={datasetInfo.name}
