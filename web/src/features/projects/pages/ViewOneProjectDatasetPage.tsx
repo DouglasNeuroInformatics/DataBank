@@ -3,7 +3,12 @@ import { useEffect, useState } from 'react';
 
 import type { DatasetViewPagination, TabularDataset } from '@databank/core';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
-import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import {
+  useDestructiveAction,
+  useDownload,
+  useNotificationsStore,
+  useTranslation
+} from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
@@ -50,7 +55,7 @@ const ViewOneProjectDatasetPage = () => {
 
   const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
 
-  const deleteDataset = () => {
+  const deleteDataset = useDestructiveAction(() => {
     axios
       .delete(`/v1/projects/remove-dataset/${params.projectId}/${params.datasetId}`)
       .then(() => {
@@ -61,7 +66,7 @@ const ViewOneProjectDatasetPage = () => {
         void navigate({ to: `/portal/projects/${params.projectId}` });
       })
       .catch(console.error);
-  };
+  });
 
   const handleDataDownload = async (format: 'CSV' | 'TSV', data: TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
