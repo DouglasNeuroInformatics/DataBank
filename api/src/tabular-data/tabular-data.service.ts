@@ -10,7 +10,7 @@ import type {
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
-import type { PermissionLevel } from '@prisma/client';
+import type { PermissionLevel, Prisma } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
 
@@ -173,19 +173,25 @@ export class TabularDataService {
             nullCount: currColumnView.summary.nullCount
           };
           break;
-        case 'ENUM':
+        case 'ENUM': {
           currColumnView.enumData.map((entry, i) => {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
           metaData[currColumnView.name] = {
             count: currColumnView.summary.count,
-            enumSummary: { distribution: {} },
+            enumSummary: {
+              distribution: currColumnView.summary.enumSummary?.distribution as unknown as Prisma.JsonArray as {
+                '': string;
+                count: number;
+              }[]
+            },
             kind: currColumnView.kind,
             nullable: currColumnView.nullable,
             nullCount: currColumnView.summary.nullCount
           };
           break;
+        }
         case 'FLOAT':
           currColumnView.floatData.map((entry, i) => {
             rows[i] ??= {};

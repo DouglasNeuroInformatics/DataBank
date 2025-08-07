@@ -393,7 +393,7 @@ export class ColumnsService {
         }
 
         if (!changedToString) {
-          const newEnumSummary = this.calculateSummaryOnSeries('DATETIME', enumSeries);
+          const newEnumSummary = this.calculateSummaryOnSeries('ENUM', enumSeries);
           projectColumn.summary.enumSummary = newEnumSummary.enumSummary!;
           projectColumn.summary.count = newEnumSummary.count;
           projectColumn.summary.nullCount = newEnumSummary.nullCount;

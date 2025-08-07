@@ -17,7 +17,7 @@ import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnes
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
-import type { TabularColumn } from '@prisma/client';
+import type { Prisma, TabularColumn } from '@prisma/client';
 import { Queue } from 'bullmq';
 
 import { ColumnsService } from '@/columns/columns.service.js';
@@ -975,8 +975,8 @@ export class DatasetsService {
         break;
       case 'ENUM': {
         const enumSummaryObj: { [key: string]: number } = {};
-        Object.entries(datasetMetadata.enumSummary.distribution).forEach(([value, count]) => {
-          enumSummaryObj[value] = count;
+        datasetMetadata.enumSummary.distribution.forEach((entry) => {
+          enumSummaryObj[entry['']] = entry.count;
         });
         metadata_row.push(
           ...[
@@ -1068,16 +1068,29 @@ export class DatasetsService {
           nullable: column.nullable,
           nullCount: column.summary.nullCount
         };
-      case 'ENUM':
+      case 'ENUM': {
+        // enumSummary.distribution is an array of objects: [{"": "EnumOption", "count": integer}, ...]
+        const distributionObj: { [key: string]: number } = {};
+        (column.summary.enumSummary?.distribution as Prisma.JsonArray as { '': string; count: number }[]).forEach(
+          (entry) => {
+            distributionObj[entry['']] = entry.count;
+          }
+        );
         return {
           count: column.summary.count,
-          enumSummary: { distribution: {} }, // FIX THIS LATER
+          enumSummary: {
+            distribution: column.summary.enumSummary?.distribution as Prisma.JsonArray as {
+              '': string;
+              count: number;
+            }[]
+          },
           id: column.id,
           kind: 'ENUM',
           name: column.name,
           nullable: column.nullable,
           nullCount: column.summary.nullCount
         };
+      }
       case 'FLOAT':
         return {
           count: column.summary.count,

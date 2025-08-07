@@ -34,16 +34,21 @@ const $IntSummary = z.object({
   std: z.number()
 });
 
+const $EnumSummaryFromDB = z.object({
+  distribution: z
+    .object({
+      '': z.string(),
+      count: z.number().int().gte(0)
+    })
+    .array()
+});
+
 const $FloatSummary = z.object({
   max: z.number(),
   mean: z.number(),
   median: z.number(),
   min: z.number(),
   std: z.number()
-});
-
-const $EnumSummary = z.object({
-  distribution: z.record(z.number().int())
 });
 
 const $DatetimeSummary = z.object({
@@ -94,7 +99,7 @@ const $EnumColumn = z.object({
       value: z.string().optional()
     })
   ),
-  enumSummary: $EnumSummary,
+  enumSummary: $EnumSummaryFromDB,
   kind: z.literal($ColumnType.Enum.ENUM)
 });
 type EnumColumn = z.infer<typeof $EnumColumn>;
@@ -142,7 +147,7 @@ const $RawQueryColumn = z.object({
   summary: z.object({
     count: z.number().int().gte(0),
     datetimeSummary: $DatetimeSummary.nullable(),
-    enumSummary: $EnumSummary.nullable(),
+    enumSummary: $EnumSummaryFromDB.nullable(),
     floatSummary: $FloatSummary.nullable(),
     intSummary: $IntSummary.nullable(),
     nullCount: z.number().int().gte(0)
