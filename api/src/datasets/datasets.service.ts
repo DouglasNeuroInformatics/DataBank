@@ -884,7 +884,7 @@ export class DatasetsService {
       throw new NotFoundException(`Manager with id ${managerIdToRemove} is not found!`);
     }
 
-    const newManagerIds = dataset.managerIds.filter((val) => val != managerIdToRemove);
+    const newManagerIds = dataset.managerIds.filter((val) => val !== managerIdToRemove);
 
     const updateDatasetManagerIds = this.datasetModel.update({
       data: {
@@ -895,7 +895,7 @@ export class DatasetsService {
       }
     });
 
-    const newDatasetIds = managerToRemove.datasetId.filter((val) => val != datasetId);
+    const newDatasetIds = managerToRemove.datasetId.filter((val) => val !== datasetId);
 
     const updateManagerToRemoveDatasetIds = this.usersService.updateUser(managerIdToRemove, {
       datasetId: newDatasetIds

@@ -75,7 +75,7 @@ export class ColumnsService {
           floatData: dataArray,
           kind: 'FLOAT',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           // numericColumnValidation: {
           //   max: col.max(),
           //   min: col.min()
@@ -101,7 +101,7 @@ export class ColumnsService {
           intData: dataArray,
           kind: 'INT',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           // numericColumnValidation: {
           //   max: col.max(),
           //   min: col.min()
@@ -129,7 +129,7 @@ export class ColumnsService {
           enumData: dataArray,
           kind: 'ENUM',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           // numericColumnValidation: {
           //   max: col.max(),
           //   min: col.min()
@@ -157,7 +157,7 @@ export class ColumnsService {
           datetimeData: dataArray,
           kind: 'DATETIME',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           // numericColumnValidation: {
           //   max: col.max(),
           //   min: col.min()
@@ -180,7 +180,7 @@ export class ColumnsService {
           dataPermission: 'MANAGER',
           kind: 'STRING',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           stringData: dataArray,
           // numericColumnValidation: {
           //   max: col.max(),
@@ -325,7 +325,7 @@ export class ColumnsService {
         }
 
         if (getColumnViewDto.trim) {
-          if (projectColumn.kind != 'STRING') {
+          if (projectColumn.kind !== 'STRING') {
             // change the original series to type string to perform hash
             projectColumn.kind = 'STRING';
             changedToString = true;
@@ -382,7 +382,7 @@ export class ColumnsService {
         }
 
         if (getColumnViewDto.trim) {
-          if (projectColumn.kind != 'STRING') {
+          if (projectColumn.kind !== 'STRING') {
             // change the original series to type string to perform hash
             projectColumn.kind = 'STRING';
             changedToString = true;
@@ -438,7 +438,7 @@ export class ColumnsService {
         }
 
         if (getColumnViewDto.trim) {
-          if (projectColumn.kind != 'STRING') {
+          if (projectColumn.kind !== 'STRING') {
             // change the original series to type string to perform hash
             projectColumn.kind = 'STRING';
             changedToString = true;
@@ -494,7 +494,7 @@ export class ColumnsService {
         }
 
         if (getColumnViewDto.trim) {
-          if (projectColumn.kind != 'STRING') {
+          if (projectColumn.kind !== 'STRING') {
             // change the original series to type string to perform hash
             projectColumn.kind = 'STRING';
             changedToString = true;
