@@ -83,7 +83,12 @@ const AddProjectDatasetColumnPage = () => {
         });
         void navigate({ to: `/portal/projects/${params.projectId}` });
       })
-      .catch(console.error);
+      .catch((error) => {
+        notifications.addNotification({
+          message: `Failed to add dataset to project: ${error}`,
+          type: 'error'
+        });
+      });
   };
 
   const selectedColumnsIdArray = Object.keys(selectedColumns);
