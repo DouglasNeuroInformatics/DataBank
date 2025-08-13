@@ -19,6 +19,10 @@
     "en": "View Datasets",
     "fr": "Voir les bases de données"
   },
+  "currentDatasetPermission": {
+    "en": "Current Dataset Permission Level:",
+    "fr": "Niveau d'autorisation actuel de l'ensemble de données :"
+  },
   "datasetReadyToShare": {
     "en": "This dataset is ready to be shared",
     "fr": "Ce jeu de données est prêt à être partagé"
