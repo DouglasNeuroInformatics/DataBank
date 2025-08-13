@@ -109,6 +109,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
         <Card.Header>
           <Card.Title>{`${t('datasetName')}: ${datasetName}`}</Card.Title>
           <Card.Description>{`${t('datasetDescription')}: ${dataset.description}`}</Card.Description>
+          <Card.Description>{`${t('currentDatasetPermission')}: ${dataset.permission}`}</Card.Description>
           <Card.Description>{`${t('createdAt')} : ${dataset.createdAt.toString()}`}</Card.Description>
           <Card.Description>{`${t('updatedAt')} : ${dataset.updatedAt.toString()}`}</Card.Description>
           {isManager && (
@@ -184,7 +185,6 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
               managerIds={dataset.managerIds}
               metadata={dataset.metadata}
               name={dataset.name}
-              permission={dataset.permission}
               primaryKeys={dataset.primaryKeys}
               rows={dataset.rows}
               status={dataset.status}

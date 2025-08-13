@@ -99,10 +99,6 @@ const ViewOneProjectDatasetPage = () => {
         <Card.Content>
           <ul>
             <li>
-              {t('currentDatasetPermission')}
-              {`: ${dataset.permission}`}
-            </li>
-            <li>
               {t('createdAt')}
               {`: ${dataset.createdAt.toString()}`}
             </li>
