@@ -5,7 +5,7 @@ import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/r
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-type DatasetTableProps = Omit<TabularDataset, 'permission'> & { isManager: boolean };
+type DatasetTableProps = Omit<TabularDataset, 'permission'> & { isManager: boolean; isProject: boolean };
 
 export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const { t } = useTranslation('common');
@@ -137,6 +137,17 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                     {tabularDataset.isManager && (
                       <>
                         <DropdownMenu.Group>
+                          {!tabularDataset.isProject ? (
+                            <>
+                              <DropdownMenu.Item>
+                                {`Data Permission: ${tabularDataset.metadata[column]!.dataPermission}`}
+                              </DropdownMenu.Item>
+                              <DropdownMenu.Item>
+                                {`Metadata Permission: ${tabularDataset.metadata[column]!.metadataPermission}`}
+                              </DropdownMenu.Item>
+                              <hr />
+                            </>
+                          ) : null}
                           <DropdownMenu.Item
                             disabled={tabularDataset.primaryKeys.includes(column)}
                             onClick={() => void handleToggleColumnNullable(tabularDataset.columnIds[column]!)}

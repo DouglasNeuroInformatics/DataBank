@@ -180,6 +180,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
               description={dataset.description}
               id={dataset.id}
               isManager={isManager}
+              isProject={false}
               isReadyToShare={dataset.isReadyToShare}
               license={dataset.license}
               managerIds={dataset.managerIds}

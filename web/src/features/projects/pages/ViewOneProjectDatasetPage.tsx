@@ -125,6 +125,7 @@ const ViewOneProjectDatasetPage = () => {
             description={dataset.description}
             id={dataset.id}
             isManager={false}
+            isProject={true}
             isReadyToShare={dataset.isReadyToShare}
             license={dataset.license}
             managerIds={dataset.managerIds}

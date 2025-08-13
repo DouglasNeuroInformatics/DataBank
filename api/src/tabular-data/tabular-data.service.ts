@@ -167,8 +167,10 @@ export class TabularDataService {
           });
           metaData[currColumnView.name] = {
             count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
             datetimeSummary: currColumnView.summary.datetimeSummary!,
             kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
             nullable: currColumnView.nullable,
             nullCount: currColumnView.summary.nullCount
           };
@@ -180,6 +182,7 @@ export class TabularDataService {
           });
           metaData[currColumnView.name] = {
             count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
             enumSummary: {
               distribution: currColumnView.summary.enumSummary?.distribution as unknown as Prisma.JsonArray as {
                 '': string;
@@ -187,6 +190,7 @@ export class TabularDataService {
               }[]
             },
             kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
             nullable: currColumnView.nullable,
             nullCount: currColumnView.summary.nullCount
           };
@@ -199,8 +203,10 @@ export class TabularDataService {
           });
           metaData[currColumnView.name] = {
             count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
             floatSummary: currColumnView.summary.floatSummary!,
             kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
             nullable: currColumnView.nullable,
             nullCount: currColumnView.summary.nullCount
           };
@@ -212,8 +218,10 @@ export class TabularDataService {
           });
           metaData[currColumnView.name] = {
             count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
             intSummary: currColumnView.summary.intSummary!,
             kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
             nullable: currColumnView.nullable,
             nullCount: currColumnView.summary.nullCount
           };
@@ -225,7 +233,9 @@ export class TabularDataService {
           });
           metaData[currColumnView.name] = {
             count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
             kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
             nullable: currColumnView.nullable,
             nullCount: currColumnView.summary.nullCount
           };
@@ -337,8 +347,10 @@ export class TabularDataService {
           if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
+              dataPermission: col.dataPermission,
               datetimeSummary: col.summary.datetimeSummary!,
               kind: 'DATETIME',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
               nullCount: col.summary.nullCount
             };
@@ -358,8 +370,10 @@ export class TabularDataService {
           if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
+              dataPermission: col.dataPermission,
               enumSummary: col.summary.enumSummary!,
               kind: 'ENUM',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
               nullCount: col.summary.nullCount
             };
@@ -378,8 +392,10 @@ export class TabularDataService {
           if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
+              dataPermission: col.dataPermission,
               floatSummary: col.summary.floatSummary!,
               kind: 'FLOAT',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
               nullCount: col.summary.nullCount
             };
@@ -397,8 +413,10 @@ export class TabularDataService {
           if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
+              dataPermission: col.dataPermission,
               intSummary: col.summary.intSummary!,
               kind: 'INT',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
               nullCount: col.summary.nullCount
             };
@@ -418,7 +436,9 @@ export class TabularDataService {
           if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
               count: col.summary.count,
+              dataPermission: col.dataPermission,
               kind: 'STRING',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
               nullCount: col.summary.nullCount
             };

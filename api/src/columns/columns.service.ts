@@ -14,6 +14,8 @@ import type { Series } from 'nodejs-polars';
 
 type ProjectColumnView = Pick<
   NonNullable<Awaited<ReturnType<Model<'TabularColumn'>['findUnique']>>>,
+  | 'dataPermission'
+  | 'summaryPermission'
   | 'datetimeData'
   | 'description'
   | 'enumData'

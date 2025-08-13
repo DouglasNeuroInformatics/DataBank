@@ -8,6 +8,8 @@ type PermissionLevel = z.infer<typeof $PermissionLevel>;
 
 const $BasicSummary = z.object({
   count: z.number().int().gte(0),
+  dataPermission: $PermissionLevel,
+  metadataPermission: $PermissionLevel,
   nullable: z.boolean(),
   nullCount: z.number().int().gte(0)
 });

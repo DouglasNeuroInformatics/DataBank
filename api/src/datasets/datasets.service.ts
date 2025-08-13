@@ -484,6 +484,8 @@ export class DatasetsService {
     const metaDataHeader = [
       'column_name',
       'column_type',
+      'column_data_permission',
+      'column_metadata_permission',
       'nullable',
       'count',
       'nullCount',
@@ -564,11 +566,13 @@ export class DatasetsService {
           include: {
             columns: {
               select: {
+                dataPermission: true,
                 id: true,
                 kind: true,
                 name: true,
                 nullable: true,
-                summary: true
+                summary: true,
+                summaryPermission: true
               }
             }
           }
@@ -960,6 +964,8 @@ export class DatasetsService {
           ...[
             columnName,
             datasetMetadata.kind,
+            datasetMetadata.dataPermission,
+            datasetMetadata.metadataPermission,
             datasetMetadata.nullable,
             datasetMetadata.count,
             datasetMetadata.nullCount,
@@ -982,6 +988,8 @@ export class DatasetsService {
           ...[
             columnName,
             datasetMetadata.kind,
+            datasetMetadata.dataPermission,
+            datasetMetadata.metadataPermission,
             datasetMetadata.nullable,
             datasetMetadata.count,
             datasetMetadata.nullCount,
@@ -1001,6 +1009,8 @@ export class DatasetsService {
           ...[
             columnName,
             datasetMetadata.kind,
+            datasetMetadata.dataPermission,
+            datasetMetadata.metadataPermission,
             datasetMetadata.nullable,
             datasetMetadata.count,
             datasetMetadata.nullCount,
@@ -1019,6 +1029,8 @@ export class DatasetsService {
           ...[
             columnName,
             datasetMetadata.kind,
+            datasetMetadata.dataPermission,
+            datasetMetadata.metadataPermission,
             datasetMetadata.nullable,
             datasetMetadata.count,
             datasetMetadata.nullCount,
@@ -1038,6 +1050,8 @@ export class DatasetsService {
           ...[
             columnName,
             datasetMetadata.kind,
+            datasetMetadata.dataPermission,
+            datasetMetadata.metadataPermission,
             datasetMetadata.nullable,
             datasetMetadata.count,
             datasetMetadata.nullCount,
@@ -1055,15 +1069,20 @@ export class DatasetsService {
   }
 
   private formatProjectColumn(
-    column: Pick<TabularColumn, 'id' | 'kind' | 'name' | 'nullable' | 'summary'>
+    column: Pick<
+      TabularColumn,
+      'dataPermission' | 'summaryPermission' | 'id' | 'kind' | 'name' | 'nullable' | 'summary'
+    >
   ): ProjectColumnSummary {
     switch (column.kind) {
       case 'DATETIME':
         return {
           count: column.summary.count,
+          dataPermission: column.dataPermission,
           datetimeSummary: column.summary.datetimeSummary!,
           id: column.id,
           kind: 'DATETIME',
+          metadataPermission: column.summaryPermission,
           name: column.name,
           nullable: column.nullable,
           nullCount: column.summary.nullCount
@@ -1078,6 +1097,7 @@ export class DatasetsService {
         );
         return {
           count: column.summary.count,
+          dataPermission: column.dataPermission,
           enumSummary: {
             distribution: column.summary.enumSummary?.distribution as Prisma.JsonArray as {
               '': string;
@@ -1086,6 +1106,7 @@ export class DatasetsService {
           },
           id: column.id,
           kind: 'ENUM',
+          metadataPermission: column.summaryPermission,
           name: column.name,
           nullable: column.nullable,
           nullCount: column.summary.nullCount
@@ -1094,9 +1115,11 @@ export class DatasetsService {
       case 'FLOAT':
         return {
           count: column.summary.count,
+          dataPermission: column.dataPermission,
           floatSummary: column.summary.floatSummary!,
           id: column.id,
           kind: 'FLOAT',
+          metadataPermission: column.summaryPermission,
           name: column.name,
           nullable: column.nullable,
           nullCount: column.summary.nullCount
@@ -1104,9 +1127,11 @@ export class DatasetsService {
       case 'INT':
         return {
           count: column.summary.count,
+          dataPermission: column.dataPermission,
           id: column.id,
           intSummary: column.summary.intSummary!,
           kind: 'INT',
+          metadataPermission: column.summaryPermission,
           name: column.name,
           nullable: column.nullable,
           nullCount: column.summary.nullCount
@@ -1114,8 +1139,10 @@ export class DatasetsService {
       case 'STRING':
         return {
           count: column.summary.count,
+          dataPermission: column.dataPermission,
           id: column.id,
           kind: 'STRING',
+          metadataPermission: column.summaryPermission,
           name: column.name,
           nullable: column.nullable,
           nullCount: column.summary.nullCount
