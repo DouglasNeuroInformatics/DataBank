@@ -1,6 +1,6 @@
 import type { $ProjectDataset } from '@databank/core';
 import { Button, Card, Heading } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { useStore } from 'zustand';
@@ -33,8 +33,11 @@ const AddProjectDatasetColumnPage = () => {
 
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
+  const { t } = useTranslation('common');
 
-  const handlePreviousStep = (currentStep: 'configColumns' | 'configRows' | 'selectColumns') => {
+  type CurrentStep = 'configColumns' | 'configRows' | 'selectColumns';
+
+  const handlePreviousStep = (currentStep: CurrentStep) => {
     switch (currentStep) {
       case 'configColumns':
         setStep('configRows');
@@ -63,6 +66,18 @@ const AddProjectDatasetColumnPage = () => {
         ? currentColumnIdIndex + pageSize
         : Object.keys(selectedColumns).length
     );
+  };
+
+  const getCurrentStep = (currentStep: CurrentStep): string => {
+    const prefix = 'Current Configuration Step: ';
+    switch (currentStep) {
+      case 'configColumns':
+        return prefix + 'Set Column Transformations';
+      case 'configRows':
+        return prefix + 'Set Row Configurations';
+      case 'selectColumns':
+        return prefix + 'Select Project Dataset Columns';
+    }
   };
 
   const handleSubmitConfig = () => {
@@ -100,8 +115,7 @@ const AddProjectDatasetColumnPage = () => {
       </Card.Header>
 
       <Card.Description>
-        <Heading variant="h3">Current Configuration Step:</Heading>
-        <Heading variant="h4">{currentStep}</Heading>
+        <Heading variant="h3">{getCurrentStep(currentStep)}</Heading>
       </Card.Description>
 
       <Card.Content className="w-full">
@@ -131,14 +145,14 @@ const AddProjectDatasetColumnPage = () => {
                     variant={'secondary'}
                     onClick={() => handlePreviousConfigColumnsPage(currentColumnIdIndex)}
                   >
-                    Previous Page
+                    {t('paginationPrevious')}
                   </Button>
                   <Button
-                    disabled={currentColumnIdIndex === selectedColumnsIdArray.length}
+                    disabled={currentColumnIdIndex === Math.floor(selectedColumnsIdArray.length / (pageSize + 1))}
                     variant={'secondary'}
                     onClick={() => handleNextConfigColumnsPage(currentColumnIdIndex)}
                   >
-                    Next Page
+                    {t('paginationNext')}
                   </Button>
                 </>
               );
