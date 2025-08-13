@@ -134,7 +134,6 @@ const ViewOneProjectDatasetPage = () => {
             managerIds={dataset.managerIds}
             metadata={dataset.metadata}
             name={dataset.name}
-            permission={'MANAGER'}
             primaryKeys={dataset.primaryKeys}
             rows={dataset.rows}
             status={dataset.status}
