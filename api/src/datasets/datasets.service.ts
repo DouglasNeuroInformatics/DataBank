@@ -160,6 +160,7 @@ export class DatasetsService {
           datasetType: 'BASE',
           description: createTabularDatasetDto.description,
           isReadyToShare: false,
+          license: createTabularDatasetDto.license,
           managerIds: [managerId],
           name: createTabularDatasetDto.name,
           permission: 'MANAGER',
@@ -193,6 +194,7 @@ export class DatasetsService {
             typeof createTabularDatasetDto.isReadyToShare === 'string'
               ? createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true'
               : Boolean(createTabularDatasetDto.isReadyToShare),
+          license: createTabularDatasetDto.license,
           managerIds: [managerId],
           name: createTabularDatasetDto.name,
           permission: createTabularDatasetDto.permission,
@@ -217,6 +219,7 @@ export class DatasetsService {
             typeof createTabularDatasetDto.isReadyToShare === 'string'
               ? createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true'
               : Boolean(createTabularDatasetDto.isReadyToShare),
+          license: createTabularDatasetDto.license,
           managerIds: [managerId],
           name: createTabularDatasetDto.name,
           permission: createTabularDatasetDto.permission,
@@ -1071,7 +1074,7 @@ export class DatasetsService {
   private formatProjectColumn(
     column: Pick<
       TabularColumn,
-      'dataPermission' | 'summaryPermission' | 'id' | 'kind' | 'name' | 'nullable' | 'summary'
+      'dataPermission' | 'id' | 'kind' | 'name' | 'nullable' | 'summary' | 'summaryPermission'
     >
   ): ProjectColumnSummary {
     switch (column.kind) {

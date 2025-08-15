@@ -60,7 +60,7 @@ model Dataset {
   description    String?
   createdAt      DateTime        @default(now()) @db.Date
   updatedAt      DateTime        @default(now()) @updatedAt @db.Date
-  license        DatasetLicense  @default(PUBLIC)
+  license        String
   managers       User[]          @relation(fields: [managerIds], references: [id])
   managerIds     String[]        @db.ObjectId
   datasetType    DatasetType
@@ -69,11 +69,6 @@ model Dataset {
   tabularData    TabularData?
   status         DatasetStatus
   // binaryData       BinaryData?
-}
-
-enum DatasetLicense {
-  PUBLIC
-  OTHER
 }
 
 enum DatasetType {
@@ -211,4 +206,3 @@ type DatetimeColumnValidation {
   min DateTime?
   max DateTime?
 }
-
