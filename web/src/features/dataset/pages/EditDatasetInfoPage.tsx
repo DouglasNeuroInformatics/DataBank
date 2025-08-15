@@ -1,7 +1,6 @@
-import { $DatasetLicenses } from '@databank/core';
+/* eslint-disable perfectionist/sort-objects */
+import { $DatasetLicenses, licensesArray } from '@databank/core';
 import type { EditDatasetInfo } from '@databank/core';
-import { licenses } from '@douglasneuroinformatics/liblicense';
-import type { License } from '@douglasneuroinformatics/liblicense';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
@@ -9,25 +8,25 @@ import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { z } from 'zod';
 
-const licensesArr = Object.entries(licenses) as [string, License][];
-
 const generateLicenseOptions = (
   searchString: string | undefined,
   isOpenSource: boolean | undefined
 ): { [key: string]: string } => {
-  let filteredLicensesArr = licensesArr;
+  let filteredlicensesArray = licensesArray;
+
   if (isOpenSource !== undefined) {
-    filteredLicensesArr = filteredLicensesArr.filter(([_, license]) => license.isOpenSource === isOpenSource);
+    filteredlicensesArray = filteredlicensesArray.filter(([_, license]) => license.isOpenSource === isOpenSource);
   }
 
   if (searchString !== undefined) {
-    filteredLicensesArr = filteredLicensesArr.filter(
-      ([licenseIdentifier, license]) => licenseIdentifier.includes(searchString) || license.name.includes(searchString)
+    filteredlicensesArray = filteredlicensesArray.filter(
+      ([licenseIdentifier, license]) =>
+        licenseIdentifier.toLowerCase().includes(searchString) || license.name.toLowerCase().includes(searchString)
     );
   }
 
   const resOptions = Object.fromEntries(
-    filteredLicensesArr.map(([licenceId, license]) => {
+    filteredlicensesArray.map(([licenceId, license]) => {
       return [licenceId, license.name];
     })
   );
@@ -69,7 +68,7 @@ const EditDatasetInfoPage = () => {
   };
 
   return (
-    <div className="flex h-full w-full items-center justify-center">
+    <div className="flex w-full items-center justify-center">
       <div className="mt-6 w-full space-y-40 sm:max-w-md">
         <div className="h-auto rounded-lg border-2 border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
           <AnimatePresence initial={false} mode="wait">
@@ -81,7 +80,7 @@ const EditDatasetInfoPage = () => {
               key={'test'}
               transition={{ duration: 1 }}
             >
-              <Heading className="m-4" variant="h3">
+              <Heading className="mb-4" variant="h2">
                 Edit Dataset Information
               </Heading>
               <Form
@@ -109,12 +108,17 @@ const EditDatasetInfoPage = () => {
                     title: 'Basic Dataset Information'
                   },
                   {
-                    description: 'Select the license for your dataset',
+                    description: 'Select a license for your dataset',
                     fields: {
                       isOpenSource: {
                         kind: 'boolean',
                         label: 'Is License Open Source',
                         variant: 'radio'
+                      },
+                      searchLicenseString: {
+                        kind: 'string',
+                        label: 'Search for licenses',
+                        variant: 'input'
                       },
                       license: {
                         deps: ['searchLicenseString', 'isOpenSource'],
@@ -123,15 +127,10 @@ const EditDatasetInfoPage = () => {
                           return {
                             kind: 'string',
                             label: 'Select License',
-                            options: generateLicenseOptions(data.searchLicenseString, data.isOpenSource),
+                            options: generateLicenseOptions(data.searchLicenseString?.toLowerCase(), data.isOpenSource),
                             variant: 'select'
                           };
                         }
-                      },
-                      searchLicenseString: {
-                        kind: 'string',
-                        label: 'Search for licenses',
-                        variant: 'input'
                       }
                     },
                     title: 'Dataset License'

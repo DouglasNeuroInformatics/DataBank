@@ -243,6 +243,14 @@
     "en": "Dataset License",
     "fr": "Licence de la base de données"
   },
+  "datasetLicenseName": {
+    "en": "Dataset License Name",
+    "fr": "Nom de la licence de la base de données"
+  },
+  "datasetLicenseReference": {
+    "en": "Dataset License Reference",
+    "fr": "Référence de la licence de la base de données"
+  },
   "publicDomain": {
     "en": "Public Domain",
     "fr": "Domaine public"

@@ -1,9 +1,10 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useState } from 'react';
 
+import { licensesObjects } from '@databank/core';
 import type { DatasetViewPagination, TabularDataset } from '@databank/core';
 import { capitalize } from '@douglasneuroinformatics/libjs';
-import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
+import { Button, Card, DropdownMenu, Heading, HoverCard } from '@douglasneuroinformatics/libui/components';
 import {
   useDestructiveAction,
   useDownload,
@@ -148,60 +149,81 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
           )}
         </Card.Header>
         {dataset.datasetType === 'TABULAR' && (
-          <Card.Content>
-            <ul>
-              <li>{`${t('datasetLicense')}: ${dataset.license}`}</li>
-              <li>
-                {t('datasetPrimaryKeys')}
-                {': '}
-                {dataset.primaryKeys.map((pk, i) => {
-                  return (
-                    <span className="m-2" key={i}>
-                      {pk}
-                    </span>
-                  );
-                })}
-              </li>
-            </ul>
+          <>
+            <Card.Content>
+              {`${t('datasetLicense')}: `}
+              <HoverCard>
+                <HoverCard.Trigger asChild>
+                  <Button variant="link">{`${dataset.license}`}</Button>
+                </HoverCard.Trigger>
+                <HoverCard.Content className="max-w-160 w-80">
+                  <div className="my-2">
+                    <Heading variant="h5">{`${t('datasetLicenseName')}: `}</Heading>
+                    {`${licensesObjects[dataset.license]!.name}`}
+                  </div>
 
-            <DatasetPagination
-              currentPage={columnPaginationDto.currentPage}
-              itemsPerPage={columnPaginationDto.itemsPerPage}
-              kind={'COLUMN'}
-              setDatasetPagination={setColumnPaginationDto}
-              totalNumberOfItems={dataset.totalNumberOfColumns}
-            />
+                  <div className="my-2">
+                    <Heading variant="h5">{`${t('datasetLicenseReference')}: `}</Heading>
+                    {`${licensesObjects[dataset.license]!.reference}`}
+                  </div>
+                </HoverCard.Content>
+              </HoverCard>
+            </Card.Content>
 
-            <DatasetTable
-              columnIds={dataset.columnIds}
-              columns={dataset.columns}
-              createdAt={dataset.createdAt}
-              datasetType={dataset.datasetType}
-              description={dataset.description}
-              id={dataset.id}
-              isManager={isManager}
-              isProject={false}
-              isReadyToShare={dataset.isReadyToShare}
-              license={dataset.license}
-              managerIds={dataset.managerIds}
-              metadata={dataset.metadata}
-              name={dataset.name}
-              primaryKeys={dataset.primaryKeys}
-              rows={dataset.rows}
-              status={dataset.status}
-              totalNumberOfColumns={dataset.columns.length}
-              totalNumberOfRows={dataset.totalNumberOfRows}
-              updatedAt={dataset.updatedAt}
-            />
+            <Card.Content>
+              <ul>
+                <li>
+                  {t('datasetPrimaryKeys')}
+                  {': '}
+                  {dataset.primaryKeys.map((pk, i) => {
+                    return (
+                      <span className="m-2" key={i}>
+                        {pk}
+                      </span>
+                    );
+                  })}
+                </li>
+              </ul>
 
-            <DatasetPagination
-              currentPage={rowPaginationDto.currentPage}
-              itemsPerPage={rowPaginationDto.itemsPerPage}
-              kind={'ROW'}
-              setDatasetPagination={setRowPaginationDto}
-              totalNumberOfItems={dataset.totalNumberOfRows}
-            />
-          </Card.Content>
+              <DatasetPagination
+                currentPage={columnPaginationDto.currentPage}
+                itemsPerPage={columnPaginationDto.itemsPerPage}
+                kind={'COLUMN'}
+                setDatasetPagination={setColumnPaginationDto}
+                totalNumberOfItems={dataset.totalNumberOfColumns}
+              />
+
+              <DatasetTable
+                columnIds={dataset.columnIds}
+                columns={dataset.columns}
+                createdAt={dataset.createdAt}
+                datasetType={dataset.datasetType}
+                description={dataset.description}
+                id={dataset.id}
+                isManager={isManager}
+                isProject={false}
+                isReadyToShare={dataset.isReadyToShare}
+                license={dataset.license}
+                managerIds={dataset.managerIds}
+                metadata={dataset.metadata}
+                name={dataset.name}
+                primaryKeys={dataset.primaryKeys}
+                rows={dataset.rows}
+                status={dataset.status}
+                totalNumberOfColumns={dataset.columns.length}
+                totalNumberOfRows={dataset.totalNumberOfRows}
+                updatedAt={dataset.updatedAt}
+              />
+
+              <DatasetPagination
+                currentPage={rowPaginationDto.currentPage}
+                itemsPerPage={rowPaginationDto.itemsPerPage}
+                kind={'ROW'}
+                setDatasetPagination={setRowPaginationDto}
+                totalNumberOfItems={dataset.totalNumberOfRows}
+              />
+            </Card.Content>
+          </>
         )}
 
         <Card.Footer>

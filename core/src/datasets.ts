@@ -17,7 +17,9 @@ type DatasetType = z.infer<typeof $DatasetType>;
 const $DatasetStatus = z.enum(['Fail', 'Processing', 'Success']);
 type DatasetStatus = z.infer<typeof $DatasetStatus>;
 
-const $DatasetLicenses = z.enum(Object.keys(licenses) as [string, ...string[]]);
+const licensesArray = Array.from(licenses);
+const licensesObjects = Object.fromEntries(licensesArray);
+const $DatasetLicenses = z.enum(Object.keys(licensesObjects) as [string, ...string[]]);
 
 const $CreateDataset = z.object({
   datasetType: $DatasetType,
@@ -85,7 +87,9 @@ export {
   $DatasetViewPagination,
   $EditDatasetInfo,
   $PermissionLevel,
-  $ProjectTabularDatasetView
+  $ProjectTabularDatasetView,
+  licensesArray,
+  licensesObjects
 };
 
 export type {
