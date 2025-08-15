@@ -13,9 +13,7 @@ const formatSummary = (column: ProjectColumnSummary): string => {
        max: ${column.datetimeSummary.max.toISOString()}
        `;
     case 'ENUM':
-      return Object.entries(column.enumSummary.distribution)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join(', ');
+      return column.enumSummary.distribution.map((entry) => `${entry['']}: ${entry.count}`).join(', ');
     case 'FLOAT':
       return `
             min: ${column.floatSummary.min.toFixed(2)} \n
