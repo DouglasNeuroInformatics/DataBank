@@ -23,15 +23,23 @@ const licensesArrayLowercase: [string, LicenseWithLowercase][] = licensesArray.m
 
 const licensesWithLowercase = Object.fromEntries(licensesArrayLowercase);
 
-const openSourceLicenses = Object.fromEntries(licensesArrayLowercase.filter(([_, entry]) => entry.isOpenSource));
+const openSourceLicensesArray = licensesArrayLowercase.filter(([_, entry]) => entry.isOpenSource);
 
-const nonOpenSourceLicenses = Object.fromEntries(licensesArrayLowercase.filter(([_, entry]) => !entry.isOpenSource));
+const nonOpenSourceLicensesArray = licensesArrayLowercase.filter(([_, entry]) => !entry.isOpenSource);
+
+const openSourceLicenses = Object.fromEntries(openSourceLicensesArray);
+
+const nonOpenSourceLicenses = Object.fromEntries(nonOpenSourceLicensesArray);
 
 // Reference: https://opensource.org/blog/the-most-popular-licenses-for-each-language-2023
+const mostFrequentOpenSourceLicensesArray = Object.entries(openSourceLicenses).filter(
+  ([key, _]) => key.includes('MIT') || key.includes('Apache-2.0') || key.includes('BSD') || key.includes('GPL')
+);
+
 const mostFrequentOpenSourceLicenses = Object.fromEntries(
-  Object.entries(openSourceLicenses).filter(
-    ([key, _]) => key.includes('MIT') || key.includes('Apache-2.0') || key.includes('BSD') || key.includes('GPL')
-  )
+  mostFrequentOpenSourceLicensesArray.map(([key, value]) => {
+    return [key, value.name];
+  })
 );
 
 const $DatasetLicenses = z.enum(Object.keys(licensesObjects) as [string, ...string[]]);
@@ -39,9 +47,14 @@ const $DatasetLicenses = z.enum(Object.keys(licensesObjects) as [string, ...stri
 export {
   $DatasetLicenses,
   licensesArray,
+  licensesArrayLowercase,
   licensesObjects,
   licensesWithLowercase,
   mostFrequentOpenSourceLicenses,
   nonOpenSourceLicenses,
-  openSourceLicenses
+  nonOpenSourceLicensesArray,
+  openSourceLicenses,
+  openSourceLicensesArray
 };
+
+export type { LicenseWithLowercase };

@@ -1,37 +1,43 @@
 /* eslint-disable perfectionist/sort-objects */
-import { $DatasetLicenses, licensesArray } from '@databank/core';
-import type { EditDatasetInfo } from '@databank/core';
+import {
+  $DatasetLicenses,
+  licensesArrayLowercase,
+  mostFrequentOpenSourceLicenses,
+  nonOpenSourceLicensesArray,
+  openSourceLicensesArray
+} from '@databank/core';
+import type { EditDatasetInfo, LicenseWithLowercase } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useDebounceCallback } from 'usehooks-ts';
 import { z } from 'zod';
 
-const generateLicenseOptions = (
+const _filterLicenses = (
   searchString: string | undefined,
   isOpenSource: boolean | undefined
 ): { [key: string]: string } => {
-  let filteredlicensesArray = licensesArray;
-
-  if (isOpenSource !== undefined) {
-    filteredlicensesArray = filteredlicensesArray.filter(([_, license]) => license.isOpenSource === isOpenSource);
+  let filterLicensesArray: [string, LicenseWithLowercase][];
+  if (isOpenSource === undefined) {
+    filterLicensesArray = licensesArrayLowercase;
+  } else {
+    filterLicensesArray = isOpenSource ? openSourceLicensesArray : nonOpenSourceLicensesArray;
   }
 
   if (searchString !== undefined) {
-    filteredlicensesArray = filteredlicensesArray.filter(
-      ([licenseIdentifier, license]) =>
-        licenseIdentifier.toLowerCase().includes(searchString) || license.name.toLowerCase().includes(searchString)
+    filterLicensesArray = filterLicensesArray.filter(
+      ([_, license]) =>
+        license.lowercaseLicenseId.includes(searchString) || license.lowercaseName.includes(searchString)
     );
   }
 
-  const resOptions = Object.fromEntries(
-    filteredlicensesArray.map(([licenceId, license]) => {
-      return [licenceId, license.name];
+  return Object.fromEntries(
+    filterLicensesArray.map(([key, value]) => {
+      return [key, value.name];
     })
   );
-
-  return resOptions;
 };
 
 const $EditDatasetInfoDto = z.object({
@@ -47,6 +53,8 @@ const EditDatasetInfoPage = () => {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
+
+  const debouncedLicensesFilter = useDebounceCallback(_filterLicenses, 200);
 
   const permissionOption = {
     LOGIN: 'LOGIN',
@@ -127,7 +135,9 @@ const EditDatasetInfoPage = () => {
                           return {
                             kind: 'string',
                             label: 'Select License',
-                            options: generateLicenseOptions(data.searchLicenseString?.toLowerCase(), data.isOpenSource),
+                            options:
+                              debouncedLicensesFilter(data.searchLicenseString?.toLowerCase(), data.isOpenSource) ??
+                              mostFrequentOpenSourceLicenses,
                             variant: 'select'
                           };
                         }
