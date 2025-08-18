@@ -1,7 +1,7 @@
-import { licenses } from '@douglasneuroinformatics/liblicense';
 import { z } from 'zod';
 
 import { $PermissionLevel, $TabularColumnSummary } from './columns';
+import { $DatasetLicenses } from './licenses';
 
 import type { PermissionLevel } from './columns';
 
@@ -16,10 +16,6 @@ type DatasetType = z.infer<typeof $DatasetType>;
 
 const $DatasetStatus = z.enum(['Fail', 'Processing', 'Success']);
 type DatasetStatus = z.infer<typeof $DatasetStatus>;
-
-const licensesArray = Array.from(licenses);
-const licensesObjects = Object.fromEntries(licensesArray);
-const $DatasetLicenses = z.enum(Object.keys(licensesObjects) as [string, ...string[]]);
 
 const $CreateDataset = z.object({
   datasetType: $DatasetType,
@@ -87,9 +83,7 @@ export {
   $DatasetViewPagination,
   $EditDatasetInfo,
   $PermissionLevel,
-  $ProjectTabularDatasetView,
-  licensesArray,
-  licensesObjects
+  $ProjectTabularDatasetView
 };
 
 export type {

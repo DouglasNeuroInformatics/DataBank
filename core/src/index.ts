@@ -1,5 +1,6 @@
 export * from './columns';
 export * from './datasets';
+export * from './licenses';
 export * from './projects';
 export * from './setup';
 export * from './tabular-data';
