@@ -1,6 +1,14 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useCallback, useState } from 'react';
 
+import {
+  $DatasetLicenses,
+  licensesArrayLowercase,
+  mostFrequentOpenSourceLicenses,
+  nonOpenSourceLicensesArray,
+  openSourceLicensesArray
+} from '@databank/core';
+import type { LicenseWithLowercase } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
@@ -8,6 +16,7 @@ import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { match } from 'ts-pattern';
+import { useDebounceCallback } from 'usehooks-ts';
 import { z } from 'zod';
 
 import { LoadingFallback } from '@/components';
@@ -15,12 +24,39 @@ import { LoadingFallback } from '@/components';
 const $CreateDatasetFormValidation = z.object({
   description: z.string().optional(),
   datasetType: z.enum(['BASE', 'TABULAR']),
-  license: z.enum(['PUBLIC', 'OTHER']),
+  license: $DatasetLicenses,
   name: z.string().min(1),
-  primaryKeys: z.string().optional()
+  primaryKeys: z.string().optional(),
+  isOpenSource: z.boolean().optional(),
+  searchLicenseString: z.string().optional()
 });
 
 type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
+
+const _filterLicenses = (
+  searchString: string | undefined,
+  isOpenSource: boolean | undefined
+): { [key: string]: string } => {
+  let filterLicensesArray: [string, LicenseWithLowercase][];
+  if (isOpenSource === undefined) {
+    filterLicensesArray = licensesArrayLowercase;
+  } else {
+    filterLicensesArray = isOpenSource ? openSourceLicensesArray : nonOpenSourceLicensesArray;
+  }
+
+  if (searchString !== undefined) {
+    filterLicensesArray = filterLicensesArray.filter(
+      ([_, license]) =>
+        license.lowercaseLicenseId.includes(searchString) || license.lowercaseName.includes(searchString)
+    );
+  }
+
+  return Object.fromEntries(
+    filterLicensesArray.map(([key, value]) => {
+      return [key, value.name];
+    })
+  );
+};
 
 const CreateDatasetPage = () => {
   const MAX_UPLOAD_FILE_SIZE = 1024 * 1024 * 1024;
@@ -31,6 +67,7 @@ const CreateDatasetPage = () => {
   const [formData, setFormData] = useState<CreateDatasetFormData | null>(null);
   const [processingFile, setProcessingFile] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+  const debouncedLicensesFilter = useDebounceCallback(_filterLicenses, 200);
 
   const createDataset = async () => {
     setProcessingFile(true);
@@ -88,50 +125,77 @@ const CreateDatasetPage = () => {
       return (
         <>
           <Form
-            content={{
-              name: {
-                kind: 'string',
-                label: t('datasetName'),
-                variant: 'input'
+            content={[
+              {
+                title: 'Basic Dataset Information',
+                description: 'Basic dataset information details',
+                fields: {
+                  name: {
+                    kind: 'string',
+                    label: t('datasetName'),
+                    variant: 'input'
+                  },
+                  description: {
+                    kind: 'string',
+                    label: t('datasetDescription'),
+                    variant: 'textarea'
+                  },
+                  datasetType: {
+                    kind: 'string',
+                    label: t('datasetType'),
+                    options: {
+                      BASE: 'Base',
+                      // BINARY: 'Binary',
+                      TABULAR: 'Tabular'
+                    },
+                    variant: 'select'
+                  },
+                  primaryKeys: {
+                    kind: 'dynamic',
+                    deps: ['datasetType'],
+                    render: (data) => {
+                      return data.datasetType === 'TABULAR'
+                        ? {
+                            kind: 'string',
+                            variant: 'input',
+                            label: t('primaryKeys')
+                          }
+                        : null;
+                    }
+                  }
+                }
               },
-              description: {
-                kind: 'string',
-                label: t('datasetDescription'),
-                variant: 'textarea'
-              },
-              datasetType: {
-                kind: 'string',
-                label: t('datasetType'),
-                options: {
-                  BASE: 'Base',
-                  // BINARY: 'Binary',
-                  TABULAR: 'Tabular'
-                },
-                variant: 'select'
-              },
-              license: {
-                kind: 'string',
-                label: t('datasetLicense'),
-                options: {
-                  OTHER: 'Other',
-                  PUBLIC: 'Public'
-                },
-                variant: 'select'
-              },
-              primaryKeys: {
-                kind: 'dynamic',
-                deps: ['datasetType'],
-                render: (data) => {
-                  return data.datasetType === 'TABULAR'
-                    ? {
+              {
+                title: 'Dataset License',
+                description: 'Select a license for your dataset',
+                fields: {
+                  isOpenSource: {
+                    kind: 'boolean',
+                    label: 'Is License Open Source',
+                    variant: 'radio'
+                  },
+                  searchLicenseString: {
+                    kind: 'string',
+                    label: 'Search for licenses',
+                    variant: 'input'
+                  },
+                  license: {
+                    deps: ['searchLicenseString', 'isOpenSource'],
+                    kind: 'dynamic',
+                    render(data) {
+                      return {
                         kind: 'string',
-                        variant: 'input',
-                        label: t('primaryKeys')
-                      }
-                    : null;
+                        label: 'Select License',
+                        options:
+                          debouncedLicensesFilter(data.searchLicenseString?.toLowerCase(), data.isOpenSource) ??
+                          mostFrequentOpenSourceLicenses,
+                        variant: 'select'
+                      };
+                    }
+                  }
                 }
               }
-            }}
+            ]}
             submitBtnLabel="Confirm"
             validationSchema={$CreateDatasetFormValidation}
             onSubmit={(data) => {
@@ -206,7 +270,7 @@ const CreateDatasetPage = () => {
     <>
       <motion.div
         animate={{ opacity: 1 }}
-        className="flex h-full grow flex-col items-center justify-center"
+        className="flex grow flex-col items-center justify-center"
         exit={{ opacity: 0 }}
         initial={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
@@ -216,12 +280,15 @@ const CreateDatasetPage = () => {
             <AnimatePresence initial={false} mode="wait">
               <motion.div
                 animate={{ opacity: 1 }}
-                className="flex h-full flex-col items-center justify-center"
+                className="flex flex-col items-center justify-center"
                 exit={{ opacity: 0 }}
                 initial={{ opacity: 0 }}
                 key={'test'}
                 transition={{ duration: 1 }}
               >
+                <Heading className="mb-4" variant="h2">
+                  Create Dataset
+                </Heading>
                 {element}
               </motion.div>
             </AnimatePresence>
