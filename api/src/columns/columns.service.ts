@@ -334,7 +334,9 @@ export class ColumnsService {
             stringSeries = datetimeSeries.cast(Utf8);
           }
 
-          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
         }
 
         if (!changedToString) {
@@ -391,7 +393,9 @@ export class ColumnsService {
             stringSeries = enumSeries.cast(Utf8);
           }
 
-          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
         }
 
         if (!changedToString) {
@@ -447,7 +451,9 @@ export class ColumnsService {
             stringSeries = floatSeries.cast(Utf8);
           }
 
-          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
         }
 
         if (!changedToString) {
@@ -503,7 +509,9 @@ export class ColumnsService {
             stringSeries = intSeries.cast(Utf8);
           }
 
-          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
         }
 
         if (!changedToString) {
@@ -543,7 +551,9 @@ export class ColumnsService {
         }
 
         if (getColumnViewDto.trim) {
-          stringSeries = stringSeries.str.slice(getColumnViewDto.trim.start, getColumnViewDto.trim.end);
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
         }
         const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
         projectColumn.summary.count = newStringSummary.count;
