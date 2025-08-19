@@ -210,7 +210,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
                 primaryKeys={dataset.primaryKeys}
                 rows={dataset.rows}
                 status={dataset.status}
-                totalNumberOfColumns={dataset.columns.length}
+                totalNumberOfColumns={dataset.totalNumberOfColumns}
                 totalNumberOfRows={dataset.totalNumberOfRows}
                 updatedAt={dataset.updatedAt}
               />
