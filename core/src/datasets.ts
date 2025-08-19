@@ -54,7 +54,7 @@ type DatasetInfo = z.infer<typeof $DatasetInfo>;
 
 type DatasetCardProps = DatasetInfo & { isManager: boolean; isPublic: boolean };
 
-const $TabularDataRow = z.record(z.union([z.string().nullable(), z.number(), z.boolean()]));
+const $TabularDataRow = z.record(z.union([z.string(), z.number(), z.boolean(), z.null()]));
 type TabularDataRow = z.infer<typeof $TabularDataRow>;
 
 const $TabularDatasetView = z.object({
