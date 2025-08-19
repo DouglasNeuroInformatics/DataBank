@@ -317,9 +317,9 @@ export class ColumnsService {
 
           if (getColumnViewDto.hash.salt) {
             const stringArray = stringSeries.toArray();
-            const stringSaltArray = stringArray.map((entry) => {
-              return (entry + getColumnViewDto.hash!.salt) as string;
-            });
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
             stringSeries = pl.Series(stringSaltArray);
           }
 
@@ -376,9 +376,9 @@ export class ColumnsService {
 
           if (getColumnViewDto.hash.salt) {
             const stringArray = stringSeries.toArray();
-            const stringSaltArray = stringArray.map((entry) => {
-              return (entry + getColumnViewDto.hash!.salt) as string;
-            });
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
             stringSeries = pl.Series(stringSaltArray);
           }
 
@@ -434,9 +434,9 @@ export class ColumnsService {
 
           if (getColumnViewDto.hash.salt) {
             const stringArray = stringSeries.toArray();
-            const stringSaltArray = stringArray.map((entry) => {
-              return (entry + getColumnViewDto.hash!.salt) as string;
-            });
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
             stringSeries = pl.Series(stringSaltArray);
           }
 
@@ -492,9 +492,9 @@ export class ColumnsService {
 
           if (getColumnViewDto.hash.salt) {
             const stringArray = stringSeries.toArray();
-            const stringSaltArray = stringArray.map((entry) => {
-              return (entry + getColumnViewDto.hash!.salt) as string;
-            });
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
             stringSeries = pl.Series(stringSaltArray);
           }
 
@@ -541,9 +541,9 @@ export class ColumnsService {
         if (getColumnViewDto.hash) {
           if (getColumnViewDto.hash.salt) {
             const stringArray = stringSeries.toArray();
-            const stringSaltArray = stringArray.map((entry) => {
-              return (entry + getColumnViewDto.hash!.salt) as string;
-            });
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
             stringSeries = pl.Series(stringSaltArray);
           }
 
