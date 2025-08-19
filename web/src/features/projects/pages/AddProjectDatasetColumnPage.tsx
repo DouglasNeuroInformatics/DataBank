@@ -82,6 +82,14 @@ const AddProjectDatasetColumnPage = () => {
 
   const handleSubmitConfig = () => {
     // format the request body here and send to the backend
+    if (selectedColumnsIdArray.length === 0) {
+      notifications.addNotification({
+        message: 'Please select at least one column before finishing.',
+        type: 'error'
+      });
+      return;
+    }
+
     const projectDatasetConfig: $ProjectDataset = {
       columnConfigs: columnsConfig,
       columnIds: Object.keys(selectedColumns),
