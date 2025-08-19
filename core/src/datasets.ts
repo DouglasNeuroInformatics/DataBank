@@ -38,17 +38,17 @@ const $EditDatasetInfo = z.object({
 type EditDatasetInfo = z.infer<typeof $EditDatasetInfo>;
 
 const $DatasetInfo = z.object({
-  createdAt: z.date(),
+  createdAt: z.coerce.date(),
   datasetType: $DatasetType,
   description: z.string().nullable(),
   id: z.string(),
   isReadyToShare: z.boolean(),
-  license: z.string(),
+  license: $DatasetLicenses,
   managerIds: z.string().array(),
   name: z.string(),
   permission: $PermissionLevel,
   status: $DatasetStatus,
-  updatedAt: z.date()
+  updatedAt: z.coerce.date()
 });
 type DatasetInfo = z.infer<typeof $DatasetInfo>;
 
