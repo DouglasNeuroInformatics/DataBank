@@ -351,6 +351,10 @@ export class ColumnsService {
           const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
           projectColumn.summary.count = newStringSummary.count;
           projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.summary.datetimeSummary = null;
+          projectColumn.summary.enumSummary = null;
+          projectColumn.summary.floatSummary = null;
+          projectColumn.summary.intSummary = null;
           projectColumn.stringData = stringSeries.toArray().map((entry) => {
             return { value: entry as string };
           });
@@ -410,6 +414,10 @@ export class ColumnsService {
           const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
           projectColumn.summary.count = newStringSummary.count;
           projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.summary.datetimeSummary = null;
+          projectColumn.summary.enumSummary = null;
+          projectColumn.summary.floatSummary = null;
+          projectColumn.summary.intSummary = null;
           projectColumn.stringData = stringSeries.toArray().map((entry) => {
             return { value: entry as string };
           });
@@ -468,6 +476,10 @@ export class ColumnsService {
           const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
           projectColumn.summary.count = newStringSummary.count;
           projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.summary.datetimeSummary = null;
+          projectColumn.summary.enumSummary = null;
+          projectColumn.summary.floatSummary = null;
+          projectColumn.summary.intSummary = null;
           projectColumn.stringData = stringSeries.toArray().map((entry) => {
             return { value: entry as string };
           });
@@ -526,6 +538,10 @@ export class ColumnsService {
           const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
           projectColumn.summary.count = newStringSummary.count;
           projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.summary.datetimeSummary = null;
+          projectColumn.summary.enumSummary = null;
+          projectColumn.summary.floatSummary = null;
+          projectColumn.summary.intSummary = null;
           projectColumn.stringData = stringSeries.toArray().map((entry) => {
             return { value: entry as string };
           });
@@ -558,6 +574,10 @@ export class ColumnsService {
         const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
         projectColumn.summary.count = newStringSummary.count;
         projectColumn.summary.nullCount = newStringSummary.nullCount;
+        projectColumn.summary.datetimeSummary = null;
+        projectColumn.summary.enumSummary = null;
+        projectColumn.summary.floatSummary = null;
+        projectColumn.summary.intSummary = null;
         projectColumn.stringData = stringSeries.toArray().map((entry) => {
           return { value: entry as string };
         });
