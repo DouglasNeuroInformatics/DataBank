@@ -1,14 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useCallback, useState } from 'react';
 
-import {
-  $DatasetLicenses,
-  licensesArrayLowercase,
-  mostFrequentOpenSourceLicenses,
-  nonOpenSourceLicensesArray,
-  openSourceLicensesArray
-} from '@databank/core';
-import type { LicenseWithLowercase } from '@databank/core';
+import { $DatasetLicenses, mostFrequentOpenSourceLicenses } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
@@ -16,10 +9,10 @@ import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { match } from 'ts-pattern';
-import { useDebounceCallback } from 'usehooks-ts';
 import { z } from 'zod';
 
 import { LoadingFallback } from '@/components';
+import { useDebounceLicensesFilter } from '@/hooks/useDebounceLicensesFilter';
 
 const $CreateDatasetFormValidation = z.object({
   description: z.string().optional(),
@@ -33,31 +26,6 @@ const $CreateDatasetFormValidation = z.object({
 
 type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
 
-const _filterLicenses = (
-  searchString: string | undefined,
-  isOpenSource: boolean | undefined
-): { [key: string]: string } => {
-  let filterLicensesArray: [string, LicenseWithLowercase][];
-  if (isOpenSource === undefined) {
-    filterLicensesArray = licensesArrayLowercase;
-  } else {
-    filterLicensesArray = isOpenSource ? openSourceLicensesArray : nonOpenSourceLicensesArray;
-  }
-
-  if (searchString !== undefined) {
-    filterLicensesArray = filterLicensesArray.filter(
-      ([_, license]) =>
-        license.lowercaseLicenseId.includes(searchString) || license.lowercaseName.includes(searchString)
-    );
-  }
-
-  return Object.fromEntries(
-    filterLicensesArray.map(([key, value]) => {
-      return [key, value.name];
-    })
-  );
-};
-
 const CreateDatasetPage = () => {
   const MAX_UPLOAD_FILE_SIZE = 1024 * 1024 * 1024;
   const notifications = useNotificationsStore();
@@ -67,7 +35,7 @@ const CreateDatasetPage = () => {
   const [formData, setFormData] = useState<CreateDatasetFormData | null>(null);
   const [processingFile, setProcessingFile] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
-  const debouncedLicensesFilter = useDebounceCallback(_filterLicenses, 200);
+  const debouncedLicensesFilter = useDebounceLicensesFilter();
 
   const createDataset = async () => {
     setProcessingFile(true);
