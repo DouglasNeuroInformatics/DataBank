@@ -16,10 +16,14 @@ const $ProjectColumnSummary = $TabularColumnSummary.and(
 type ProjectColumnSummary = z.infer<typeof $ProjectColumnSummary>;
 
 //===================== Project Column Transformation ========================
-const $ProjectDatasetRowConfig = z.object({
-  rowMax: z.number().int().nullable(),
-  rowMin: z.number().int().gte(0).default(0)
-});
+const $ProjectDatasetRowConfig = z
+  .object({
+    rowMax: z.number().int().nullable(),
+    rowMin: z.number().int().gte(0).default(0)
+  })
+  .refine((data) => data.rowMax === null || data.rowMax >= data.rowMin, {
+    message: 'rowMax must be greater than or equal to rowMin'
+  });
 type ProjectDatasetRowConfig = z.infer<typeof $ProjectDatasetRowConfig>;
 
 const $ProjectDatasetColumnHash = z.object({
@@ -28,10 +32,14 @@ const $ProjectDatasetColumnHash = z.object({
 });
 type ProjectDatasetColumnHash = z.infer<typeof $ProjectDatasetColumnHash>;
 
-const $ProjectDatasetColumnTrim = z.object({
-  end: z.number().int().nullable(),
-  start: z.number().int().default(0)
-});
+const $ProjectDatasetColumnTrim = z
+  .object({
+    end: z.number().int().nullable(),
+    start: z.number().int().gte(0).default(0)
+  })
+  .refine((data) => data.end === null || data.end >= data.start, {
+    message: 'end must be greater than or equal to start'
+  });
 type ProjectDatasetColumnTrim = z.infer<typeof $ProjectDatasetColumnTrim>;
 
 const $ProjectDatasetColumnConfig = z.object({
