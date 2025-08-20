@@ -35,12 +35,20 @@ const DatasetCard = ({
         </Card.Header>
         <Card.Content>
           <ul>
-            <li key={id}>Dataset Id: {id}</li>
-            <li key={id + 'createdAt'}>Created at: {createdAt.toString()}</li>
-            <li key={id + 'updatedAt'}>Updated at: {updatedAt.toString()}</li>
-            <li key={id + license}>Licence: {license}</li>
+            <li key={id}>
+              {t('datasetId')}: {id}
+            </li>
+            <li key={id + 'createdAt'}>
+              {t('createdAt')}: {createdAt.toString()}
+            </li>
+            <li key={id + 'updatedAt'}>
+              {t('updatedAt')}: {updatedAt.toString()}
+            </li>
+            <li key={id + license}>
+              {t('datasetLicense')}: {license}
+            </li>
             <li key={id + 'managerIds'}>
-              ManagerId:{' '}
+              {t('managerId')}:{' '}
               {managerIds.map((element) => {
                 return (
                   <Badge key={`managerId-${element}`} variant={'secondary'}>
