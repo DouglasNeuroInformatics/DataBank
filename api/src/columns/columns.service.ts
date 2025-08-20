@@ -869,7 +869,7 @@ export class ColumnsService {
         return {
           count: currSeries.len() - currSeries.nullCount(),
           enumSummary: {
-            distribution: currSeries.valueCounts().toRecords() as unknown as { [key: string]: number }
+            distribution: currSeries.valueCounts().toRecords()
           },
           nullCount: currSeries.nullCount()
         };
