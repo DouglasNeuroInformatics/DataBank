@@ -276,11 +276,11 @@
     "fr": "Glissez-déposez le fichier ici, ou cliquez pour sélectionner un fichier"
   },
   "onlyCsvTsv": {
-    "en": "Only CSV or TSV file is allowed.",
+    "en": "Only CSV or TSV files are allowed.",
     "fr": "Seuls les fichiers CSV ou TSV sont autorisés."
   },
   "maxFileSize": {
-    "en": "Maximun file size: 1 GB",
+    "en": "Maximum file size: 1 GB",
     "fr": "Taille maximale du fichier : 1 Go"
   },
   "createDataset": {
