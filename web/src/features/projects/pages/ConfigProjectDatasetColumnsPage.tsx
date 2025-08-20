@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import type { ProjectDatasetColumnConfig } from '@databank/core';
 import type FormTypes from '@douglasneuroinformatics/libui-form-types';
@@ -19,7 +19,7 @@ export const ConfigProjectDatasetColumnsPage = ({
   selectedColumns,
   setColumnsConfig
 }: ConfigProjectDatasetColumnsPageProps) => {
-  const generateValidationSchema = useCallback(() => {
+  const formValidation = useMemo(() => {
     const formValidationObject: { [key: string]: any } = {};
 
     for (const columnId in selectedColumns) {
@@ -32,7 +32,7 @@ export const ConfigProjectDatasetColumnsPage = ({
     return z.object(formValidationObject) as z.ZodType<FormTypes.Data>;
   }, [selectedColumns]);
 
-  const generateContent = useCallback(() => {
+  const formContent = useMemo(() => {
     const resContent = [];
 
     for (const columnId in selectedColumns) {
@@ -118,10 +118,7 @@ export const ConfigProjectDatasetColumnsPage = ({
     return resContent;
   }, [selectedColumns]);
 
-  const formValidation = generateValidationSchema();
-  const formContent = generateContent();
-
-  const handleSubmit = useCallback((data: z.infer<ReturnType<typeof generateValidationSchema>>) => {
+  const handleSubmit = useCallback((data: z.infer<typeof formValidation>) => {
     for (const columnId in selectedColumns) {
       if (data[columnId]) {
         // if data[columnId] means that the user selected to add config to the column
