@@ -121,12 +121,18 @@ type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
 const $DatetimeColumnSummary = $DatetimeColumn.omit({ datetimeData: true });
 
 const $TabularColumn = z
-  .union([$DatetimeColumn, $IntColumn, $StringColumn, $FloatColumn, $EnumColumn])
+  .discriminatedUnion('kind', [$DatetimeColumn, $IntColumn, $StringColumn, $FloatColumn, $EnumColumn])
   .and($TabularColumnInfo);
 type TabularColumn = z.infer<typeof $TabularColumn>;
 
 const $TabularColumnSummary = z
-  .union([$DatetimeColumnSummary, $IntColumnSummary, $FloatColumnSummary, $EnumColumnSummary, $StringColumnSummary])
+  .discriminatedUnion('kind', [
+    $DatetimeColumnSummary,
+    $IntColumnSummary,
+    $FloatColumnSummary,
+    $EnumColumnSummary,
+    $StringColumnSummary
+  ])
   .and($BasicSummary);
 type TabularColumnSummary = z.infer<typeof $TabularColumnSummary>;
 
