@@ -30,7 +30,7 @@ export class FileUploadProcessor extends WorkerHost {
       primaryKeys: string;
       uploadedString?: string;
     };
-    const jobData: FileUploadJobData = job.data as FileUploadJobData;
+    const jobData = job.data as FileUploadJobData;
     let csvString: string;
     let df: DataFrame;
     let separator = ',';
