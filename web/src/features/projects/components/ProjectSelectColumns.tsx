@@ -6,29 +6,19 @@ import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 const formatSummary = (column: ProjectColumnSummary): string => {
   switch (column.kind) {
     case 'DATETIME':
-      return `
-      min: ${column.datetimeSummary.min.toISOString()} \n
-       max: ${column.datetimeSummary.max.toISOString()}
-       `;
+      return Object.entries(column.datetimeSummary)
+        .map(([key, value]) => `${key}: ${value.toISOString()}`)
+        .join(', ');
     case 'ENUM':
       return column.enumSummary.distribution.map((entry) => `${entry['']}: ${entry.count}`).join(', ');
     case 'FLOAT':
-      return `
-            min: ${column.floatSummary.min.toFixed(2)} \n
-            max: ${column.floatSummary.max.toFixed(2)} \n
-            mean: ${column.floatSummary.mean.toFixed(2)} \n
-            median: ${column.floatSummary.median.toFixed(2)} \n
-            std: ${column.floatSummary.std.toFixed(2)}
-            `;
+      return Object.entries(column.floatSummary)
+        .map(([key, value]) => `${key}: ${value.toFixed(2)}`)
+        .join(', ');
     case 'INT':
-      return `
-            min: ${column.intSummary.min} \n
-            max: ${column.intSummary.max} \n
-            mean: ${column.intSummary.mean} \n
-            median: ${column.intSummary.median} \n
-            std: ${column.intSummary.std} \n
-            mode: ${column.intSummary.mode}
-            `;
+      return Object.entries(column.intSummary)
+        .map(([key, value]) => `${key}: ${value.toFixed(2)}`)
+        .join(', ');
     case 'STRING':
       return 'N/A';
     default:
