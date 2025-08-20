@@ -1,8 +1,9 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useEffect, useState } from 'react';
 
+import { licensesObjects } from '@databank/core';
 import type { DatasetViewPagination, TabularDataset } from '@databank/core';
-import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
+import { Button, Card, DropdownMenu, Heading, HoverCard } from '@douglasneuroinformatics/libui/components';
 import {
   useDestructiveAction,
   useDownload,
@@ -106,9 +107,29 @@ const ViewOneProjectDatasetPage = () => {
               {t('updatedAt')}
               {`: ${dataset.updatedAt.toString()}`}
             </li>
-            <li>{`${t('datasetLicense')}: ${dataset.license}`}</li>
-          </ul>
+            <li>
+              {`${t('datasetLicense')}: `}
+              <HoverCard>
+                <HoverCard.Trigger asChild>
+                  <Button variant="link">{`${dataset.license}`}</Button>
+                </HoverCard.Trigger>
+                <HoverCard.Content className="max-w-160 w-80">
+                  <div className="my-2">
+                    <Heading variant="h5">{`${t('datasetLicenseName')}: `}</Heading>
+                    {`${licensesObjects[dataset.license]!.name}`}
+                  </div>
 
+                  <div className="my-2">
+                    <Heading variant="h5">{`${t('datasetLicenseReference')}: `}</Heading>
+                    {`${licensesObjects[dataset.license]!.reference}`}
+                  </div>
+                </HoverCard.Content>
+              </HoverCard>
+            </li>
+          </ul>
+        </Card.Content>
+
+        <Card.Content>
           <DatasetPagination
             currentPage={columnPaginationDto.currentPage}
             itemsPerPage={columnPaginationDto.itemsPerPage}
