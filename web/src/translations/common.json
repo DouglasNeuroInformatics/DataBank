@@ -622,5 +622,17 @@
   "contactOwner": {
     "en": "Contact owner",
     "fr": "Contacter le propriétaire"
+  },
+  "somethingWentWrong": {
+    "en": "Something Went Wrong",
+    "fr": "Une erreur est survenue"
+  },
+  "apologizeForInconvenience": {
+    "en": "We apologize for the inconvenience. Please contact us for further assistance.",
+    "fr": "Nous nous excusons pour le désagrément. Veuillez nous contacter pour obtenir de l'aide."
+  },
+  "reloadPage": {
+    "en": "Reload Page",
+    "fr": "Recharger la page"
   }
 }
