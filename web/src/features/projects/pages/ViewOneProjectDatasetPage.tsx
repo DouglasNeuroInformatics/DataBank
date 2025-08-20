@@ -138,27 +138,7 @@ const ViewOneProjectDatasetPage = () => {
             totalNumberOfItems={dataset.totalNumberOfColumns}
           />
 
-          <DatasetTable
-            columnIds={dataset.columnIds}
-            columns={dataset.columns}
-            createdAt={dataset.createdAt}
-            datasetType={dataset.datasetType}
-            description={dataset.description}
-            id={dataset.id}
-            isManager={false}
-            isProject={true}
-            isReadyToShare={dataset.isReadyToShare}
-            license={dataset.license}
-            managerIds={dataset.managerIds}
-            metadata={dataset.metadata}
-            name={dataset.name}
-            primaryKeys={dataset.primaryKeys}
-            rows={dataset.rows}
-            status={dataset.status}
-            totalNumberOfColumns={dataset.columns.length}
-            totalNumberOfRows={dataset.totalNumberOfRows}
-            updatedAt={dataset.updatedAt}
-          />
+          <DatasetTable isManager={false} isProject={true} {...dataset} />
 
           <DatasetPagination
             currentPage={rowPaginationDto.currentPage}
