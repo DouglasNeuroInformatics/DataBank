@@ -84,7 +84,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
         break;
       case 'ENUM': {
         const enumSummaryObj: { [key: string]: number } = {};
-        (metadataObj.enumSummary.distribution as unknown as [{ '': string; count: number }]).map((entry) => {
+        metadataObj.enumSummary.distribution.map((entry) => {
           enumSummaryObj[entry['']] = entry.count;
         });
         summary = enumSummaryObj;
