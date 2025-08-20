@@ -200,14 +200,14 @@ const CreateDatasetPage = () => {
           <div {...getRootProps()} className="flex-col justify-center text-center">
             <input {...getInputProps()} />
             {isDragActive ? (
-              <Heading variant="h3">Drop the file here ...</Heading>
+              <Heading variant="h3">{t('dropFile')}</Heading>
             ) : (
               <>
-                <Heading variant="h3">Drag and drop the file here, or click to select file</Heading>
+                <Heading variant="h3">{t('dropOrSelectFile')}</Heading>
                 <br />
                 <br />
-                <Heading variant="h5">Only CSV or TSV file is allowed.</Heading>
-                <Heading variant="h5">Maximun file size: 1 GB</Heading>
+                <Heading variant="h5">{t('onlyCsvTsv')}</Heading>
+                <Heading variant="h5">{t('maxFileSize')}</Heading>
               </>
             )}
           </div>
@@ -255,7 +255,7 @@ const CreateDatasetPage = () => {
                 transition={{ duration: 1 }}
               >
                 <Heading className="mb-4" variant="h2">
-                  Create Dataset
+                  {t('createDataset')}
                 </Heading>
                 {element}
               </motion.div>

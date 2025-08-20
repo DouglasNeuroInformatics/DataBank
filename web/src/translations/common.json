@@ -263,6 +263,26 @@
     "en": "Finish Column Selection",
     "fr": "Terminer la sélection de colonnes"
   },
+  "dropFile": {
+    "en": "Drop the file here ...",
+    "fr": "Déposez le fichier ici ..."
+  },
+  "dropOrSelectFile": {
+    "en": "Drag and drop the file here, or click to select file",
+    "fr": "Glissez-déposez le fichier ici, ou cliquez pour sélectionner un fichier"
+  },
+  "onlyCsvTsv": {
+    "en": "Only CSV or TSV file is allowed.",
+    "fr": "Seuls les fichiers CSV ou TSV sont autorisés."
+  },
+  "maxFileSize": {
+    "en": "Maximun file size: 1 GB",
+    "fr": "Taille maximale du fichier : 1 Go"
+  },
+  "createDataset": {
+    "en": "Create Dataset",
+    "fr": "Créer un ensemble de données"
+  },
   "datasetName": {
     "en": "Dataset Name",
     "fr": "Nom de la base de données"
