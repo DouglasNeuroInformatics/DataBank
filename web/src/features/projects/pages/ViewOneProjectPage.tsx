@@ -118,7 +118,7 @@ const ViewOneProjectPage = () => {
                       variant={'secondary'}
                       onClick={() => void navigate({ to: `/portal/projects/add-dataset/${project.id}` })}
                     >
-                      Add Dataset to Current Project
+                      {t('addDatasetToProject')}
                     </Button>
                   </Card.Header>
                   <Card.Content>
@@ -154,7 +154,7 @@ const ViewOneProjectPage = () => {
                   variant={'primary'}
                   onClick={() => void navigate({ to: `/portal/projects/edit-info/${project.id}` })}
                 >
-                  Edit Project Information
+                  {t('editProjectInfo')}
                 </Button>
               </>
             </Card.Footer>

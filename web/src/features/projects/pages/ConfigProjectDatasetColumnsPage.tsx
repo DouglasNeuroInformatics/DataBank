@@ -121,7 +121,7 @@ export const ConfigProjectDatasetColumnsPage = ({
   const formValidation = generateValidationSchema();
   const formContent = generateContent();
 
-  const handleSubmit = (data: z.infer<ReturnType<typeof generateValidationSchema>>) => {
+  const handleSubmit = useCallback((data: z.infer<ReturnType<typeof generateValidationSchema>>) => {
     for (const columnId in selectedColumns) {
       if (data[columnId]) {
         // if data[columnId] means that the user selected to add config to the column
@@ -145,7 +145,7 @@ export const ConfigProjectDatasetColumnsPage = ({
         setColumnsConfig(columnId, currentColumnConfig);
       }
     }
-  };
+  }, []);
 
   return <Form className="w-full" content={formContent} validationSchema={formValidation} onSubmit={handleSubmit} />;
 };

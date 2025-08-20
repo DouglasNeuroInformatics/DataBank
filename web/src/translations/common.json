@@ -447,6 +447,10 @@
     "en": "Edit Dataset Information",
     "fr": "Modifier les informations de la base de données"
   },
+  "editProjectInfo": {
+    "en": "Edit Project Information",
+    "fr": "Modifier les informations du projet"
+  },
   "setDatasetSharable": {
     "en": "Set Dataset Sharable",
     "fr": "Rendre la base de données partageable"
@@ -530,6 +534,10 @@
   "projects": {
     "en": "Projects",
     "fr": "Projets"
+  },
+  "addDatasetToProject": {
+    "en": "Add Dataset to Current Project",
+    "fr": "Ajouter un jeu de données au projet actuel"
   },
   "addUser": {
     "en": "Add User",
