@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import type { ProjectColumnSummary } from '@databank/core';
 import { Button, Checkbox } from '@douglasneuroinformatics/libui/components';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -62,18 +60,16 @@ export const projectColumnDefs: ColumnDef<ProjectColumnSummary>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => {
-      const [isToggleDown, setIsToggleDown] = useState(true);
       return (
         <div className="flex">
           <Button
             variant="ghost"
             onClick={() => {
               column.toggleSorting(column.getIsSorted() === 'asc');
-              setIsToggleDown(!isToggleDown);
             }}
           >
             Column Name
-            {isToggleDown ? (
+            {column.getIsSorted() === 'desc' ? (
               <ChevronDownIcon className="transform-gpu transition-transform" data-testid="arrow-down-icon" />
             ) : (
               <ChevronUpIcon className="transform-gpu transition-transform" data-testid="arrow-up-icon" />
