@@ -179,6 +179,14 @@
     "en": "Project Name",
     "fr": "Nom du projet"
   },
+  "projectId": {
+    "en": "Project Id",
+    "fr": "ID du projet"
+  },
+  "userId": {
+    "en": "User Id",
+    "fr": "ID de l'utilisateur"
+  },
   "manageProjectUsers": {
     "en": "Manage Project Users",
     "fr": "Gérer les utilisateurs du projet"
@@ -210,6 +218,14 @@
   "manageProjectDataset": {
     "en": "Manage Project Dataset",
     "fr": "Gérer la base de données du projet"
+  },
+  "manageProject": {
+    "en": "Manage Project",
+    "fr": "Gérer le projet"
+  },
+  "viewProject": {
+    "en": "View Project",
+    "fr": "Voir le projet"
   },
   "datasetsAvailableToAdd": {
     "en": "Datasets Available To Add",
@@ -243,9 +259,17 @@
     "en": "Finish All Configs",
     "fr": "Terminer toutes les configurations"
   },
+  "finishColumnSelection": {
+    "en": "Finish Column Selection",
+    "fr": "Terminer la sélection de colonnes"
+  },
   "datasetName": {
     "en": "Dataset Name",
     "fr": "Nom de la base de données"
+  },
+  "datasetId": {
+    "en": "Dataset ID",
+    "fr": "ID de la base de données"
   },
   "datasetDescription": {
     "en": "Dataset Description",

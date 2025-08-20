@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { ProjectDatasetConfigStep, ProjectDatasetSelectedColumn } from '@databank/core';
 import { Button, SearchBar, Table } from '@douglasneuroinformatics/libui/components';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import {
   flexRender,
   getCoreRowModel,
@@ -30,6 +31,7 @@ export const ProjectColumnsTable = <TData extends ProjectDatasetSelectedColumn &
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
+  const { t } = useTranslation('common');
 
   const table = useReactTable({
     columns,
@@ -48,7 +50,7 @@ export const ProjectColumnsTable = <TData extends ProjectDatasetSelectedColumn &
     }
   });
 
-  const handleSubmitSelection = () => {
+  const handleSubmitSelection = useCallback(() => {
     const selectedColumns: SelectedColumnsRecord = {};
     table.getFilteredSelectedRowModel().rows.forEach((row) => {
       const { id, kind, name } = row.original;
@@ -61,7 +63,7 @@ export const ProjectColumnsTable = <TData extends ProjectDatasetSelectedColumn &
     });
     setSelectedColumns(selectedColumns);
     setStep('configRows');
-  };
+  }, []);
 
   return (
     <div className="w-full">
@@ -105,7 +107,7 @@ export const ProjectColumnsTable = <TData extends ProjectDatasetSelectedColumn &
             <Table.Row className="w-full">
               <Table.Cell>
                 <Button size="sm" variant="primary" onClick={() => handleSubmitSelection()}>
-                  Finish Column Selection
+                  {t('finishColumnSelection')}
                 </Button>
               </Table.Cell>
 
@@ -116,13 +118,13 @@ export const ProjectColumnsTable = <TData extends ProjectDatasetSelectedColumn &
                   variant="outline"
                   onClick={() => table.previousPage()}
                 >
-                  Previous
+                  {t('paginationPrevious')}
                 </Button>
               </Table.Cell>
 
               <Table.Cell>
                 <Button disabled={!table.getCanNextPage()} size="sm" variant="outline" onClick={() => table.nextPage()}>
-                  Next
+                  {t('paginationNext')}
                 </Button>
               </Table.Cell>
             </Table.Row>

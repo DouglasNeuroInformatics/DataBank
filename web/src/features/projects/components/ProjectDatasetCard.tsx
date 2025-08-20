@@ -34,10 +34,18 @@ const ProjectDatasetCard = ({
         </Card.Header>
         <Card.Content>
           <ul>
-            <li key={datasetId}>Dataset datasetId: {datasetId}</li>
-            <li key={datasetId + 'createdAt'}>Created at: {createdAt.toString()}</li>
-            <li key={datasetId + 'updatedAt'}>Updated at: {updatedAt.toString()}</li>
-            <li key={datasetId + license}>Licence: {license}</li>
+            <li key={datasetId}>
+              {t('datasetId')}: {datasetId}
+            </li>
+            <li key={datasetId + 'createdAt'}>
+              {t('createdAt')}: {createdAt.toString()}
+            </li>
+            <li key={datasetId + 'updatedAt'}>
+              {t('updatedAt')}: {updatedAt.toString()}
+            </li>
+            <li key={datasetId + license}>
+              {t('datasetLicense')}: {license}
+            </li>
           </ul>
         </Card.Content>
         <Card.Footer className="flex justify-between">
