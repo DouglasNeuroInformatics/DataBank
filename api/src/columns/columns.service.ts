@@ -607,7 +607,9 @@ export class ColumnsService {
             datetimeColumnValidation: undefined,
             datetimeData: undefined,
             summary: {
-              datetimeSummary: undefined
+              count: 0,
+              datetimeSummary: undefined,
+              nullCount: 0
             }
           },
           where: {
@@ -622,7 +624,9 @@ export class ColumnsService {
             enumColumnValidation: undefined,
             enumData: undefined,
             summary: {
-              enumSummary: undefined
+              count: 0,
+              enumSummary: undefined,
+              nullCount: 0
             }
           },
           where: {
@@ -637,7 +641,9 @@ export class ColumnsService {
             floatData: undefined,
             numericColumnValidation: undefined,
             summary: {
-              floatSummary: undefined
+              count: 0,
+              floatSummary: undefined,
+              nullCount: 0
             }
           },
           where: {
@@ -652,7 +658,9 @@ export class ColumnsService {
             intData: undefined,
             numericColumnValidation: undefined,
             summary: {
-              intSummary: undefined
+              count: 0,
+              intSummary: undefined,
+              nullCount: 0
             }
           },
           where: {
