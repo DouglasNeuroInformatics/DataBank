@@ -163,6 +163,10 @@
     "en": "Submit",
     "fr": "Soumettre"
   },
+  "restart": {
+    "en": "Restart",
+    "fr": "Recommencer"
+  },
   "schemaValidationFailed": {
     "en": "Schema Validation Failed",
     "fr": "Échec de la validation du schéma"
@@ -230,6 +234,14 @@
   "paginationNext": {
     "en": "Next",
     "fr": "Suivant"
+  },
+  "previousConfigStep": {
+    "en": "Previous Config Step",
+    "fr": "Étape de configuration précédente"
+  },
+  "finishConfig": {
+    "en": "Finish All Configs",
+    "fr": "Terminer toutes les configurations"
   },
   "datasetName": {
     "en": "Dataset Name",

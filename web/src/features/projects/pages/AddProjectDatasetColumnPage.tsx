@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import type { $ProjectDataset } from '@databank/core';
 import { Button, Card, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -37,7 +39,7 @@ const AddProjectDatasetColumnPage = () => {
 
   type CurrentStep = 'configColumns' | 'configRows' | 'selectColumns';
 
-  const handlePreviousStep = (currentStep: CurrentStep) => {
+  const handlePreviousStep = useCallback((currentStep: CurrentStep) => {
     switch (currentStep) {
       case 'configColumns':
         setStep('configRows');
@@ -48,16 +50,16 @@ const AddProjectDatasetColumnPage = () => {
       case 'selectColumns':
         console.error('Unable to go to the previous step');
     }
-  };
+  }, []);
 
-  const handlePreviousConfigColumnsPage = (currentColumnIdIndex: number) => {
+  const handlePreviousConfigColumnsPage = useCallback((currentColumnIdIndex: number) => {
     if (currentStep !== 'configColumns') {
       return;
     }
     setCurrentColumnIdIndex(currentColumnIdIndex - pageSize > 0 ? currentColumnIdIndex - pageSize : 0);
-  };
+  }, []);
 
-  const handleNextConfigColumnsPage = (currentColumnIdIndex: number) => {
+  const handleNextConfigColumnsPage = useCallback((currentColumnIdIndex: number) => {
     if (currentStep !== 'configColumns') {
       return;
     }
@@ -66,9 +68,9 @@ const AddProjectDatasetColumnPage = () => {
         ? currentColumnIdIndex + pageSize
         : Object.keys(selectedColumns).length
     );
-  };
+  }, []);
 
-  const getCurrentStep = (currentStep: CurrentStep): string => {
+  const getCurrentStep = useCallback((currentStep: CurrentStep): string => {
     const prefix = 'Current Configuration Step: ';
     switch (currentStep) {
       case 'configColumns':
@@ -78,9 +80,9 @@ const AddProjectDatasetColumnPage = () => {
       case 'selectColumns':
         return prefix + 'Select Project Dataset Columns';
     }
-  };
+  }, []);
 
-  const handleSubmitConfig = () => {
+  const handleSubmitConfig = useCallback(() => {
     // format the request body here and send to the backend
     if (selectedColumnsIdArray.length === 0) {
       notifications.addNotification({
@@ -112,7 +114,7 @@ const AddProjectDatasetColumnPage = () => {
           type: 'error'
         });
       });
-  };
+  }, []);
 
   const selectedColumnsIdArray = Object.keys(selectedColumns);
 
@@ -191,16 +193,16 @@ const AddProjectDatasetColumnPage = () => {
               variant={'secondary'}
               onClick={() => handlePreviousStep(currentStep)}
             >
-              Previous Config Step
+              {t('previousConfigStep')}
             </Button>
           </div>
 
           <div className="flex w-full justify-between p-1">
             <Button variant={'primary'} onClick={() => handleSubmitConfig()}>
-              Finish All Configs
+              {t('finishConfig')}
             </Button>
             <Button variant={'danger'} onClick={reset}>
-              Restart
+              {t('restart')}
             </Button>
           </div>
         </div>
