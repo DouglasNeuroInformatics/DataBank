@@ -15,7 +15,7 @@ type ViewDatasetsPageProps = {
 };
 
 const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   const { currentUser } = useAuthStore();
 
@@ -48,7 +48,7 @@ const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
                 })
               }
             >
-              Create Dataset
+              {t('createDataset')}
             </Button>
           )}
         </Card.Header>

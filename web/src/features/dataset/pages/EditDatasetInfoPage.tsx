@@ -2,7 +2,7 @@
 import { $DatasetLicenses, mostFrequentOpenSourceLicenses } from '@databank/core';
 import type { EditDatasetInfo } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -23,6 +23,7 @@ const EditDatasetInfoPage = () => {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
+  const { t } = useTranslation('common');
 
   const debouncedLicensesFilter = useDebounceLicensesFilter();
 
@@ -59,7 +60,7 @@ const EditDatasetInfoPage = () => {
               transition={{ duration: 1 }}
             >
               <Heading className="mb-4" variant="h2">
-                Edit Dataset Information
+                {t('editDatasetInfo')}
               </Heading>
               <Form
                 content={[
