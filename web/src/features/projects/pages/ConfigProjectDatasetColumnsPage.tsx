@@ -20,7 +20,7 @@ export const ConfigProjectDatasetColumnsPage = ({
   setColumnsConfig
 }: ConfigProjectDatasetColumnsPageProps) => {
   const formValidation = useMemo(() => {
-    const formValidationObject: { [key: string]: any } = {};
+    const formValidationObject: { [key: string]: z.ZodTypeAny } = {};
 
     for (const columnId in selectedColumns) {
       formValidationObject[columnId] = z.boolean().default(false);
