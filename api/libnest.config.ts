@@ -5,6 +5,7 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
+import type { $CurrentUser } from '@databank/core';
 import { defineUserConfig } from '@douglasneuroinformatics/libnest/user-config';
 
 declare module '@douglasneuroinformatics/libnest/user-config' {
@@ -14,6 +15,7 @@ declare module '@douglasneuroinformatics/libnest/user-config' {
       en: true;
       fr: true;
     }
+    export interface JwtPayload extends $CurrentUser {}
   }
 }
 
