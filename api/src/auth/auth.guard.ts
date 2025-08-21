@@ -55,8 +55,7 @@ export class AuthGuard implements CanActivate {
     request.user = Object.assign(request.user ?? {}, payload) as any;
 
     // Access user permissions
-    // JOSH: To-fix
-    return this.isAuthorized(request.user?.role as $UserRole | undefined, routeAccess);
+    return this.isAuthorized(request.user?.role, routeAccess);
   }
 
   /** Return the access token from the request header, or null if non-existant or malformed */
