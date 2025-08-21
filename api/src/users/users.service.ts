@@ -1,4 +1,4 @@
-import type { CreateUser, UpdateUser } from '@databank/core';
+import { $CreateUser, $UpdateUser } from '@databank/core';
 import { CryptoService, InjectModel } from '@douglasneuroinformatics/libnest';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
@@ -19,7 +19,7 @@ export class UsersService {
     lastName,
     password,
     ...rest
-  }: CreateUser): Promise<Omit<User, 'hashedPassword'>> {
+  }: $CreateUser): Promise<Omit<User, 'hashedPassword'>> {
     const userExists = await this.findByEmail(email);
     if (userExists) {
       throw new ConflictException(`User with the provided email already exists: ${email}`);
@@ -105,7 +105,7 @@ export class UsersService {
     });
   }
 
-  updateUser(userId: string, updateUserData: UpdateUser) {
+  updateUser(userId: string, updateUserData: $UpdateUser) {
     return this.userModel.update({
       data: updateUserData,
       where: {

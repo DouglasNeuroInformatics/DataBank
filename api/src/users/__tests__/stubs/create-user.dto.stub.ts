@@ -1,6 +1,6 @@
-import type { CreateUser } from '@databank/core';
+import { $CreateUser } from '@databank/core';
 
-export const createUserDtoStubFactory = (): CreateUser => ({
+export const createUserDtoStubFactory = (): $CreateUser => ({
   datasetId: [],
   email: 'johnsmith@gmail.com',
   firstName: 'John',

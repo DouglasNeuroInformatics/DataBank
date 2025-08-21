@@ -26,8 +26,8 @@ type ProjectRowFilter {
 
 type ProjectColumnConfig {
     columnId String
-    hash     ProjectColumnHash
-    trim     ProjectColumnTrim
+    hash     ProjectColumnHash?
+    trim     ProjectColumnTrim?
 }
 
 type ProjectColumnHash {

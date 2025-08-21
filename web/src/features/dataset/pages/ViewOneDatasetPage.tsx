@@ -1,10 +1,16 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useState } from 'react';
 
-import type { DatasetViewPagination, TabularDataset } from '@databank/core';
+import { $DatasetViewPagination, licensesObjects } from '@databank/core';
+import type { $TabularDataset } from '@databank/core';
 import { capitalize } from '@douglasneuroinformatics/libjs';
-import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
-import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { Button, Card, DropdownMenu, Heading, HoverCard } from '@douglasneuroinformatics/libui/components';
+import {
+  useDestructiveAction,
+  useDownload,
+  useNotificationsStore,
+  useTranslation
+} from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
@@ -34,19 +40,19 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
   const downloadDataUrl = isPublic ? `/v1/datasets/public/download-data/` : `/v1/datasets/download-data/`;
   const downloadMetaDataUrl = isPublic ? `/v1/datasets/public/download-metadata/` : `/v1/datasets/download-metadata/`;
 
-  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPagination>({
+  const [columnPaginationDto, setColumnPaginationDto] = useState<$DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });
 
-  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPagination>({
+  const [rowPaginationDto, setRowPaginationDto] = useState<$DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });
 
   const datasetQuery = useQuery({
     queryFn: async () => {
-      const response = await axios.post<TabularDataset>(dataQueryUrl, {
+      const response = await axios.post<$TabularDataset>(dataQueryUrl, {
         columnPaginationDto,
         rowPaginationDto
       });
@@ -58,7 +64,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
   const dataset = datasetQuery.data;
   const isManager = currentUser ? Boolean(dataset?.managerIds.includes(currentUser.id)) : false;
 
-  const handleDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
+  const handleDataDownload = (format: 'CSV' | 'TSV', data: $TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     axios
       .get<string>(downloadDataUrl + `${data.id}/${format}`)
@@ -68,7 +74,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
       .catch(console.error);
   };
 
-  const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
+  const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: $TabularDataset) => {
     const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     axios
       .get<string>(downloadMetaDataUrl + `${data.id}/${format}`)
@@ -78,7 +84,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
       .catch(console.error);
   };
 
-  const handleSetReadyToShare = (datasetId: string) => {
+  const handleSetReadyToShare = useDestructiveAction((datasetId: string) => {
     axios
       .patch(`/v1/datasets/share/${datasetId}`)
       .then(() => {
@@ -89,7 +95,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
         void navigate({ to: '/portal/datasets' });
       })
       .catch(console.error);
-  };
+  });
 
   if (!dataset) {
     return <LoadingFallback />;
@@ -104,6 +110,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
         <Card.Header>
           <Card.Title>{`${t('datasetName')}: ${datasetName}`}</Card.Title>
           <Card.Description>{`${t('datasetDescription')}: ${dataset.description}`}</Card.Description>
+          <Card.Description>{`${t('currentDatasetPermission')}: ${dataset.permission}`}</Card.Description>
           <Card.Description>{`${t('createdAt')} : ${dataset.createdAt.toString()}`}</Card.Description>
           <Card.Description>{`${t('updatedAt')} : ${dataset.updatedAt.toString()}`}</Card.Description>
           {isManager && (
@@ -125,67 +132,78 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
                 {t('manageDatasetManagers')}
               </Button>
 
-              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(dataset.id)}>
+              <div
+                className={`rounded-md px-3 py-2 text-sm font-medium ${
+                  dataset.isReadyToShare
+                    ? 'border border-green-200 bg-green-100 text-green-800'
+                    : 'border border-orange-200 bg-orange-100 text-orange-800'
+                }`}
+              >
+                {dataset.isReadyToShare ? t('datasetReadyToShare') : t('datasetNotReadyToShare')}
+              </div>
+
+              <Button className="m-2" variant={'danger'} onClick={() => deleteDataset(params.datasetId!)}>
                 {t('deleteDataset')}
               </Button>
             </div>
           )}
         </Card.Header>
         {dataset.datasetType === 'TABULAR' && (
-          <Card.Content>
-            <ul>
-              <li>{`${t('datasetLicense')}: ${dataset.license}`}</li>
-              <li>
-                {t('datasetPrimaryKeys')}
-                {': '}
-                {dataset.primaryKeys.map((pk, i) => {
-                  return (
-                    <span className="m-2" key={i}>
-                      {pk}
-                    </span>
-                  );
-                })}
-              </li>
-            </ul>
+          <>
+            <Card.Content>
+              {`${t('datasetLicense')}: `}
+              <HoverCard>
+                <HoverCard.Trigger asChild>
+                  <Button variant="link">{`${dataset.license}`}</Button>
+                </HoverCard.Trigger>
+                <HoverCard.Content className="max-w-160 w-80">
+                  <div className="my-2">
+                    <Heading variant="h5">{`${t('datasetLicenseName')}: `}</Heading>
+                    {`${licensesObjects[dataset.license]!.name}`}
+                  </div>
 
-            <DatasetPagination
-              currentPage={columnPaginationDto.currentPage}
-              itemsPerPage={columnPaginationDto.itemsPerPage}
-              kind={'COLUMN'}
-              setDatasetPagination={setColumnPaginationDto}
-              totalNumberOfItems={dataset.totalNumberOfColumns}
-            />
+                  <div className="my-2">
+                    <Heading variant="h5">{`${t('datasetLicenseReference')}: `}</Heading>
+                    {`${licensesObjects[dataset.license]!.reference}`}
+                  </div>
+                </HoverCard.Content>
+              </HoverCard>
+            </Card.Content>
 
-            <DatasetTable
-              columnIds={dataset.columnIds}
-              columns={dataset.columns}
-              createdAt={dataset.createdAt}
-              datasetType={dataset.datasetType}
-              description={dataset.description}
-              id={dataset.id}
-              isManager={isManager}
-              isReadyToShare={dataset.isReadyToShare}
-              license={dataset.license}
-              managerIds={dataset.managerIds}
-              metadata={dataset.metadata}
-              name={dataset.name}
-              permission={dataset.permission}
-              primaryKeys={dataset.primaryKeys}
-              rows={dataset.rows}
-              status={dataset.status}
-              totalNumberOfColumns={dataset.columns.length}
-              totalNumberOfRows={dataset.totalNumberOfRows}
-              updatedAt={dataset.updatedAt}
-            />
+            <Card.Content>
+              <ul>
+                <li>
+                  {t('datasetPrimaryKeys')}
+                  {': '}
+                  {dataset.primaryKeys.map((pk, i) => {
+                    return (
+                      <span className="m-2" key={i}>
+                        {pk}
+                      </span>
+                    );
+                  })}
+                </li>
+              </ul>
 
-            <DatasetPagination
-              currentPage={rowPaginationDto.currentPage}
-              itemsPerPage={rowPaginationDto.itemsPerPage}
-              kind={'ROW'}
-              setDatasetPagination={setRowPaginationDto}
-              totalNumberOfItems={dataset.totalNumberOfRows}
-            />
-          </Card.Content>
+              <DatasetPagination
+                currentPage={columnPaginationDto.currentPage}
+                itemsPerPage={columnPaginationDto.itemsPerPage}
+                kind={'COLUMN'}
+                setDatasetPagination={setColumnPaginationDto}
+                totalNumberOfItems={dataset.totalNumberOfColumns}
+              />
+
+              <DatasetTable isManager={isManager} isProject={false} {...dataset} />
+
+              <DatasetPagination
+                currentPage={rowPaginationDto.currentPage}
+                itemsPerPage={rowPaginationDto.itemsPerPage}
+                kind={'ROW'}
+                setDatasetPagination={setRowPaginationDto}
+                totalNumberOfItems={dataset.totalNumberOfRows}
+              />
+            </Card.Content>
+          </>
         )}
 
         <Card.Footer>

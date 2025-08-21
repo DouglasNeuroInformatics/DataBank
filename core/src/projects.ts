@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { $ColumnType, $TabularColumnInfo, $TabularColumnSummary } from './columns';
 
 //===================== Project Column Config ================================
 const $ProjectDatasetConfigStep = z.enum(['selectColumns', 'configRows', 'configColumns']);
-type ProjectDatasetConfigStep = z.infer<typeof $ProjectDatasetConfigStep>;
+type $ProjectDatasetConfigStep = z.infer<typeof $ProjectDatasetConfigStep>;
 
 //===================== Project Column Transformation ========================
 const $ProjectColumnSummary = $TabularColumnSummary.and(
@@ -13,36 +13,44 @@ const $ProjectColumnSummary = $TabularColumnSummary.and(
     name: z.string()
   })
 );
-type ProjectColumnSummary = z.infer<typeof $ProjectColumnSummary>;
+type $ProjectColumnSummary = z.infer<typeof $ProjectColumnSummary>;
 
 //===================== Project Column Transformation ========================
-const $ProjectDatasetRowConfig = z.object({
-  rowMax: z.number().int().optional(),
-  rowMin: z.number().int().gte(0).default(0)
-});
-type ProjectDatasetRowConfig = z.infer<typeof $ProjectDatasetRowConfig>;
+const $ProjectDatasetRowConfig = z
+  .object({
+    rowMax: z.number().int().nullable(),
+    rowMin: z.number().int().gte(0).default(0)
+  })
+  .refine((data) => data.rowMax === null || data.rowMax >= data.rowMin, {
+    message: 'rowMax must be greater than or equal to rowMin'
+  });
+type $ProjectDatasetRowConfig = z.infer<typeof $ProjectDatasetRowConfig>;
 
 const $ProjectDatasetColumnHash = z.object({
   length: z.number().int().default(10),
-  salt: z.string().default('')
+  salt: z.string().nullable()
 });
-type ProjectDatasetColumnHash = z.infer<typeof $ProjectDatasetColumnHash>;
+type $ProjectDatasetColumnHash = z.infer<typeof $ProjectDatasetColumnHash>;
 
-const $ProjectDatasetColumnTrim = z.object({
-  end: z.number().int().optional(),
-  start: z.number().int().default(0)
-});
-type ProjectDatasetColumnTrim = z.infer<typeof $ProjectDatasetColumnTrim>;
+const $ProjectDatasetColumnTrim = z
+  .object({
+    end: z.number().int().nullable(),
+    start: z.number().int().gte(0).default(0)
+  })
+  .refine((data) => data.end === null || data.end >= data.start, {
+    message: 'end must be greater than or equal to start'
+  });
+type $ProjectDatasetColumnTrim = z.infer<typeof $ProjectDatasetColumnTrim>;
 
 const $ProjectDatasetColumnConfig = z.object({
-  hash: $ProjectDatasetColumnHash,
-  trim: $ProjectDatasetColumnTrim
+  hash: $ProjectDatasetColumnHash.nullable(),
+  trim: $ProjectDatasetColumnTrim.nullable()
 });
-type ProjectDatasetColumnConfig = z.infer<typeof $ProjectDatasetColumnConfig>;
+type $ProjectDatasetColumnConfig = z.infer<typeof $ProjectDatasetColumnConfig>;
 
 //===================== Project Dataset ========================
 const $ProjectDataset = z.object({
-  columnConfigs: z.record($ProjectDatasetColumnConfig),
+  columnConfigs: z.record(z.string(), $ProjectDatasetColumnConfig),
   columnIds: z.string().array(),
   datasetId: z.string(),
   rowConfig: $ProjectDatasetRowConfig
@@ -63,18 +71,12 @@ const $UpdateProject = z
   .object({
     datasets: z
       .object({
-        columnConfigurations: z
-          .object({
-            columnId: z.string(),
-            hash: z.object({
-              length: z.number(),
-              salt: z.string().nullable()
-            }),
-            trim: z.object({
-              end: z.number().nullable(),
-              start: z.number()
+        columnConfigurations: $ProjectDatasetColumnConfig
+          .and(
+            z.object({
+              columnId: z.string()
             })
-          })
+          )
           .array(),
         columnIds: z.string().array(),
         datasetId: z.string(),
@@ -97,6 +99,7 @@ const $ProjectColumnInfo = $TabularColumnInfo.omit({
   summaryPermission: true,
   tabularDataId: true
 });
+type $ProjectColumnInfo = z.infer<typeof $ProjectColumnInfo>;
 
 //===================== Project Dataset Column View ========================
 const $GetColumnViewDto = z.object({
@@ -116,7 +119,7 @@ const $GetColumnViewDto = z.object({
     })
     .optional()
 });
-type GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;
+type $GetColumnViewDto = z.infer<typeof $GetColumnViewDto>;
 
 //===================== Project Add Dataset Config =========================
 const $ProjectDatasetSelectedColumn = z.object({
@@ -124,17 +127,21 @@ const $ProjectDatasetSelectedColumn = z.object({
   kind: $ColumnType,
   name: z.string()
 });
-type ProjectDatasetSelectedColumn = z.infer<typeof $ProjectDatasetSelectedColumn>;
+type $ProjectDatasetSelectedColumn = z.infer<typeof $ProjectDatasetSelectedColumn>;
 
 const $ProjectAddDatasetConfig = z.object({
-  columnsConfig: z.record($ProjectDatasetColumnConfig),
+  columnsConfig: z.record(z.string(), $ProjectDatasetColumnConfig),
   currentColumnIdIndex: z.number().int().default(0),
   currentStep: $ProjectDatasetConfigStep,
   pageSize: z.number().int().default(10),
   rowConfig: $ProjectDatasetRowConfig,
-  selectedColumns: z.record($ProjectDatasetSelectedColumn)
+  selectedColumns: z.record(z.string(), $ProjectDatasetSelectedColumn)
 });
-type ProjectAddDatasetConfig = z.infer<typeof $ProjectAddDatasetConfig>;
+type $ProjectAddDatasetConfig = z.infer<typeof $ProjectAddDatasetConfig>;
+
+type $ProjectDataset = z.infer<typeof $ProjectDataset>;
+type $CreateProject = z.infer<typeof $CreateProject>;
+type $UpdateProject = z.infer<typeof $UpdateProject>;
 
 export {
   $CreateProject,
@@ -143,23 +150,11 @@ export {
   $ProjectColumnInfo,
   $ProjectColumnSummary,
   $ProjectDataset,
+  $ProjectDatasetColumnConfig,
   $ProjectDatasetColumnHash,
   $ProjectDatasetColumnTrim,
+  $ProjectDatasetConfigStep,
+  $ProjectDatasetRowConfig,
+  $ProjectDatasetSelectedColumn,
   $UpdateProject
 };
-
-export type {
-  GetColumnViewDto,
-  ProjectAddDatasetConfig,
-  ProjectColumnSummary,
-  ProjectDatasetColumnConfig,
-  ProjectDatasetColumnHash,
-  ProjectDatasetColumnTrim,
-  ProjectDatasetConfigStep,
-  ProjectDatasetRowConfig,
-  ProjectDatasetSelectedColumn
-};
-
-export type $ProjectDataset = z.infer<typeof $ProjectDataset>;
-export type $CreateProject = z.infer<typeof $CreateProject>;
-export type $UpdateProject = z.infer<typeof $UpdateProject>;

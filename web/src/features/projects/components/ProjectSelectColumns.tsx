@@ -1,38 +1,24 @@
-import { useState } from 'react';
-
-import type { ProjectColumnSummary } from '@databank/core';
+import { $ProjectColumnSummary } from '@databank/core';
 import { Button, Checkbox } from '@douglasneuroinformatics/libui/components';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 
-const formatSummary = (column: ProjectColumnSummary): string => {
+const formatSummary = (column: $ProjectColumnSummary): string => {
   switch (column.kind) {
     case 'DATETIME':
-      return `
-      min: ${column.datetimeSummary.min.toISOString()} \n
-       max: ${column.datetimeSummary.max.toISOString()}
-       `;
-    case 'ENUM':
-      return Object.entries(column.enumSummary.distribution)
-        .map(([k, v]) => `${k}: ${v}`)
+      return Object.entries(column.datetimeSummary)
+        .map(([key, value]) => `${key}: ${value.toISOString()}`)
         .join(', ');
+    case 'ENUM':
+      return column.enumSummary.distribution.map((entry) => `${entry['']}: ${entry.count}`).join(', ');
     case 'FLOAT':
-      return `
-            min: ${column.floatSummary.min.toFixed(2)} \n
-            max: ${column.floatSummary.max.toFixed(2)} \n
-            mean: ${column.floatSummary.mean.toFixed(2)} \n
-            median: ${column.floatSummary.median.toFixed(2)} \n
-            std: ${column.floatSummary.std.toFixed(2)}
-            `;
+      return Object.entries(column.floatSummary)
+        .map(([key, value]) => `${key}: ${value.toFixed(2)}`)
+        .join(', ');
     case 'INT':
-      return `
-            min: ${column.intSummary.min} \n
-            max: ${column.intSummary.max} \n
-            mean: ${column.intSummary.mean} \n
-            median: ${column.intSummary.median} \n
-            std: ${column.intSummary.std} \n
-            mode: ${column.intSummary.mode}
-            `;
+      return Object.entries(column.intSummary)
+        .map(([key, value]) => `${key}: ${value.toFixed(2)}`)
+        .join(', ');
     case 'STRING':
       return 'N/A';
     default:
@@ -40,7 +26,7 @@ const formatSummary = (column: ProjectColumnSummary): string => {
   }
 };
 
-export const projectColumnDefs: ColumnDef<ProjectColumnSummary>[] = [
+export const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
   {
     accessorKey: 'select',
     cell: ({ row }) => (
@@ -64,18 +50,16 @@ export const projectColumnDefs: ColumnDef<ProjectColumnSummary>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => {
-      const [isToggleDown, setIsToggleDown] = useState(true);
       return (
         <div className="flex">
           <Button
             variant="ghost"
             onClick={() => {
               column.toggleSorting(column.getIsSorted() === 'asc');
-              setIsToggleDown(!isToggleDown);
             }}
           >
             Column Name
-            {isToggleDown ? (
+            {column.getIsSorted() === 'desc' ? (
               <ChevronDownIcon className="transform-gpu transition-transform" data-testid="arrow-down-icon" />
             ) : (
               <ChevronUpIcon className="transform-gpu transition-transform" data-testid="arrow-up-icon" />

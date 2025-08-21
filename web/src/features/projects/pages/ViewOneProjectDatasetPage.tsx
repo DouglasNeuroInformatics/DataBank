@@ -1,9 +1,15 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useEffect, useState } from 'react';
 
-import type { DatasetViewPagination, TabularDataset } from '@databank/core';
-import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
-import { useDownload, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { $DatasetViewPagination, licensesObjects } from '@databank/core';
+import type { $TabularDataset } from '@databank/core';
+import { Button, Card, DropdownMenu, Heading, HoverCard } from '@douglasneuroinformatics/libui/components';
+import {
+  useDestructiveAction,
+  useDownload,
+  useNotificationsStore,
+  useTranslation
+} from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
@@ -19,16 +25,16 @@ const ViewOneProjectDatasetPage = () => {
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
   const params = useParams({ strict: false });
-  const [dataset, setDataset] = useState<null | TabularDataset>(null);
+  const [dataset, setDataset] = useState<$TabularDataset | null>(null);
   const download = useDownload();
   const { currentUser } = useAuthStore();
 
-  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPagination>({
+  const [columnPaginationDto, setColumnPaginationDto] = useState<$DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });
 
-  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPagination>({
+  const [rowPaginationDto, setRowPaginationDto] = useState<$DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });
@@ -36,7 +42,7 @@ const ViewOneProjectDatasetPage = () => {
   useEffect(() => {
     const fetchDataset = () => {
       axios
-        .post<TabularDataset>(`/v1/projects/dataset/${params.projectId}/${params.datasetId}`, {
+        .post<$TabularDataset>(`/v1/projects/dataset/${params.projectId}/${params.datasetId}`, {
           columnPaginationDto,
           rowPaginationDto
         })
@@ -50,7 +56,7 @@ const ViewOneProjectDatasetPage = () => {
 
   const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
 
-  const deleteDataset = () => {
+  const deleteDataset = useDestructiveAction(() => {
     axios
       .delete(`/v1/projects/remove-dataset/${params.projectId}/${params.datasetId}`)
       .then(() => {
@@ -61,15 +67,15 @@ const ViewOneProjectDatasetPage = () => {
         void navigate({ to: `/portal/projects/${params.projectId}` });
       })
       .catch(console.error);
-  };
+  });
 
-  const handleDataDownload = async (format: 'CSV' | 'TSV', data: TabularDataset) => {
+  const handleDataDownload = async (format: 'CSV' | 'TSV', data: $TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     const response = await axios.get(`/v1/projects/download-data/${params.projectId}/${params.datasetId}/${format}`);
     void download(filename, response.data as string);
   };
 
-  const handleMetaDataDownload = async (format: 'CSV' | 'TSV', data: TabularDataset) => {
+  const handleMetaDataDownload = async (format: 'CSV' | 'TSV', data: $TabularDataset) => {
     const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     const response = await axios.get(
       `/v1/projects/download-metadata/${params.projectId}/${params.datasetId}/${format}`
@@ -101,9 +107,29 @@ const ViewOneProjectDatasetPage = () => {
               {t('updatedAt')}
               {`: ${dataset.updatedAt.toString()}`}
             </li>
-            <li>{`${t('datasetLicense')}: ${dataset.license}`}</li>
-          </ul>
+            <li>
+              {`${t('datasetLicense')}: `}
+              <HoverCard>
+                <HoverCard.Trigger asChild>
+                  <Button variant="link">{`${dataset.license}`}</Button>
+                </HoverCard.Trigger>
+                <HoverCard.Content className="max-w-160 w-80">
+                  <div className="my-2">
+                    <Heading variant="h5">{`${t('datasetLicenseName')}: `}</Heading>
+                    {`${licensesObjects[dataset.license]!.name}`}
+                  </div>
 
+                  <div className="my-2">
+                    <Heading variant="h5">{`${t('datasetLicenseReference')}: `}</Heading>
+                    {`${licensesObjects[dataset.license]!.reference}`}
+                  </div>
+                </HoverCard.Content>
+              </HoverCard>
+            </li>
+          </ul>
+        </Card.Content>
+
+        <Card.Content>
           <DatasetPagination
             currentPage={columnPaginationDto.currentPage}
             itemsPerPage={columnPaginationDto.itemsPerPage}
@@ -112,27 +138,7 @@ const ViewOneProjectDatasetPage = () => {
             totalNumberOfItems={dataset.totalNumberOfColumns}
           />
 
-          <DatasetTable
-            columnIds={dataset.columnIds}
-            columns={dataset.columns}
-            createdAt={dataset.createdAt}
-            datasetType={dataset.datasetType}
-            description={dataset.description}
-            id={dataset.id}
-            isManager={false}
-            isReadyToShare={dataset.isReadyToShare}
-            license={dataset.license}
-            managerIds={dataset.managerIds}
-            metadata={dataset.metadata}
-            name={dataset.name}
-            permission={'MANAGER'}
-            primaryKeys={dataset.primaryKeys}
-            rows={dataset.rows}
-            status={dataset.status}
-            totalNumberOfColumns={dataset.columns.length}
-            totalNumberOfRows={dataset.totalNumberOfRows}
-            updatedAt={dataset.updatedAt}
-          />
+          <DatasetTable isManager={false} isProject={true} {...dataset} />
 
           <DatasetPagination
             currentPage={rowPaginationDto.currentPage}

@@ -1,16 +1,34 @@
-import type {
-  ColumnType,
-  DatasetViewPagination,
-  GetColumnViewDto,
-  PermissionLevel,
-  RawQueryColumn
+import {
+  $ColumnType,
+  $DatasetViewPagination,
+  $GetColumnViewDto,
+  $PermissionLevel,
+  $RawQueryColumn
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import type { PrismaClient } from '@prisma/client';
-import pl from 'nodejs-polars';
+import pl, { Utf8 } from 'nodejs-polars';
 import type { Series } from 'nodejs-polars';
+
+type ProjectColumnView = Pick<
+  NonNullable<Awaited<ReturnType<Model<'TabularColumn'>['findUnique']>>>,
+  | 'dataPermission'
+  | 'datetimeData'
+  | 'description'
+  | 'enumData'
+  | 'floatData'
+  | 'id'
+  | 'intData'
+  | 'kind'
+  | 'name'
+  | 'nullable'
+  | 'stringData'
+  | 'summary'
+  | 'summaryPermission'
+  | 'tabularDataId'
+>;
 
 @Injectable()
 export class ColumnsService {
@@ -19,7 +37,7 @@ export class ColumnsService {
     @InjectPrismaClient() private readonly prisma: PrismaClient
   ) {}
 
-  async changeColumnDataPermission(columnId: string, permissionLevel: PermissionLevel) {
+  async changeColumnDataPermission(columnId: string, permissionLevel: $PermissionLevel) {
     return await this.columnModel.update({
       data: {
         dataPermission: permissionLevel
@@ -30,7 +48,7 @@ export class ColumnsService {
     });
   }
 
-  async changeColumnMetadataPermission(columnId: string, permissionLevel: PermissionLevel) {
+  async changeColumnMetadataPermission(columnId: string, permissionLevel: $PermissionLevel) {
     return await this.columnModel.update({
       data: {
         summaryPermission: permissionLevel
@@ -59,7 +77,7 @@ export class ColumnsService {
           floatData: dataArray,
           kind: 'FLOAT',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           // numericColumnValidation: {
           //   max: col.max(),
           //   min: col.min()
@@ -85,7 +103,7 @@ export class ColumnsService {
           intData: dataArray,
           kind: 'INT',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           // numericColumnValidation: {
           //   max: col.max(),
           //   min: col.min()
@@ -113,7 +131,7 @@ export class ColumnsService {
           enumData: dataArray,
           kind: 'ENUM',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           // numericColumnValidation: {
           //   max: col.max(),
           //   min: col.min()
@@ -141,7 +159,7 @@ export class ColumnsService {
           datetimeData: dataArray,
           kind: 'DATETIME',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           // numericColumnValidation: {
           //   max: col.max(),
           //   min: col.min()
@@ -164,7 +182,7 @@ export class ColumnsService {
           dataPermission: 'MANAGER',
           kind: 'STRING',
           name: colSeries.name,
-          nullable: colSeries.nullCount() != 0,
+          nullable: colSeries.nullCount() !== 0,
           stringData: dataArray,
           // numericColumnValidation: {
           //   max: col.max(),
@@ -199,8 +217,8 @@ export class ColumnsService {
 
   async findManyByTabularDataId(
     tabularDataId: string,
-    columnPagination: DatasetViewPagination
-  ): Promise<RawQueryColumn[]> {
+    columnPagination: $DatasetViewPagination
+  ): Promise<$RawQueryColumn[]> {
     const columns = await this.columnModel.aggregateRaw({
       // Pipeline stages:
       // 1. $match: Filter columns by tabularDataId
@@ -218,7 +236,7 @@ export class ColumnsService {
       throw new NotFoundException('No columns found with the given tabular data id!');
     }
 
-    return columns as unknown as RawQueryColumn[];
+    return columns as unknown as $RawQueryColumn[];
   }
 
   async getById(columnId: string) {
@@ -232,170 +250,6 @@ export class ColumnsService {
       throw new NotFoundException();
     }
     return column;
-  }
-
-  async getColumnView(getColumnViewDto: GetColumnViewDto) {
-    const columnView = await this.getById(getColumnViewDto.columnId);
-    // store column data in a polars series according to the type
-    let currSeries = await this.columnIdToSeries(getColumnViewDto.columnId);
-    // check if there is a row max and min bound
-    if (getColumnViewDto.rowMax && getColumnViewDto.rowMin) {
-      currSeries = currSeries.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax - getColumnViewDto.rowMin + 1);
-    } else if (getColumnViewDto.rowMin) {
-      currSeries = currSeries.slice(getColumnViewDto.rowMin);
-    } else if (getColumnViewDto.rowMax) {
-      currSeries = currSeries.slice(0, getColumnViewDto.rowMax);
-    }
-    // check for hash, do the hashing
-    if (getColumnViewDto.hash) {
-      currSeries = currSeries.cast(pl.String);
-      if (getColumnViewDto.hash.salt) {
-        currSeries = currSeries.add(getColumnViewDto.hash.salt);
-      }
-
-      currSeries = currSeries.hash().cast(pl.String);
-      if (getColumnViewDto.hash.length && getColumnViewDto.hash.length >= 0) {
-        currSeries = currSeries.str.slice(0, getColumnViewDto.hash.length);
-      }
-      currSeries.cast(pl.String);
-      columnView.kind = 'STRING';
-    }
-
-    if (getColumnViewDto.trim && columnView.kind === 'STRING') {
-      // trim the string in each cell of a string column
-      // the slice function takes two parameters: offset and length(optional)
-      if (getColumnViewDto.trim.start && getColumnViewDto.trim.end) {
-        currSeries = currSeries.str.slice(
-          getColumnViewDto.trim.start,
-          getColumnViewDto.trim.end - getColumnViewDto.trim.start + 1
-        );
-      } else if (getColumnViewDto.trim.start && !getColumnViewDto.trim.end) {
-        currSeries = currSeries.str.slice(getColumnViewDto.trim.start);
-      } else if (!getColumnViewDto.trim.start && getColumnViewDto.trim.end) {
-        currSeries = currSeries.str.slice(0, getColumnViewDto.trim.end + 1);
-      }
-    }
-    // recalculate the summary for the column
-    const newColumnSummary = this.calculateSummaryOnSeries(columnView.kind, currSeries);
-    columnView.summary = {
-      count: newColumnSummary.count,
-      datetimeSummary: columnView.kind == 'DATETIME' ? (newColumnSummary.datetimeSummary ?? null) : null,
-      enumSummary: columnView.kind == 'ENUM' ? (newColumnSummary.enumSummary ?? null) : null,
-      floatSummary: columnView.kind == 'FLOAT' ? (newColumnSummary.floatSummary ?? null) : null,
-      intSummary: columnView.kind == 'INT' ? (newColumnSummary.intSummary ?? null) : null,
-      nullCount: newColumnSummary.nullCount
-    };
-
-    type ColumnMetadata = {
-      count: number;
-      distribution?: { [key: string]: number }[];
-      kind: ColumnType;
-      max?: Date | number;
-      mean?: number;
-      median?: number;
-      min?: Date | number;
-      mode?: number;
-      nullable: boolean;
-      nullCount: number;
-      std?: number;
-    };
-
-    const columnMetadata: ColumnMetadata = {
-      count: 0,
-      kind: 'STRING',
-      nullable: false,
-      nullCount: 0
-    };
-    switch (columnView.kind) {
-      case 'DATETIME':
-        columnView.datetimeData = currSeries.toArray().map((entry) => {
-          return {
-            value: entry as Date
-          };
-        });
-        columnMetadata.count = columnView.summary.count;
-        columnMetadata.nullCount = columnView.summary.nullCount;
-        columnMetadata.kind = 'DATETIME';
-        columnMetadata.nullable = columnView.nullable;
-        columnMetadata.max = columnView.summary.datetimeSummary?.max;
-        columnMetadata.min = columnView.summary.datetimeSummary?.min;
-        break;
-      case 'ENUM':
-        columnView.enumData = currSeries.toArray().map((entry) => {
-          return {
-            value: entry as string
-          };
-        });
-        columnMetadata.count = columnView.summary.count;
-        columnMetadata.nullCount = columnView.summary.nullCount;
-        columnMetadata.kind = 'ENUM';
-        columnMetadata.nullable = columnView.nullable;
-        break;
-      case 'FLOAT':
-        columnView.floatData = currSeries.toArray().map((entry) => {
-          return {
-            value: entry as number
-          };
-        });
-        columnMetadata.count = columnView.summary.count;
-        columnMetadata.nullCount = columnView.summary.nullCount;
-        columnMetadata.kind = 'FLOAT';
-        columnMetadata.nullable = columnView.nullable;
-        columnMetadata.max = columnView.summary.floatSummary?.max;
-        columnMetadata.min = columnView.summary.floatSummary?.min;
-        columnMetadata.mean = columnView.summary.floatSummary?.mean;
-        columnMetadata.median = columnView.summary.floatSummary?.median;
-        columnMetadata.std = columnView.summary.floatSummary?.std;
-        break;
-      case 'INT':
-        columnView.intData = currSeries.toArray().map((entry) => {
-          return {
-            value: entry as number
-          };
-        });
-        columnMetadata.count = columnView.summary.count;
-        columnMetadata.nullCount = columnView.summary.nullCount;
-        columnMetadata.kind = 'INT';
-        columnMetadata.nullable = columnView.nullable;
-        columnMetadata.max = columnView.summary.intSummary?.max;
-        columnMetadata.min = columnView.summary.intSummary?.min;
-        columnMetadata.mean = columnView.summary.intSummary?.mean;
-        columnMetadata.mode = columnView.summary.intSummary?.mode;
-        columnMetadata.median = columnView.summary.intSummary?.median;
-        columnMetadata.std = columnView.summary.intSummary?.std;
-        break;
-      case 'STRING':
-        columnView.stringData = currSeries.toArray().map((entry) => {
-          return {
-            value: entry as string
-          };
-        });
-        columnMetadata.count = columnView.summary.count;
-        columnMetadata.nullCount = columnView.summary.nullCount;
-        columnMetadata.kind = 'STRING';
-        columnMetadata.nullable = columnView.nullable;
-        break;
-    }
-
-    return {
-      count: columnView.summary.count,
-      datetimeData: columnView.datetimeData,
-      enumData: columnView.enumData,
-      floatData: columnView.floatData,
-      id: columnView.id,
-      intData: columnView.intData,
-      kind: columnView.kind,
-      max: columnMetadata.max,
-      mean: columnMetadata.mean,
-      median: columnMetadata.median,
-      min: columnMetadata.min,
-      mode: columnMetadata.mode,
-      name: columnView.name,
-      nullable: columnView.nullable,
-      nullCount: columnView.summary.nullCount,
-      std: columnMetadata.std,
-      stringData: columnView.stringData
-    };
   }
 
   async getLengthById(columnId: string) {
@@ -420,7 +274,7 @@ export class ColumnsService {
     if (col?.kind === 'ENUM') {
       return col.enumData.length;
     }
-    throw new ForbiddenException('Column type does not match any expected types!');
+    throw new UnprocessableEntityException('Column type does not match any expected types!');
   }
 
   async getNumberOfColumns(tabularDataId: string) {
@@ -431,7 +285,310 @@ export class ColumnsService {
     });
   }
 
-  async mutateColumnType(columnId: string, colType: ColumnType) {
+  async getProjectColumnView(getColumnViewDto: $GetColumnViewDto): Promise<ProjectColumnView> {
+    const projectColumn = await this.columnModel.findUnique({
+      where: {
+        id: getColumnViewDto.columnId
+      }
+    });
+
+    if (!projectColumn) {
+      throw new NotFoundException(`Column with ID ${getColumnViewDto.columnId} cannot be found!`);
+    }
+
+    switch (projectColumn.kind) {
+      case 'DATETIME': {
+        // 1. make a series from the projectColumn.data.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax)
+        const datetimeSeries = pl.Series(
+          projectColumn.datetimeData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+
+        let changedToString = false;
+        let stringSeries = pl.Series([]);
+
+        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+        if (getColumnViewDto.hash) {
+          // change the original series to type string to perform hash
+          projectColumn.kind = 'STRING';
+          changedToString = true;
+          stringSeries = datetimeSeries.cast(Utf8);
+
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          if (projectColumn.kind !== 'STRING') {
+            // change the original series to type string to perform hash
+            projectColumn.kind = 'STRING';
+            changedToString = true;
+            stringSeries = datetimeSeries.cast(Utf8);
+          }
+
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
+        }
+
+        if (!changedToString) {
+          const newDatetimeSummary = this.calculateSummaryOnSeries('DATETIME', datetimeSeries);
+          projectColumn.summary.datetimeSummary = newDatetimeSummary.datetimeSummary!;
+          projectColumn.summary.count = newDatetimeSummary.count;
+          projectColumn.summary.nullCount = newDatetimeSummary.nullCount;
+          projectColumn.datetimeData = datetimeSeries.toArray().map((entry) => {
+            return { value: entry as Date };
+          });
+        } else {
+          const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+          projectColumn.summary.count = newStringSummary.count;
+          projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.summary.datetimeSummary = null;
+          projectColumn.summary.enumSummary = null;
+          projectColumn.summary.floatSummary = null;
+          projectColumn.summary.intSummary = null;
+          projectColumn.stringData = stringSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        }
+        break;
+      }
+      case 'ENUM': {
+        const enumSeries = pl.Series(
+          projectColumn.enumData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+
+        let changedToString = false;
+        let stringSeries = pl.Series([]);
+
+        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+        if (getColumnViewDto.hash) {
+          // change the original series to type string to perform hash
+          projectColumn.kind = 'STRING';
+          changedToString = true;
+          stringSeries = enumSeries.cast(Utf8);
+
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          if (projectColumn.kind !== 'STRING') {
+            // change the original series to type string to perform hash
+            projectColumn.kind = 'STRING';
+            changedToString = true;
+            stringSeries = enumSeries.cast(Utf8);
+          }
+
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
+        }
+
+        if (!changedToString) {
+          const newEnumSummary = this.calculateSummaryOnSeries('ENUM', enumSeries);
+          projectColumn.summary.enumSummary = newEnumSummary.enumSummary!;
+          projectColumn.summary.count = newEnumSummary.count;
+          projectColumn.summary.nullCount = newEnumSummary.nullCount;
+          projectColumn.enumData = enumSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        } else {
+          const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+          projectColumn.summary.count = newStringSummary.count;
+          projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.summary.datetimeSummary = null;
+          projectColumn.summary.enumSummary = null;
+          projectColumn.summary.floatSummary = null;
+          projectColumn.summary.intSummary = null;
+          projectColumn.stringData = stringSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        }
+        break;
+      }
+      case 'FLOAT': {
+        const floatSeries = pl.Series(
+          projectColumn.floatData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+        let changedToString = false;
+        let stringSeries = pl.Series([]);
+
+        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+        if (getColumnViewDto.hash) {
+          // change the original series to type string to perform hash
+          projectColumn.kind = 'STRING';
+          changedToString = true;
+          stringSeries = floatSeries.cast(Utf8);
+
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          if (projectColumn.kind !== 'STRING') {
+            // change the original series to type string to perform hash
+            projectColumn.kind = 'STRING';
+            changedToString = true;
+            stringSeries = floatSeries.cast(Utf8);
+          }
+
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
+        }
+
+        if (!changedToString) {
+          const newFloatSummary = this.calculateSummaryOnSeries('FLOAT', floatSeries);
+          projectColumn.summary.floatSummary = newFloatSummary.floatSummary!;
+          projectColumn.summary.count = newFloatSummary.count;
+          projectColumn.summary.nullCount = newFloatSummary.nullCount;
+          projectColumn.floatData = floatSeries.toArray().map((entry) => {
+            return { value: entry as number };
+          });
+        } else {
+          const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+          projectColumn.summary.count = newStringSummary.count;
+          projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.summary.datetimeSummary = null;
+          projectColumn.summary.enumSummary = null;
+          projectColumn.summary.floatSummary = null;
+          projectColumn.summary.intSummary = null;
+          projectColumn.stringData = stringSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        }
+        break;
+      }
+      case 'INT': {
+        const intSeries = pl.Series(
+          projectColumn.intData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+        let changedToString = false;
+        let stringSeries = pl.Series([]);
+
+        // 2. perform transformations on the series if there is hash or trim, change the type of the column to string
+        if (getColumnViewDto.hash) {
+          // change the original series to type string to perform hash
+          projectColumn.kind = 'STRING';
+          changedToString = true;
+          stringSeries = intSeries.cast(Utf8);
+
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          if (projectColumn.kind !== 'STRING') {
+            // change the original series to type string to perform hash
+            projectColumn.kind = 'STRING';
+            changedToString = true;
+            stringSeries = intSeries.cast(Utf8);
+          }
+
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
+        }
+
+        if (!changedToString) {
+          const newIntSummary = this.calculateSummaryOnSeries('INT', intSeries);
+          projectColumn.summary.intSummary = newIntSummary.intSummary!;
+          projectColumn.summary.count = newIntSummary.count;
+          projectColumn.summary.nullCount = newIntSummary.nullCount;
+          projectColumn.intData = intSeries.toArray().map((entry) => {
+            return { value: entry as number };
+          });
+        } else {
+          const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+          projectColumn.summary.count = newStringSummary.count;
+          projectColumn.summary.nullCount = newStringSummary.nullCount;
+          projectColumn.summary.datetimeSummary = null;
+          projectColumn.summary.enumSummary = null;
+          projectColumn.summary.floatSummary = null;
+          projectColumn.summary.intSummary = null;
+          projectColumn.stringData = stringSeries.toArray().map((entry) => {
+            return { value: entry as string };
+          });
+        }
+        break;
+      }
+      case 'STRING': {
+        let stringSeries = pl.Series(
+          projectColumn.stringData.slice(getColumnViewDto.rowMin, getColumnViewDto.rowMax).map((entry) => {
+            return entry.value;
+          })
+        );
+        if (getColumnViewDto.hash) {
+          if (getColumnViewDto.hash.salt) {
+            const stringArray = stringSeries.toArray();
+            const stringSaltArray = stringArray.map((entry) =>
+              entry == null ? null : (entry as string) + getColumnViewDto.hash!.salt
+            );
+            stringSeries = pl.Series(stringSaltArray);
+          }
+
+          stringSeries = stringSeries.hash().cast(Utf8).str.slice(0, getColumnViewDto.hash.length);
+        }
+
+        if (getColumnViewDto.trim) {
+          const sliceStart = getColumnViewDto.trim.start ?? 0;
+          const sliceLength = getColumnViewDto.trim.end != null ? getColumnViewDto.trim.end - sliceStart : undefined;
+          stringSeries = stringSeries.str.slice(sliceStart, sliceLength);
+        }
+        const newStringSummary = this.calculateSummaryOnSeries('STRING', stringSeries);
+        projectColumn.summary.count = newStringSummary.count;
+        projectColumn.summary.nullCount = newStringSummary.nullCount;
+        projectColumn.summary.datetimeSummary = null;
+        projectColumn.summary.enumSummary = null;
+        projectColumn.summary.floatSummary = null;
+        projectColumn.summary.intSummary = null;
+        projectColumn.stringData = stringSeries.toArray().map((entry) => {
+          return { value: entry as string };
+        });
+        break;
+      }
+    }
+
+    return projectColumn;
+  }
+
+  async mutateColumnType(columnId: string, colType: $ColumnType) {
     const col = await this.getById(columnId);
     if (col.kind === colType) {
       throw new ConflictException(
@@ -450,9 +607,9 @@ export class ColumnsService {
             datetimeColumnValidation: undefined,
             datetimeData: undefined,
             summary: {
-              count: data.len() - data.nullCount(),
+              count: 0,
               datetimeSummary: undefined,
-              nullCount: data.nullCount()
+              nullCount: 0
             }
           },
           where: {
@@ -467,9 +624,9 @@ export class ColumnsService {
             enumColumnValidation: undefined,
             enumData: undefined,
             summary: {
-              count: data.len() - data.nullCount(),
+              count: 0,
               enumSummary: undefined,
-              nullCount: data.nullCount()
+              nullCount: 0
             }
           },
           where: {
@@ -484,9 +641,9 @@ export class ColumnsService {
             floatData: undefined,
             numericColumnValidation: undefined,
             summary: {
-              count: data.len() - data.nullCount(),
+              count: 0,
               floatSummary: undefined,
-              nullCount: data.nullCount()
+              nullCount: 0
             }
           },
           where: {
@@ -501,9 +658,9 @@ export class ColumnsService {
             intData: undefined,
             numericColumnValidation: undefined,
             summary: {
-              count: data.len() - data.nullCount(),
+              count: 0,
               intSummary: undefined,
-              nullCount: data.nullCount()
+              nullCount: 0
             }
           },
           where: {
@@ -516,11 +673,7 @@ export class ColumnsService {
         removeFromCol = this.columnModel.update({
           data: {
             stringColumnValidation: undefined,
-            stringData: undefined,
-            summary: {
-              count: data.len() - data.nullCount(),
-              nullCount: data.nullCount()
-            }
+            stringData: undefined
           },
           where: {
             id: col.id
@@ -533,8 +686,9 @@ export class ColumnsService {
     // if the cast is passed, add new data, summary, and validation to the column
     let addToCol;
     switch (colType) {
-      case 'DATETIME':
+      case 'DATETIME': {
         data = data.cast(pl.Date, true);
+        const newDatetimeSummary = this.calculateSummaryOnSeries('DATETIME', data);
         addToCol = this.columnModel.update({
           data: {
             datetimeColumnValidation: {
@@ -546,12 +700,9 @@ export class ColumnsService {
             }),
             kind: colType,
             summary: {
-              count: data.len() - data.nullCount(),
-              datetimeSummary: {
-                max: new Date(),
-                min: '1970-01-01'
-              },
-              nullCount: data.nullCount()
+              count: newDatetimeSummary.count,
+              datetimeSummary: newDatetimeSummary.datetimeSummary,
+              nullCount: newDatetimeSummary.nullCount
             }
           },
           where: {
@@ -559,8 +710,10 @@ export class ColumnsService {
           }
         });
         break;
-      case 'ENUM':
+      }
+      case 'ENUM': {
         data = data.cast(pl.Utf8, true);
+        const newEnumSummary = this.calculateSummaryOnSeries('ENUM', data);
         addToCol = this.columnModel.update({
           data: {
             enumData: data.toArray().map((entry: string) => {
@@ -568,13 +721,9 @@ export class ColumnsService {
             }),
             kind: colType,
             summary: {
-              count: data.len() - data.nullCount(),
-              // valueCounts() function always return null.
-              // issue opened on nodejs-polars github
-              // enumSummary: {
-              //   distribution: data.valueCounts().toJSON()
-              // },
-              nullCount: data.nullCount()
+              count: newEnumSummary.count,
+              enumSummary: newEnumSummary.enumSummary,
+              nullCount: newEnumSummary.nullCount
             }
           },
           where: {
@@ -582,8 +731,10 @@ export class ColumnsService {
           }
         });
         break;
-      case 'FLOAT':
+      }
+      case 'FLOAT': {
         data = data.cast(pl.Float64, true);
+        const newFloatSummary = this.calculateSummaryOnSeries('FLOAT', data);
         addToCol = this.columnModel.update({
           data: {
             floatData: data.toArray().map((entry: number) => {
@@ -595,16 +746,9 @@ export class ColumnsService {
               min: data.min()
             },
             summary: {
-              count: data.len() - data.nullCount(),
-              floatSummary: {
-                max: data.max(),
-                mean: data.mean(),
-                median: data.median(),
-                min: data.min(),
-                // @ts-expect-error - see issue
-                std: data.rollingStd(data.len())[-1]
-              },
-              nullCount: data.nullCount()
+              count: newFloatSummary.count,
+              floatSummary: newFloatSummary.floatSummary,
+              nullCount: newFloatSummary.nullCount
             }
           },
           where: {
@@ -612,8 +756,10 @@ export class ColumnsService {
           }
         });
         break;
-      case 'INT':
+      }
+      case 'INT': {
         data = data.cast(pl.Int64, true);
+        const newIntSummary = this.calculateSummaryOnSeries('INT', data);
         addToCol = this.columnModel.update({
           data: {
             intData: data.toArray().map((entry: number) => {
@@ -625,18 +771,9 @@ export class ColumnsService {
               min: data.min()
             },
             summary: {
-              count: data.len() - data.nullCount(),
-              intSummary: {
-                max: data.max(),
-                mean: data.mean(),
-                median: data.median(),
-                min: data.min(),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                mode: data.mode()[0],
-                // @ts-expect-error - see issue
-                std: data.rollingStd(data.len())[-1]
-              },
-              nullCount: data.len()
+              count: newIntSummary.count,
+              intSummary: newIntSummary.intSummary,
+              nullCount: newIntSummary.nullCount
             }
           },
           where: {
@@ -644,8 +781,10 @@ export class ColumnsService {
           }
         });
         break;
-      case 'STRING':
+      }
+      case 'STRING': {
         data = data.cast(pl.Utf8, true);
+        const newStringSummary = this.calculateSummaryOnSeries('STRING', data);
         addToCol = this.columnModel.update({
           data: {
             kind: colType,
@@ -656,8 +795,8 @@ export class ColumnsService {
               return { value: entry };
             }),
             summary: {
-              count: data.len() - data.nullCount(),
-              nullCount: data.nullCount()
+              count: newStringSummary.count,
+              nullCount: newStringSummary.nullCount
             }
           },
           where: {
@@ -665,9 +804,30 @@ export class ColumnsService {
           }
         });
         break;
+      }
     }
 
     return (await this.prisma.$transaction([removeFromCol, addToCol])) as unknown[];
+  }
+
+  async toggleColumnNullable(columnId: string) {
+    const col = await this.getById(columnId);
+    if (col.nullable && col.summary.nullCount !== 0) {
+      throw new UnprocessableEntityException(
+        'Cannot set this column to not nullable as it contains null values already!'
+      );
+    }
+
+    const updateColumnNullable = this.columnModel.update({
+      data: {
+        nullable: !col.nullable
+      },
+      where: {
+        id: columnId
+      }
+    });
+
+    return await updateColumnNullable;
   }
 
   // async updateMany(tabularDataId: string, updateColumnDto: UpdateTabularColumn) {
@@ -694,26 +854,7 @@ export class ColumnsService {
   //   });
   // }
 
-  async toggleColumnNullable(columnId: string) {
-    const col = await this.getById(columnId);
-    if (col.nullable && col.summary.nullCount !== 0) {
-      throw new ForbiddenException('Cannot set this column to not nullable as it contains null values already!');
-    }
-
-    const updateColumnNullable = this.columnModel.update({
-      data: {
-        nullable: !col.nullable
-      },
-      where: {
-        id: columnId
-      }
-    });
-
-    return await updateColumnNullable;
-  }
-
-  private calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
-    // Need to correctly compute the distribution for boolean and enum column
+  private calculateSummaryOnSeries(colType: $ColumnType, currSeries: Series) {
     switch (colType) {
       case 'DATETIME':
         return {
@@ -728,7 +869,7 @@ export class ColumnsService {
         return {
           count: currSeries.len() - currSeries.nullCount(),
           enumSummary: {
-            distribution: currSeries.valueCounts().toRecords() as unknown as { [key: string]: number }
+            distribution: currSeries.valueCounts().toRecords()
           },
           nullCount: currSeries.nullCount()
         };

@@ -1,6 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useCallback, useState } from 'react';
 
+import { $DatasetLicenses, mostFrequentOpenSourceLicenses } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
@@ -8,16 +9,19 @@ import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { match } from 'ts-pattern';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { LoadingFallback } from '@/components';
+import { useDebounceLicensesFilter } from '@/hooks/useDebounceLicensesFilter';
 
 const $CreateDatasetFormValidation = z.object({
   description: z.string().optional(),
   datasetType: z.enum(['BASE', 'TABULAR']),
-  license: z.enum(['PUBLIC', 'OTHER']),
+  license: $DatasetLicenses,
   name: z.string().min(1),
-  primaryKeys: z.string().optional()
+  primaryKeys: z.string().optional(),
+  isOpenSource: z.boolean().optional(),
+  searchLicenseString: z.string().optional()
 });
 
 type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
@@ -31,6 +35,7 @@ const CreateDatasetPage = () => {
   const [formData, setFormData] = useState<CreateDatasetFormData | null>(null);
   const [processingFile, setProcessingFile] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+  const debouncedLicensesFilter = useDebounceLicensesFilter();
 
   const createDataset = async () => {
     setProcessingFile(true);
@@ -88,50 +93,77 @@ const CreateDatasetPage = () => {
       return (
         <>
           <Form
-            content={{
-              name: {
-                kind: 'string',
-                label: t('datasetName'),
-                variant: 'input'
+            content={[
+              {
+                title: 'Basic Dataset Information',
+                description: 'Basic dataset information details',
+                fields: {
+                  name: {
+                    kind: 'string',
+                    label: t('datasetName'),
+                    variant: 'input'
+                  },
+                  description: {
+                    kind: 'string',
+                    label: t('datasetDescription'),
+                    variant: 'textarea'
+                  },
+                  datasetType: {
+                    kind: 'string',
+                    label: t('datasetType'),
+                    options: {
+                      BASE: 'Base',
+                      // BINARY: 'Binary',
+                      TABULAR: 'Tabular'
+                    },
+                    variant: 'select'
+                  },
+                  primaryKeys: {
+                    kind: 'dynamic',
+                    deps: ['datasetType'],
+                    render: (data) => {
+                      return data.datasetType === 'TABULAR'
+                        ? {
+                            kind: 'string',
+                            variant: 'input',
+                            label: t('primaryKeys')
+                          }
+                        : null;
+                    }
+                  }
+                }
               },
-              description: {
-                kind: 'string',
-                label: t('datasetDescription'),
-                variant: 'textarea'
-              },
-              datasetType: {
-                kind: 'string',
-                label: t('datasetType'),
-                options: {
-                  BASE: 'Base',
-                  // BINARY: 'Binary',
-                  TABULAR: 'Tabular'
-                },
-                variant: 'select'
-              },
-              license: {
-                kind: 'string',
-                label: t('datasetLicense'),
-                options: {
-                  OTHER: 'Other',
-                  PUBLIC: 'Public'
-                },
-                variant: 'select'
-              },
-              primaryKeys: {
-                kind: 'dynamic',
-                deps: ['datasetType'],
-                render: (data) => {
-                  return data.datasetType === 'TABULAR'
-                    ? {
+              {
+                title: 'Dataset License',
+                description: 'Select a license for your dataset',
+                fields: {
+                  isOpenSource: {
+                    kind: 'boolean',
+                    label: 'Is License Open Source',
+                    variant: 'radio'
+                  },
+                  searchLicenseString: {
+                    kind: 'string',
+                    label: 'Search for licenses',
+                    variant: 'input'
+                  },
+                  license: {
+                    deps: ['searchLicenseString', 'isOpenSource'],
+                    kind: 'dynamic',
+                    render(data) {
+                      return {
                         kind: 'string',
-                        variant: 'input',
-                        label: t('primaryKeys')
-                      }
-                    : null;
+                        label: 'Select License',
+                        options:
+                          debouncedLicensesFilter(data.searchLicenseString?.toLowerCase(), data.isOpenSource) ??
+                          mostFrequentOpenSourceLicenses,
+                        variant: 'select'
+                      };
+                    }
+                  }
                 }
               }
-            }}
+            ]}
             submitBtnLabel="Confirm"
             validationSchema={$CreateDatasetFormValidation}
             onSubmit={(data) => {
@@ -168,14 +200,14 @@ const CreateDatasetPage = () => {
           <div {...getRootProps()} className="flex-col justify-center text-center">
             <input {...getInputProps()} />
             {isDragActive ? (
-              <Heading variant="h3">Drop the file here ...</Heading>
+              <Heading variant="h3">{t('dropFile')}</Heading>
             ) : (
               <>
-                <Heading variant="h3">Drag and drop the file here, or click to select file</Heading>
+                <Heading variant="h3">{t('dropOrSelectFile')}</Heading>
                 <br />
                 <br />
-                <Heading variant="h5">Only CSV or TSV file is allowed.</Heading>
-                <Heading variant="h5">Maximun file size: 1 GB</Heading>
+                <Heading variant="h5">{t('onlyCsvTsv')}</Heading>
+                <Heading variant="h5">{t('maxFileSize')}</Heading>
               </>
             )}
           </div>
@@ -206,7 +238,7 @@ const CreateDatasetPage = () => {
     <>
       <motion.div
         animate={{ opacity: 1 }}
-        className="flex h-full grow flex-col items-center justify-center"
+        className="flex grow flex-col items-center justify-center"
         exit={{ opacity: 0 }}
         initial={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
@@ -216,12 +248,15 @@ const CreateDatasetPage = () => {
             <AnimatePresence initial={false} mode="wait">
               <motion.div
                 animate={{ opacity: 1 }}
-                className="flex h-full flex-col items-center justify-center"
+                className="flex flex-col items-center justify-center"
                 exit={{ opacity: 0 }}
                 initial={{ opacity: 0 }}
                 key={'test'}
                 transition={{ duration: 1 }}
               >
+                <Heading className="mb-4" variant="h2">
+                  {t('createDataset')}
+                </Heading>
                 {element}
               </motion.div>
             </AnimatePresence>

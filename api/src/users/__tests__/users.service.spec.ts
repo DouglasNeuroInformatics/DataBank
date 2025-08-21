@@ -1,4 +1,4 @@
-import type { CreateUser } from '@databank/core';
+import { $CreateUser } from '@databank/core';
 import { CryptoService, getModelToken } from '@douglasneuroinformatics/libnest';
 import { ConflictException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -53,7 +53,7 @@ describe('UsersService', () => {
   });
 
   describe('createUser', () => {
-    let createUserDto: CreateUser;
+    let createUserDto: $CreateUser;
 
     beforeEach(() => {
       createUserDto = createUserDtoStubFactory();

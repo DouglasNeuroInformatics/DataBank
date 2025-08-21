@@ -1,12 +1,15 @@
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { isPlainObject } from '@douglasneuroinformatics/libjs';
+import { useDestructiveAction, useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { useNavigate } from '@tanstack/react-router';
+import axios, { isAxiosError } from 'axios';
 
 export const useDeleteDataset = () => {
   const notifications = useNotificationsStore();
   const queryClient = useQueryClient();
+  const navigation = useNavigate();
 
-  const deleteDataset = (datasetId: string) => {
+  return useDestructiveAction((datasetId: string) => {
     axios
       .delete(`/v1/datasets/${datasetId}`)
       .then(() => {
@@ -15,15 +18,22 @@ export const useDeleteDataset = () => {
           type: 'success'
         });
         void queryClient.invalidateQueries({ queryKey: ['datasets-info'] });
+        void navigation({
+          to: '/portal/datasets'
+        });
       })
       .catch((error) => {
         console.error(error);
+        let message: string;
+        if (isAxiosError(error) && isPlainObject(error.response?.data)) {
+          message = String(error.response.data.message);
+        } else {
+          message = 'Unknown Error';
+        }
         notifications.addNotification({
-          message: `Failed to delete dataset: ${error.response?.data?.message || 'Unknown error'}`,
+          message: `Failed to delete dataset: ${message}`,
           type: 'error'
         });
       });
-  };
-
-  return deleteDataset;
+  });
 };

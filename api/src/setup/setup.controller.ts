@@ -1,9 +1,9 @@
+import { $SetupOptions } from '@databank/core';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
-import { SetupOptionsDto } from './dto/setup-options.dto.js';
 import { SetupService } from './setup.service.js';
 
 @ApiTags('Setup')
@@ -40,7 +40,7 @@ export class SetupController {
   })
   @Post()
   @RouteAccess('public')
-  initApp(@Body() setupDto: SetupOptionsDto) {
+  initApp(@Body() setupDto: $SetupOptions) {
     return this.setupService.initApp(setupDto);
   }
 }

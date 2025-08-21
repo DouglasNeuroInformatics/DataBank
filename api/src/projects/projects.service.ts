@@ -1,9 +1,16 @@
-import type { DatasetInfo, DatasetViewPagination, TabularDataDownloadFormat } from '@databank/core';
-import { $CreateProject, $ProjectDataset, $UpdateProject } from '@databank/core';
+import {
+  $CreateProject,
+  $DatasetInfo,
+  $DatasetViewPagination,
+  $ProjectDataset,
+  $ProjectDatasetColumnConfig,
+  $TabularDataDownloadFormat,
+  $UpdateProject
+} from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { ProjectColumnConfig, ProjectDataset } from '@prisma/client';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import type { ProjectDataset } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service';
 import { UsersService } from '@/users/users.service';
@@ -26,7 +33,9 @@ export class ProjectsService {
     const projectDatasets = project.datasets;
     projectDatasets.forEach((dataset) => {
       if (dataset.datasetId === projectDataset.datasetId) {
-        throw new ForbiddenException(`Dataset with ID ${projectDataset.datasetId} already exists in the Project!`);
+        throw new UnprocessableEntityException(
+          `Dataset with ID ${projectDataset.datasetId} already exists in the Project!`
+        );
       }
     });
 
@@ -35,25 +44,16 @@ export class ProjectsService {
       columnIds: projectDataset.columnIds,
       datasetId: projectDataset.datasetId,
       rowFilter: {
-        rowMax: null,
-        rowMin: 0
+        rowMax: projectDataset.rowConfig.rowMax,
+        rowMin: projectDataset.rowConfig.rowMin
       }
     };
 
     newProjectDataset.columnConfigurations = Object.entries(projectDataset.columnConfigs).map(([colId, config]) => {
-      if (!config) {
-        throw new Error(`Column configuration not found for column ID: ${colId}`);
-      }
       return {
         columnId: colId,
-        hash: {
-          length: config.hash.length,
-          salt: config.hash.salt ?? null
-        },
-        trim: {
-          end: config.trim.end ?? null,
-          start: config.trim.start
-        }
+        hash: config.hash ?? null,
+        trim: config.trim ?? null
       };
     });
 
@@ -70,7 +70,7 @@ export class ProjectsService {
 
   async addUser(currentUserId: string, projectId: string, newUserEmail: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
-      throw new ForbiddenException('Only project managers can add new users!');
+      throw new UnprocessableEntityException('Only project managers can add new users!');
     }
 
     const project = await this.getProjectById(currentUserId, projectId);
@@ -94,11 +94,11 @@ export class ProjectsService {
 
   async createProject(currentUserId: string, createProjectDto: $CreateProject) {
     if (!(await this.usersService.isOwnerOfDatasets(currentUserId))) {
-      throw new ForbiddenException('Only dataset owners can create project!');
+      throw new UnprocessableEntityException('Only dataset owners can create project!');
     }
 
     if (!createProjectDto.userIds.includes(currentUserId)) {
-      throw new ForbiddenException('Creator of the project must be a user of the project!');
+      throw new UnprocessableEntityException('Creator of the project must be a user of the project!');
     }
 
     return await this.projectModel.create({
@@ -108,7 +108,7 @@ export class ProjectsService {
 
   async deleteProject(currentUserId: string, projectId: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
-      throw new ForbiddenException('The current user has no right to delete this project!');
+      throw new UnprocessableEntityException('The current user has no right to delete this project!');
     }
 
     const deletedProject = await this.projectModel.delete({
@@ -128,7 +128,7 @@ export class ProjectsService {
     }
 
     if (projectDataset.columnIds.length === 0) {
-      throw new ForbiddenException(`project ${projectId} dataset ${datasetId} has no columns`);
+      throw new UnprocessableEntityException(`project ${projectId} dataset ${datasetId} has no columns`);
     }
 
     // set initial row number to number of entries in a column
@@ -140,7 +140,7 @@ export class ProjectsService {
         rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
-          throw new ForbiddenException('Row number per page is negative! Check the row min value');
+          throw new UnprocessableEntityException('Row number per page is negative! Check the row min value');
         }
       } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
         rowNumber = projectDataset.rowFilter.rowMax;
@@ -172,7 +172,7 @@ export class ProjectsService {
     projectId: string,
     datasetId: string,
     currentUserId: string,
-    format: TabularDataDownloadFormat
+    format: $TabularDataDownloadFormat
   ) {
     const project = await this.getProjectById(currentUserId, projectId);
     const projectDataset = project.datasets.find((dataset) => dataset.datasetId === datasetId);
@@ -181,7 +181,7 @@ export class ProjectsService {
     }
 
     if (projectDataset.columnIds.length === 0) {
-      throw new ForbiddenException(`project ${projectId} dataset ${datasetId} has no columns`);
+      throw new UnprocessableEntityException(`project ${projectId} dataset ${datasetId} has no columns`);
     }
     // set initial row number to number of entries in a column
     let rowNumber: number = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
@@ -192,7 +192,7 @@ export class ProjectsService {
         rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
         // check for invalid row min input (row min greater than the largest possible value of rows)
         if (rowNumber < 0) {
-          throw new ForbiddenException('Row number per page is negative! Check the row min value');
+          throw new UnprocessableEntityException('Row number per page is negative! Check the row min value');
         }
       } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
         rowNumber = projectDataset.rowFilter.rowMax;
@@ -247,8 +247,8 @@ export class ProjectsService {
   async getOneProjectDatasetView(
     projectId: string,
     datasetId: string,
-    rowPaginationDto: DatasetViewPagination,
-    columnPaginationDto: DatasetViewPagination
+    rowPaginationDto: $DatasetViewPagination,
+    columnPaginationDto: $DatasetViewPagination
   ) {
     // get project
     const project = await this.projectModel.findUnique({
@@ -294,7 +294,7 @@ export class ProjectsService {
     return project;
   }
 
-  async getProjectDatasets(projectId: string) {
+  async getProjectDatasets(projectId: string): Promise<$DatasetInfo[]> {
     const project = await this.projectModel.findUnique({
       where: {
         id: projectId
@@ -303,7 +303,7 @@ export class ProjectsService {
     if (!project) {
       throw new NotFoundException(`Project with id ${projectId} cannot be found`);
     }
-    const projectDatasetsInfo: DatasetInfo[] = [];
+    const projectDatasetsInfo: $DatasetInfo[] = [];
     const datasetIdToRemove: string[] = [];
     for (const projectDataset of project.datasets) {
       const projectDatasetInfo = await this.datasetService.getById(projectDataset.datasetId);
@@ -358,19 +358,21 @@ export class ProjectsService {
 
   async removeDataset(currentUserId: string, projectId: string, datasetId: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
-      throw new ForbiddenException('Only project managers can remove dataset!');
+      throw new UnprocessableEntityException('Only project managers can remove dataset!');
     }
 
     const project = await this.getProjectById(currentUserId, projectId);
 
     const newProjectDatasets = project.datasets.filter((dataset) => dataset.datasetId !== datasetId);
 
-    return await this.updateProject(currentUserId, projectId, { datasets: newProjectDatasets });
+    return await this.updateProject(currentUserId, projectId, {
+      datasets: newProjectDatasets
+    });
   }
 
   async removeUser(currentUserId: string, projectId: string, userIdToRemove: string) {
     if (!(await this.isProjectManager(currentUserId, projectId))) {
-      throw new ForbiddenException('Only project managers can remove users!');
+      throw new UnprocessableEntityException('Only project managers can remove users!');
     }
 
     const project = await this.getProjectById(currentUserId, projectId);
@@ -390,7 +392,7 @@ export class ProjectsService {
   async updateProject(currentUserId: string, projectId: string, updateProjectDto: $UpdateProject) {
     const isProjectManager = await this.isProjectManager(currentUserId, projectId);
     if (!isProjectManager) {
-      throw new ForbiddenException('The current user has no right to manipulate this project!');
+      throw new UnprocessableEntityException('The current user has no right to manipulate this project!');
     }
 
     const updateProject = await this.projectModel.update({
@@ -404,21 +406,12 @@ export class ProjectsService {
 
   private formatProjectDataset(projectDatasetData: ProjectDataset): $ProjectDataset {
     const columnConfigs: {
-      [key: string]: {
-        hash: { length: number; salt: string | undefined };
-        trim: { end: number | undefined; start: number };
-      };
+      [key: string]: $ProjectDatasetColumnConfig;
     } = {};
     for (const colConfig of projectDatasetData.columnConfigurations) {
       columnConfigs[colConfig.columnId] = {
-        hash: {
-          length: colConfig.hash.length,
-          salt: colConfig.hash.salt ?? undefined
-        },
-        trim: {
-          end: colConfig.trim.end ?? undefined,
-          start: colConfig.trim.start
-        }
+        hash: colConfig.hash ?? null,
+        trim: colConfig.trim ?? null
       };
     }
     return {
@@ -426,7 +419,7 @@ export class ProjectsService {
       columnIds: projectDatasetData.columnIds,
       datasetId: projectDatasetData.datasetId,
       rowConfig: {
-        rowMax: projectDatasetData.rowFilter.rowMax ?? undefined,
+        rowMax: projectDatasetData.rowFilter.rowMax ?? null,
         rowMin: projectDatasetData.rowFilter.rowMin
       }
     };

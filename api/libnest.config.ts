@@ -1,17 +1,22 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
-import type { Locale } from '@databank/core';
+import type { $CurrentUser } from '@databank/core';
 import { defineUserConfig } from '@douglasneuroinformatics/libnest/user-config';
 
 declare module '@douglasneuroinformatics/libnest/user-config' {
-  export interface CustomTypeOptions {
-    Locale: Locale;
-  }
   export interface UserConfig extends InferUserConfig<typeof config> {}
+  export namespace UserTypes {
+    export interface Locales {
+      en: true;
+      fr: true;
+    }
+    export interface JwtPayload extends $CurrentUser {}
+  }
 }
 
 const config = defineUserConfig({

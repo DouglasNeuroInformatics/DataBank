@@ -1,15 +1,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import type { CreateAdminData, SetupOptions, SetupState } from '@databank/core';
+import { $CreateAdminData, $CreateDataset, $SetupOptions, $SetupState } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { Injectable } from '@nestjs/common';
-import { ForbiddenException, ServiceUnavailableException } from '@nestjs/common/exceptions';
+import { ConflictException, ServiceUnavailableException } from '@nestjs/common/exceptions';
 import type { SetupConfig, User, UserVerificationStrategy } from '@prisma/client';
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
-import type { CreateDatasetDto } from '@/datasets/dto/datasets.dto';
 import { UsersService } from '@/users/users.service.js';
 
 @Injectable()
@@ -20,7 +19,7 @@ export class SetupService {
     private readonly usersService: UsersService
   ) {}
 
-  async getState(): Promise<SetupState> {
+  async getState(): Promise<$SetupState> {
     return { isSetup: await this.isSetup() };
   }
 
@@ -28,9 +27,9 @@ export class SetupService {
     return this.getSetupConfig().then((config) => config.verificationStrategy);
   }
 
-  async initApp({ admin, setupConfig }: SetupOptions): Promise<{ success: true }> {
+  async initApp({ admin, setupConfig }: $SetupOptions): Promise<{ success: true }> {
     if (await this.isSetup()) {
-      throw new ForbiddenException();
+      throw new ConflictException();
     }
     const adminUser = await this.createAdmin(admin);
 
@@ -38,7 +37,7 @@ export class SetupService {
       data: setupConfig
     });
 
-    const createStarterDatasetDto: CreateDatasetDto = {
+    const createStarterDatasetDto: $CreateDataset = {
       datasetType: 'TABULAR',
       description: 'a sample dataset containing data about iris',
       isJSON: 'true',
@@ -58,7 +57,7 @@ export class SetupService {
     return { success: true };
   }
 
-  private async createAdmin(admin: CreateAdminData): Promise<Omit<User, 'hashedPassword'>> {
+  private async createAdmin(admin: $CreateAdminData): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
       ...admin,
       confirmedAt: new Date(Date.now()),

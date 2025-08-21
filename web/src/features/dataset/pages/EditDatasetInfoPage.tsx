@@ -1,38 +1,39 @@
 /* eslint-disable perfectionist/sort-objects */
-
-import type { EditDatasetInfo } from '@databank/core';
+import { $DatasetLicenses, $EditDatasetInfo, mostFrequentOpenSourceLicenses } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { z } from 'zod';
+import { z } from 'zod/v4';
+
+import { useDebounceLicensesFilter } from '@/hooks/useDebounceLicensesFilter';
 
 const $EditDatasetInfoDto = z.object({
-  name: z.string().optional(),
   description: z.string().optional(),
-  license: z.enum(['PUBLIC', 'OTHER']).optional(),
-  permission: z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']).optional()
+  isOpenSource: z.boolean().optional(),
+  license: $DatasetLicenses.optional(),
+  name: z.string().optional(),
+  permission: z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']).optional(),
+  searchLicenseString: z.string().optional()
 });
 
 const EditDatasetInfoPage = () => {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
+  const { t } = useTranslation('common');
 
-  const licenseOption = {
-    PUBLIC: 'PUBLIC',
-    OTHER: 'OTHER'
-  };
+  const debouncedLicensesFilter = useDebounceLicensesFilter();
 
   const permissionOption = {
-    PUBLIC: 'PUBLIC',
     LOGIN: 'LOGIN',
-    VERIFIED: 'VERIFIED',
-    MANAGER: 'MANAGER'
+    MANAGER: 'MANAGER',
+    PUBLIC: 'PUBLIC',
+    VERIFIED: 'VERIFIED'
   };
 
-  const handleSubmit = (data: EditDatasetInfo) => {
+  const handleSubmit = (data: $EditDatasetInfo) => {
     axios
       .patch(`/v1/datasets/info/${params.datasetId}`, {
         editDatasetInfoDto: data
@@ -45,7 +46,7 @@ const EditDatasetInfoPage = () => {
   };
 
   return (
-    <div className="flex h-full w-full items-center justify-center">
+    <div className="flex w-full items-center justify-center">
       <div className="mt-6 w-full space-y-40 sm:max-w-md">
         <div className="h-auto rounded-lg border-2 border-slate-300 p-6 text-slate-600 dark:border-slate-600 dark:text-slate-300">
           <AnimatePresence initial={false} mode="wait">
@@ -57,34 +58,64 @@ const EditDatasetInfoPage = () => {
               key={'test'}
               transition={{ duration: 1 }}
             >
-              <Heading className="m-4" variant="h3">
-                Edit Dataset Information
+              <Heading className="mb-4" variant="h2">
+                {t('editDatasetInfo')}
               </Heading>
               <Form
-                content={{
-                  name: {
-                    kind: 'string',
-                    variant: 'input',
-                    label: 'New Dataset Name'
+                content={[
+                  {
+                    description: 'Basic dataset information details',
+                    fields: {
+                      description: {
+                        kind: 'string',
+                        label: 'New Dataset Description',
+                        variant: 'input'
+                      },
+                      name: {
+                        kind: 'string',
+                        label: 'New Dataset Name',
+                        variant: 'input'
+                      },
+                      permission: {
+                        kind: 'string',
+                        label: 'Permission',
+                        options: permissionOption,
+                        variant: 'select'
+                      }
+                    },
+                    title: 'Basic Dataset Information'
                   },
-                  description: {
-                    kind: 'string',
-                    variant: 'input',
-                    label: 'New Dataset Description'
-                  },
-                  license: {
-                    kind: 'string',
-                    variant: 'select',
-                    options: licenseOption,
-                    label: 'License'
-                  },
-                  permission: {
-                    kind: 'string',
-                    variant: 'select',
-                    options: permissionOption,
-                    label: 'Permission'
+                  {
+                    description: 'Select a license for your dataset',
+                    fields: {
+                      isOpenSource: {
+                        kind: 'boolean',
+                        label: 'Is License Open Source',
+                        variant: 'radio'
+                      },
+                      searchLicenseString: {
+                        kind: 'string',
+                        label: 'Search for licenses',
+                        variant: 'input'
+                      },
+                      license: {
+                        deps: ['searchLicenseString', 'isOpenSource'],
+                        kind: 'dynamic',
+                        render(data) {
+                          return {
+                            kind: 'string',
+                            label: 'Select License',
+                            options:
+                              debouncedLicensesFilter(data.searchLicenseString?.toLowerCase(), data.isOpenSource) ??
+                              mostFrequentOpenSourceLicenses,
+                            variant: 'select'
+                          };
+                        }
+                      }
+                    },
+                    title: 'Dataset License'
                   }
-                }}
+                ]}
                 resetBtn={true}
                 validationSchema={$EditDatasetInfoDto}
                 onSubmit={(data) => handleSubmit(data)}

@@ -1,22 +1,20 @@
 /* eslint-disable perfectionist/sort-objects */
-import type { ProjectDatasetRowConfig } from '@databank/core';
+import { $ProjectDatasetConfigStep, $ProjectDatasetRowConfig } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { z } from 'zod';
 
 type ConfigProjectDatasetRowPageProps = {
-  setRowConfig: (rowConfig: ProjectDatasetRowConfig) => void;
+  setRowConfig: (rowConfig: $ProjectDatasetRowConfig) => void;
+  setStep: (step: $ProjectDatasetConfigStep) => void;
 };
 
-export const ConfigProjectDatasetRowPage = ({ setRowConfig }: ConfigProjectDatasetRowPageProps) => {
-  const handleSubmitRowConfig = (data: { [key: string]: any }) => {
-    const rowConfigObject: ProjectDatasetRowConfig = {
-      rowMin: 0
-    };
-    if (data.rowMax) {
-      rowConfigObject.rowMax = data.rowMax as number;
-    }
-    rowConfigObject.rowMin = data.rowMin as number;
-    setRowConfig(rowConfigObject);
+export const ConfigProjectDatasetRowPage = ({ setRowConfig, setStep }: ConfigProjectDatasetRowPageProps) => {
+  const handleSubmitRowConfig = (data: $ProjectDatasetRowConfig) => {
+    setRowConfig({
+      rowMin: data.rowMin,
+      rowMax: data.rowMax ?? null
+    });
+    setStep('configColumns');
   };
 
   return (
@@ -37,7 +35,7 @@ export const ConfigProjectDatasetRowPage = ({ setRowConfig }: ConfigProjectDatas
         rowMin: z.number().int().gte(0),
         rowMax: z.number().int().gte(0).optional()
       })}
-      onSubmit={(data) => handleSubmitRowConfig(data)}
+      onSubmit={(data) => handleSubmitRowConfig({ rowMin: data.rowMin, rowMax: data.rowMax ?? null })}
     />
   );
 };

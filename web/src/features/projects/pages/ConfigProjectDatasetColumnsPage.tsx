@@ -1,4 +1,7 @@
-import type { ProjectDatasetColumnConfig } from '@databank/core';
+import { useCallback, useMemo } from 'react';
+
+import { $ProjectDatasetColumnConfig } from '@databank/core';
+import type FormTypes from '@douglasneuroinformatics/libui-form-types';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { z } from 'zod';
 
@@ -8,7 +11,7 @@ type ConfigProjectDatasetColumnsPageProps = {
   pageSize: number;
   projectId: string;
   selectedColumns: SelectedColumnsRecord;
-  setColumnsConfig: (colId: string, colConfig: ProjectDatasetColumnConfig) => void;
+  setColumnsConfig: (colId: string, colConfig: $ProjectDatasetColumnConfig) => void;
   setPageSize: (newPageSize: number) => void;
 };
 
@@ -16,8 +19,8 @@ export const ConfigProjectDatasetColumnsPage = ({
   selectedColumns,
   setColumnsConfig
 }: ConfigProjectDatasetColumnsPageProps) => {
-  const generateValidationSchema = (selectedColumns: SelectedColumnsRecord) => {
-    const formValidationObject: { [key: string]: any } = {};
+  const formValidation = useMemo(() => {
+    const formValidationObject: { [key: string]: z.ZodTypeAny } = {};
 
     for (const columnId in selectedColumns) {
       formValidationObject[columnId] = z.boolean().default(false);
@@ -26,20 +29,14 @@ export const ConfigProjectDatasetColumnsPage = ({
       formValidationObject[columnId + 'TrimStart'] = z.number().int().gte(0).optional();
       formValidationObject[columnId + 'TrimEnd'] = z.number().int().gte(0).optional();
     }
-    return z.object(formValidationObject);
-  };
+    return z.object(formValidationObject) as z.ZodType<FormTypes.Data>;
+  }, [selectedColumns]);
 
-  type GroupedFormContent = {
-    description?: string;
-    fields: { [key: string]: { [key: string]: any } };
-    title: string;
-  };
-
-  const generateContent = (selectedColumns: SelectedColumnsRecord) => {
+  const formContent = useMemo(() => {
     const resContent = [];
 
     for (const columnId in selectedColumns) {
-      const currContent: GroupedFormContent = {
+      const currContent: FormTypes.FieldsGroup<FormTypes.Data> = {
         description:
           selectedColumns[columnId]?.description ?? `Configuration for column "${selectedColumns[columnId]!.name}"`,
         fields: {},
@@ -119,40 +116,33 @@ export const ConfigProjectDatasetColumnsPage = ({
     }
 
     return resContent;
-  };
+  }, [selectedColumns]);
 
-  const formValidation = generateValidationSchema(selectedColumns);
-  const formContent = generateContent(selectedColumns);
-
-  const handleSubmit = (data: z.infer<ReturnType<typeof generateValidationSchema>>) => {
+  const handleSubmit = useCallback((data: z.infer<typeof formValidation>) => {
     for (const columnId in selectedColumns) {
       if (data[columnId]) {
-        const currentColumnConfig: ProjectDatasetColumnConfig = {
-          hash: {
-            length: 0,
-            salt: ''
-          },
-          trim: {
-            start: 0
-          }
+        // if data[columnId] means that the user selected to add config to the column
+        const currentColumnConfig: $ProjectDatasetColumnConfig = {
+          hash: null,
+          trim: null
         };
-        currentColumnConfig.hash.length = (data[columnId + 'HashLength'] as number) ?? 0;
-        currentColumnConfig.hash.salt = (data[columnId + 'HashSalt'] as string) ?? '';
-        currentColumnConfig.trim.start = (data[columnId + 'TrimStart'] as number) ?? 0;
-        if (data[columnId + 'TrimEnd']) {
-          currentColumnConfig.trim.end = data[columnId + 'TrimEnd'] as number;
+        if (data[columnId + 'HashLength'] === 0 || data[columnId + 'HashLength']) {
+          currentColumnConfig.hash = {
+            length: data[columnId + 'HashLength'] as number,
+            salt: (data[columnId + 'HashSalt'] as string) ?? null
+          };
+        }
+
+        if (data[columnId + 'TrimStart'] === 0 || data[columnId + 'TrimStart']) {
+          currentColumnConfig.trim = {
+            end: (data[columnId + 'TrimEnd'] as number) ?? null,
+            start: data[columnId + 'TrimStart'] as number
+          };
         }
         setColumnsConfig(columnId, currentColumnConfig);
       }
     }
-  };
+  }, []);
 
-  return (
-    <Form
-      className="w-full"
-      content={formContent}
-      validationSchema={formValidation}
-      onSubmit={(data) => handleSubmit(data)}
-    />
-  );
+  return <Form className="w-full" content={formContent} validationSchema={formValidation} onSubmit={handleSubmit} />;
 };

@@ -1,12 +1,12 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import type { SetupOptions } from '@databank/core';
+import { $SetupOptions } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { z } from 'zod';
 
 type SetupFormProps = {
-  onSubmit: (data: SetupOptions) => void;
+  onSubmit: (data: $SetupOptions) => void;
 };
 
 export const SetupForm = ({ onSubmit }: SetupFormProps) => {

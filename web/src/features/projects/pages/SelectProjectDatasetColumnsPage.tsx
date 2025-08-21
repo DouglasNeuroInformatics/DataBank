@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { ProjectColumnSummary, ProjectDatasetConfigStep } from '@databank/core';
+import { $ProjectColumnSummary, $ProjectDatasetConfigStep } from '@databank/core';
 import axios from 'axios';
 
 import { LoadingFallback } from '@/components';
@@ -14,19 +14,20 @@ type SelectProjectDatasetColumnsPagePros = {
   datasetId: string;
   projectId: string;
   reset: () => void;
-  setCurrentStep: (step: ProjectDatasetConfigStep) => void;
   setSelectedColumns: (selectedColumnIds: SelectedColumnsRecord) => void;
+  setStep: (step: $ProjectDatasetConfigStep) => void;
 };
 
 export const SelectProjectDatasetColumnsPage = ({
   datasetId,
-  setSelectedColumns
+  setSelectedColumns,
+  setStep
 }: SelectProjectDatasetColumnsPagePros) => {
-  const [data, setData] = useState<ProjectColumnSummary[]>([]);
+  const [data, setData] = useState<$ProjectColumnSummary[]>([]);
 
   useEffect(() => {
     axios
-      .get<ProjectColumnSummary[]>(`/v1/datasets/columns/${datasetId}`)
+      .get<$ProjectColumnSummary[]>(`/v1/datasets/columns/${datasetId}`)
       .then((response) => {
         setData(response.data);
       })
@@ -36,7 +37,12 @@ export const SelectProjectDatasetColumnsPage = ({
   return (
     <div className="container mx-auto py-10">
       {data.length > 0 ? (
-        <ProjectColumnsTable columns={projectColumnDefs} data={data} setSelectedColumns={setSelectedColumns} />
+        <ProjectColumnsTable
+          columns={projectColumnDefs}
+          data={data}
+          setSelectedColumns={setSelectedColumns}
+          setStep={setStep}
+        />
       ) : (
         <LoadingFallback />
       )}

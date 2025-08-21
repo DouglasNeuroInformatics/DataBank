@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import type { ColumnType } from '@databank/core';
+import { $ProjectDatasetConfigStep, $ProjectDatasetSelectedColumn } from '@databank/core';
 import { Button, SearchBar, Table } from '@douglasneuroinformatics/libui/components';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import {
   flexRender,
   getCoreRowModel,
@@ -14,34 +15,23 @@ import type { ColumnDef, ColumnFiltersState, SortingState } from '@tanstack/reac
 
 import type { SelectedColumnsRecord } from '../store/useProjectDatasetConfigStoreFactory';
 
-type DataTableProps<TData, TValue> = {
+type DataTableProps<TData extends $ProjectDatasetSelectedColumn & { id: string }, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   setSelectedColumns: (selectedColumns: SelectedColumnsRecord) => void;
+  setStep: (step: $ProjectDatasetConfigStep) => void;
 };
 
-export const ProjectColumnsTable = <TData, TValue>({
+export const ProjectColumnsTable = <TData extends $ProjectDatasetSelectedColumn & { id: string }, TValue>({
   columns,
   data,
-  setSelectedColumns
+  setSelectedColumns,
+  setStep
 }: DataTableProps<TData, TValue>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
-
-  const handleSubmitSelection = () => {
-    const selectedColumns: SelectedColumnsRecord = {};
-    table.getFilteredSelectedRowModel().rows.forEach((row) => {
-      const { id, kind, name } = row.original;
-      if (typeof id === 'string' && kind && typeof name === 'string') {
-        selectedColumns[id] = {
-          kind: kind as ColumnType,
-          name
-        };
-      }
-    });
-    setSelectedColumns(selectedColumns);
-  };
+  const { t } = useTranslation('common');
 
   const table = useReactTable({
     columns,
@@ -59,6 +49,21 @@ export const ProjectColumnsTable = <TData, TValue>({
       sorting
     }
   });
+
+  const handleSubmitSelection = useCallback(() => {
+    const selectedColumns: SelectedColumnsRecord = {};
+    table.getFilteredSelectedRowModel().rows.forEach((row) => {
+      const { id, kind, name } = row.original;
+      if (typeof id === 'string' && kind && typeof name === 'string') {
+        selectedColumns[id] = {
+          kind: kind,
+          name
+        };
+      }
+    });
+    setSelectedColumns(selectedColumns);
+    setStep('configRows');
+  }, []);
 
   return (
     <div className="w-full">
@@ -102,7 +107,7 @@ export const ProjectColumnsTable = <TData, TValue>({
             <Table.Row className="w-full">
               <Table.Cell>
                 <Button size="sm" variant="primary" onClick={() => handleSubmitSelection()}>
-                  Finish Column Selection
+                  {t('finishColumnSelection')}
                 </Button>
               </Table.Cell>
 
@@ -113,13 +118,13 @@ export const ProjectColumnsTable = <TData, TValue>({
                   variant="outline"
                   onClick={() => table.previousPage()}
                 >
-                  Previous
+                  {t('paginationPrevious')}
                 </Button>
               </Table.Cell>
 
               <Table.Cell>
                 <Button disabled={!table.getCanNextPage()} size="sm" variant="outline" onClick={() => table.nextPage()}>
-                  Next
+                  {t('paginationNext')}
                 </Button>
               </Table.Cell>
             </Table.Row>

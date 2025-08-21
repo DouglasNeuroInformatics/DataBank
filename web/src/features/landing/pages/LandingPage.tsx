@@ -2,6 +2,7 @@ import { useRef } from 'react';
 
 import { Hero } from '../components/Hero';
 import { KeyFeatures } from '../components/KeyFeatures';
+import { LandingFooter } from '../components/LandingFooter';
 import { LandingHeader } from '../components/LandingHeader';
 
 export const LandingPage = () => {
@@ -18,6 +19,7 @@ export const LandingPage = () => {
         />
         <KeyFeatures ref={keyFeaturesRef} />
       </main>
+      <LandingFooter />
     </div>
   );
 };

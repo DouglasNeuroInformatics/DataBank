@@ -1,6 +1,6 @@
 import type { $ProjectDataset } from '@databank/core';
 import { Button, Card, Heading } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { useStore } from 'zustand';
@@ -33,8 +33,11 @@ const AddProjectDatasetColumnPage = () => {
 
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
+  const { t } = useTranslation('common');
 
-  const handlePreviousStep = (currentStep: 'configColumns' | 'configRows' | 'selectColumns') => {
+  type CurrentStep = 'configColumns' | 'configRows' | 'selectColumns';
+
+  const handlePreviousStep = (currentStep: CurrentStep) => {
     switch (currentStep) {
       case 'configColumns':
         setStep('configRows');
@@ -44,20 +47,6 @@ const AddProjectDatasetColumnPage = () => {
         break;
       case 'selectColumns':
         console.error('Unable to go to the previous step');
-    }
-  };
-
-  const handleNextStep = (currentStep: 'configColumns' | 'configRows' | 'selectColumns') => {
-    switch (currentStep) {
-      case 'configColumns':
-        console.error('Unable to go to the next step');
-        break;
-      case 'configRows':
-        setStep('configColumns');
-        break;
-      case 'selectColumns':
-        setStep('configRows');
-        break;
     }
   };
 
@@ -79,8 +68,28 @@ const AddProjectDatasetColumnPage = () => {
     );
   };
 
+  const getCurrentStep = (currentStep: CurrentStep): string => {
+    const prefix = 'Current Configuration Step: ';
+    switch (currentStep) {
+      case 'configColumns':
+        return prefix + 'Set Column Transformations';
+      case 'configRows':
+        return prefix + 'Set Row Configurations';
+      case 'selectColumns':
+        return prefix + 'Select Project Dataset Columns';
+    }
+  };
+
   const handleSubmitConfig = () => {
     // format the request body here and send to the backend
+    if (selectedColumnsIdArray.length === 0) {
+      notifications.addNotification({
+        message: 'Please select at least one column before finishing.',
+        type: 'error'
+      });
+      return;
+    }
+
     const projectDatasetConfig: $ProjectDataset = {
       columnConfigs: columnsConfig,
       columnIds: Object.keys(selectedColumns),
@@ -97,7 +106,12 @@ const AddProjectDatasetColumnPage = () => {
         });
         void navigate({ to: `/portal/projects/${params.projectId}` });
       })
-      .catch(console.error);
+      .catch((error) => {
+        notifications.addNotification({
+          message: `Failed to add dataset to project: ${error}`,
+          type: 'error'
+        });
+      });
   };
 
   const selectedColumnsIdArray = Object.keys(selectedColumns);
@@ -109,8 +123,7 @@ const AddProjectDatasetColumnPage = () => {
       </Card.Header>
 
       <Card.Description>
-        <Heading variant="h3">Current Configuration Step:</Heading>
-        <Heading variant="h4">{currentStep}</Heading>
+        <Heading variant="h3">{getCurrentStep(currentStep)}</Heading>
       </Card.Description>
 
       <Card.Content className="w-full">
@@ -140,28 +153,28 @@ const AddProjectDatasetColumnPage = () => {
                     variant={'secondary'}
                     onClick={() => handlePreviousConfigColumnsPage(currentColumnIdIndex)}
                   >
-                    Previous Page
+                    {t('paginationPrevious')}
                   </Button>
                   <Button
-                    disabled={currentColumnIdIndex === selectedColumnsIdArray.length}
+                    disabled={currentColumnIdIndex === Math.floor(selectedColumnsIdArray.length / (pageSize + 1))}
                     variant={'secondary'}
                     onClick={() => handleNextConfigColumnsPage(currentColumnIdIndex)}
                   >
-                    Next Page
+                    {t('paginationNext')}
                   </Button>
                 </>
               );
             }
             case 'configRows':
-              return <ConfigProjectDatasetRowPage setRowConfig={setRowConfig} />;
+              return <ConfigProjectDatasetRowPage setRowConfig={setRowConfig} setStep={setStep} />;
             case 'selectColumns':
               return (
                 <SelectProjectDatasetColumnsPage
                   datasetId={params.datasetId!}
                   projectId={params.projectId!}
                   reset={reset}
-                  setCurrentStep={setStep}
                   setSelectedColumns={setSelectedColumns}
+                  setStep={setStep}
                 />
               );
             default:
@@ -178,23 +191,16 @@ const AddProjectDatasetColumnPage = () => {
               variant={'secondary'}
               onClick={() => handlePreviousStep(currentStep)}
             >
-              Previous Config Step
-            </Button>
-            <Button
-              disabled={currentStep === 'configColumns'}
-              variant={'secondary'}
-              onClick={() => handleNextStep(currentStep)}
-            >
-              Next Config Step
+              {t('previousConfigStep')}
             </Button>
           </div>
 
           <div className="flex w-full justify-between p-1">
             <Button variant={'primary'} onClick={() => handleSubmitConfig()}>
-              Finish All Configs
+              {t('finishConfig')}
             </Button>
             <Button variant={'danger'} onClick={reset}>
-              Restart
+              {t('restart')}
             </Button>
           </div>
         </div>

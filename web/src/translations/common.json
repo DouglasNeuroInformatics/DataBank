@@ -19,6 +19,18 @@
     "en": "View Datasets",
     "fr": "Voir les bases de données"
   },
+  "currentDatasetPermission": {
+    "en": "Current Dataset Permission Level",
+    "fr": "Niveau d'autorisation actuel de l'ensemble de données "
+  },
+  "datasetReadyToShare": {
+    "en": "This dataset is ready to be shared",
+    "fr": "Ce jeu de données est prêt à être partagé"
+  },
+  "datasetNotReadyToShare": {
+    "en": "This dataset is staged and not ready to be shared",
+    "fr": "Ce jeu de données est en préparation et n'est pas prêt à être partagé"
+  },
   "home": {
     "en": "Home Page",
     "fr": "Page d'accueil"
@@ -151,6 +163,10 @@
     "en": "Submit",
     "fr": "Soumettre"
   },
+  "restart": {
+    "en": "Restart",
+    "fr": "Recommencer"
+  },
   "schemaValidationFailed": {
     "en": "Schema Validation Failed",
     "fr": "Échec de la validation du schéma"
@@ -162,6 +178,18 @@
   "projectName": {
     "en": "Project Name",
     "fr": "Nom du projet"
+  },
+  "projectId": {
+    "en": "Project Id",
+    "fr": "ID du projet"
+  },
+  "userId": {
+    "en": "User Id",
+    "fr": "ID de l'utilisateur"
+  },
+  "managerId": {
+    "en": "Manager Id",
+    "fr": "ID du gestionnaire"
   },
   "manageProjectUsers": {
     "en": "Manage Project Users",
@@ -195,6 +223,14 @@
     "en": "Manage Project Dataset",
     "fr": "Gérer la base de données du projet"
   },
+  "manageProject": {
+    "en": "Manage Project",
+    "fr": "Gérer le projet"
+  },
+  "viewProject": {
+    "en": "View Project",
+    "fr": "Voir le projet"
+  },
   "datasetsAvailableToAdd": {
     "en": "Datasets Available To Add",
     "fr": "Bases de données disponibles pour ajout"
@@ -219,9 +255,45 @@
     "en": "Next",
     "fr": "Suivant"
   },
+  "previousConfigStep": {
+    "en": "Previous Config Step",
+    "fr": "Étape de configuration précédente"
+  },
+  "finishConfig": {
+    "en": "Finish All Configs",
+    "fr": "Terminer toutes les configurations"
+  },
+  "finishColumnSelection": {
+    "en": "Finish Column Selection",
+    "fr": "Terminer la sélection de colonnes"
+  },
+  "dropFile": {
+    "en": "Drop the file here ...",
+    "fr": "Déposez le fichier ici ..."
+  },
+  "dropOrSelectFile": {
+    "en": "Drag and drop the file here, or click to select file",
+    "fr": "Glissez-déposez le fichier ici, ou cliquez pour sélectionner un fichier"
+  },
+  "onlyCsvTsv": {
+    "en": "Only CSV or TSV files are allowed.",
+    "fr": "Seuls les fichiers CSV ou TSV sont autorisés."
+  },
+  "maxFileSize": {
+    "en": "Maximum file size: 1 GB",
+    "fr": "Taille maximale du fichier : 1 Go"
+  },
+  "createDataset": {
+    "en": "Create Dataset",
+    "fr": "Créer un ensemble de données"
+  },
   "datasetName": {
     "en": "Dataset Name",
     "fr": "Nom de la base de données"
+  },
+  "datasetId": {
+    "en": "Dataset ID",
+    "fr": "ID de la base de données"
   },
   "datasetDescription": {
     "en": "Dataset Description",
@@ -230,6 +302,14 @@
   "datasetLicense": {
     "en": "Dataset License",
     "fr": "Licence de la base de données"
+  },
+  "datasetLicenseName": {
+    "en": "Dataset License Name",
+    "fr": "Nom de la licence de la base de données"
+  },
+  "datasetLicenseReference": {
+    "en": "Dataset License Reference",
+    "fr": "Référence de la licence de la base de données"
   },
   "publicDomain": {
     "en": "Public Domain",
@@ -415,6 +495,10 @@
     "en": "Edit Dataset Information",
     "fr": "Modifier les informations de la base de données"
   },
+  "editProjectInfo": {
+    "en": "Edit Project Information",
+    "fr": "Modifier les informations du projet"
+  },
   "setDatasetSharable": {
     "en": "Set Dataset Sharable",
     "fr": "Rendre la base de données partageable"
@@ -499,6 +583,10 @@
     "en": "Projects",
     "fr": "Projets"
   },
+  "addDatasetToProject": {
+    "en": "Add Dataset to Current Project",
+    "fr": "Ajouter un jeu de données au projet actuel"
+  },
   "addUser": {
     "en": "Add User",
     "fr": "Ajouter un utilisateur"
@@ -534,5 +622,17 @@
   "contactOwner": {
     "en": "Contact owner",
     "fr": "Contacter le propriétaire"
+  },
+  "somethingWentWrong": {
+    "en": "Something Went Wrong",
+    "fr": "Une erreur est survenue"
+  },
+  "apologizeForInconvenience": {
+    "en": "We apologize for the inconvenience. Please contact us for further assistance.",
+    "fr": "Nous nous excusons pour le désagrément. Veuillez nous contacter pour obtenir de l'aide."
+  },
+  "reloadPage": {
+    "en": "Reload Page",
+    "fr": "Recharger la page"
   }
 }

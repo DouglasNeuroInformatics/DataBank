@@ -1,4 +1,4 @@
-import type { DatasetCardProps } from '@databank/core';
+import type { $DatasetCardProps } from '@databank/core';
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
@@ -16,7 +16,7 @@ const DatasetCard = ({
   name,
   status,
   updatedAt
-}: DatasetCardProps) => {
+}: $DatasetCardProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   const deleteDataset = useDeleteDataset();
@@ -26,19 +26,31 @@ const DatasetCard = ({
       <Card className="my-3">
         <Card.Header>
           <Card.Title>{name}</Card.Title>
-          <Card.Description>{description}</Card.Description>
-          <Badge variant={status === 'Fail' ? 'destructive' : status === 'Processing' ? 'secondary' : 'default'}>
-            {status}
-          </Badge>
+          <Card.Description>
+            {t('datasetDescription')}: {description}
+          </Card.Description>
+          {status !== 'Success' ? (
+            <Badge variant={status === 'Fail' ? 'destructive' : 'secondary'}>{status}</Badge>
+          ) : (
+            <></>
+          )}
         </Card.Header>
         <Card.Content>
           <ul>
-            <li key={id}>Dataset Id: {id}</li>
-            <li key={id + 'createdAt'}>Created at: {createdAt.toString()}</li>
-            <li key={id + 'updatedAt'}>Updated at: {updatedAt.toString()}</li>
-            <li key={id + license}>Licence: {license}</li>
+            <li key={id}>
+              {t('datasetId')}: {id}
+            </li>
+            <li key={id + 'createdAt'}>
+              {t('createdAt')}: {createdAt.toString()}
+            </li>
+            <li key={id + 'updatedAt'}>
+              {t('updatedAt')}: {updatedAt.toString()}
+            </li>
+            <li key={id + license}>
+              {t('datasetLicense')}: {license}
+            </li>
             <li key={id + 'managerIds'}>
-              ManagerId:{' '}
+              {t('managerId')}:{' '}
               {managerIds.map((element) => {
                 return (
                   <Badge key={`managerId-${element}`} variant={'secondary'}>
@@ -58,7 +70,6 @@ const DatasetCard = ({
             {isManager ? t('manageDataset') : t('viewDataset')}
           </Button>
 
-          {/* onClick delete dataset */}
           <Button hidden={status !== 'Fail' || !isManager} variant={'danger'} onClick={() => deleteDataset(id)}>
             {t('delete')}
           </Button>

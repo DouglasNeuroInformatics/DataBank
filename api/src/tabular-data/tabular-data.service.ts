@@ -1,16 +1,16 @@
-import type {
+import {
+  $DatasetViewPagination,
+  $GetColumnViewDto,
   $ProjectDataset,
-  DatasetViewPagination,
-  GetColumnViewDto,
-  ProjectTabularDatasetView,
-  TabularColumnSummary,
-  TabularDatasetView,
-  UpdatePrimaryKeys
+  $ProjectTabularDatasetView,
+  $TabularColumnSummary,
+  $TabularDatasetView,
+  $UpdatePrimaryKeys
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import type { PermissionLevel } from '@prisma/client';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import type { PermissionLevel, Prisma } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
 
@@ -56,7 +56,7 @@ export class TabularDataService {
       primaryKeys.push('__autogen_id');
     }
     if (!this.primaryKeyCheck(primaryKeys, df)) {
-      throw new ForbiddenException('Dataset failed primary keys check!');
+      throw new UnprocessableEntityException('Dataset failed primary keys check!');
     }
 
     const tabularData = await this.tabularDataModel.create({
@@ -77,7 +77,7 @@ export class TabularDataService {
           id: tabularData.id
         }
       });
-      throw new ForbiddenException('Cannot create Tabular Dataset!');
+      throw new UnprocessableEntityException('Cannot create Tabular Dataset!');
     }
 
     return tabularData;
@@ -119,12 +119,12 @@ export class TabularDataService {
 
   async getProjectDatasetView(
     projectDataset: $ProjectDataset,
-    rowPagination: DatasetViewPagination,
-    columnPagination: DatasetViewPagination
-  ) {
+    rowPagination: $DatasetViewPagination,
+    columnPagination: $DatasetViewPagination
+  ): Promise<$ProjectTabularDatasetView> {
     const columnIds: { [key: string]: string } = {};
     const columns: string[] = [];
-    const metaData: { [key: string]: any } = {};
+    const metaData: { [key: string]: $TabularColumnSummary } = {};
     const rows: { [key: string]: boolean | number | string }[] = [];
 
     const rowStart = (rowPagination.currentPage - 1) * rowPagination.itemsPerPage;
@@ -132,45 +132,32 @@ export class TabularDataService {
     const columnStart = (columnPagination.currentPage - 1) * columnPagination.itemsPerPage;
     const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage;
 
-    for (const col of projectDataset.columnIds.slice(columnStart, columnEnd)) {
-      let getColumnViewDto: GetColumnViewDto;
+    for (const colId of projectDataset.columnIds.slice(columnStart, columnEnd)) {
+      const getColumnViewDto: $GetColumnViewDto = {
+        columnId: colId,
+        rowMax: projectDataset.rowConfig.rowMax ?? undefined,
+        rowMin: projectDataset.rowConfig.rowMin
+      };
 
-      if (col in projectDataset.columnConfigs) {
-        getColumnViewDto = {
-          columnId: col,
-          hash: {
-            length: projectDataset.columnConfigs[col]!.hash.length ?? 10,
-            salt: projectDataset.columnConfigs[col]!.hash.salt ?? ''
-          },
-          rowMin: projectDataset.rowConfig.rowMin ?? 0,
-          trim: {
-            end: projectDataset.columnConfigs[col]!.trim.end ?? undefined,
-            start: projectDataset.columnConfigs[col]!.trim.start ?? 0
-          }
-        };
-      } else {
-        getColumnViewDto = {
-          columnId: col,
-          rowMax: projectDataset.rowConfig.rowMax ?? undefined,
-          rowMin: 0
-        };
+      if (colId in projectDataset.columnConfigs) {
+        if (projectDataset.columnConfigs[colId]!.hash) {
+          getColumnViewDto.hash = {
+            length: projectDataset.columnConfigs[colId]!.hash.length,
+            salt: projectDataset.columnConfigs[colId]!.hash.salt ?? undefined
+          };
+        }
+
+        if (projectDataset.columnConfigs[colId]!.trim) {
+          getColumnViewDto.trim = {
+            end: projectDataset.columnConfigs[colId]!.trim.end ?? undefined,
+            start: projectDataset.columnConfigs[colId]!.trim.start
+          };
+        }
       }
 
-      const currColumnView = await this.columnsService.getColumnView(getColumnViewDto);
+      const currColumnView = await this.columnsService.getProjectColumnView(getColumnViewDto);
       columns.push(currColumnView.name);
       columnIds[currColumnView.name] = currColumnView.id;
-      metaData[currColumnView.name] = {
-        count: currColumnView.count,
-        kind: { type: currColumnView.kind },
-        max: currColumnView.max,
-        mean: currColumnView.mean,
-        median: currColumnView.median,
-        min: currColumnView.min,
-        mode: currColumnView.mode,
-        nullable: currColumnView.nullable,
-        nullCount: currColumnView.nullCount,
-        std: currColumnView.std
-      };
 
       switch (currColumnView.kind) {
         case 'DATETIME':
@@ -178,35 +165,85 @@ export class TabularDataService {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!.toDateString()!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
+            datetimeSummary: currColumnView.summary.datetimeSummary!,
+            kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
-        case 'ENUM':
+        case 'ENUM': {
           currColumnView.enumData.map((entry, i) => {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
+            enumSummary: {
+              distribution: currColumnView.summary.enumSummary?.distribution as unknown as Prisma.JsonArray as {
+                '': string;
+                count: number;
+              }[]
+            },
+            kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
+        }
         case 'FLOAT':
           currColumnView.floatData.map((entry, i) => {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
+            floatSummary: currColumnView.summary.floatSummary!,
+            kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
         case 'INT':
           currColumnView.intData.map((entry, i) => {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
+            intSummary: currColumnView.summary.intSummary!,
+            kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
         case 'STRING':
           currColumnView.stringData.map((entry, i) => {
             rows[i] ??= {};
             rows[i][currColumnView.name] = entry.value!;
           });
+          metaData[currColumnView.name] = {
+            count: currColumnView.summary.count,
+            dataPermission: currColumnView.dataPermission,
+            kind: currColumnView.kind,
+            metadataPermission: currColumnView.summaryPermission,
+            nullable: currColumnView.nullable,
+            nullCount: currColumnView.summary.nullCount
+          };
           break;
       }
     }
 
-    const dataView: ProjectTabularDatasetView = {
+    const dataView: $ProjectTabularDatasetView = {
       columnIds,
       columns,
       metadata: metaData,
@@ -214,15 +251,16 @@ export class TabularDataService {
       totalNumberOfColumns: projectDataset.columnIds.length,
       totalNumberOfRows: rows.length
     };
+
     return dataView;
   }
 
   async getViewById(
     tabularDataId: string,
     userStatus: PermissionLevel,
-    rowPagination: DatasetViewPagination,
-    columnPagination: DatasetViewPagination
-  ) {
+    rowPagination: $DatasetViewPagination,
+    columnPagination: $DatasetViewPagination
+  ): Promise<$TabularDatasetView> {
     const tabularData = await this.tabularDataModel.findUnique({
       where: {
         id: tabularDataId
@@ -233,7 +271,6 @@ export class TabularDataService {
       throw new NotFoundException('No tabular data found!');
     }
 
-    // type RawQueryColumns
     const columnsFromDB = await this.columnsService.findManyByTabularDataId(tabularDataId, columnPagination);
     const numberOfColumns = await this.columnsService.getNumberOfColumns(tabularDataId);
 
@@ -241,38 +278,38 @@ export class TabularDataService {
       throw new NotFoundException('No column found in this tabular dataset!');
     }
 
-    const columnIdsModifyData: string[] = [];
-    const columnIdsModifyMetadata: string[] = [];
+    const columnIdsModifyData = new Set<string>();
+    const columnIdsModifyMetadata = new Set<string>();
 
     if (userStatus === 'VERIFIED') {
       columnsFromDB.forEach((col) => {
         if (col.dataPermission === 'MANAGER') {
-          columnIdsModifyData.push(col._id.$oid);
+          columnIdsModifyData.add(col._id.$oid);
         }
         if (col.summaryPermission === 'MANAGER') {
-          columnIdsModifyMetadata.push(col._id.$oid);
+          columnIdsModifyMetadata.add(col._id.$oid);
         }
       });
     } else if (userStatus === 'LOGIN') {
       columnsFromDB.forEach((col) => {
         if (col.dataPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyData.push(col._id.$oid);
+          columnIdsModifyData.add(col._id.$oid);
         }
         if (col.summaryPermission === 'MANAGER' || col.summaryPermission === 'VERIFIED') {
-          columnIdsModifyMetadata.push(col._id.$oid);
+          columnIdsModifyMetadata.add(col._id.$oid);
         }
       });
     } else if (userStatus === 'PUBLIC') {
       columnsFromDB.forEach((col) => {
         if (col.dataPermission === 'MANAGER' || col.dataPermission === 'LOGIN' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyData.push(col._id.$oid);
+          columnIdsModifyData.add(col._id.$oid);
         }
         if (
           col.summaryPermission === 'MANAGER' ||
           col.summaryPermission === 'VERIFIED' ||
           col.summaryPermission === 'LOGIN'
         ) {
-          columnIdsModifyMetadata.push(col._id.$oid);
+          columnIdsModifyMetadata.add(col._id.$oid);
         }
       });
     }
@@ -290,7 +327,7 @@ export class TabularDataService {
       rows.push({});
     }
 
-    const metaData: { [key: string]: TabularColumnSummary } = {};
+    const metaData: { [key: string]: $TabularColumnSummary } = {};
 
     for (const col of columnsFromDB) {
       columnIds[col.name] = col._id.$oid;
@@ -298,166 +335,119 @@ export class TabularDataService {
 
       switch (col.kind) {
         case 'DATETIME':
-          col.datetimeData.slice(rowStart, rowEnd).map((entry, i) => {
+          col.datetimeData!.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value?.toISOString() ?? null;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
-              count: 0,
-              datetimeSummary: {
-                max: new Date(0),
-                min: new Date(0)
-              },
+              count: col.summary.count,
+              dataPermission: col.dataPermission,
+              datetimeSummary: col.summary.datetimeSummary!,
               kind: 'DATETIME',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
-              nullCount: 0
-            };
-          } else {
-            metaData[col.name] = {
-              count: col.count,
-              datetimeSummary: col.datetimeSummary,
-              kind: 'DATETIME',
-              nullable: col.nullable,
-              nullCount: col.nullCount
+              nullCount: col.summary.nullCount
             };
           }
           break;
         case 'ENUM':
-          col.enumData.slice(rowStart, rowEnd).map((entry, i) => {
+          col.enumData!.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
-              count: 0,
-              enumSummary: {
-                distribution: {}
-              },
+              count: col.summary.count,
+              dataPermission: col.dataPermission,
+              enumSummary: col.summary.enumSummary!,
               kind: 'ENUM',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
-              nullCount: 0
-            };
-          } else {
-            metaData[col.name] = {
-              count: col.count,
-              enumSummary: col.enumSummary,
-              kind: 'ENUM',
-              nullable: col.nullable,
-              nullCount: 0
+              nullCount: col.summary.nullCount
             };
           }
           break;
         case 'FLOAT':
-          col.floatData.slice(rowStart, rowEnd).map((entry, i) => {
+          col.floatData!.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
-              count: 0,
-              floatSummary: {
-                max: 0,
-                mean: 0,
-                median: 0,
-                min: 0,
-                std: 0
-              },
+              count: col.summary.count,
+              dataPermission: col.dataPermission,
+              floatSummary: col.summary.floatSummary!,
               kind: 'FLOAT',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
-              nullCount: col.nullCount
-            };
-          } else {
-            metaData[col.name] = {
-              count: col.count,
-              floatSummary: col.floatSummary,
-              kind: 'FLOAT',
-              nullable: col.nullable,
-              nullCount: col.nullCount
+              nullCount: col.summary.nullCount
             };
           }
           break;
         case 'INT':
-          col.intData.slice(rowStart, rowEnd).map((entry, i) => {
+          col.intData!.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
-              count: 0,
-              intSummary: {
-                max: 0,
-                mean: 0,
-                median: 0,
-                min: 0,
-                mode: 0,
-                std: 0
-              },
+              count: col.summary.count,
+              dataPermission: col.dataPermission,
+              intSummary: col.summary.intSummary!,
               kind: 'INT',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
-              nullCount: 0
-            };
-          } else {
-            metaData[col.name] = {
-              count: col.count,
-              intSummary: col.intSummary,
-              kind: 'INT',
-              nullable: col.nullable,
-              nullCount: col.nullCount
+              nullCount: col.summary.nullCount
             };
           }
           break;
         case 'STRING':
-          col.stringData.slice(rowStart, rowEnd).map((entry, i) => {
+          col.stringData!.slice(rowStart, rowEnd).map((entry, i) => {
             rows[i] ??= {};
 
-            if (columnIdsModifyData.includes(col._id.$oid)) {
+            if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
               rows[i][col.name] = entry.value ?? null;
             }
           });
 
-          if (columnIdsModifyMetadata.includes(col._id.$oid)) {
+          if (!columnIdsModifyMetadata.has(col._id.$oid)) {
             metaData[col.name] = {
-              count: 0,
+              count: col.summary.count,
+              dataPermission: col.dataPermission,
               kind: 'STRING',
+              metadataPermission: col.summaryPermission,
               nullable: col.nullable,
-              nullCount: 0
-            };
-          } else {
-            metaData[col.name] = {
-              count: col.count,
-              kind: 'STRING',
-              nullable: col.nullable,
-              nullCount: col.nullCount
+              nullCount: col.summary.nullCount
             };
           }
           break;
       }
     }
 
-    const dataView: TabularDatasetView = {
+    const dataView: $TabularDatasetView = {
       columnIds,
       columns,
       metadata: metaData,
@@ -471,7 +461,7 @@ export class TabularDataService {
   }
 
   // update Primary keys for a tabular column
-  async updatePrimaryKeys(tabularDataId: string, updatePrimaryKeysDto: UpdatePrimaryKeys) {
+  async updatePrimaryKeys(tabularDataId: string, updatePrimaryKeysDto: $UpdatePrimaryKeys) {
     return await this.tabularDataModel.update({
       data: updatePrimaryKeysDto,
       where: {
@@ -495,7 +485,8 @@ export class TabularDataService {
     const checkPrimaryKeysArray = df
       .select(...primaryKeys)
       .isUnique()
-      .toTypedArray() as boolean[];
+      .toArray() as boolean[];
+
     return checkPrimaryKeysArray.reduce((prev, curr) => prev && curr);
   }
 }

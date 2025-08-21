@@ -1,4 +1,4 @@
-import type { CurrentUser, UserRole } from '@databank/core';
+import { $CurrentUser, $UserRole } from '@databank/core';
 import { ConfigService } from '@douglasneuroinformatics/libnest';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
@@ -35,7 +35,7 @@ export class AuthGuard implements CanActivate {
     }
 
     // Validate token and extract payload
-    let payload: CurrentUser;
+    let payload: $CurrentUser;
     try {
       payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.getOrThrow('SECRET_KEY')
@@ -51,10 +51,11 @@ export class AuthGuard implements CanActivate {
     }
 
     // Attach user to request for route handlers
-    request.user = Object.assign(request.user ?? {}, payload);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    request.user = Object.assign(request.user ?? {}, payload) as any;
 
     // Access user permissions
-    return this.isAuthorized(request.user.role, routeAccess);
+    return this.isAuthorized(request.user?.role, routeAccess);
   }
 
   /** Return the access token from the request header, or null if non-existant or malformed */
@@ -75,7 +76,7 @@ export class AuthGuard implements CanActivate {
     return routeAccess ?? { role: 'ADMIN' };
   }
 
-  private isAuthorized(role?: UserRole, routeAccess?: ProtectedRouteAccess) {
+  private isAuthorized(role?: $UserRole, routeAccess?: ProtectedRouteAccess) {
     switch (role) {
       case 'ADMIN':
         return true;
