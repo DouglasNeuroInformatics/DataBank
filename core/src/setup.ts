@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
-type SetupState = z.infer<typeof $SetupState>;
+type $SetupState = z.infer<typeof $SetupState>;
 const $SetupState = z.object({
   isSetup: z.boolean()
 });
 
-type CreateAdminData = z.infer<typeof $CreateAdminData>;
+type $CreateAdminData = z.infer<typeof $CreateAdminData>;
 const $CreateAdminData = z.object({
   email: z.string(),
   firstName: z.string(),
@@ -32,11 +32,10 @@ const $SetupConfig = z.object({
   verificationStrategy: $UserVerificationStrategy
 });
 
-type SetupOptions = z.infer<typeof $SetupOptions>;
+type $SetupOptions = z.infer<typeof $SetupOptions>;
 const $SetupOptions = z.object({
   admin: $CreateAdminData,
   setupConfig: $SetupConfig
 });
 
-export type { CreateAdminData, SetupOptions, SetupState };
 export { $CreateAdminData, $SetupOptions, $SetupState };

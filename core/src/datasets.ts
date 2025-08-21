@@ -1,128 +1,88 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
-import type { ColumnSummary } from './columns';
-
-type AddProjectDatasetColumns = {
-  [key: string]: string;
-};
+import { $PermissionLevel, $TabularColumnSummary } from './columns';
+import { $DatasetLicenses } from './licenses';
 
 const $DatasetViewPagination = z.object({
   currentPage: z.number(),
   itemsPerPage: z.number()
 });
+type $DatasetViewPagination = z.infer<typeof $DatasetViewPagination>;
 
-type DatasetViewPagination = z.infer<typeof $DatasetViewPagination>;
+const $DatasetType = z.enum(['BASE', 'BINARY', 'TABULAR']);
+type $DatasetType = z.infer<typeof $DatasetType>;
 
-const $PermissionLevel = z.object({
-  permission: z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER'])
-});
-type PermissionLevel = z.infer<typeof $PermissionLevel>;
+const $DatasetStatus = z.enum(['Fail', 'Processing', 'Success']);
+type $DatasetStatus = z.infer<typeof $DatasetStatus>;
 
 const $CreateDataset = z.object({
-  datasetType: z.enum(['BASE', 'TABULAR']),
+  datasetType: $DatasetType,
   description: z.string().optional(),
   isJSON: z.enum(['true', 'false']),
   isReadyToShare: z.enum(['true', 'false']),
-  license: z.enum(['PUBLIC', 'OTHER']),
+  license: $DatasetLicenses,
   name: z.string(),
-  permission: z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']),
+  permission: $PermissionLevel,
   primaryKeys: z.string().optional()
 });
-type CreateDataset = z.infer<typeof $CreateDataset>;
+type $CreateDataset = z.infer<typeof $CreateDataset>;
 
 const $EditDatasetInfo = z.object({
   description: z.string().optional(),
-  license: z.enum(['PUBLIC', 'OTHER']).optional(),
+  license: $DatasetLicenses.optional(),
   name: z.string().optional(),
-  permission: z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']).optional()
+  permission: $PermissionLevel.optional()
 });
-type EditDatasetInfo = z.infer<typeof $EditDatasetInfo>;
+type $EditDatasetInfo = z.infer<typeof $EditDatasetInfo>;
 
-const $ColumnDataType = z.object({
-  type: z.enum(['BOOLEAN', 'DATETIME', 'ENUM', 'FLOAT', 'INT', 'STRING'])
+const $DatasetInfo = z.object({
+  createdAt: z.coerce.date(),
+  datasetType: $DatasetType,
+  description: z.string().nullable(),
+  id: z.string(),
+  isReadyToShare: z.boolean(),
+  license: $DatasetLicenses,
+  managerIds: z.string().array(),
+  name: z.string(),
+  permission: $PermissionLevel,
+  status: $DatasetStatus,
+  updatedAt: z.coerce.date()
 });
-type ColumnDataType = z.infer<typeof $ColumnDataType>;
+type $DatasetInfo = z.infer<typeof $DatasetInfo>;
 
-type DatasetType = 'BASE' | 'BINARY' | 'TABULAR';
+type $DatasetCardProps = $DatasetInfo & { isManager: boolean; isPublic: boolean };
 
-type DatasetStatus = 'Fail' | 'Processing' | 'Success';
+const $TabularDataRow = z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]));
+type $TabularDataRow = z.infer<typeof $TabularDataRow>;
 
-type DatasetInfo = {
-  createdAt: Date;
-  datasetType: DatasetType;
-  description: null | string;
-  id: string;
-  isReadyToShare: boolean;
-  license: string;
-  managerIds: string[];
-  name: string;
-  permission: PermissionLevel;
-  status: DatasetStatus;
-  updatedAt: Date;
+const $TabularDatasetView = z.object({
+  columnIds: z.record(z.string(), z.string()),
+  columns: z.string().array(),
+  metadata: z.record(z.string(), $TabularColumnSummary),
+  primaryKeys: z.string().array(),
+  rows: $TabularDataRow.array(),
+  totalNumberOfColumns: z.number().min(0),
+  totalNumberOfRows: z.number().min(0)
+});
+type $TabularDatasetView = z.infer<typeof $TabularDatasetView>;
+
+const $ProjectTabularDatasetView = $TabularDatasetView.omit({
+  primaryKeys: true
+});
+type $ProjectTabularDatasetView = z.infer<typeof $ProjectTabularDatasetView>;
+
+type $TabularDataset = $DatasetInfo & $TabularDatasetView;
+
+export {
+  $CreateDataset,
+  $DatasetInfo,
+  $DatasetLicenses,
+  $DatasetStatus,
+  $DatasetViewPagination,
+  $EditDatasetInfo,
+  $PermissionLevel,
+  $ProjectTabularDatasetView,
+  $TabularDatasetView
 };
 
-type DatasetCardProps = DatasetInfo & { isManager: boolean; isPublic: boolean };
-
-type TabularDataRow = {
-  [key: string]: boolean | Date | number | string;
-};
-
-type TabularDatasetView = {
-  columnIds: { [key: string]: string };
-  columns: string[];
-  metadata: { [key: string]: ColumnSummary };
-  primaryKeys: string[];
-  rows: { [key: string]: boolean | null | number | string }[];
-  totalNumberOfColumns: number;
-  totalNumberOfRows: number;
-};
-
-type ProjectTabularDatasetView = {
-  columnIds: { [key: string]: string };
-  columns: string[];
-  metadata: { [key: string]: ColumnSummary };
-  rows: { [key: string]: boolean | null | number | string }[];
-  totalNumberOfColumns: number;
-  totalNumberOfRows: number;
-};
-
-type TabularDataset = DatasetInfo & {
-  columnIds: { [key: string]: string };
-  columns: string[];
-  metadata: {
-    [key: string]: {
-      count: number;
-      distribution?: { [key: string]: number };
-      kind: ColumnDataType;
-      max?: number;
-      mean?: number;
-      median?: number;
-      min?: number;
-      mode?: number;
-      nullable: boolean;
-      nullCount: number;
-      std?: number;
-    };
-  };
-  primaryKeys: string[];
-  rows: { [key: string]: string }[];
-  totalNumberOfColumns: number;
-  totalNumberOfRows: number;
-};
-
-export { $ColumnDataType, $CreateDataset, $DatasetViewPagination, $EditDatasetInfo, $PermissionLevel };
-export type {
-  AddProjectDatasetColumns,
-  ColumnDataType,
-  CreateDataset,
-  DatasetCardProps,
-  DatasetInfo,
-  DatasetStatus,
-  DatasetViewPagination,
-  EditDatasetInfo,
-  PermissionLevel,
-  ProjectTabularDatasetView,
-  TabularDataRow,
-  TabularDataset,
-  TabularDatasetView
-};
+export type { $DatasetCardProps, $TabularDataset };

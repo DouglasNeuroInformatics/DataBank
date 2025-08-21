@@ -1,29 +1,14 @@
-import {
-  $ColumnDataType,
-  $CreateDataset,
-  $DatasetViewPagination,
-  $EditDatasetInfo,
-  $PermissionLevel
-} from '@databank/core';
-import type {
-  ColumnDataType,
-  CreateDataset,
-  DatasetViewPagination,
-  EditDatasetInfo,
-  PermissionLevel
-} from '@databank/core';
-import { DataTransferObject } from '@douglasneuroinformatics/libnest';
+import { $ColumnType, $PermissionLevel } from '@databank/core';
+import z from 'zod/v4';
 
-class DatasetViewPaginationDto extends DataTransferObject($DatasetViewPagination) implements DatasetViewPagination {}
+const $PermissionLevelObj = z.object({
+  permission: $PermissionLevel
+});
+type $PermissionLevelObj = z.infer<typeof $PermissionLevelObj>;
 
-// TO-DO:
+const $ColumnDataType = z.object({
+  kind: $ColumnType
+});
+type $ColumnDataType = z.infer<typeof $ColumnDataType>;
 
-class CreateDatasetDto extends DataTransferObject($CreateDataset) implements CreateDataset {}
-
-class EditDatasetInfoDto extends DataTransferObject($EditDatasetInfo) implements EditDatasetInfo {}
-
-class PermissionLevelDto extends DataTransferObject($PermissionLevel) implements PermissionLevel {}
-
-class ColumnDataTypeDto extends DataTransferObject($ColumnDataType) implements ColumnDataType {}
-
-export { ColumnDataTypeDto, CreateDatasetDto, DatasetViewPaginationDto, EditDatasetInfoDto, PermissionLevelDto };
+export { $ColumnDataType, $PermissionLevelObj };

@@ -1,4 +1,4 @@
-import type { SetupOptions } from '@databank/core';
+import { $SetupOptions } from '@databank/core';
 import { getModelToken } from '@douglasneuroinformatics/libnest';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { MockFactory } from '@douglasneuroinformatics/libnest/testing';
@@ -56,7 +56,7 @@ describe('SetupService', () => {
   });
 
   describe('initApp', () => {
-    const setupOptions: SetupOptions = {
+    const setupOptions: $SetupOptions = {
       admin: {
         email: 'jane.doe@example.org',
         firstName: 'Jane',
@@ -70,10 +70,10 @@ describe('SetupService', () => {
       }
     };
 
-    it('should throw a ForbiddenException if the app is already setup', async () => {
+    it('should throw a ConflictException if the app is already setup', async () => {
       setupConfigModel.count.mockReturnValueOnce(1);
       await expect(setupService.initApp(setupOptions)).rejects.toMatchObject({
-        status: HttpStatus.FORBIDDEN
+        status: HttpStatus.CONFLICT
       });
     });
 

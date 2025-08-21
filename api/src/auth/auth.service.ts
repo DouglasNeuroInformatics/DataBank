@@ -1,6 +1,13 @@
 import { randomInt } from 'crypto';
 
-import type { AuthPayload, CurrentUser, EmailConfirmationProcedureInfo, Locale } from '@databank/core';
+import {
+  $AuthPayload,
+  $CreateAccount,
+  $CurrentUser,
+  $EmailConfirmationProcedureInfo,
+  $VerifyAccount
+} from '@databank/core';
+import type { Locale } from '@databank/core';
 import { ConfigService, CryptoService, MailService } from '@douglasneuroinformatics/libnest';
 import {
   ForbiddenException,
@@ -16,8 +23,6 @@ import { I18nService } from '@/i18n/i18n.service';
 import { SetupService } from '@/setup/setup.service';
 
 import { UsersService } from '../users/users.service.js';
-import { CreateAccountDto } from './dto/create-account.dto.js';
-import { VerifyAccountDto } from './dto/verify-account.dto.js';
 
 @Injectable()
 export class AuthService {
@@ -32,14 +37,14 @@ export class AuthService {
   ) {}
 
   /** Create a new standard account with verification required */
-  createAccount(createAccountDto: CreateAccountDto): Promise<Omit<User, 'hashedPassword'>> {
+  createAccount(createAccountDto: $CreateAccount): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
       ...createAccountDto,
       role: 'STANDARD'
     });
   }
 
-  async login(email: string, password: string): Promise<AuthPayload> {
+  async login(email: string, password: string): Promise<$AuthPayload> {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Invalid Credentials');
@@ -55,7 +60,7 @@ export class AuthService {
     return { accessToken };
   }
 
-  async sendConfirmEmailCode({ email }: CurrentUser, locale?: Locale): Promise<EmailConfirmationProcedureInfo> {
+  async sendConfirmEmailCode({ email }: $CurrentUser, locale?: Locale): Promise<$EmailConfirmationProcedureInfo> {
     // This should never happen when called from controller, but in case it is ever called elsewhere
     const user = await this.usersService.findByEmail(email);
     if (!user) {
@@ -75,20 +80,18 @@ export class AuthService {
       await this.usersService.updateConfirmEmailInfo(user.email, confirmEmailInfo);
     }
 
-    const result = await this.mailService.sendMail({
+    await this.mailService.sendMail({
+      body: {
+        text:
+          this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailInfo.confirmEmailCode}`
+      },
       subject: this.i18n.translate(locale, 'confirmationEmail.body'),
-      text:
-        this.i18n.translate(locale, 'confirmationEmail.body') + '\n\n' + `Code : ${confirmEmailInfo.confirmEmailCode}`,
       to: user.email
     });
-
-    if (result.isErr()) {
-      throw result.error;
-    }
     return { attemptsMade: confirmEmailInfo.attemptsMade, expiry: confirmEmailInfo.expiryAt };
   }
 
-  async verifyAccount({ code }: VerifyAccountDto, { email }: CurrentUser): Promise<AuthPayload> {
+  async verifyAccount({ code }: $VerifyAccount, { email }: $CurrentUser): Promise<$AuthPayload> {
     let user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new NotFoundException('User Not Found');
@@ -156,7 +159,7 @@ export class AuthService {
 
   private async signToken(user: User) {
     const { confirmedAt, datasetId, email, firstName, lastName, role, verifiedAt } = user;
-    const payload: CurrentUser = { confirmedAt, datasetId, email, firstName, id: user.id, lastName, role, verifiedAt };
+    const payload: $CurrentUser = { confirmedAt, datasetId, email, firstName, id: user.id, lastName, role, verifiedAt };
     return this.jwtService.signAsync(payload);
   }
 }

@@ -1,70 +1,33 @@
-import type { JsonValue } from 'type-fest';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
-import { $PermissionLevel } from './datasets';
+const $ColumnType = z.enum(['STRING', 'INT', 'FLOAT', 'ENUM', 'DATETIME']);
+type $ColumnType = z.infer<typeof $ColumnType>;
+
+const $PermissionLevel = z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']);
+type $PermissionLevel = z.infer<typeof $PermissionLevel>;
+
+const $BasicSummary = z.object({
+  count: z.number().int().gte(0),
+  dataPermission: $PermissionLevel,
+  metadataPermission: $PermissionLevel,
+  nullable: z.boolean(),
+  nullCount: z.number().int().gte(0)
+});
+
+const $TabularColumnInfo = z
+  .object({
+    dataPermission: $PermissionLevel,
+    description: z.string().optional(),
+    id: z.string(),
+    name: z.string(),
+    summaryPermission: $PermissionLevel,
+    tabularDataId: z.string()
+  })
+  .merge($BasicSummary);
+type $TabularColumnInfo = z.infer<typeof $TabularColumnInfo>;
 
 // ---------------------- Column Summaries ---------------------
-type BaseColumnSummary = {
-  count: number;
-  nullCount: number;
-};
-
-type StringColumnSummary = {
-  kind: { type: 'STRING' };
-};
-
-type IntColumnSummary = {
-  kind: { type: 'INT' };
-  max?: number;
-  mean?: number;
-  median?: number;
-  min?: number;
-  mode?: number;
-  std?: number;
-};
-
-type FloatColumnSummary = {
-  kind: { type: 'FLOAT' };
-  max?: number;
-  mean?: number;
-  median?: number;
-  min?: number;
-  std?: number;
-};
-
-type BooleanColumnSummary = {
-  kind: { type: 'BOOLEAN' };
-  trueCount: number;
-};
-
-type EnumColumnSummary = {
-  distribution?: JsonValue;
-  kind: { type: 'ENUM' };
-};
-
-type DatetimeColumnSummary = {
-  kind: { type: 'DATETIME' };
-  max: Date;
-  min: Date;
-};
-
-type ColumnSummary = BaseColumnSummary &
-  (
-    | BooleanColumnSummary
-    | DatetimeColumnSummary
-    | EnumColumnSummary
-    | FloatColumnSummary
-    | IntColumnSummary
-    | StringColumnSummary
-  );
-
-const $BaseSummary = z.object({
-  count: z.number().int(),
-  nullCount: z.number().int()
-});
-// type BaseSummary = z.infer<typeof $BaseSummary>;
-
-const $IntSummary = $BaseSummary.extend({
+const $IntSummary = z.object({
   max: z.number().int(),
   mean: z.number(),
   median: z.number(),
@@ -72,261 +35,146 @@ const $IntSummary = $BaseSummary.extend({
   mode: z.number().int(),
   std: z.number()
 });
-// type IntSummary = z.infer<typeof $IntSummary>;
 
-const $FloatSummary = $BaseSummary.extend({
+const $EnumSummaryFromDB = z.object({
+  distribution: z
+    .object({
+      '': z.string(),
+      count: z.number().int().gte(0)
+    })
+    .array()
+});
+
+const $FloatSummary = z.object({
   max: z.number(),
   mean: z.number(),
   median: z.number(),
   min: z.number(),
   std: z.number()
 });
-// type FloatSummary = z.infer<typeof $FloatSummary>;
 
-const $EnumSummary = $BaseSummary.extend({
-  distribution: z.record(z.number().int())
-});
-// type EnumSummary = z.infer<typeof $EnumSummary>;
-
-const $DatetimeSummary = $BaseSummary.extend({
+const $DatetimeSummary = z.object({
   max: z.date(),
   min: z.date()
 });
-// type DatetimeSummary = z.infer<typeof $DatetimeSummary>;
 
-// const $ColumnSummary = z.union([
-//   $BaseSummary,
-//   $IntSummary,
-//   $FloatSummary,
-//   $EnumSummary,
-//   $DatetimeSummary
-// ]) satisfies z.ZodType<ColumnSummary>;
-// type ColumnSummary = BaseSummary | DatetimeSummary | EnumSummary | FloatSummary | IntSummary;
-
-// ----------------------- Column Validation -----------------------
-// const $StringColumnValidation = z.object({
-//   max: z.number().int(),
-//   mean: z.number(),
-//   median: z.number(),
-//   min: z.number().int(),
-//   mode: z.number().int(),
-//   std: z.number()
-// });
-
-// const $NumericColumnValidation = z.object({
-//   max: z.number().int(),
-//   min: z.number().int()
-// });
-
-// export const $EnumColumnValidation = z.object({
-//   allowedValues: z.string().array()
-// });
-
-// export const $DatetimeValidation = z.object({
-//   max: z.date(),
-//   min: z.date()
-//   // pass ISO
-// });
-
-// ---------------------------------------------------
-
-const $TabularColumnInfo = z.object({
-  dataPermission: $PermissionLevel,
-  description: z.string().optional(),
-  id: z.string(),
-  name: z.string(),
-  nullable: z.boolean(),
-  summaryPermission: $PermissionLevel,
-  tabularDataId: z.string()
-});
-
-const $StringColumn = $TabularColumnInfo.extend({
-  kind: z.object({ type: z.literal('STRING') }),
+const $StringColumn = z.object({
+  kind: z.literal($ColumnType.enum.STRING),
   stringData: z.array(
     z.object({
       value: z.string().optional()
     })
-  ),
-  summary: $BaseSummary
+  )
 });
-type StringColumn = z.infer<typeof $StringColumn>;
+type $StringColumn = z.infer<typeof $StringColumn>;
+const $StringColumnSummary = $StringColumn.omit({ stringData: true });
 
-const $CreateStringColumn = $StringColumn.omit({
-  id: true
-});
-type CreateStringColumn = z.infer<typeof $CreateStringColumn>;
-
-const $UpdateStringColumn = $CreateStringColumn.partial();
-type UpdateStringColumn = z.infer<typeof $UpdateStringColumn>;
-
-const $IntColumn = $TabularColumnInfo.extend({
+const $IntColumn = z.object({
   intData: z.array(
     z.object({
       value: z.number().optional()
     })
   ),
-  kind: z.object({ type: z.literal('INT') }),
-  summary: $IntSummary
+  intSummary: $IntSummary,
+  kind: z.literal($ColumnType.enum.INT)
 });
-type IntColumn = z.infer<typeof $IntColumn>;
 
-const $CreateIntColumn = $IntColumn.omit({
-  id: true
-});
-type CreateIntColumn = z.infer<typeof $CreateIntColumn>;
+const $IntColumnSummary = $IntColumn.omit({ intData: true });
 
-const $UpdateIntColumn = $CreateIntColumn.partial();
-type UpdateIntColumn = z.infer<typeof $UpdateIntColumn>;
+type $IntColumn = z.infer<typeof $IntColumn>;
 
-const $FloatColumn = $TabularColumnInfo.extend({
+const $FloatColumn = z.object({
   floatData: z.array(
     z.object({
       value: z.number().optional()
     })
   ),
-  kind: z.object({ type: z.literal('FLOAT') }),
-  summary: $FloatSummary
+  floatSummary: $FloatSummary,
+  kind: z.literal($ColumnType.enum.FLOAT)
 });
-type FloatColumn = z.infer<typeof $FloatColumn>;
+type $FloatColumn = z.infer<typeof $FloatColumn>;
+const $FloatColumnSummary = $FloatColumn.omit({ floatData: true });
 
-const $CreateFloatColumn = $FloatColumn.omit({
-  id: true
-});
-type CreateFloatColumn = z.infer<typeof $CreateFloatColumn>;
-
-const $UpdateFloatColumn = $CreateFloatColumn.partial();
-type UpdateFloatColumn = z.infer<typeof $UpdateFloatColumn>;
-
-const $EnumColumn = $TabularColumnInfo.extend({
+const $EnumColumn = z.object({
   enumData: z.array(
     z.object({
       value: z.string().optional()
     })
   ),
-  kind: z.object({ type: z.literal('ENUM') }),
-  summary: $EnumSummary
+  enumSummary: $EnumSummaryFromDB,
+  kind: z.literal($ColumnType.enum.ENUM)
 });
-type EnumColumn = z.infer<typeof $EnumColumn>;
+type $EnumColumn = z.infer<typeof $EnumColumn>;
+const $EnumColumnSummary = $EnumColumn.omit({ enumData: true });
 
-const $CreateEnumColumn = $EnumColumn.omit({
-  id: true
-});
-type CreateEnumColumn = z.infer<typeof $CreateEnumColumn>;
-
-const $UpdateEnumColumn = $CreateEnumColumn.partial();
-type UpdateEnumColumn = z.infer<typeof $UpdateEnumColumn>;
-
-const $DatetimeColumn = $TabularColumnInfo.extend({
+const $DatetimeColumn = z.object({
   datetimeData: z.array(
     z.object({
       value: z.date().optional()
     })
   ),
-  kind: z.object({ type: z.literal('DATETIME') }),
-  summary: $DatetimeSummary
+  datetimeSummary: $DatetimeSummary,
+  kind: z.literal($ColumnType.enum.DATETIME)
 });
-type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
+type $DatetimeColumn = z.infer<typeof $DatetimeColumn>;
 
-const $BooleanColumn = $TabularColumnInfo.extend({
-  booleanData: z.array(
-    z.object({
-      value: z.boolean().optional()
-    })
-  ),
-  kind: z.object({ type: z.literal('BOOLEAN') }),
-  summary: $EnumSummary
-});
-type BooleanColumn = z.infer<typeof $BooleanColumn>;
+const $DatetimeColumnSummary = $DatetimeColumn.omit({ datetimeData: true });
 
-const $CreateDatetimeColumn = $DatetimeColumn.omit({
-  id: true
-});
-type CreateDatetimeColumn = z.infer<typeof $CreateDatetimeColumn>;
+const $TabularColumn = z
+  .discriminatedUnion('kind', [$DatetimeColumn, $IntColumn, $StringColumn, $FloatColumn, $EnumColumn])
+  .and($TabularColumnInfo);
+type $TabularColumn = z.infer<typeof $TabularColumn>;
 
-const $UpdateDatetimeColumn = $CreateDatetimeColumn.partial();
-type UpdateDatetimeColumn = z.infer<typeof $UpdateDatetimeColumn>;
+const $TabularColumnSummary = z
+  .discriminatedUnion('kind', [
+    $DatetimeColumnSummary,
+    $IntColumnSummary,
+    $FloatColumnSummary,
+    $EnumColumnSummary,
+    $StringColumnSummary
+  ])
+  .and($BasicSummary);
+type $TabularColumnSummary = z.infer<typeof $TabularColumnSummary>;
 
-const $TabularColumn = z.union([
-  $StringColumn,
-  $IntColumn,
-  $FloatColumn,
-  $EnumColumn,
-  $DatetimeColumn,
-  $BooleanColumn
-]) satisfies z.ZodType<TabularColumn>;
-type TabularColumn = BooleanColumn | DatetimeColumn | EnumColumn | FloatColumn | IntColumn | StringColumn;
-
-const $CreateTabularColumn = z.union([
-  $CreateStringColumn,
-  $CreateIntColumn,
-  $CreateFloatColumn,
-  $CreateEnumColumn,
-  $CreateDatetimeColumn
-]) satisfies z.ZodType<CreateTabularColumn>;
-
-type CreateTabularColumn =
-  | CreateDatetimeColumn
-  | CreateEnumColumn
-  | CreateFloatColumn
-  | CreateIntColumn
-  | CreateStringColumn;
-
-const $RawQueryProps = z.object({
+const $RawQueryColumn = z.object({
   __modelName: z.literal('TabularColumn'),
   _id: z.object({
     $oid: z.string()
-  })
+  }),
+  dataPermission: $PermissionLevel,
+  datetimeData: z.object({ value: z.date().nullable() }).array().nullable(),
+  description: z.string().nullable(),
+  enumData: z.object({ value: z.string().nullable() }).array().nullable(),
+  floatData: z.object({ value: z.number().nullable() }).array().nullable(),
+  intData: z.object({ value: z.number().int().nullable() }).array().nullable(),
+  kind: $ColumnType,
+  name: z.string(),
+  nullable: z.boolean(),
+  // store the actual data in a pl.series(array) depending on the type of the column
+  stringData: z.object({ value: z.string().nullable() }).array().nullable(),
+  summary: z.object({
+    count: z.number().int().gte(0),
+    datetimeSummary: $DatetimeSummary.nullable(),
+    enumSummary: $EnumSummaryFromDB.nullable(),
+    floatSummary: $FloatSummary.nullable(),
+    intSummary: $IntSummary.nullable(),
+    nullCount: z.number().int().gte(0)
+  }),
+  summaryPermission: $PermissionLevel,
+  tabularDataId: z.string()
 });
-
-const $RawQueryColumn = $RawQueryProps.and($CreateTabularColumn);
-
-type RawQueryColumn = z.infer<typeof $RawQueryColumn>;
-
-type UpdateTabularColumn =
-  | UpdateDatetimeColumn
-  | UpdateEnumColumn
-  | UpdateFloatColumn
-  | UpdateIntColumn
-  | UpdateStringColumn;
+type $RawQueryColumn = z.infer<typeof $RawQueryColumn>;
 
 export {
-  // $ColumnSummary,
-  $CreateDatetimeColumn,
-  $CreateEnumColumn,
-  $CreateFloatColumn,
-  $CreateTabularColumn,
+  $ColumnType,
   $DatetimeColumn,
   $EnumColumn,
   $FloatColumn,
   $IntColumn,
+  $PermissionLevel,
   $RawQueryColumn,
+  $StringColumn,
   $TabularColumn,
-  $UpdateDatetimeColumn,
-  $UpdateEnumColumn,
-  $UpdateFloatColumn,
-  $UpdateIntColumn,
-  $UpdateStringColumn
-};
-
-export type {
-  ColumnSummary,
-  CreateDatetimeColumn,
-  CreateEnumColumn,
-  CreateFloatColumn,
-  CreateIntColumn,
-  CreateStringColumn,
-  CreateTabularColumn,
-  DatetimeColumn,
-  EnumColumn,
-  FloatColumn,
-  IntColumn,
-  RawQueryColumn,
-  StringColumn,
-  TabularColumn,
-  UpdateDatetimeColumn,
-  UpdateEnumColumn,
-  UpdateFloatColumn,
-  UpdateIntColumn,
-  UpdateStringColumn,
-  UpdateTabularColumn
+  $TabularColumnInfo,
+  $TabularColumnSummary
 };

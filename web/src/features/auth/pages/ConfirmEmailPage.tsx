@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import type { AuthPayload, EmailConfirmationProcedureInfo } from '@databank/core';
+import { $AuthPayload, $EmailConfirmationProcedureInfo } from '@databank/core';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
@@ -35,12 +35,12 @@ export const ConfirmEmailPage = () => {
 
   /** Send code and then set seconds to milliseconds remaining in minutes, rounded down, converted to seconds */
   const sendConfirmEmailCode = async () => {
-    const response = await axios.post<EmailConfirmationProcedureInfo>('/v1/auth/confirm-email-code');
+    const response = await axios.post<$EmailConfirmationProcedureInfo>('/v1/auth/confirm-email-code');
     setSeconds(Math.floor((new Date(response.data.expiry).getTime() - Date.now()) / 60000) * 60);
   };
 
   const verifyCode = async (code: number) => {
-    const response = await axios.post<AuthPayload>('/v1/auth/verify-account', { code });
+    const response = await axios.post<$AuthPayload>('/v1/auth/verify-account', { code });
     notifications.addNotification({ type: 'success' });
     auth.setAccessToken(response.data.accessToken);
     void navigate({ to: '/portal/dashboard' });

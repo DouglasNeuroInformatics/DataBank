@@ -17,13 +17,15 @@
   "dependencies": {
     "@databank/core": "workspace:*",
     "@douglasneuroinformatics/libjs": "catalog:",
+    "@douglasneuroinformatics/liblicense": "^1.0.0",
     "@douglasneuroinformatics/libpasswd": "^0.0.3",
-    "@douglasneuroinformatics/libui": "^4.0.2",
+    "@douglasneuroinformatics/libui": "^4.6.1",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@tanstack/react-query": "^5.71.3",
     "@tanstack/react-query-devtools": "^5.71.3",
     "@tanstack/react-router": "^1.115.2",
+    "@tanstack/react-table": "^8.21.3",
     "axios": "^1.8.4",
     "framer-motion": "^12.6.3",
     "jwt-decode": "^4.0.0",
@@ -33,10 +35,12 @@
     "react-dropzone": "^14.3.8",
     "react-error-boundary": "^5.0.0",
     "ts-pattern": "^5.7.0",
+    "usehooks-ts": "^3.1.1",
     "zod": "catalog:",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@douglasneuroinformatics/libui-form-types": "^0.11.0",
     "@import-meta-env/unplugin": "^0.6.2",
     "@storybook/addon-essentials": "^8.6.11",
     "@storybook/addon-interactions": "^8.6.11",
@@ -44,14 +48,16 @@
     "@storybook/addon-themes": "^8.6.11",
     "@storybook/react": "^8.6.11",
     "@storybook/react-vite": "^8.6.11",
-    "@tailwindcss/vite": "^4.1.1",
+    "@tailwindcss/vite": "^4.1.4",
     "@tanstack/react-router-devtools": "^1.115.2",
     "@tanstack/router-plugin": "^1.115.2",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
     "@vitejs/plugin-react-swc": "^3.8.1",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.4",
     "storybook": "^8.6.11",
-    "tailwindcss": "^4.1.1",
+    "tailwindcss": "^4.1.4",
     "vite": "^6.2.4"
   }
 }

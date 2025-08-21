@@ -1,5 +1,6 @@
 /* eslint-disable perfectionist/sort-classes */
 
+import { $CreateDataset, $DatasetViewPagination, $EditDatasetInfo } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -8,13 +9,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
 import { DatasetsService } from './datasets.service.js';
-import {
-  ColumnDataTypeDto,
-  CreateDatasetDto,
-  DatasetViewPaginationDto,
-  EditDatasetInfoDto,
-  PermissionLevelDto
-} from './dto/datasets.dto.js';
+import { $ColumnDataType, $PermissionLevelObj } from './dto/datasets.dto.js';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })
@@ -37,7 +32,7 @@ export class DatasetsController {
   @RouteAccess({ role: 'STANDARD' })
   @UseInterceptors(FileInterceptor('file'))
   createDataset(
-    @Body() createDatasetDto: CreateDatasetDto,
+    @Body() createDatasetDto: $CreateDataset,
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser('id') managerId: string
   ) {
@@ -63,8 +58,8 @@ export class DatasetsController {
   @RouteAccess('public')
   getOnePublicById(
     @Param('id') datasetId: string,
-    @Body('rowPaginationDto') rowPaginationDto: DatasetViewPaginationDto,
-    @Body('columnPaginationDto') columnPaginationDto: DatasetViewPaginationDto
+    @Body('rowPaginationDto') rowPaginationDto: $DatasetViewPagination,
+    @Body('columnPaginationDto') columnPaginationDto: $DatasetViewPagination
   ) {
     return this.datasetsService.getOnePublicById(datasetId, rowPaginationDto, columnPaginationDto);
   }
@@ -110,8 +105,8 @@ export class DatasetsController {
   getViewById(
     @Param('id') datasetId: string,
     @CurrentUser('id') currentUserId: string,
-    @Body('rowPaginationDto') datasetViewRowPaginationDto: DatasetViewPaginationDto,
-    @Body('columnPaginationDto') datasetViewColumnPaginationDto: DatasetViewPaginationDto
+    @Body('rowPaginationDto') datasetViewRowPaginationDto: $DatasetViewPagination,
+    @Body('columnPaginationDto') datasetViewColumnPaginationDto: $DatasetViewPagination
   ) {
     return this.datasetsService.getViewById(
       datasetId,
@@ -167,7 +162,7 @@ export class DatasetsController {
   editDatasetInfo(
     @Param('id') datasetId: string,
     @CurrentUser('id') managerId: string,
-    @Body('editDatasetInfoDto') editDatasetInfoDto: EditDatasetInfoDto
+    @Body('editDatasetInfoDto') editDatasetInfoDto: $EditDatasetInfo
   ) {
     return this.datasetsService.editDatasetInfo(datasetId, managerId, editDatasetInfoDto);
   }
@@ -179,7 +174,7 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('newPermissionLevel') newPermissionLevel: PermissionLevelDto
+    @Body() newPermissionLevel: $PermissionLevelObj
   ) {
     return this.datasetsService.changeColumnDataPermission(datasetId, columnId, userId, newPermissionLevel.permission);
   }
@@ -191,7 +186,7 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('newPermissionLevel') newPermissionLevel: PermissionLevelDto
+    @Body() newPermissionLevel: $PermissionLevelObj
   ) {
     return this.datasetsService.changeColumnMetadataPermission(
       datasetId,
@@ -219,9 +214,9 @@ export class DatasetsController {
     @Param('id') datasetId: string,
     @Param('columnId') columnId: string,
     @CurrentUser('id') userId: string,
-    @Body('type') columnType: ColumnDataTypeDto
+    @Body() columnType: $ColumnDataType
   ) {
-    return this.datasetsService.mutateColumnType(datasetId, columnId, userId, columnType);
+    return this.datasetsService.mutateColumnType(datasetId, columnId, userId, columnType.kind);
   }
 
   @ApiOperation({ summary: 'Toggle Column Data Nullable' })

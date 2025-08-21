@@ -26,11 +26,11 @@ type User = {
   email: string;
   firstName: string;
   lastName: string;
-  role: UserRole;
+  role: $UserRole;
   verifiedAt: null | number | undefined;
 };
 
-type CreateUser = z.infer<typeof $CreateUser>;
+type $CreateUser = z.infer<typeof $CreateUser>;
 
 const $UpdateUser = $CreateUser.partial();
 
@@ -44,11 +44,11 @@ const $CurrentUser = z.object({
   role: z.optional($UserRole),
   verifiedAt: z.date().nullish()
 });
-type CurrentUser = z.infer<typeof $CurrentUser>;
+type $CurrentUser = z.infer<typeof $CurrentUser>;
 
-type UpdateUser = z.infer<typeof $UpdateUser>;
+type $UpdateUser = z.infer<typeof $UpdateUser>;
 
-type UserRole = z.infer<typeof $UserRole>;
+type $UserRole = z.infer<typeof $UserRole>;
 
-export { $CreateUser, $CurrentUser, $UpdateUser };
-export type { CreateUser, CurrentUser, UpdateUser, User, UserRole };
+export { $CreateUser, $CurrentUser, $UpdateUser, $UserRole };
+export type { User };

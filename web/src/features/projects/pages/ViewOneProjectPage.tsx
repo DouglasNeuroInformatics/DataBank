@@ -1,9 +1,9 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useEffect, useState } from 'react';
 
-import type { DatasetCardProps } from '@databank/core';
+import type { $DatasetCardProps } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useDestructiveAction, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 
@@ -32,9 +32,9 @@ const ViewOneProjectPage = () => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
 
-  const [datasetsInfoArray, setDatasetsInfoArray] = useState<DatasetCardProps[] | null>(null);
+  const [datasetsInfoArray, setDatasetsInfoArray] = useState<$DatasetCardProps[] | null>(null);
 
-  const deleteProject = (projectId: string) => {
+  const deleteProject = useDestructiveAction((projectId: string) => {
     axios
       .delete(`/v1/projects/${projectId}`)
       .then(() => {
@@ -45,7 +45,7 @@ const ViewOneProjectPage = () => {
         void navigate({ to: '/portal/projects' });
       })
       .catch(console.error);
-  };
+  });
 
   useEffect(() => {
     axios
@@ -63,7 +63,7 @@ const ViewOneProjectPage = () => {
       .catch(console.error);
 
     axios
-      .get<DatasetCardProps[]>(`/v1/projects/datasets/${projectId}`)
+      .get<$DatasetCardProps[]>(`/v1/projects/datasets/${projectId}`)
       .then((response) => {
         setDatasetsInfoArray(response.data);
       })
@@ -118,7 +118,7 @@ const ViewOneProjectPage = () => {
                       variant={'secondary'}
                       onClick={() => void navigate({ to: `/portal/projects/add-dataset/${project.id}` })}
                     >
-                      Add Dataset to Current Project
+                      {t('addDatasetToProject')}
                     </Button>
                   </Card.Header>
                   <Card.Content>
@@ -154,7 +154,7 @@ const ViewOneProjectPage = () => {
                   variant={'primary'}
                   onClick={() => void navigate({ to: `/portal/projects/edit-info/${project.id}` })}
                 >
-                  Edit Project Information
+                  {t('editProjectInfo')}
                 </Button>
               </>
             </Card.Footer>

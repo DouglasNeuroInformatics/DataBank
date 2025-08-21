@@ -1,4 +1,5 @@
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
 
 export type ProjectCardProps = {
@@ -25,6 +26,8 @@ export const ProjectCard = ({
   userIds
 }: ProjectCardProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('common');
+
   return (
     <>
       <Card className="my-3">
@@ -34,13 +37,23 @@ export const ProjectCard = ({
         </Card.Header>
         <Card.Content>
           <ul>
-            <li>Project Id: {id}</li>
-            <li>External Id: {externalId}</li>
-            <li>Created at: {createdAt.toString()}</li>
-            <li>Updated at: {updatedAt.toString()}</li>
-            <li>Expiry: {expiry.toString()}</li>
             <li>
-              UserId:{' '}
+              {t('projectId')}: {id}
+            </li>
+            <li>
+              {t('projectExternalId')}: {externalId}
+            </li>
+            <li>
+              {t('createdAt')}: {createdAt.toString()}
+            </li>
+            <li>
+              {t('updatedAt')}: {updatedAt.toString()}
+            </li>
+            <li>
+              {t('projectExpiry')}: {expiry.toString()}
+            </li>
+            <li>
+              {t('userId')}:{' '}
               {userIds.map((element) => {
                 return (
                   <Badge key={`UserId-${element}`} variant={'secondary'}>
@@ -54,11 +67,11 @@ export const ProjectCard = ({
         <Card.Footer className="flex justify-between">
           {isProjectManager ? (
             <Button variant={'primary'} onClick={() => void navigate({ to: `/portal/projects/${id}` })}>
-              Manage Project
+              {t('manageProject')}
             </Button>
           ) : (
             <Button variant={'primary'} onClick={() => void navigate({ to: `/portal/projects/${id}` })}>
-              View Project
+              {t('viewProject')}
             </Button>
           )}
         </Card.Footer>
