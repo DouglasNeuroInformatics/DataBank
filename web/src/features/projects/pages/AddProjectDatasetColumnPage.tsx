@@ -1,5 +1,3 @@
-import { useCallback } from 'react';
-
 import type { $ProjectDataset } from '@databank/core';
 import { Button, Card, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -39,7 +37,7 @@ const AddProjectDatasetColumnPage = () => {
 
   type CurrentStep = 'configColumns' | 'configRows' | 'selectColumns';
 
-  const handlePreviousStep = useCallback((currentStep: CurrentStep) => {
+  const handlePreviousStep = (currentStep: CurrentStep) => {
     switch (currentStep) {
       case 'configColumns':
         setStep('configRows');
@@ -50,16 +48,16 @@ const AddProjectDatasetColumnPage = () => {
       case 'selectColumns':
         console.error('Unable to go to the previous step');
     }
-  }, []);
+  };
 
-  const handlePreviousConfigColumnsPage = useCallback((currentColumnIdIndex: number) => {
+  const handlePreviousConfigColumnsPage = (currentColumnIdIndex: number) => {
     if (currentStep !== 'configColumns') {
       return;
     }
     setCurrentColumnIdIndex(currentColumnIdIndex - pageSize > 0 ? currentColumnIdIndex - pageSize : 0);
-  }, []);
+  };
 
-  const handleNextConfigColumnsPage = useCallback((currentColumnIdIndex: number) => {
+  const handleNextConfigColumnsPage = (currentColumnIdIndex: number) => {
     if (currentStep !== 'configColumns') {
       return;
     }
@@ -68,9 +66,9 @@ const AddProjectDatasetColumnPage = () => {
         ? currentColumnIdIndex + pageSize
         : Object.keys(selectedColumns).length
     );
-  }, []);
+  };
 
-  const getCurrentStep = useCallback((currentStep: CurrentStep): string => {
+  const getCurrentStep = (currentStep: CurrentStep): string => {
     const prefix = 'Current Configuration Step: ';
     switch (currentStep) {
       case 'configColumns':
@@ -80,9 +78,9 @@ const AddProjectDatasetColumnPage = () => {
       case 'selectColumns':
         return prefix + 'Select Project Dataset Columns';
     }
-  }, []);
+  };
 
-  const handleSubmitConfig = useCallback(() => {
+  const handleSubmitConfig = () => {
     // format the request body here and send to the backend
     if (selectedColumnsIdArray.length === 0) {
       notifications.addNotification({
@@ -114,7 +112,7 @@ const AddProjectDatasetColumnPage = () => {
           type: 'error'
         });
       });
-  }, []);
+  };
 
   const selectedColumnsIdArray = Object.keys(selectedColumns);
 
