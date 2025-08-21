@@ -1,5 +1,6 @@
 import { acceptLanguage, AppFactory } from '@douglasneuroinformatics/libnest';
 import { BullModule } from '@nestjs/bullmq';
+import { PrismaClient } from '@prisma/client';
 
 import { AuthModule } from './auth/auth.module.js';
 import { ColumnsModule } from './columns/columns.module.js';
@@ -48,6 +49,9 @@ export default AppFactory.create({
     })
   ],
   prisma: {
+    client: {
+      constructor: PrismaClient
+    },
     dbPrefix: 'data-bank'
   },
   version: '1'

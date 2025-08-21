@@ -1,12 +1,11 @@
 /* eslint-disable perfectionist/sort-objects */
-import { $DatasetLicenses, mostFrequentOpenSourceLicenses } from '@databank/core';
-import type { EditDatasetInfo } from '@databank/core';
+import { $DatasetLicenses, $EditDatasetInfo, mostFrequentOpenSourceLicenses } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { useDebounceLicensesFilter } from '@/hooks/useDebounceLicensesFilter';
 
@@ -34,7 +33,7 @@ const EditDatasetInfoPage = () => {
     VERIFIED: 'VERIFIED'
   };
 
-  const handleSubmit = (data: EditDatasetInfo) => {
+  const handleSubmit = (data: $EditDatasetInfo) => {
     axios
       .patch(`/v1/datasets/info/${params.datasetId}`, {
         editDatasetInfoDto: data

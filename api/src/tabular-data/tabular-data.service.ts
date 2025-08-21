@@ -1,11 +1,11 @@
-import type {
+import {
+  $DatasetViewPagination,
+  $GetColumnViewDto,
   $ProjectDataset,
-  DatasetViewPagination,
-  GetColumnViewDto,
-  ProjectTabularDatasetView,
-  TabularColumnSummary,
-  TabularDatasetView,
-  UpdatePrimaryKeys
+  $ProjectTabularDatasetView,
+  $TabularColumnSummary,
+  $TabularDatasetView,
+  $UpdatePrimaryKeys
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
@@ -119,12 +119,12 @@ export class TabularDataService {
 
   async getProjectDatasetView(
     projectDataset: $ProjectDataset,
-    rowPagination: DatasetViewPagination,
-    columnPagination: DatasetViewPagination
-  ): Promise<ProjectTabularDatasetView> {
+    rowPagination: $DatasetViewPagination,
+    columnPagination: $DatasetViewPagination
+  ): Promise<$ProjectTabularDatasetView> {
     const columnIds: { [key: string]: string } = {};
     const columns: string[] = [];
-    const metaData: { [key: string]: TabularColumnSummary } = {};
+    const metaData: { [key: string]: $TabularColumnSummary } = {};
     const rows: { [key: string]: boolean | number | string }[] = [];
 
     const rowStart = (rowPagination.currentPage - 1) * rowPagination.itemsPerPage;
@@ -133,7 +133,7 @@ export class TabularDataService {
     const columnEnd = columnPagination.currentPage * columnPagination.itemsPerPage;
 
     for (const colId of projectDataset.columnIds.slice(columnStart, columnEnd)) {
-      const getColumnViewDto: GetColumnViewDto = {
+      const getColumnViewDto: $GetColumnViewDto = {
         columnId: colId,
         rowMax: projectDataset.rowConfig.rowMax ?? undefined,
         rowMin: projectDataset.rowConfig.rowMin
@@ -243,7 +243,7 @@ export class TabularDataService {
       }
     }
 
-    const dataView: ProjectTabularDatasetView = {
+    const dataView: $ProjectTabularDatasetView = {
       columnIds,
       columns,
       metadata: metaData,
@@ -258,9 +258,9 @@ export class TabularDataService {
   async getViewById(
     tabularDataId: string,
     userStatus: PermissionLevel,
-    rowPagination: DatasetViewPagination,
-    columnPagination: DatasetViewPagination
-  ): Promise<TabularDatasetView> {
+    rowPagination: $DatasetViewPagination,
+    columnPagination: $DatasetViewPagination
+  ): Promise<$TabularDatasetView> {
     const tabularData = await this.tabularDataModel.findUnique({
       where: {
         id: tabularDataId
@@ -327,7 +327,7 @@ export class TabularDataService {
       rows.push({});
     }
 
-    const metaData: { [key: string]: TabularColumnSummary } = {};
+    const metaData: { [key: string]: $TabularColumnSummary } = {};
 
     for (const col of columnsFromDB) {
       columnIds[col.name] = col._id.$oid;
@@ -447,7 +447,7 @@ export class TabularDataService {
       }
     }
 
-    const dataView: TabularDatasetView = {
+    const dataView: $TabularDatasetView = {
       columnIds,
       columns,
       metadata: metaData,
@@ -461,7 +461,7 @@ export class TabularDataService {
   }
 
   // update Primary keys for a tabular column
-  async updatePrimaryKeys(tabularDataId: string, updatePrimaryKeysDto: UpdatePrimaryKeys) {
+  async updatePrimaryKeys(tabularDataId: string, updatePrimaryKeysDto: $UpdatePrimaryKeys) {
     return await this.tabularDataModel.update({
       data: updatePrimaryKeysDto,
       where: {

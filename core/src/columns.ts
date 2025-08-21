@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const $ColumnType = z.enum(['STRING', 'INT', 'FLOAT', 'ENUM', 'DATETIME']);
-type ColumnType = z.infer<typeof $ColumnType>;
+type $ColumnType = z.infer<typeof $ColumnType>;
 
 const $PermissionLevel = z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']);
-type PermissionLevel = z.infer<typeof $PermissionLevel>;
+type $PermissionLevel = z.infer<typeof $PermissionLevel>;
 
 const $BasicSummary = z.object({
   count: z.number().int().gte(0),
@@ -24,7 +24,7 @@ const $TabularColumnInfo = z
     tabularDataId: z.string()
   })
   .merge($BasicSummary);
-type TabularColumnInfo = z.infer<typeof $TabularColumnInfo>;
+type $TabularColumnInfo = z.infer<typeof $TabularColumnInfo>;
 
 // ---------------------- Column Summaries ---------------------
 const $IntSummary = z.object({
@@ -59,14 +59,14 @@ const $DatetimeSummary = z.object({
 });
 
 const $StringColumn = z.object({
-  kind: z.literal($ColumnType.Enum.STRING),
+  kind: z.literal($ColumnType.enum.STRING),
   stringData: z.array(
     z.object({
       value: z.string().optional()
     })
   )
 });
-type StringColumn = z.infer<typeof $StringColumn>;
+type $StringColumn = z.infer<typeof $StringColumn>;
 const $StringColumnSummary = $StringColumn.omit({ stringData: true });
 
 const $IntColumn = z.object({
@@ -76,12 +76,12 @@ const $IntColumn = z.object({
     })
   ),
   intSummary: $IntSummary,
-  kind: z.literal($ColumnType.Enum.INT)
+  kind: z.literal($ColumnType.enum.INT)
 });
 
 const $IntColumnSummary = $IntColumn.omit({ intData: true });
 
-type IntColumn = z.infer<typeof $IntColumn>;
+type $IntColumn = z.infer<typeof $IntColumn>;
 
 const $FloatColumn = z.object({
   floatData: z.array(
@@ -90,9 +90,9 @@ const $FloatColumn = z.object({
     })
   ),
   floatSummary: $FloatSummary,
-  kind: z.literal($ColumnType.Enum.FLOAT)
+  kind: z.literal($ColumnType.enum.FLOAT)
 });
-type FloatColumn = z.infer<typeof $FloatColumn>;
+type $FloatColumn = z.infer<typeof $FloatColumn>;
 const $FloatColumnSummary = $FloatColumn.omit({ floatData: true });
 
 const $EnumColumn = z.object({
@@ -102,9 +102,9 @@ const $EnumColumn = z.object({
     })
   ),
   enumSummary: $EnumSummaryFromDB,
-  kind: z.literal($ColumnType.Enum.ENUM)
+  kind: z.literal($ColumnType.enum.ENUM)
 });
-type EnumColumn = z.infer<typeof $EnumColumn>;
+type $EnumColumn = z.infer<typeof $EnumColumn>;
 const $EnumColumnSummary = $EnumColumn.omit({ enumData: true });
 
 const $DatetimeColumn = z.object({
@@ -114,16 +114,16 @@ const $DatetimeColumn = z.object({
     })
   ),
   datetimeSummary: $DatetimeSummary,
-  kind: z.literal($ColumnType.Enum.DATETIME)
+  kind: z.literal($ColumnType.enum.DATETIME)
 });
-type DatetimeColumn = z.infer<typeof $DatetimeColumn>;
+type $DatetimeColumn = z.infer<typeof $DatetimeColumn>;
 
 const $DatetimeColumnSummary = $DatetimeColumn.omit({ datetimeData: true });
 
 const $TabularColumn = z
   .discriminatedUnion('kind', [$DatetimeColumn, $IntColumn, $StringColumn, $FloatColumn, $EnumColumn])
   .and($TabularColumnInfo);
-type TabularColumn = z.infer<typeof $TabularColumn>;
+type $TabularColumn = z.infer<typeof $TabularColumn>;
 
 const $TabularColumnSummary = z
   .discriminatedUnion('kind', [
@@ -134,7 +134,7 @@ const $TabularColumnSummary = z
     $StringColumnSummary
   ])
   .and($BasicSummary);
-type TabularColumnSummary = z.infer<typeof $TabularColumnSummary>;
+type $TabularColumnSummary = z.infer<typeof $TabularColumnSummary>;
 
 const $RawQueryColumn = z.object({
   __modelName: z.literal('TabularColumn'),
@@ -163,7 +163,7 @@ const $RawQueryColumn = z.object({
   summaryPermission: $PermissionLevel,
   tabularDataId: z.string()
 });
-type RawQueryColumn = z.infer<typeof $RawQueryColumn>;
+type $RawQueryColumn = z.infer<typeof $RawQueryColumn>;
 
 export {
   $ColumnType,
@@ -177,18 +177,4 @@ export {
   $TabularColumn,
   $TabularColumnInfo,
   $TabularColumnSummary
-};
-
-export type {
-  ColumnType,
-  DatetimeColumn,
-  EnumColumn,
-  FloatColumn,
-  IntColumn,
-  PermissionLevel,
-  RawQueryColumn,
-  StringColumn,
-  TabularColumn,
-  TabularColumnInfo,
-  TabularColumnSummary
 };

@@ -1,10 +1,10 @@
-import type { LoginCredentials } from '@databank/core';
+import { $LoginCredentials } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { z } from 'zod';
 
 type LoginFormProps = {
-  onSubmit: (credentials: LoginCredentials) => void;
+  onSubmit: (credentials: $LoginCredentials) => void;
 };
 
 export const LoginForm = ({ onSubmit }: LoginFormProps) => {

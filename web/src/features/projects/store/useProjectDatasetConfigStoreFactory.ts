@@ -1,23 +1,23 @@
-import type {
-  ProjectAddDatasetConfig,
-  ProjectDatasetColumnConfig,
-  ProjectDatasetConfigStep,
-  ProjectDatasetRowConfig,
-  ProjectDatasetSelectedColumn
+import {
+  $ProjectAddDatasetConfig,
+  $ProjectDatasetColumnConfig,
+  $ProjectDatasetConfigStep,
+  $ProjectDatasetRowConfig,
+  $ProjectDatasetSelectedColumn
 } from '@databank/core';
 import { persist } from 'zustand/middleware';
 import { createStore } from 'zustand/vanilla';
 
-type SelectedColumnsRecord = { [key: string]: ProjectDatasetSelectedColumn };
+type SelectedColumnsRecord = { [key: string]: $ProjectDatasetSelectedColumn };
 
-type ProjectDatasetConfigStore = ProjectAddDatasetConfig & {
+type ProjectDatasetConfigStore = $ProjectAddDatasetConfig & {
   reset: () => void;
-  setColumnsConfig: (id: string, config: ProjectDatasetColumnConfig) => void;
+  setColumnsConfig: (id: string, config: $ProjectDatasetColumnConfig) => void;
   setCurrentColumnIdIndex: (index: number) => void;
   setPageSize: (size: number) => void;
-  setRowConfig: (rowConfig: ProjectDatasetRowConfig) => void;
+  setRowConfig: (rowConfig: $ProjectDatasetRowConfig) => void;
   setSelectedColumns: (selectedColumns: SelectedColumnsRecord) => void;
-  setStep: (step: ProjectDatasetConfigStep) => void;
+  setStep: (step: $ProjectDatasetConfigStep) => void;
 };
 
 export const useProjectDatasetConfigStoreFactory = (projectId: string, datasetId: string) => {

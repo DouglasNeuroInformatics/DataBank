@@ -9,7 +9,7 @@ import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
 import { match } from 'ts-pattern';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { LoadingFallback } from '@/components';
 import { useDebounceLicensesFilter } from '@/hooks/useDebounceLicensesFilter';

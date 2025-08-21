@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import type { ProjectDatasetColumnConfig } from '@databank/core';
+import { $ProjectDatasetColumnConfig } from '@databank/core';
 import type FormTypes from '@douglasneuroinformatics/libui-form-types';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { z } from 'zod';
@@ -11,7 +11,7 @@ type ConfigProjectDatasetColumnsPageProps = {
   pageSize: number;
   projectId: string;
   selectedColumns: SelectedColumnsRecord;
-  setColumnsConfig: (colId: string, colConfig: ProjectDatasetColumnConfig) => void;
+  setColumnsConfig: (colId: string, colConfig: $ProjectDatasetColumnConfig) => void;
   setPageSize: (newPageSize: number) => void;
 };
 
@@ -122,7 +122,7 @@ export const ConfigProjectDatasetColumnsPage = ({
     for (const columnId in selectedColumns) {
       if (data[columnId]) {
         // if data[columnId] means that the user selected to add config to the column
-        const currentColumnConfig: ProjectDatasetColumnConfig = {
+        const currentColumnConfig: $ProjectDatasetColumnConfig = {
           hash: null,
           trim: null
         };

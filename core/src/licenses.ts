@@ -1,5 +1,5 @@
 import { licenses } from '@douglasneuroinformatics/liblicense';
-import z from 'zod';
+import z from 'zod/v4';
 
 const licensesArray = Array.from(licenses);
 
@@ -43,6 +43,7 @@ const mostFrequentOpenSourceLicenses = Object.fromEntries(
 );
 
 const $DatasetLicenses = z.enum(Object.keys(licensesObjects) as [string, ...string[]]);
+type $DatasetLicenses = z.infer<typeof $DatasetLicenses>;
 
 export {
   $DatasetLicenses,

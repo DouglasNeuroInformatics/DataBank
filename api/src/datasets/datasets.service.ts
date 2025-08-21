@@ -2,16 +2,19 @@ import fs from 'fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
 
-import type {
+import {
+  $ColumnType,
+  $CreateDataset,
+  $DatasetStatus,
+  $DatasetViewPagination,
+  $EditDatasetInfo,
+  $ProjectColumnSummary,
   $ProjectDataset,
-  ColumnType,
-  DatasetCardProps,
-  DatasetStatus,
-  ProjectColumnSummary,
-  TabularColumnSummary,
-  TabularDataDownloadFormat,
-  TabularDatasetView
+  $TabularColumnSummary,
+  $TabularDataDownloadFormat,
+  $TabularDatasetView
 } from '@databank/core';
+import type { $DatasetCardProps } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -25,7 +28,6 @@ import { TabularDataService } from '@/tabular-data/tabular-data.service.js';
 import { UsersService } from '@/users/users.service.js';
 
 import { FileUploadQueueName } from './datasets.constants.js';
-import { CreateDatasetDto, DatasetViewPaginationDto, EditDatasetInfoDto } from './dto/datasets.dto.js';
 
 @Injectable()
 export class DatasetsService {
@@ -142,11 +144,7 @@ export class DatasetsService {
   //   return await this.tabularDataService.changeTabularColumnsMetadataPermission(datasetId, permissionLevel);
   // }
 
-  async createDataset(
-    createTabularDatasetDto: CreateDatasetDto,
-    file: Express.Multer.File | string,
-    managerId: string
-  ) {
+  async createDataset(createTabularDatasetDto: $CreateDataset, file: Express.Multer.File | string, managerId: string) {
     const currUser = await this.usersService.findById(managerId);
     if (!currUser.datasetId) {
       throw new NotFoundException('User Not Found!');
@@ -288,7 +286,7 @@ export class DatasetsService {
     return await this.prisma.$transaction([...updateManagers, deleteTargetDataset]);
   }
 
-  async downloadDataById(datasetId: string, currentUserId: string, format: TabularDataDownloadFormat) {
+  async downloadDataById(datasetId: string, currentUserId: string, format: $TabularDataDownloadFormat) {
     const userStatus = await this.getUserStatusById(currentUserId, datasetId);
 
     const dataset = await this.datasetModel.findUnique({
@@ -335,7 +333,7 @@ export class DatasetsService {
     return this.formatDataDownloadString(format, datasetView);
   }
 
-  async downloadMetadataById(datasetId: string, currentUserId: string, format: TabularDataDownloadFormat) {
+  async downloadMetadataById(datasetId: string, currentUserId: string, format: $TabularDataDownloadFormat) {
     const userStatus = await this.getUserStatusById(currentUserId, datasetId);
 
     const dataset = await this.datasetModel.findUnique({
@@ -382,7 +380,7 @@ export class DatasetsService {
     return this.formatMetadataDownloadString(format, datasetView);
   }
 
-  async downloadPublicDataById(datasetId: string, format: TabularDataDownloadFormat) {
+  async downloadPublicDataById(datasetId: string, format: $TabularDataDownloadFormat) {
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: {
@@ -427,7 +425,7 @@ export class DatasetsService {
     return this.formatDataDownloadString(format, datasetView);
   }
 
-  async downloadPublicMetadataById(datasetId: string, format: TabularDataDownloadFormat) {
+  async downloadPublicMetadataById(datasetId: string, format: $TabularDataDownloadFormat) {
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: {
@@ -472,7 +470,7 @@ export class DatasetsService {
     return this.formatMetadataDownloadString(format, datasetView);
   }
 
-  async editDatasetInfo(datasetId: string, managerId: string, editDatasetInfoDto: EditDatasetInfoDto) {
+  async editDatasetInfo(datasetId: string, managerId: string, editDatasetInfoDto: $EditDatasetInfo) {
     const dataset = await this.canModifyDataset(datasetId, managerId);
 
     return await this.datasetModel.update({
@@ -481,7 +479,7 @@ export class DatasetsService {
     });
   }
 
-  formatMetadataDownloadString(format: TabularDataDownloadFormat, datasetView: TabularDatasetView) {
+  formatMetadataDownloadString(format: $TabularDataDownloadFormat, datasetView: $TabularDatasetView) {
     const delimiter = format === 'CSV' ? ',' : '\t';
 
     const metaDataHeader = [
@@ -593,7 +591,7 @@ export class DatasetsService {
       throw new NotFoundException(`No colums are found with dataset ID ${datasetId}`);
     }
 
-    const projectColumn: TabularColumnSummary[] = [];
+    const projectColumn: $TabularColumnSummary[] = [];
     dataset.tabularData.columns.forEach((column) => {
       const currProjectColumn = this.formatProjectColumn(column);
       projectColumn.push(currProjectColumn);
@@ -621,8 +619,8 @@ export class DatasetsService {
 
   async getOnePublicById(
     datasetId: string,
-    rowPaginationDto: DatasetViewPaginationDto,
-    columnPaginationDto: DatasetViewPaginationDto
+    rowPaginationDto: $DatasetViewPagination,
+    columnPaginationDto: $DatasetViewPagination
   ) {
     const dataset = await this.datasetModel.findUnique({
       include: {
@@ -681,8 +679,8 @@ export class DatasetsService {
 
   async getProjectDatasetViewById(
     projectDataset: $ProjectDataset,
-    rowPagination: DatasetViewPaginationDto,
-    columnPagination: DatasetViewPaginationDto
+    rowPagination: $DatasetViewPagination,
+    columnPagination: $DatasetViewPagination
   ) {
     const dataset = await this.datasetModel.findUnique({
       include: {
@@ -728,7 +726,7 @@ export class DatasetsService {
       }
     });
 
-    const resDatasetsInfo: DatasetCardProps[] = [];
+    const resDatasetsInfo: $DatasetCardProps[] = [];
     publicDatasets.forEach((publicDataset) => {
       resDatasetsInfo.push({
         createdAt: publicDataset.createdAt,
@@ -774,8 +772,8 @@ export class DatasetsService {
   async getViewById(
     datasetId: string,
     currentUserId: string,
-    rowPaginationDto: DatasetViewPaginationDto,
-    columnPaginationDto: DatasetViewPaginationDto
+    rowPaginationDto: $DatasetViewPagination,
+    columnPaginationDto: $DatasetViewPagination
   ) {
     const dataset = await this.datasetModel.findUnique({
       include: {
@@ -806,7 +804,7 @@ export class DatasetsService {
       throw new UnprocessableEntityException('The dataset is not ready for share!');
     }
 
-    let datasetView: TabularDatasetView;
+    let datasetView: $TabularDatasetView;
     const emptyDatasetView = {
       columnIds: {},
       columns: [],
@@ -872,7 +870,7 @@ export class DatasetsService {
     };
   }
 
-  async mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: ColumnType) {
+  async mutateColumnType(datasetId: string, columnId: string, userId: string, columnType: $ColumnType) {
     const dataset = await this.canModifyDataset(datasetId, userId);
 
     if (!dataset.tabularData) {
@@ -938,7 +936,7 @@ export class DatasetsService {
     return this.columnService.toggleColumnNullable(columnId);
   }
 
-  async updateDatasetStatus(datasetId: string, status: DatasetStatus) {
+  async updateDatasetStatus(datasetId: string, status: $DatasetStatus) {
     return await this.datasetModel.update({
       data: {
         status: status
@@ -949,7 +947,7 @@ export class DatasetsService {
     });
   }
 
-  private formatDataDownloadString(format: TabularDataDownloadFormat, datasetView: TabularDatasetView) {
+  private formatDataDownloadString(format: $TabularDataDownloadFormat, datasetView: $TabularDatasetView) {
     const delimiter = format === 'CSV' ? ',' : '\t';
     let resultString = datasetView.columns.join(delimiter) + '\n';
     for (const row of datasetView.rows) {
@@ -959,7 +957,7 @@ export class DatasetsService {
     return resultString;
   }
 
-  private formatMetadataBodyString(delimiter: ',' | '\t', columnName: string, datasetMetadata: TabularColumnSummary) {
+  private formatMetadataBodyString(delimiter: ',' | '\t', columnName: string, datasetMetadata: $TabularColumnSummary) {
     const metadata_row = [];
     switch (datasetMetadata.kind) {
       case 'DATETIME':
@@ -1076,7 +1074,7 @@ export class DatasetsService {
       TabularColumn,
       'dataPermission' | 'id' | 'kind' | 'name' | 'nullable' | 'summary' | 'summaryPermission'
     >
-  ): ProjectColumnSummary {
+  ): $ProjectColumnSummary {
     switch (column.kind) {
       case 'DATETIME':
         return {

@@ -1,4 +1,4 @@
-import type { DatasetCardProps } from '@databank/core';
+import type { $DatasetCardProps } from '@databank/core';
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
@@ -16,7 +16,7 @@ const DatasetCard = ({
   name,
   status,
   updatedAt
-}: DatasetCardProps) => {
+}: $DatasetCardProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   const deleteDataset = useDeleteDataset();

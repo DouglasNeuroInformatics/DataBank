@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { $TabularColumn } from './columns';
 
 const $TabularDataDownloadFormat = z.enum(['CSV', 'TSV']);
-type TabularDataDownloadFormat = z.infer<typeof $TabularDataDownloadFormat>;
+type $TabularDataDownloadFormat = z.infer<typeof $TabularDataDownloadFormat>;
 
 const $TabularData = z.object({
   columns: $TabularColumn.array(),
@@ -11,13 +11,12 @@ const $TabularData = z.object({
   id: z.string(),
   primaryKeys: z.string().array()
 });
-type TabularData = z.infer<typeof $TabularData>;
+type $TabularData = z.infer<typeof $TabularData>;
 
 const $UpdatePrimaryKeys = z.object({
   primaryKeys: z.string().array()
 });
 
-type UpdatePrimaryKeys = z.infer<typeof $UpdatePrimaryKeys>;
+type $UpdatePrimaryKeys = z.infer<typeof $UpdatePrimaryKeys>;
 
 export { $TabularColumn, $TabularData, $TabularDataDownloadFormat, $UpdatePrimaryKeys };
-export type { TabularData, TabularDataDownloadFormat, UpdatePrimaryKeys };

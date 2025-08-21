@@ -1,9 +1,9 @@
-import type { ProjectColumnSummary } from '@databank/core';
+import { $ProjectColumnSummary } from '@databank/core';
 import { Button, Checkbox } from '@douglasneuroinformatics/libui/components';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 
-const formatSummary = (column: ProjectColumnSummary): string => {
+const formatSummary = (column: $ProjectColumnSummary): string => {
   switch (column.kind) {
     case 'DATETIME':
       return Object.entries(column.datetimeSummary)
@@ -26,7 +26,7 @@ const formatSummary = (column: ProjectColumnSummary): string => {
   }
 };
 
-export const projectColumnDefs: ColumnDef<ProjectColumnSummary>[] = [
+export const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
   {
     accessorKey: 'select',
     cell: ({ row }) => (

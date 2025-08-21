@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { ProjectColumnSummary, ProjectDatasetConfigStep } from '@databank/core';
+import { $ProjectColumnSummary, $ProjectDatasetConfigStep } from '@databank/core';
 import axios from 'axios';
 
 import { LoadingFallback } from '@/components';
@@ -15,7 +15,7 @@ type SelectProjectDatasetColumnsPagePros = {
   projectId: string;
   reset: () => void;
   setSelectedColumns: (selectedColumnIds: SelectedColumnsRecord) => void;
-  setStep: (step: ProjectDatasetConfigStep) => void;
+  setStep: (step: $ProjectDatasetConfigStep) => void;
 };
 
 export const SelectProjectDatasetColumnsPage = ({
@@ -23,11 +23,11 @@ export const SelectProjectDatasetColumnsPage = ({
   setSelectedColumns,
   setStep
 }: SelectProjectDatasetColumnsPagePros) => {
-  const [data, setData] = useState<ProjectColumnSummary[]>([]);
+  const [data, setData] = useState<$ProjectColumnSummary[]>([]);
 
   useEffect(() => {
     axios
-      .get<ProjectColumnSummary[]>(`/v1/datasets/columns/${datasetId}`)
+      .get<$ProjectColumnSummary[]>(`/v1/datasets/columns/${datasetId}`)
       .then((response) => {
         setData(response.data);
       })

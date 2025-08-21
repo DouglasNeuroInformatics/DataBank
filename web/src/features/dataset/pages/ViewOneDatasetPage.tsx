@@ -1,8 +1,8 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useState } from 'react';
 
-import { licensesObjects } from '@databank/core';
-import type { DatasetViewPagination, TabularDataset } from '@databank/core';
+import { $DatasetViewPagination, licensesObjects } from '@databank/core';
+import type { $TabularDataset } from '@databank/core';
 import { capitalize } from '@douglasneuroinformatics/libjs';
 import { Button, Card, DropdownMenu, Heading, HoverCard } from '@douglasneuroinformatics/libui/components';
 import {
@@ -40,19 +40,19 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
   const downloadDataUrl = isPublic ? `/v1/datasets/public/download-data/` : `/v1/datasets/download-data/`;
   const downloadMetaDataUrl = isPublic ? `/v1/datasets/public/download-metadata/` : `/v1/datasets/download-metadata/`;
 
-  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPagination>({
+  const [columnPaginationDto, setColumnPaginationDto] = useState<$DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });
 
-  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPagination>({
+  const [rowPaginationDto, setRowPaginationDto] = useState<$DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });
 
   const datasetQuery = useQuery({
     queryFn: async () => {
-      const response = await axios.post<TabularDataset>(dataQueryUrl, {
+      const response = await axios.post<$TabularDataset>(dataQueryUrl, {
         columnPaginationDto,
         rowPaginationDto
       });
@@ -64,7 +64,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
   const dataset = datasetQuery.data;
   const isManager = currentUser ? Boolean(dataset?.managerIds.includes(currentUser.id)) : false;
 
-  const handleDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
+  const handleDataDownload = (format: 'CSV' | 'TSV', data: $TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     axios
       .get<string>(downloadDataUrl + `${data.id}/${format}`)
@@ -74,7 +74,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
       .catch(console.error);
   };
 
-  const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: TabularDataset) => {
+  const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: $TabularDataset) => {
     const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     axios
       .get<string>(downloadMetaDataUrl + `${data.id}/${format}`)

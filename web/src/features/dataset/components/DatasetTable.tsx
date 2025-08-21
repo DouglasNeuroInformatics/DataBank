@@ -1,18 +1,19 @@
-import type { ColumnType, PermissionLevel, TabularDataset } from '@databank/core';
+import { $ColumnType, $PermissionLevel } from '@databank/core';
+import type { $TabularDataset } from '@databank/core';
 import { DropdownMenu, Table } from '@douglasneuroinformatics/libui/components';
 import { useDestructiveAction, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-type DatasetTableProps = Omit<TabularDataset, 'permission'> & { isManager: boolean; isProject: boolean };
+type DatasetTableProps = Omit<$TabularDataset, 'permission'> & { isManager: boolean; isProject: boolean };
 
 export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const { t } = useTranslation('common');
   const notifications = useNotificationsStore();
   const queryClient = useQueryClient();
 
-  const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
+  const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: $PermissionLevel) => {
     await axios.patch(`/v1/datasets/column-metadata-permission/${tabularDataset.id}/${columnId}`, {
       permission: newPermissionLevel
     });
@@ -23,7 +24,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     });
   };
 
-  const handleSetColumnDataPermissionLevel = async (columnId: string, newPermissionLevel: PermissionLevel) => {
+  const handleSetColumnDataPermissionLevel = async (columnId: string, newPermissionLevel: $PermissionLevel) => {
     await axios.patch(`/v1/datasets/column-data-permission/${tabularDataset.id}/${columnId}`, {
       permission: newPermissionLevel
     });
@@ -43,7 +44,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     });
   };
 
-  const handleChangeColumnType = async (columnId: string, type: ColumnType) => {
+  const handleChangeColumnType = async (columnId: string, type: $ColumnType) => {
     await axios.patch(`/v1/datasets/column-type/${tabularDataset.id}/${columnId}`, { kind: type });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
     notifications.addNotification({

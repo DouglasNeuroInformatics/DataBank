@@ -1,4 +1,4 @@
-import type { SetupOptions } from '@databank/core';
+import { $SetupOptions } from '@databank/core';
 import { getModelToken } from '@douglasneuroinformatics/libnest';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { MockFactory } from '@douglasneuroinformatics/libnest/testing';
@@ -56,7 +56,7 @@ describe('SetupService', () => {
   });
 
   describe('initApp', () => {
-    const setupOptions: SetupOptions = {
+    const setupOptions: $SetupOptions = {
       admin: {
         email: 'jane.doe@example.org',
         firstName: 'Jane',

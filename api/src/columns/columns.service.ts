@@ -1,9 +1,9 @@
-import type {
-  ColumnType,
-  DatasetViewPagination,
-  GetColumnViewDto,
-  PermissionLevel,
-  RawQueryColumn
+import {
+  $ColumnType,
+  $DatasetViewPagination,
+  $GetColumnViewDto,
+  $PermissionLevel,
+  $RawQueryColumn
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
@@ -37,7 +37,7 @@ export class ColumnsService {
     @InjectPrismaClient() private readonly prisma: PrismaClient
   ) {}
 
-  async changeColumnDataPermission(columnId: string, permissionLevel: PermissionLevel) {
+  async changeColumnDataPermission(columnId: string, permissionLevel: $PermissionLevel) {
     return await this.columnModel.update({
       data: {
         dataPermission: permissionLevel
@@ -48,7 +48,7 @@ export class ColumnsService {
     });
   }
 
-  async changeColumnMetadataPermission(columnId: string, permissionLevel: PermissionLevel) {
+  async changeColumnMetadataPermission(columnId: string, permissionLevel: $PermissionLevel) {
     return await this.columnModel.update({
       data: {
         summaryPermission: permissionLevel
@@ -217,8 +217,8 @@ export class ColumnsService {
 
   async findManyByTabularDataId(
     tabularDataId: string,
-    columnPagination: DatasetViewPagination
-  ): Promise<RawQueryColumn[]> {
+    columnPagination: $DatasetViewPagination
+  ): Promise<$RawQueryColumn[]> {
     const columns = await this.columnModel.aggregateRaw({
       // Pipeline stages:
       // 1. $match: Filter columns by tabularDataId
@@ -236,7 +236,7 @@ export class ColumnsService {
       throw new NotFoundException('No columns found with the given tabular data id!');
     }
 
-    return columns as unknown as RawQueryColumn[];
+    return columns as unknown as $RawQueryColumn[];
   }
 
   async getById(columnId: string) {
@@ -285,7 +285,7 @@ export class ColumnsService {
     });
   }
 
-  async getProjectColumnView(getColumnViewDto: GetColumnViewDto): Promise<ProjectColumnView> {
+  async getProjectColumnView(getColumnViewDto: $GetColumnViewDto): Promise<ProjectColumnView> {
     const projectColumn = await this.columnModel.findUnique({
       where: {
         id: getColumnViewDto.columnId
@@ -588,7 +588,7 @@ export class ColumnsService {
     return projectColumn;
   }
 
-  async mutateColumnType(columnId: string, colType: ColumnType) {
+  async mutateColumnType(columnId: string, colType: $ColumnType) {
     const col = await this.getById(columnId);
     if (col.kind === colType) {
       throw new ConflictException(
@@ -854,7 +854,7 @@ export class ColumnsService {
   //   });
   // }
 
-  private calculateSummaryOnSeries(colType: ColumnType, currSeries: Series) {
+  private calculateSummaryOnSeries(colType: $ColumnType, currSeries: Series) {
     switch (colType) {
       case 'DATETIME':
         return {

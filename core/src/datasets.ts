@@ -1,21 +1,19 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { $PermissionLevel, $TabularColumnSummary } from './columns';
 import { $DatasetLicenses } from './licenses';
-
-import type { PermissionLevel } from './columns';
 
 const $DatasetViewPagination = z.object({
   currentPage: z.number(),
   itemsPerPage: z.number()
 });
-type DatasetViewPagination = z.infer<typeof $DatasetViewPagination>;
+type $DatasetViewPagination = z.infer<typeof $DatasetViewPagination>;
 
 const $DatasetType = z.enum(['BASE', 'BINARY', 'TABULAR']);
-type DatasetType = z.infer<typeof $DatasetType>;
+type $DatasetType = z.infer<typeof $DatasetType>;
 
 const $DatasetStatus = z.enum(['Fail', 'Processing', 'Success']);
-type DatasetStatus = z.infer<typeof $DatasetStatus>;
+type $DatasetStatus = z.infer<typeof $DatasetStatus>;
 
 const $CreateDataset = z.object({
   datasetType: $DatasetType,
@@ -27,7 +25,7 @@ const $CreateDataset = z.object({
   permission: $PermissionLevel,
   primaryKeys: z.string().optional()
 });
-type CreateDataset = z.infer<typeof $CreateDataset>;
+type $CreateDataset = z.infer<typeof $CreateDataset>;
 
 const $EditDatasetInfo = z.object({
   description: z.string().optional(),
@@ -35,7 +33,7 @@ const $EditDatasetInfo = z.object({
   name: z.string().optional(),
   permission: $PermissionLevel.optional()
 });
-type EditDatasetInfo = z.infer<typeof $EditDatasetInfo>;
+type $EditDatasetInfo = z.infer<typeof $EditDatasetInfo>;
 
 const $DatasetInfo = z.object({
   createdAt: z.coerce.date(),
@@ -50,30 +48,30 @@ const $DatasetInfo = z.object({
   status: $DatasetStatus,
   updatedAt: z.coerce.date()
 });
-type DatasetInfo = z.infer<typeof $DatasetInfo>;
+type $DatasetInfo = z.infer<typeof $DatasetInfo>;
 
-type DatasetCardProps = DatasetInfo & { isManager: boolean; isPublic: boolean };
+type $DatasetCardProps = $DatasetInfo & { isManager: boolean; isPublic: boolean };
 
-const $TabularDataRow = z.record(z.union([z.string(), z.number(), z.boolean(), z.null()]));
-type TabularDataRow = z.infer<typeof $TabularDataRow>;
+const $TabularDataRow = z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]));
+type $TabularDataRow = z.infer<typeof $TabularDataRow>;
 
 const $TabularDatasetView = z.object({
-  columnIds: z.record(z.string()),
+  columnIds: z.record(z.string(), z.string()),
   columns: z.string().array(),
-  metadata: z.record($TabularColumnSummary),
+  metadata: z.record(z.string(), $TabularColumnSummary),
   primaryKeys: z.string().array(),
   rows: $TabularDataRow.array(),
   totalNumberOfColumns: z.number().min(0),
   totalNumberOfRows: z.number().min(0)
 });
-type TabularDatasetView = z.infer<typeof $TabularDatasetView>;
+type $TabularDatasetView = z.infer<typeof $TabularDatasetView>;
 
 const $ProjectTabularDatasetView = $TabularDatasetView.omit({
   primaryKeys: true
 });
-type ProjectTabularDatasetView = z.infer<typeof $ProjectTabularDatasetView>;
+type $ProjectTabularDatasetView = z.infer<typeof $ProjectTabularDatasetView>;
 
-type TabularDataset = DatasetInfo & TabularDatasetView;
+type $TabularDataset = $DatasetInfo & $TabularDatasetView;
 
 export {
   $CreateDataset,
@@ -83,20 +81,8 @@ export {
   $DatasetViewPagination,
   $EditDatasetInfo,
   $PermissionLevel,
-  $ProjectTabularDatasetView
+  $ProjectTabularDatasetView,
+  $TabularDatasetView
 };
 
-export type {
-  CreateDataset,
-  DatasetCardProps,
-  DatasetInfo,
-  DatasetStatus,
-  DatasetType,
-  DatasetViewPagination,
-  EditDatasetInfo,
-  PermissionLevel,
-  ProjectTabularDatasetView,
-  TabularDataRow,
-  TabularDataset,
-  TabularDatasetView
-};
+export type { $DatasetCardProps, $TabularDataset };

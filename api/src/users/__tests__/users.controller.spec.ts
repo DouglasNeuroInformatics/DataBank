@@ -1,4 +1,4 @@
-import type { CreateUser } from '@databank/core';
+import { $CreateUser } from '@databank/core';
 import { MockFactory } from '@douglasneuroinformatics/libnest/testing';
 import type { MockedInstance } from '@douglasneuroinformatics/libnest/testing';
 import { Test } from '@nestjs/testing';
@@ -27,7 +27,7 @@ describe('UsersController', () => {
   });
 
   describe('createUser', () => {
-    let createUserDto: CreateUser;
+    let createUserDto: $CreateUser;
 
     beforeEach(() => {
       createUserDto = createUserDtoStubFactory();

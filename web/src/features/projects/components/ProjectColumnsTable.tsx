@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { ProjectDatasetConfigStep, ProjectDatasetSelectedColumn } from '@databank/core';
+import { $ProjectDatasetConfigStep, $ProjectDatasetSelectedColumn } from '@databank/core';
 import { Button, SearchBar, Table } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import {
@@ -15,14 +15,14 @@ import type { ColumnDef, ColumnFiltersState, SortingState } from '@tanstack/reac
 
 import type { SelectedColumnsRecord } from '../store/useProjectDatasetConfigStoreFactory';
 
-type DataTableProps<TData extends ProjectDatasetSelectedColumn & { id: string }, TValue> = {
+type DataTableProps<TData extends $ProjectDatasetSelectedColumn & { id: string }, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   setSelectedColumns: (selectedColumns: SelectedColumnsRecord) => void;
-  setStep: (step: ProjectDatasetConfigStep) => void;
+  setStep: (step: $ProjectDatasetConfigStep) => void;
 };
 
-export const ProjectColumnsTable = <TData extends ProjectDatasetSelectedColumn & { id: string }, TValue>({
+export const ProjectColumnsTable = <TData extends $ProjectDatasetSelectedColumn & { id: string }, TValue>({
   columns,
   data,
   setSelectedColumns,

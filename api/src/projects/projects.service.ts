@@ -1,10 +1,12 @@
-import type {
-  DatasetInfo,
-  DatasetViewPagination,
-  ProjectDatasetColumnConfig,
-  TabularDataDownloadFormat
+import {
+  $CreateProject,
+  $DatasetInfo,
+  $DatasetViewPagination,
+  $ProjectDataset,
+  $ProjectDatasetColumnConfig,
+  $TabularDataDownloadFormat,
+  $UpdateProject
 } from '@databank/core';
-import { $CreateProject, $ProjectDataset, $UpdateProject } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
@@ -170,7 +172,7 @@ export class ProjectsService {
     projectId: string,
     datasetId: string,
     currentUserId: string,
-    format: TabularDataDownloadFormat
+    format: $TabularDataDownloadFormat
   ) {
     const project = await this.getProjectById(currentUserId, projectId);
     const projectDataset = project.datasets.find((dataset) => dataset.datasetId === datasetId);
@@ -245,8 +247,8 @@ export class ProjectsService {
   async getOneProjectDatasetView(
     projectId: string,
     datasetId: string,
-    rowPaginationDto: DatasetViewPagination,
-    columnPaginationDto: DatasetViewPagination
+    rowPaginationDto: $DatasetViewPagination,
+    columnPaginationDto: $DatasetViewPagination
   ) {
     // get project
     const project = await this.projectModel.findUnique({
@@ -292,7 +294,7 @@ export class ProjectsService {
     return project;
   }
 
-  async getProjectDatasets(projectId: string): Promise<DatasetInfo[]> {
+  async getProjectDatasets(projectId: string): Promise<$DatasetInfo[]> {
     const project = await this.projectModel.findUnique({
       where: {
         id: projectId
@@ -301,7 +303,7 @@ export class ProjectsService {
     if (!project) {
       throw new NotFoundException(`Project with id ${projectId} cannot be found`);
     }
-    const projectDatasetsInfo: DatasetInfo[] = [];
+    const projectDatasetsInfo: $DatasetInfo[] = [];
     const datasetIdToRemove: string[] = [];
     for (const projectDataset of project.datasets) {
       const projectDatasetInfo = await this.datasetService.getById(projectDataset.datasetId);
@@ -404,7 +406,7 @@ export class ProjectsService {
 
   private formatProjectDataset(projectDatasetData: ProjectDataset): $ProjectDataset {
     const columnConfigs: {
-      [key: string]: ProjectDatasetColumnConfig;
+      [key: string]: $ProjectDatasetColumnConfig;
     } = {};
     for (const colConfig of projectDatasetData.columnConfigurations) {
       columnConfigs[colConfig.columnId] = {

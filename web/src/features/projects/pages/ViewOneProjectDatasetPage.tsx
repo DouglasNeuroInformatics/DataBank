@@ -1,8 +1,8 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useEffect, useState } from 'react';
 
-import { licensesObjects } from '@databank/core';
-import type { DatasetViewPagination, TabularDataset } from '@databank/core';
+import { $DatasetViewPagination, licensesObjects } from '@databank/core';
+import type { $TabularDataset } from '@databank/core';
 import { Button, Card, DropdownMenu, Heading, HoverCard } from '@douglasneuroinformatics/libui/components';
 import {
   useDestructiveAction,
@@ -25,16 +25,16 @@ const ViewOneProjectDatasetPage = () => {
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
   const params = useParams({ strict: false });
-  const [dataset, setDataset] = useState<null | TabularDataset>(null);
+  const [dataset, setDataset] = useState<$TabularDataset | null>(null);
   const download = useDownload();
   const { currentUser } = useAuthStore();
 
-  const [columnPaginationDto, setColumnPaginationDto] = useState<DatasetViewPagination>({
+  const [columnPaginationDto, setColumnPaginationDto] = useState<$DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });
 
-  const [rowPaginationDto, setRowPaginationDto] = useState<DatasetViewPagination>({
+  const [rowPaginationDto, setRowPaginationDto] = useState<$DatasetViewPagination>({
     currentPage: 1,
     itemsPerPage: 10
   });
@@ -42,7 +42,7 @@ const ViewOneProjectDatasetPage = () => {
   useEffect(() => {
     const fetchDataset = () => {
       axios
-        .post<TabularDataset>(`/v1/projects/dataset/${params.projectId}/${params.datasetId}`, {
+        .post<$TabularDataset>(`/v1/projects/dataset/${params.projectId}/${params.datasetId}`, {
           columnPaginationDto,
           rowPaginationDto
         })
@@ -69,13 +69,13 @@ const ViewOneProjectDatasetPage = () => {
       .catch(console.error);
   });
 
-  const handleDataDownload = async (format: 'CSV' | 'TSV', data: TabularDataset) => {
+  const handleDataDownload = async (format: 'CSV' | 'TSV', data: $TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     const response = await axios.get(`/v1/projects/download-data/${params.projectId}/${params.datasetId}/${format}`);
     void download(filename, response.data as string);
   };
 
-  const handleMetaDataDownload = async (format: 'CSV' | 'TSV', data: TabularDataset) => {
+  const handleMetaDataDownload = async (format: 'CSV' | 'TSV', data: $TabularDataset) => {
     const filename = 'metadata_' + data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
     const response = await axios.get(
       `/v1/projects/download-metadata/${params.projectId}/${params.datasetId}/${format}`
