@@ -5,7 +5,7 @@ import { z } from 'zod/v4';
 export const $Env = $BaseEnv
   .omit({ API_PORT: true })
   .extend({
-    API_DEV_SERVER_PORT: $NumberLike.pipe(z.number().positive().int()),
+    API_DEV_SERVER_PORT: $NumberLike.pipe(z.number().int().nonnegative()).optional(),
     MAX_VALIDATION_ATTEMPTS: $NumberLike.pipe(z.number().positive().int()),
     MONGO_PORT: $NumberLike.pipe(z.number().positive().int()),
     MONGO_URI: $UrlLike,
