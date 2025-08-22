@@ -26,15 +26,13 @@ export const DesktopSidebar = ({ isLogIn, navigation }: DesktopSidebarProps) => 
             <div className="relative" key={item.href}>
               <Tooltip>
                 <Tooltip.Trigger
-                  className="p-0"
+                  className="flex h-14 w-14 items-center justify-center rounded-lg p-0 hover:bg-slate-700"
                   size="icon"
                   type="button"
                   variant="ghost"
                   onClick={() => void navigate({ to: item.href })}
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-lg hover:bg-slate-700">
-                    <item.icon className="h-6 w-6" />
-                  </div>
+                  <item.icon className="h-6 w-6 stroke-slate-100" />
                 </Tooltip.Trigger>
                 <Tooltip.Content side="right">
                   <p>{item.label}</p>
