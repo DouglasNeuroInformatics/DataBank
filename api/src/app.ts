@@ -1,5 +1,4 @@
 import { acceptLanguage, AppFactory } from '@douglasneuroinformatics/libnest';
-import { BullModule } from '@nestjs/bullmq';
 import { PrismaClient } from '@prisma/client';
 
 import { AuthModule } from './auth/auth.module.js';
@@ -11,6 +10,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { SetupModule } from './setup/setup.module.js';
 import { TabularDataModule } from './tabular-data/tabular-data.module';
 import { UsersModule } from './users/users.module.js';
+import { VendorModule } from './vendor/vendor.module.js';
 
 export default AppFactory.create({
   configureMiddleware: (consumer) => {
@@ -41,12 +41,7 @@ export default AppFactory.create({
     SetupModule,
     TabularDataModule,
     UsersModule,
-    BullModule.forRoot({
-      connection: {
-        host: process.env.VALKEY_HOST,
-        port: parseInt(process.env.VALKEY_PORT!)
-      }
-    })
+    VendorModule
   ],
   prisma: {
     client: {
