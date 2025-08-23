@@ -60,10 +60,10 @@ export class SetupService {
   private async createAdmin(admin: $CreateAdminData): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
       ...admin,
-      confirmedAt: new Date(Date.now()),
+      confirmedAt: new Date(),
       datasetId: [],
       role: 'ADMIN',
-      verifiedAt: new Date(Date.now())
+      verifiedAt: new Date()
     });
   }
 
