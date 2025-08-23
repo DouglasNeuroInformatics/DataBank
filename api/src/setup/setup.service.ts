@@ -42,7 +42,7 @@ export class SetupService {
       description: 'a sample dataset containing data about iris',
       isJSON: 'true',
       isReadyToShare: 'true',
-      license: 'PUBLIC',
+      license: 'CC0-1.0',
       name: 'iris',
       permission: 'PUBLIC',
       primaryKeys: ''
