@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const $SetupState = z.object({
   isSetup: z.boolean()

@@ -7,7 +7,7 @@ import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/
 import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { LoadingFallback } from '@/components';
 import { useAuthStore } from '@/stores/auth-store';

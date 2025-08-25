@@ -66,14 +66,14 @@ const EditDatasetInfoPage = () => {
                   {
                     description: 'Basic dataset information details',
                     fields: {
-                      description: {
-                        kind: 'string',
-                        label: 'New Dataset Description',
-                        variant: 'input'
-                      },
                       name: {
                         kind: 'string',
                         label: 'New Dataset Name',
+                        variant: 'input'
+                      },
+                      description: {
+                        kind: 'string',
+                        label: 'New Dataset Description',
                         variant: 'input'
                       },
                       permission: {

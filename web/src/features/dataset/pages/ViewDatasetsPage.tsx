@@ -4,7 +4,6 @@ import { useNavigate } from '@tanstack/react-router';
 
 import { LoadingFallback } from '@/components';
 import { PageHeading } from '@/components/PageHeading';
-import { useAuthStore } from '@/stores/auth-store';
 
 import DatasetCard from '../components/DatasetCard';
 import { useDatasetsQuery } from '../hooks/useDatasetsQuery';
@@ -17,7 +16,6 @@ type ViewDatasetsPageProps = {
 const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
-  const { currentUser } = useAuthStore();
 
   const datasetsInfoQuery = isPublic ? usePublicDatasetsQuery() : useDatasetsQuery();
 
@@ -63,30 +61,10 @@ const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
           ) : (
             <ul>
               {datasetsInfoArray?.map((datasetInfo) => {
-                let isManager: boolean;
-                if (!currentUser?.id) {
-                  isManager = false;
-                } else {
-                  isManager = datasetInfo.managerIds.includes(currentUser.id);
-                }
                 return (
                   datasetInfo && (
                     <li key={datasetInfo.id}>
-                      <DatasetCard
-                        createdAt={datasetInfo.createdAt}
-                        datasetType={datasetInfo.datasetType}
-                        description={datasetInfo.description}
-                        id={datasetInfo.id}
-                        isManager={isManager}
-                        isPublic={isPublic}
-                        isReadyToShare={datasetInfo.isReadyToShare}
-                        license={datasetInfo.license}
-                        managerIds={datasetInfo.managerIds}
-                        name={datasetInfo.name}
-                        permission={datasetInfo.permission}
-                        status={datasetInfo.status}
-                        updatedAt={datasetInfo.updatedAt}
-                      />
+                      <DatasetCard {...datasetInfo} />
                     </li>
                   )
                 );

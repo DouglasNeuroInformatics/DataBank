@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { $ProjectDatasetColumnConfig } from '@databank/core';
 import type FormTypes from '@douglasneuroinformatics/libui-form-types';
 import { Form } from '@douglasneuroinformatics/libui/components';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import type { SelectedColumnsRecord } from '../store/useProjectDatasetConfigStoreFactory';
 

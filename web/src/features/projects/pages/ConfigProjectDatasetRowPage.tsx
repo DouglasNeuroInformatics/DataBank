@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { $ProjectDatasetConfigStep, $ProjectDatasetRowConfig } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 type ConfigProjectDatasetRowPageProps = {
   setRowConfig: (rowConfig: $ProjectDatasetRowConfig) => void;

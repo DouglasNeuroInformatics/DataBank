@@ -5,7 +5,7 @@ import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const $EditProjectInfoDto = z.object({
   name: z.string().optional(),
