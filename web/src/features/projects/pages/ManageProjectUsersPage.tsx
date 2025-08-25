@@ -2,7 +2,7 @@ import { Form } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import UserCard from '../components/UserCard';
 
