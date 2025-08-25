@@ -3,7 +3,6 @@ import { CryptoService, InjectModel } from '@douglasneuroinformatics/libnest';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import type { ConfirmEmailInfo, User } from '@prisma/client';
-import type { SetOptional } from 'type-fest';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +12,8 @@ export class UsersService {
   ) {}
 
   /** Insert a new user into the database */
-  async createUser({ email, password, ...rest }: $CreateUser): Promise<Omit<User, 'hashedPassword'>> {
+  async createUser(input: $CreateUser): Promise<Omit<User, 'hashedPassword'>> {
+    const { datasetId, email, firstName, lastName, password } = input;
     const userExists = await this.findByEmail(email);
     if (userExists) {
       throw new ConflictException(`User with the provided email already exists: ${email}`);
@@ -21,14 +21,15 @@ export class UsersService {
     const hashedPassword = await this.cryptoService.hashPassword(password);
     const createdUser = await this.userModel.create({
       data: {
+        datasetId,
         email,
+        firstName,
         hashedPassword,
-        ...rest
+        lastName
       }
     });
 
-    const returnedUser: SetOptional<User, 'hashedPassword'> = createdUser;
-    delete returnedUser.hashedPassword;
+    const { hashedPassword: _hp, ...returnedUser } = createdUser;
     return returnedUser;
   }
 
