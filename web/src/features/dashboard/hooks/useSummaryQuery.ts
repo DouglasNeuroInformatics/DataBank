@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const $Summary = z.object({
   datasetCounts: z.number().int().min(0),

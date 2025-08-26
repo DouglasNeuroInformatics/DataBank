@@ -42,7 +42,7 @@ export class SetupService {
       description: 'a sample dataset containing data about iris',
       isJSON: 'true',
       isReadyToShare: 'true',
-      license: 'PUBLIC',
+      license: 'CC0-1.0',
       name: 'iris',
       permission: 'PUBLIC',
       primaryKeys: ''
@@ -60,10 +60,10 @@ export class SetupService {
   private async createAdmin(admin: $CreateAdminData): Promise<Omit<User, 'hashedPassword'>> {
     return this.usersService.createUser({
       ...admin,
-      confirmedAt: new Date(Date.now()),
+      confirmedAt: new Date(),
       datasetId: [],
       role: 'ADMIN',
-      verifiedAt: new Date(Date.now())
+      verifiedAt: new Date()
     });
   }
 

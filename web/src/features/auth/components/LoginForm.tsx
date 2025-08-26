@@ -1,7 +1,7 @@
 import { $LoginCredentials } from '@databank/core';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 type LoginFormProps = {
   onSubmit: (credentials: $LoginCredentials) => void;

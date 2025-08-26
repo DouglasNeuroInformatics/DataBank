@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 const $UserRole = z.enum(['ADMIN', 'STANDARD']);
 
@@ -7,7 +7,7 @@ const $CreateUser = z.object({
 
   datasetId: z.string().array(),
 
-  email: z.string().email(),
+  email: z.email(),
 
   firstName: z.string().min(1),
 
