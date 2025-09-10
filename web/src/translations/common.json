@@ -499,6 +499,10 @@
     "en": "Edit Project Information",
     "fr": "Modifier les informations du projet"
   },
+  "createProjectSuccess": {
+    "en": "Successfully created project",
+    "fr": "Projet créé avec succès"
+  },
   "setDatasetSharable": {
     "en": "Set Dataset Sharable",
     "fr": "Rendre la base de données partageable"

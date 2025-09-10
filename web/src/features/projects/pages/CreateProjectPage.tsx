@@ -39,7 +39,7 @@ const CreateProjectPage = () => {
       userIds: [currentUser?.id],
       ...projectData
     });
-    notifications.addNotification({ message: t('createDatasetSuccess'), type: 'success' });
+    notifications.addNotification({ message: t('createProjectSuccess'), type: 'success' });
     void navigate({ to: '/portal/projects' });
   };
 
