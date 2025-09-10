@@ -31,6 +31,8 @@ import { FileUploadQueueName } from './datasets.constants.js';
 
 @Injectable()
 export class DatasetsService {
+  private readonly uploadsDir = path.resolve(process.cwd(), 'uploads');
+
   constructor(
     @InjectModel('Dataset') private datasetModel: Model<'Dataset'>,
     @InjectPrismaClient() private prisma: PrismaClient,
@@ -178,11 +180,10 @@ export class DatasetsService {
     let dataset;
     if (typeof file !== 'string') {
       // Resolve once from configuration or env
-      const uploadsDir = path.resolve(process.cwd(), 'uploads');
-      await fs.promises.mkdir(uploadsDir, { recursive: true });
+      await fs.promises.mkdir(this.uploadsDir, { recursive: true });
       // Generate a collision-free, sanitised filename
       const safeName = crypto.randomUUID() + path.extname(file.originalname);
-      const filePath = path.join(uploadsDir, safeName);
+      const filePath = path.join(this.uploadsDir, safeName);
       await fs.promises.writeFile(filePath, file.buffer);
       dataset = await this.datasetModel.create({
         data: {
