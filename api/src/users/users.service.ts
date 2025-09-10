@@ -21,11 +21,13 @@ export class UsersService {
     const hashedPassword = await this.cryptoService.hashPassword(password);
     const createdUser = await this.userModel.create({
       data: {
+        confirmedAt: input.confirmedAt ?? undefined,
         datasetId,
         email,
         firstName,
         hashedPassword,
-        lastName
+        lastName,
+        verifiedAt: input.verifiedAt ?? undefined
       }
     });
 

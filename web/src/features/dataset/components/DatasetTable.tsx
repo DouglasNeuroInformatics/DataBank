@@ -129,23 +129,24 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
             {tabularDataset.columns.map((column, i) => (
               <Table.Head className="text-foreground whitespace-nowrap" key={i}>
                 <DropdownMenu>
-                  <DropdownMenu.Trigger className="flex items-center justify-between gap-3">
-                    <span>{column}</span>
-                    <ChevronDownIcon />
+                  <DropdownMenu.Trigger>
+                    <div className="flex justify-around gap-0.5">
+                      {column}
+                      <ChevronDownIcon className="w-3" />
+                    </div>
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Content className="w-56">
-                    <DropdownMenu.Label>{column}</DropdownMenu.Label>
                     {tabularDataset.isManager && (
                       <>
                         <DropdownMenu.Group>
                           {!tabularDataset.isProject ? (
                             <>
-                              <DropdownMenu.Item>
+                              <DropdownMenu.Label>
                                 {`Data Permission: ${tabularDataset.metadata[column]!.dataPermission}`}
-                              </DropdownMenu.Item>
-                              <DropdownMenu.Item>
+                              </DropdownMenu.Label>
+                              <DropdownMenu.Label>
                                 {`Metadata Permission: ${tabularDataset.metadata[column]!.metadataPermission}`}
-                              </DropdownMenu.Item>
+                              </DropdownMenu.Label>
                               <hr />
                             </>
                           ) : null}
