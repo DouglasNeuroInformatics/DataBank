@@ -21,8 +21,11 @@ services:
     depends_on:
       - mongo
       - valkey
+    volumes:
+      - ./uploads:/app/uploads
     environment:
       - NODE_ENV=production
+      - UPLOADS_DIR=/app/uploads
       - MONGO_URI=mongodb://mongo:27017
       - MONGO_REPLICA_SET=rs0
       - MONGO_RETRY_WRITES=true

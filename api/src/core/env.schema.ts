@@ -1,7 +1,8 @@
+import fs from 'node:fs';
+
 import { $BooleanLike, $NumberLike, $UrlLike } from '@douglasneuroinformatics/libjs';
 import { $BaseEnv } from '@douglasneuroinformatics/libnest';
 import { z } from 'zod/v4';
-
 export const $Env = $BaseEnv
   .omit({ API_PORT: true })
   .extend({
@@ -16,6 +17,19 @@ export const $Env = $BaseEnv
     SMTP_PORT: $NumberLike.pipe(z.union([z.literal(25), z.literal(465), z.literal(587)])),
     SMTP_SECURE: $BooleanLike,
     SMTP_SENDER: z.string().min(1).email(),
+    UPLOADS_DIR: z
+      .string()
+      .check((ctx) => {
+        if (!fs.existsSync(ctx.value)) {
+          ctx.issues.push({
+            code: 'custom',
+            input: ctx.value,
+            message: 'Directory must exist',
+            path: ['UPLOADS_DIR']
+          });
+        }
+      })
+      .optional(),
     VALIDATION_TIMEOUT: $NumberLike.pipe(z.number().positive().int()),
     VALKEY_HOST: z.string().min(1),
     VALKEY_PORT: $NumberLike.pipe(z.number().positive().int()),

@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import { $DatasetLicenses, $EditDatasetInfo, mostFrequentOpenSourceLicenses } from '@databank/core';
+import { $DatasetLicenses, $EditDatasetInfo } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
@@ -24,7 +24,7 @@ const EditDatasetInfoPage = () => {
   const notifications = useNotificationsStore();
   const { t } = useTranslation('common');
 
-  const debouncedLicensesFilter = useDebounceLicensesFilter();
+  const { subscribe, licenseOptions } = useDebounceLicensesFilter();
 
   const permissionOption = {
     LOGIN: 'LOGIN',
@@ -99,24 +99,17 @@ const EditDatasetInfoPage = () => {
                         variant: 'input'
                       },
                       license: {
-                        deps: ['searchLicenseString', 'isOpenSource'],
-                        kind: 'dynamic',
-                        render(data) {
-                          return {
-                            kind: 'string',
-                            label: 'Select License',
-                            options:
-                              debouncedLicensesFilter(data.searchLicenseString?.toLowerCase(), data.isOpenSource) ??
-                              mostFrequentOpenSourceLicenses,
-                            variant: 'select'
-                          };
-                        }
+                        kind: 'string',
+                        label: 'Select License',
+                        options: licenseOptions,
+                        variant: 'select'
                       }
                     },
                     title: 'Dataset License'
                   }
                 ]}
                 resetBtn={true}
+                subscribe={subscribe}
                 validationSchema={$EditDatasetInfoDto}
                 onSubmit={(data) => handleSubmit(data)}
               />

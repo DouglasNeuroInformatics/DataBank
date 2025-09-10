@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useCallback, useState } from 'react';
 
-import { $DatasetLicenses, mostFrequentOpenSourceLicenses } from '@databank/core';
+import { $DatasetLicenses } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
@@ -35,7 +35,7 @@ const CreateDatasetPage = () => {
   const [formData, setFormData] = useState<CreateDatasetFormData | null>(null);
   const [processingFile, setProcessingFile] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
-  const debouncedLicensesFilter = useDebounceLicensesFilter();
+  const { licenseOptions, subscribe } = useDebounceLicensesFilter();
 
   const createDataset = async () => {
     setProcessingFile(true);
@@ -148,23 +148,16 @@ const CreateDatasetPage = () => {
                     variant: 'input'
                   },
                   license: {
-                    deps: ['searchLicenseString', 'isOpenSource'],
-                    kind: 'dynamic',
-                    render(data) {
-                      return {
-                        kind: 'string',
-                        label: 'Select License',
-                        options:
-                          debouncedLicensesFilter(data.searchLicenseString?.toLowerCase(), data.isOpenSource) ??
-                          mostFrequentOpenSourceLicenses,
-                        variant: 'select'
-                      };
-                    }
+                    kind: 'string',
+                    label: 'Select License',
+                    options: licenseOptions,
+                    variant: 'select'
                   }
                 }
               }
             ]}
             submitBtnLabel="Confirm"
+            subscribe={subscribe}
             validationSchema={$CreateDatasetFormValidation}
             onSubmit={(data) => {
               setFormData(data);
