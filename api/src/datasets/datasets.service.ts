@@ -16,7 +16,7 @@ import {
 } from '@databank/core';
 import type { $DatasetCardProps } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
-import { InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
+import { ConfigService, InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { PermissionLevel, PrismaClient } from '@prisma/client';
@@ -31,16 +31,19 @@ import { FileUploadQueueName } from './datasets.constants.js';
 
 @Injectable()
 export class DatasetsService {
-  private readonly uploadsDir = path.resolve(process.cwd(), 'uploads');
+  private readonly uploadsDir: string;
 
   constructor(
     @InjectModel('Dataset') private datasetModel: Model<'Dataset'>,
     @InjectPrismaClient() private prisma: PrismaClient,
+    private readonly configService: ConfigService,
     private readonly usersService: UsersService,
     private readonly columnService: ColumnsService,
     private readonly tabularDataService: TabularDataService,
     @InjectQueue(FileUploadQueueName) private fileUploadQueue: Queue
-  ) {}
+  ) {
+    this.uploadsDir = this.configService.get('UPLOADS_DIR') ?? path.resolve(process.cwd(), 'uploads');
+  }
 
   async addManager(datasetId: string, managerId: string, managerEmailToAdd: string) {
     const dataset = await this.canModifyDataset(datasetId, managerId);
