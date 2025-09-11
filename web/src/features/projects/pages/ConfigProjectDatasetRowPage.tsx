@@ -31,10 +31,17 @@ export const ConfigProjectDatasetRowPage = ({ setRowConfig, setStep }: ConfigPro
           variant: 'input'
         }
       }}
-      validationSchema={z.object({
-        rowMin: z.number().int().gte(0),
-        rowMax: z.number().int().gte(0).optional()
-      })}
+      validationSchema={z
+        .object({
+          rowMin: z.number().int().gte(0),
+          rowMax: z.number().int().gte(0).optional()
+        })
+        .refine(
+          (data) => {
+            return data.rowMax === undefined || data.rowMax >= data.rowMin;
+          },
+          { error: 'rowMax must be greater than or equal to rowMin' }
+        )}
       onSubmit={(data) => handleSubmitRowConfig({ rowMin: data.rowMin, rowMax: data.rowMax ?? null })}
     />
   );
