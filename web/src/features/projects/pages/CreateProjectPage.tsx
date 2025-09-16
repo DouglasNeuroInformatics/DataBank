@@ -81,6 +81,7 @@ const CreateProjectPage = () => {
                       externalId: {
                         kind: 'string',
                         label: t('projectExternalId'),
+                        description: t('projectExternalIdDescription'),
                         variant: 'input'
                       },
                       expiry: {

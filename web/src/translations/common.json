@@ -503,6 +503,26 @@
     "en": "Successfully created project",
     "fr": "Projet créé avec succès"
   },
+  "projectExternalIdDescription": {
+    "en": "A custom identifier for your project, e.g., \"mcgill-health-01\". This can be used to link your project to external systems or internal naming conventions. This field is optional if you don't have a project external ID.",
+    "fr": "Un identifiant personnalisé pour votre projet, par exemple « mcgill-health-01 ». Il peut être utilisé pour relier votre projet à des systèmes externes ou suivre vos conventions de nommage internes. Ce champ est optionnel si vous n’avez pas d’identifiant externe pour votre projet."
+  },
+  "newProjectName": {
+    "en": "New Project Name",
+    "fr": "Nom du nouveau projet"
+  },
+  "newProjectDescription": {
+    "en": "New Project Description",
+    "fr": "Description du nouveau projet"
+  },
+  "newProjectExternalId": {
+    "en": "New External ID",
+    "fr": "Nouvel identifiant externe"
+  },
+  "newProjectExpiryDate": {
+    "en": "New Expiry Date",
+    "fr": "Nouvelle date d’expiration"
+  },
   "setDatasetSharable": {
     "en": "Set Dataset Sharable",
     "fr": "Rendre la base de données partageable"

@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import type { $UpdateProject } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -18,6 +18,7 @@ const EditProjectInfoPage = () => {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
+  const { t } = useTranslation('common');
 
   const handleSubmit = (data: $UpdateProject) => {
     axios
@@ -44,28 +45,29 @@ const EditProjectInfoPage = () => {
             transition={{ duration: 1 }}
           >
             <Heading className="m-4" variant="h3">
-              Edit Project Information
+              {t('editProjectInfo')}
             </Heading>
             <Form
               content={{
                 name: {
                   kind: 'string',
                   variant: 'input',
-                  label: 'New Project Name'
+                  label: t('newProjectName')
                 },
                 description: {
                   kind: 'string',
                   variant: 'input',
-                  label: 'New Project Description'
+                  label: t('newProjectDescription')
                 },
                 externalId: {
                   kind: 'string',
                   variant: 'input',
-                  label: 'New External Id'
+                  label: t('newProjectExternalId'),
+                  description: t('projectExternalIdDescription')
                 },
                 expiry: {
                   kind: 'date',
-                  label: 'New Expiry Date'
+                  label: t('newProjectExpiryDate')
                 }
               }}
               resetBtn={true}
