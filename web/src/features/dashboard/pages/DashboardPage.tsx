@@ -1,3 +1,4 @@
+import { $Summary } from '@databank/core';
 import { Heading } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 
@@ -5,7 +6,7 @@ import { PageHeading } from '@/components/PageHeading';
 
 import { Summary } from '../components/Summary';
 
-const DashboardPage = () => {
+const DashboardPage = (data: $Summary) => {
   const { t } = useTranslation('common');
 
   return (
@@ -17,7 +18,7 @@ const DashboardPage = () => {
             {t('dashboardSummary')}
           </Heading>
         </div>
-        <Summary />
+        <Summary {...data} />
       </section>
     </div>
   );
