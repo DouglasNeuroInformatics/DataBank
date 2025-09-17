@@ -1,18 +1,7 @@
+import { $ProjectInfo } from '@databank/core';
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
-
-export type ProjectCardProps = {
-  createdAt: Date;
-  description: string;
-  expiry: Date;
-  externalId: string;
-  id: string;
-  isProjectManager: boolean;
-  name: string;
-  updatedAt: Date;
-  userIds: string[];
-};
 
 export const ProjectCard = ({
   createdAt,
@@ -24,7 +13,7 @@ export const ProjectCard = ({
   name,
   updatedAt,
   userIds
-}: ProjectCardProps) => {
+}: $ProjectInfo) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
 
