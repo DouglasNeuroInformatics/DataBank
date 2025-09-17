@@ -1,7 +1,10 @@
 import { $ProjectInfo } from '@databank/core';
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import axios from 'axios';
+import z from 'zod/v4';
 
 export const ProjectCard = ({
   createdAt,
@@ -9,13 +12,21 @@ export const ProjectCard = ({
   expiry,
   externalId,
   id,
-  isProjectManager,
   name,
   updatedAt,
   userIds
 }: $ProjectInfo) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
+  const { data } = useQuery({
+    queryFn: async () => {
+      const response = await axios.get(`v1/projects/is-manager/${id}`);
+      return z.boolean().parse(response.data);
+    },
+    queryKey: [`is-project-manager-${id}`]
+  });
+
+  const isProjectManager = data?.valueOf();
 
   return (
     <>

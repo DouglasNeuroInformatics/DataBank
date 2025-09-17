@@ -4,14 +4,13 @@ import { $ColumnType, $TabularColumnInfo, $TabularColumnSummary } from './column
 
 //===================== Project Info ================================
 const $ProjectInfo = z.object({
-  createdAt: z.date(),
+  createdAt: z.coerce.date(),
   description: z.string(),
-  expiry: z.date(),
+  expiry: z.coerce.date(),
   externalId: z.string(),
   id: z.string(),
-  isProjectManager: z.string(),
   name: z.string(),
-  updatedAt: z.date(),
+  updatedAt: z.coerce.date(),
   userIds: z.string().array()
 });
 type $ProjectInfo = z.infer<typeof $ProjectInfo>;

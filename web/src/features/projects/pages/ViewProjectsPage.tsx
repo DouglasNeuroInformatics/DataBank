@@ -50,7 +50,6 @@ const ViewProjectsPage = ({ projectsInfoArray }: ViewProjectsPageProps) => {
                     expiry={projectInfo.expiry}
                     externalId={projectInfo.externalId}
                     id={projectInfo.id}
-                    isProjectManager={projectInfo.isProjectManager}
                     name={projectInfo.name}
                     updatedAt={projectInfo.updatedAt}
                     userIds={projectInfo.userIds}
