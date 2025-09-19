@@ -1,7 +1,7 @@
 {
   "name": "databank",
   "type": "module",
-  "version": "0.0.1-alpha.10",
+  "version": "0.0.1-alpha.11",
   "private": true,
   "packageManager": "pnpm@10.7.1",
   "engines": {
