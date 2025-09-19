@@ -32,11 +32,11 @@ export class DatasetsController {
   @RouteAccess({ role: 'STANDARD' })
   @UseInterceptors(FileInterceptor('file'))
   createDataset(
-    @Body() createDatasetDto: $CreateDataset,
+    @Body() data: $CreateDataset,
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser('id') managerId: string
   ) {
-    return this.datasetsService.createDataset(createDatasetDto, file, managerId);
+    return this.datasetsService.createDataset(data, file, managerId);
   }
 
   @ApiOperation({ summary: 'Delete Dataset' })

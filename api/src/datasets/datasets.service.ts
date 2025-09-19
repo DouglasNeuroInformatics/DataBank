@@ -210,7 +210,7 @@ export class DatasetsService {
           typeof createTabularDatasetDto.isJSON === 'string'
             ? createTabularDatasetDto.isJSON.toLowerCase() === 'true'
             : Boolean(createTabularDatasetDto.isJSON),
-        primaryKeys: createTabularDatasetDto.primaryKeys
+        primaryKeys: createTabularDatasetDto.primaryKeys ?? undefined
       });
     } else {
       dataset = await this.datasetModel.create({
