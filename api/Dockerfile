@@ -24,5 +24,6 @@ RUN turbo build --filter=@databank/api
 # RUN SERVER
 FROM base AS runner
 COPY --from=installer /app/api/dist/ /app/dist/
+RUN mkdir -p /app/uploads && chown node:node /app/uploads
 USER node
 CMD [ "node", "./dist/app.js" ]
