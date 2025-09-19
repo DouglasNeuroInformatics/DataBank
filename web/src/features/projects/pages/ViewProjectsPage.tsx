@@ -1,35 +1,23 @@
 /* eslint-disable perfectionist/sort-objects */
-import { useEffect, useState } from 'react';
-
+import { $ProjectInfo } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 
-import { LoadingFallback } from '@/components';
 import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
 
 import { ProjectCard } from '../components/ProjectCard';
 
-import type { ProjectCardProps } from '../components/ProjectCard';
+type ViewProjectsPageProps = {
+  projectsInfoArray: $ProjectInfo[];
+};
 
-const ViewProjectsPage = () => {
+const ViewProjectsPage = ({ projectsInfoArray }: ViewProjectsPageProps) => {
   const { currentUser } = useAuthStore();
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
-
-  const [projectsInfoArray, setProjectsInfoArray] = useState<null | ProjectCardProps[]>(null);
-
-  useEffect(() => {
-    axios
-      .get<ProjectCardProps[]>('/v1/projects')
-      .then((response) => {
-        setProjectsInfoArray(response.data);
-      })
-      .catch(console.error);
-  }, []);
 
   const handleCreateProject = () => {
     if (currentUser?.datasetId.length && currentUser?.datasetId.length > 0) {
@@ -41,10 +29,6 @@ const ViewProjectsPage = () => {
       });
     }
   };
-
-  if (!projectsInfoArray) {
-    return <LoadingFallback />;
-  }
 
   return (
     <>
@@ -66,7 +50,6 @@ const ViewProjectsPage = () => {
                     expiry={projectInfo.expiry}
                     externalId={projectInfo.externalId}
                     id={projectInfo.id}
-                    isProjectManager={projectInfo.isProjectManager}
                     name={projectInfo.name}
                     updatedAt={projectInfo.updatedAt}
                     userIds={projectInfo.userIds}

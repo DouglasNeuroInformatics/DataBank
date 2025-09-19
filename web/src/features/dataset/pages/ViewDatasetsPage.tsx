@@ -1,29 +1,22 @@
+import { $DatasetInfo } from '@databank/core';
 import { Button, Card, Heading } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
 
-import { LoadingFallback } from '@/components';
 import { PageHeading } from '@/components/PageHeading';
+import { useAuthStore } from '@/stores/auth-store';
 
 import DatasetCard from '../components/DatasetCard';
-import { useDatasetsQuery } from '../hooks/useDatasetsQuery';
-import { usePublicDatasetsQuery } from '../hooks/usePublicDatasetsQuery';
 
 type ViewDatasetsPageProps = {
+  datasetsInfoArray: $DatasetInfo[];
   isPublic: boolean;
 };
 
-const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
+const ViewDatasetsPage = ({ datasetsInfoArray, isPublic }: ViewDatasetsPageProps) => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
-
-  const datasetsInfoQuery = isPublic ? usePublicDatasetsQuery() : useDatasetsQuery();
-
-  if (!datasetsInfoQuery.data) {
-    return <LoadingFallback />;
-  }
-
-  const datasetsInfoArray = datasetsInfoQuery.data;
+  const { currentUser } = useAuthStore();
 
   return (
     <>
@@ -61,10 +54,11 @@ const ViewDatasetsPage = ({ isPublic }: ViewDatasetsPageProps) => {
           ) : (
             <ul>
               {datasetsInfoArray?.map((datasetInfo) => {
+                const isManager = datasetInfo.managerIds.includes(currentUser!.id);
                 return (
                   datasetInfo && (
                     <li key={datasetInfo.id}>
-                      <DatasetCard {...datasetInfo} />
+                      <DatasetCard {...datasetInfo} isManager={isManager} isPublic={isPublic} />
                     </li>
                   )
                 );

@@ -39,23 +39,32 @@ const CreateDatasetPage = () => {
 
   const createDataset = async () => {
     setProcessingFile(true);
+    if (!formData) {
+      return;
+    }
     // important to add the header content type for posting file
     try {
-      await axios.post(
-        '/v1/datasets/create',
-        {
-          ...formData,
-          file: file,
-          isJSON: false,
-          isReadyToShare: false,
-          permission: 'MANAGER'
-        },
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+      const requestFormData = new FormData();
+
+      requestFormData.append('datasetType', String(formData?.datasetType));
+      requestFormData.append('license', String(formData?.license));
+      requestFormData.append('name', formData.name);
+      requestFormData.append('description', formData.description ?? '');
+      requestFormData.append('primaryKeys', formData?.primaryKeys ?? '');
+      requestFormData.append('isJSON', 'false');
+      requestFormData.append('isReadyToShare', 'false');
+      requestFormData.append('permission', 'MANAGER');
+
+      if (!file) {
+        return;
+      }
+      requestFormData.append('file', file);
+
+      await axios.post('/v1/datasets/create', requestFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-      );
+      });
       notifications.addNotification({ message: t('createDatasetSuccess'), type: 'success' });
     } catch {
       notifications.addNotification({ type: 'error', message: t('createDatasetFailure') });

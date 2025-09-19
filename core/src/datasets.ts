@@ -50,7 +50,8 @@ const $DatasetInfo = z.object({
 });
 type $DatasetInfo = z.infer<typeof $DatasetInfo>;
 
-type $DatasetCardProps = $DatasetInfo & { isManager: boolean; isPublic: boolean };
+const $DatasetCardProps = $DatasetInfo.and(z.object({ isManager: z.boolean(), isPublic: z.boolean() }));
+type $DatasetCardProps = z.infer<typeof $DatasetCardProps>;
 
 const $TabularDataRow = z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]));
 type $TabularDataRow = z.infer<typeof $TabularDataRow>;
@@ -75,6 +76,7 @@ type $TabularDataset = $DatasetInfo & $TabularDatasetView;
 
 export {
   $CreateDataset,
+  $DatasetCardProps,
   $DatasetInfo,
   $DatasetLicenses,
   $DatasetStatus,
@@ -85,4 +87,4 @@ export {
   $TabularDatasetView
 };
 
-export type { $DatasetCardProps, $TabularDataset };
+export type { $TabularDataset };

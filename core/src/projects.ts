@@ -2,6 +2,19 @@ import { z } from 'zod/v4';
 
 import { $ColumnType, $TabularColumnInfo, $TabularColumnSummary } from './columns';
 
+//===================== Project Info ================================
+const $ProjectInfo = z.object({
+  createdAt: z.coerce.date(),
+  description: z.string(),
+  expiry: z.coerce.date(),
+  externalId: z.string(),
+  id: z.string(),
+  name: z.string(),
+  updatedAt: z.coerce.date(),
+  userIds: z.string().array()
+});
+type $ProjectInfo = z.infer<typeof $ProjectInfo>;
+
 //===================== Project Column Config ================================
 const $ProjectDatasetConfigStep = z.enum(['selectColumns', 'configRows', 'configColumns']);
 type $ProjectDatasetConfigStep = z.infer<typeof $ProjectDatasetConfigStep>;
@@ -156,5 +169,6 @@ export {
   $ProjectDatasetConfigStep,
   $ProjectDatasetRowConfig,
   $ProjectDatasetSelectedColumn,
+  $ProjectInfo,
   $UpdateProject
 };
