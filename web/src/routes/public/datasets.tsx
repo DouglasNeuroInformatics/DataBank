@@ -19,7 +19,7 @@ const viewPublicDatasetsQueryOptions = queryOptions({
 export const Route = createFileRoute('/public/datasets')({
   component: () => {
     const { data } = useSuspenseQuery(viewPublicDatasetsQueryOptions);
-    return <ViewDatasetsPage datasetsInfoArray={data} isPublic={false} />;
+    return <ViewDatasetsPage datasetsInfoArray={data} isPublic={true} />;
   },
   loader: () => queryClient.ensureQueryData(viewPublicDatasetsQueryOptions)
 });
