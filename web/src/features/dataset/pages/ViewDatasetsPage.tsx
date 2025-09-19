@@ -54,7 +54,7 @@ const ViewDatasetsPage = ({ datasetsInfoArray, isPublic }: ViewDatasetsPageProps
           ) : (
             <ul>
               {datasetsInfoArray?.map((datasetInfo) => {
-                const isManager = datasetInfo.managerIds.includes(currentUser!.id);
+                const isManager = isPublic ? false : datasetInfo.managerIds.includes(currentUser!.id);
                 return (
                   datasetInfo && (
                     <li key={datasetInfo.id}>
