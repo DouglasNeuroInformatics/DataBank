@@ -40,11 +40,9 @@ export const ProjectCard = ({
             <li>
               {t('projectId')}: {id}
             </li>
-            {externalId ?? (
-              <li>
-                {t('projectExternalId')}: {externalId}
-              </li>
-            )}
+            <li>
+              {t('projectExternalId')}: {externalId ?? ''}
+            </li>
             <li>
               {t('createdAt')}: {createdAt.toString()}
             </li>
