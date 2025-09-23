@@ -5,9 +5,9 @@ import { $ColumnType, $TabularColumnInfo, $TabularColumnSummary } from './column
 //===================== Project Info ================================
 const $ProjectInfo = z.object({
   createdAt: z.coerce.date(),
-  description: z.string(),
+  description: z.string().optional(),
   expiry: z.coerce.date(),
-  externalId: z.string(),
+  externalId: z.string().optional(),
   id: z.string(),
   name: z.string(),
   updatedAt: z.coerce.date(),
