@@ -29,6 +29,7 @@ const $ConfirmEmailVerification = z.object({
 const $UserVerificationStrategy = z.union([$ManualVerification, $RegexEmailVerification, $ConfirmEmailVerification]);
 
 const $SetupConfig = z.object({
+  isDemo: z.boolean(),
   verificationStrategy: $UserVerificationStrategy
 });
 

@@ -36,6 +36,11 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               kind: 'string',
               label: t('password'),
               variant: 'password'
+            },
+            isDemo: {
+              kind: 'boolean',
+              label: t('isDemoVersion'),
+              variant: 'radio'
             }
           },
           title: t('setupAdminTitle')
@@ -78,7 +83,8 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
         lastName: z.string().min(1),
         password: z.string().min(1),
         verificationRegex: z.string().optional(),
-        verificationType: z.enum(['REGEX_EMAIL', 'CONFIRM_EMAIL', 'MANUAL'])
+        verificationType: z.enum(['REGEX_EMAIL', 'CONFIRM_EMAIL', 'MANUAL']),
+        isDemo: z.boolean()
       })}
       onSubmit={(data) => {
         if (data.verificationRegex) {
@@ -90,6 +96,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               password: data.password
             },
             setupConfig: {
+              isDemo: data.isDemo,
               verificationStrategy: {
                 kind: 'REGEX_EMAIL',
                 emailRegex: data.verificationRegex
@@ -105,6 +112,7 @@ export const SetupForm = ({ onSubmit }: SetupFormProps) => {
               password: data.password
             },
             setupConfig: {
+              isDemo: data.isDemo,
               verificationStrategy: {
                 kind: data.verificationType
               }
