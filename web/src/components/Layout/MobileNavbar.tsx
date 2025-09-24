@@ -52,8 +52,10 @@ export const MobileNavbar = ({ isLogIn, navigation }: MobileNavbarProps) => {
             ))}
           </nav>
           <div className="flex space-x-3 text-slate-600 dark:text-slate-300">
-            <ThemeToggle className="hover:backdrop-brightness-150" />
-            <LanguageToggle options={{ en: 'English', fr: 'Français' }} />
+            <ThemeToggle className="m-2 mb-4 h-8 w-8 hover:backdrop-brightness-150" variant="outline" />
+            <div className="m-2 mb-4 h-8 w-8">
+              <LanguageToggle options={{ en: 'English', fr: 'Français' }} variant="outline" />
+            </div>
             {isLogIn && <UserDropup />}
           </div>
         </div>
