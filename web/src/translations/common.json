@@ -635,6 +635,10 @@
     "en": "Setup Page Title",
     "fr": "Titre de la page de configuration"
   },
+  "isDemoVersion": {
+    "en": "Is this the demo version?",
+    "fr": "Est-ce la version de démonstration ?"
+  },
   "logout": {
     "en": "Logout",
     "fr": "Se déconnecter"
