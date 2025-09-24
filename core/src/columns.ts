@@ -142,7 +142,14 @@ const $RawQueryColumn = z.object({
     $oid: z.string()
   }),
   dataPermission: $PermissionLevel,
-  datetimeData: z.object({ value: z.date().nullable() }).array().nullable(),
+  datetimeData: z
+    .object({
+      value: z.object({
+        $date: z.date().nullable()
+      })
+    })
+    .array()
+    .nullable(),
   description: z.string().nullable(),
   enumData: z.object({ value: z.string().nullable() }).array().nullable(),
   floatData: z.object({ value: z.number().nullable() }).array().nullable(),
@@ -154,7 +161,12 @@ const $RawQueryColumn = z.object({
   stringData: z.object({ value: z.string().nullable() }).array().nullable(),
   summary: z.object({
     count: z.number().int().gte(0),
-    datetimeSummary: $DatetimeSummary.nullable(),
+    datetimeSummary: z
+      .object({
+        max: z.object({ $date: z.coerce.date() }),
+        min: z.object({ $date: z.coerce.date() })
+      })
+      .nullable(),
     enumSummary: $EnumSummaryFromDB.nullable(),
     floatSummary: $FloatSummary.nullable(),
     intSummary: $IntSummary.nullable(),
