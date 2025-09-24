@@ -55,6 +55,7 @@ export class TabularDataService {
       df.insertAtIdx(0, indexSeries);
       primaryKeys.push('__autogen_id');
     }
+
     if (!this.primaryKeyCheck(primaryKeys, df)) {
       throw new UnprocessableEntityException('Dataset failed primary keys check!');
     }
@@ -340,7 +341,7 @@ export class TabularDataService {
             if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
-              rows[i][col.name] = entry.value?.toISOString() ?? null;
+              rows[i][col.name] = entry.value.$date ? new Date(entry.value.$date).toDateString() : null;
             }
           });
 
@@ -348,7 +349,10 @@ export class TabularDataService {
             metaData[col.name] = {
               count: col.summary.count,
               dataPermission: col.dataPermission,
-              datetimeSummary: col.summary.datetimeSummary!,
+              datetimeSummary: {
+                max: col.summary.datetimeSummary!.max.$date,
+                min: col.summary.datetimeSummary!.min.$date
+              },
               kind: 'DATETIME',
               metadataPermission: col.summaryPermission,
               nullable: col.nullable,

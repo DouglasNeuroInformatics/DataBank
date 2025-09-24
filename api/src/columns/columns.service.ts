@@ -125,10 +125,13 @@ export class ColumnsService {
       if (!enumSummary?.enumSummary) {
         throw new NotFoundException('Enum summary NOT FOUND!');
       }
+
       await this.columnModel.create({
         data: {
           dataPermission: 'MANAGER',
-          enumData: dataArray,
+          enumData: dataArray.map((entry) => {
+            return { value: String(entry.value) };
+          }),
           kind: 'ENUM',
           name: colSeries.name,
           nullable: colSeries.nullCount() !== 0,
