@@ -64,6 +64,7 @@ describe('SetupService', () => {
         password: 'Password123'
       },
       setupConfig: {
+        isDemo: false,
         verificationStrategy: {
           kind: 'MANUAL'
         }

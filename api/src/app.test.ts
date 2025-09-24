@@ -20,7 +20,7 @@ e2e(app, ({ api }) => {
     it('should initially not be setup', async () => {
       const response = await api.get('/v1/setup');
       expect(response.status).toBe(200);
-      expect(response.body).toStrictEqual({ isSetup: false } satisfies $SetupState);
+      expect(response.body).toStrictEqual({ isDemo: false, isSetup: false } satisfies $SetupState);
     });
     it('should allow setting up the app', async () => {
       const response = await api.post('/v1/setup').send({
@@ -31,6 +31,7 @@ e2e(app, ({ api }) => {
           password: 'Password123'
         },
         setupConfig: {
+          isDemo: false,
           verificationStrategy: {
             kind: 'MANUAL'
           }
@@ -42,7 +43,7 @@ e2e(app, ({ api }) => {
     it('should be setup after initialization', async () => {
       const response = await api.get('/v1/setup');
       expect(response.status).toBe(200);
-      expect(response.body).toStrictEqual({ isSetup: true } satisfies $SetupState);
+      expect(response.body).toStrictEqual({ isDemo: false, isSetup: true } satisfies $SetupState);
     });
   });
 });
