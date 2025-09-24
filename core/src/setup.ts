@@ -2,6 +2,7 @@ import { z } from 'zod/v4';
 
 type $SetupState = z.infer<typeof $SetupState>;
 const $SetupState = z.object({
+  isDemo: z.boolean(),
   isSetup: z.boolean()
 });
 

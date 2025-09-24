@@ -20,7 +20,7 @@ export class SetupService {
   ) {}
 
   async getState(): Promise<$SetupState> {
-    return { isSetup: await this.isSetup() };
+    return { isDemo: await this.isDemo(), isSetup: await this.isSetup() };
   }
 
   async getVerificationStrategy(): Promise<UserVerificationStrategy> {
@@ -73,6 +73,14 @@ export class SetupService {
       throw new ServiceUnavailableException('Application is not setup');
     }
     return setupConfig;
+  }
+
+  private async isDemo(): Promise<boolean> {
+    const setupConfig = await this.setupConfigModel.findFirst();
+    if (!setupConfig?.isDemo) {
+      return false;
+    }
+    return true;
   }
 
   private async isSetup(): Promise<boolean> {
