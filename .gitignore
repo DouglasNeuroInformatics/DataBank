@@ -143,3 +143,4 @@ testemails.txt
 # uploaded datasets
 *.tsv
 *.csv
+!demo-dataset.csv
