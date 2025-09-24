@@ -1,5 +1,6 @@
 import { deepFreeze } from '@douglasneuroinformatics/libjs';
 
+import { $LoginCredentials } from './auth';
 import { $CreateDataset } from './datasets';
 import { $CreateUser } from './users';
 
@@ -32,7 +33,7 @@ const DEMO_USERS = deepFreeze<$CreateUser[]>([
   }
 ]);
 
-const createDemoDatasetDto: $CreateDataset = {
+const createDemoDatasetDto: $CreateDataset = deepFreeze({
   datasetType: 'TABULAR',
   description: 'Demo dataset to show various properties of DataBank',
   isJSON: 'false',
@@ -41,5 +42,26 @@ const createDemoDatasetDto: $CreateDataset = {
   name: 'Demo Dataset',
   permission: 'MANAGER',
   primaryKeys: 'name, date_of_birth'
+});
+
+const dataManagerLoginCredentials: $LoginCredentials = deepFreeze({
+  email: 'data-manager@example.org',
+  password: 'data-manager-dnp'
+});
+
+const loginUserLoginCredentials: $LoginCredentials = deepFreeze({
+  email: 'login-user@example.org',
+  password: 'login-user-dnp'
+});
+
+const verifiedUserLoginCredentials: $LoginCredentials = deepFreeze({
+  email: 'verified-user@example.org',
+  password: 'verified-user-dnp'
+});
+export {
+  createDemoDatasetDto,
+  dataManagerLoginCredentials,
+  DEMO_USERS,
+  loginUserLoginCredentials,
+  verifiedUserLoginCredentials
 };
-export { createDemoDatasetDto, DEMO_USERS };
