@@ -68,7 +68,7 @@ export class SetupService {
   }
 
   private async getSetupConfig(): Promise<SetupConfig> {
-    const setupConfig = await this.setupConfigModel.findFirst({});
+    const setupConfig = await this.setupConfigModel.findFirst();
     if (!setupConfig) {
       throw new ServiceUnavailableException('Application is not setup');
     }
@@ -76,6 +76,6 @@ export class SetupService {
   }
 
   private async isSetup(): Promise<boolean> {
-    return (await this.setupConfigModel.count({})) !== 0;
+    return (await this.setupConfigModel.count()) !== 0;
   }
 }
