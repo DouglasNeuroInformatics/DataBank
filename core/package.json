@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@douglasneuroinformatics/liblicense": "^1.0.0",
+    "@douglasneuroinformatics/libui": "^4.8.0",
     "type-fest": "catalog:",
     "zod": "catalog:"
   }

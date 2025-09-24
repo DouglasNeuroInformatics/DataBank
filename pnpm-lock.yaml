@@ -143,6 +143,9 @@ importers:
       '@douglasneuroinformatics/liblicense':
         specifier: ^1.0.0
         version: 1.0.0
+      '@douglasneuroinformatics/libui':
+        specifier: ^4.8.0
+        version: 4.8.0(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(immer@10.1.3)(neverthrow@8.2.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4)(use-sync-external-store@1.5.0(react@19.1.0))(zod@3.25.76)
       type-fest:
         specifier: 'catalog:'
         version: 4.39.1
