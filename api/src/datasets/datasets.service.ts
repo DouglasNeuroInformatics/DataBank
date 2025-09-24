@@ -152,7 +152,7 @@ export class DatasetsService {
   async createDataset(createTabularDatasetDto: $CreateDataset, file: Express.Multer.File | string, managerId: string) {
     const currUser = await this.usersService.findById(managerId);
     if (!currUser.datasetId) {
-      throw new NotFoundException('User Not Found!');
+      throw new NotFoundException('User Not Found or datasetId field does not exist in this user!');
     }
     const datasetIdArr = currUser.datasetId;
 
