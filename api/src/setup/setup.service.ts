@@ -1,7 +1,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { $CreateAdminData, $CreateDataset, $SetupOptions, $SetupState } from '@databank/core';
+import {
+  $CreateAdminData,
+  $CreateDataset,
+  $SetupOptions,
+  $SetupState,
+  createDemoDatasetDto,
+  DEMO_USERS
+} from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { Injectable } from '@nestjs/common';
@@ -10,8 +17,6 @@ import type { SetupConfig, User, UserVerificationStrategy } from '@prisma/client
 
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import { UsersService } from '@/users/users.service.js';
-
-import { createDemoDatasetDto, DEMO_USERS } from './resources/demo';
 
 @Injectable()
 export class SetupService {

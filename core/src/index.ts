@@ -2,6 +2,7 @@ export * from './auth';
 export * from './columns';
 export * from './dashboard';
 export * from './datasets';
+export * from './demo';
 export * from './licenses';
 export * from './projects';
 export * from './setup';

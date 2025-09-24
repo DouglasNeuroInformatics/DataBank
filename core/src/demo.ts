@@ -1,5 +1,7 @@
-import type { $CreateDataset, $CreateUser } from '@databank/core';
 import { deepFreeze } from '@douglasneuroinformatics/libjs';
+
+import { $CreateDataset } from './datasets';
+import { $CreateUser } from './users';
 
 const DEMO_USERS = deepFreeze<$CreateUser[]>([
   {
