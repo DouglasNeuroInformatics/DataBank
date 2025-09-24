@@ -13,5 +13,6 @@ model SetupConfig {
   id                   String                   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt            DateTime                 @default(now()) @db.Date
   updatedAt            DateTime                 @default(now()) @updatedAt @db.Date
+  isDemo               Boolean
   verificationStrategy UserVerificationStrategy
 }
