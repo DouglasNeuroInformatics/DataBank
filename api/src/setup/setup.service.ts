@@ -11,6 +11,8 @@ import type { SetupConfig, User, UserVerificationStrategy } from '@prisma/client
 import { DatasetsService } from '@/datasets/datasets.service.js';
 import { UsersService } from '@/users/users.service.js';
 
+import { createDemoDatasetDto, DEMO_USERS } from './resources/demo';
+
 @Injectable()
 export class SetupService {
   constructor(
@@ -53,6 +55,24 @@ export class SetupService {
       await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'iris.json'), 'utf-8'),
       adminUser.id
     );
+
+    // setup for demo version: create demo users and demo dataset
+    if (setupConfig.isDemo) {
+      for (const user of DEMO_USERS) {
+        const demoUser = await this.usersService.createUser({
+          ...user,
+          datasetId: [...user.datasetId]
+        });
+
+        if (demoUser.email === 'data-manager@example.org') {
+          await this.datasetsService.createDataset(
+            createDemoDatasetDto,
+            await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'demo-dataset.csv'), 'utf-8'),
+            demoUser.id
+          );
+        }
+      }
+    }
 
     return { success: true };
   }
