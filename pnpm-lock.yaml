@@ -140,6 +140,9 @@ importers:
 
   core:
     dependencies:
+      '@douglasneuroinformatics/libjs':
+        specifier: 'catalog:'
+        version: 3.1.0(neverthrow@8.2.0)(zod@3.25.76)
       '@douglasneuroinformatics/liblicense':
         specifier: ^1.0.0
         version: 1.0.0
