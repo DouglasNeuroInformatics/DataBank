@@ -14,7 +14,7 @@ import {
   $TabularDataDownloadFormat,
   $TabularDatasetView
 } from '@databank/core';
-import type { $DatasetCardProps } from '@databank/core';
+import type { $DatasetCardProps, $DatasetInfo, $TabularDataset } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { ConfigService, InjectModel, InjectPrismaClient } from '@douglasneuroinformatics/libnest';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -625,7 +625,7 @@ export class DatasetsService {
     datasetId: string,
     rowPaginationDto: $DatasetViewPagination,
     columnPaginationDto: $DatasetViewPagination
-  ) {
+  ): Promise<$DatasetInfo | $TabularDataset> {
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: true
@@ -653,6 +653,7 @@ export class DatasetsService {
         managerIds: dataset.managerIds,
         name: dataset.name,
         permission: dataset.permission,
+        status: dataset.status,
         updatedAt: dataset.updatedAt
       };
     }
@@ -676,6 +677,7 @@ export class DatasetsService {
       managerIds: dataset.managerIds,
       name: dataset.name,
       permission: dataset.permission,
+      status: dataset.status,
       updatedAt: dataset.updatedAt,
       ...datasetView
     };
@@ -778,7 +780,7 @@ export class DatasetsService {
     currentUserId: string,
     rowPaginationDto: $DatasetViewPagination,
     columnPaginationDto: $DatasetViewPagination
-  ) {
+  ): Promise<$DatasetInfo | $TabularDataset> {
     const dataset = await this.datasetModel.findUnique({
       include: {
         tabularData: true
@@ -830,6 +832,7 @@ export class DatasetsService {
         managerIds: dataset.managerIds,
         name: dataset.name,
         permission: dataset.permission,
+        status: dataset.status,
         updatedAt: dataset.updatedAt,
         ...emptyDatasetView
       };
@@ -869,6 +872,7 @@ export class DatasetsService {
       managerIds: dataset.managerIds,
       name: dataset.name,
       permission: dataset.permission,
+      status: dataset.status,
       updatedAt: dataset.updatedAt,
       ...datasetView
     };

@@ -1,8 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useState } from 'react';
 
-import { $DatasetViewPagination, licensesObjects } from '@databank/core';
-import type { $TabularDataset } from '@databank/core';
+import { $DatasetViewPagination, $TabularDataset, licensesObjects } from '@databank/core';
 import { capitalize } from '@douglasneuroinformatics/libjs';
 import { Button, Card, DropdownMenu, Heading, HoverCard } from '@douglasneuroinformatics/libui/components';
 import {
@@ -56,7 +55,7 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
         columnPaginationDto,
         rowPaginationDto
       });
-      return response.data;
+      return $TabularDataset.parse(response.data);
     },
     queryKey: ['dataset-query', params.datasetId, columnPaginationDto, rowPaginationDto]
   });

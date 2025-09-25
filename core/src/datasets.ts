@@ -72,7 +72,8 @@ const $ProjectTabularDatasetView = $TabularDatasetView.omit({
 });
 type $ProjectTabularDatasetView = z.infer<typeof $ProjectTabularDatasetView>;
 
-type $TabularDataset = $DatasetInfo & $TabularDatasetView;
+const $TabularDataset = $DatasetInfo.and($TabularDatasetView);
+type $TabularDataset = z.infer<typeof $TabularDataset>;
 
 export {
   $CreateDataset,
@@ -84,7 +85,6 @@ export {
   $EditDatasetInfo,
   $PermissionLevel,
   $ProjectTabularDatasetView,
+  $TabularDataset,
   $TabularDatasetView
 };
-
-export type { $TabularDataset };
