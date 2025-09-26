@@ -4,8 +4,8 @@ import { $PermissionLevel, $TabularColumnSummary } from './columns';
 import { $DatasetLicenses } from './licenses';
 
 const $DatasetViewPagination = z.object({
-  currentPage: z.number(),
-  itemsPerPage: z.number()
+  currentPage: z.number().int().gte(1),
+  itemsPerPage: z.number().int().gte(1)
 });
 type $DatasetViewPagination = z.infer<typeof $DatasetViewPagination>;
 
