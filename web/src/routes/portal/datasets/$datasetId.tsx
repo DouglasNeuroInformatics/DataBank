@@ -14,55 +14,45 @@ const $ViewOneDatasetPageSearchParams = z.object({
   rowPagination: $DatasetViewPagination.default({ currentPage: 1, itemsPerPage: 10 })
 });
 
+const getViewDatasetQueryOptions = (
+  datasetId: string,
+  columnPagination: $DatasetViewPagination,
+  rowPagination: $DatasetViewPagination
+) => {
+  const dataQueryUrl = `/v1/datasets/${datasetId}`;
+  return queryOptions({
+    queryFn: async () => {
+      const response = await axios.post<$TabularDataset>(dataQueryUrl, {
+        columnPagination,
+        rowPagination
+      });
+      return $TabularDataset.parse(response.data);
+    },
+    queryKey: [
+      'dataset-query',
+      datasetId,
+      columnPagination.currentPage,
+      columnPagination.itemsPerPage,
+      rowPagination.currentPage,
+      rowPagination.itemsPerPage
+    ]
+  });
+};
+
 export const Route = createFileRoute('/portal/datasets/$datasetId')({
   validateSearch: zodValidator($ViewOneDatasetPageSearchParams),
   loaderDeps: ({ search: { columnPagination, rowPagination } }) => ({ columnPagination, rowPagination }),
   loader: async ({ deps: { columnPagination, rowPagination }, params }) => {
-    const dataQueryUrl = `/v1/datasets/${params.datasetId}`;
-
-    const viewOneDatasetOptions = queryOptions({
-      queryFn: async () => {
-        const response = await axios.post<$TabularDataset>(dataQueryUrl, {
-          columnPagination,
-          rowPagination
-        });
-        return $TabularDataset.parse(response.data);
-      },
-      queryKey: [
-        'dataset-query',
-        params.datasetId,
-        columnPagination.currentPage,
-        columnPagination.itemsPerPage,
-        rowPagination.currentPage,
-        rowPagination.itemsPerPage
-      ]
-    });
-
+    const viewOneDatasetOptions = getViewDatasetQueryOptions(params.datasetId, columnPagination, rowPagination);
     await queryClient.ensureQueryData(viewOneDatasetOptions);
   },
   component: () => {
     const { columnPagination, rowPagination } = useSearch({ from: '/portal/datasets/$datasetId' });
     const params = useParams({ from: '/portal/datasets/$datasetId' });
-    const dataQueryUrl = `/v1/datasets/${params.datasetId}`;
     const downloadDataUrl = `/v1/datasets/download-data/`;
     const downloadMetaDataUrl = `/v1/datasets/download-metadata/`;
-    const viewOneDatasetOptions = queryOptions({
-      queryFn: async () => {
-        const response = await axios.post<$TabularDataset>(dataQueryUrl, {
-          columnPagination,
-          rowPagination
-        });
-        return $TabularDataset.parse(response.data);
-      },
-      queryKey: [
-        'dataset-query',
-        params.datasetId,
-        columnPagination.currentPage,
-        columnPagination.itemsPerPage,
-        rowPagination.currentPage,
-        rowPagination.itemsPerPage
-      ]
-    });
+    const viewOneDatasetOptions = getViewDatasetQueryOptions(params.datasetId, columnPagination, rowPagination);
+
     const datasetQuery = useSuspenseQuery(viewOneDatasetOptions);
     const dataset = datasetQuery.data;
 
