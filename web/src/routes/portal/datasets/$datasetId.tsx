@@ -28,7 +28,14 @@ export const Route = createFileRoute('/portal/datasets/$datasetId')({
         });
         return $TabularDataset.parse(response.data);
       },
-      queryKey: ['dataset-query', params.datasetId, columnPagination, rowPagination]
+      queryKey: [
+        'dataset-query',
+        params.datasetId,
+        columnPagination.currentPage,
+        columnPagination.itemsPerPage,
+        rowPagination.currentPage,
+        rowPagination.itemsPerPage
+      ]
     });
 
     await queryClient.ensureQueryData(viewOneDatasetOptions);
@@ -47,7 +54,14 @@ export const Route = createFileRoute('/portal/datasets/$datasetId')({
         });
         return $TabularDataset.parse(response.data);
       },
-      queryKey: ['dataset-query', params.datasetId, columnPagination, rowPagination]
+      queryKey: [
+        'dataset-query',
+        params.datasetId,
+        columnPagination.currentPage,
+        columnPagination.itemsPerPage,
+        rowPagination.currentPage,
+        rowPagination.itemsPerPage
+      ]
     });
     const datasetQuery = useSuspenseQuery(viewOneDatasetOptions);
     const dataset = datasetQuery.data;
