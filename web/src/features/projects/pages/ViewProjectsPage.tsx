@@ -20,7 +20,7 @@ const ViewProjectsPage = ({ projectsInfoArray }: ViewProjectsPageProps) => {
   const notifications = useNotificationsStore();
 
   const handleCreateProject = () => {
-    if (currentUser?.datasetId.length && currentUser?.datasetId.length > 0) {
+    if (currentUser?.datasetIds.length && currentUser?.datasetIds.length > 0) {
       void navigate({ to: '/portal/projects/create' });
     } else {
       notifications.addNotification({

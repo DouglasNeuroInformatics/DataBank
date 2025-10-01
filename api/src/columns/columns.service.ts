@@ -125,10 +125,13 @@ export class ColumnsService {
       if (!enumSummary?.enumSummary) {
         throw new NotFoundException('Enum summary NOT FOUND!');
       }
+
       await this.columnModel.create({
         data: {
           dataPermission: 'MANAGER',
-          enumData: dataArray,
+          enumData: dataArray.map((entry) => {
+            return { value: String(entry.value) };
+          }),
           kind: 'ENUM',
           name: colSeries.name,
           nullable: colSeries.nullCount() !== 0,
@@ -138,7 +141,14 @@ export class ColumnsService {
           // },
           summary: {
             count: colSeries.len() - colSeries.nullCount(),
-            enumSummary: enumSummary.enumSummary,
+            enumSummary: {
+              distribution: enumSummary.enumSummary.distribution.map((entry) => {
+                return {
+                  '': entry[colSeries.name] ? 'True' : 'False',
+                  count: entry.count as number
+                };
+              })
+            },
             nullCount: colSeries.nullCount()
           },
           summaryPermission: 'MANAGER',

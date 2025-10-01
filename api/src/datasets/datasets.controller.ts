@@ -58,10 +58,10 @@ export class DatasetsController {
   @RouteAccess('public')
   getOnePublicById(
     @Param('id') datasetId: string,
-    @Body('rowPaginationDto') rowPaginationDto: $DatasetViewPagination,
-    @Body('columnPaginationDto') columnPaginationDto: $DatasetViewPagination
+    @Body('rowPagination') rowPagination: $DatasetViewPagination,
+    @Body('columnPagination') columnPagination: $DatasetViewPagination
   ) {
-    return this.datasetsService.getOnePublicById(datasetId, rowPaginationDto, columnPaginationDto);
+    return this.datasetsService.getOnePublicById(datasetId, rowPagination, columnPagination);
   }
 
   @ApiOperation({ summary: 'Download Public Dataset Data' })
@@ -105,14 +105,14 @@ export class DatasetsController {
   getViewById(
     @Param('id') datasetId: string,
     @CurrentUser('id') currentUserId: string,
-    @Body('rowPaginationDto') datasetViewRowPaginationDto: $DatasetViewPagination,
-    @Body('columnPaginationDto') datasetViewColumnPaginationDto: $DatasetViewPagination
+    @Body('rowPagination') datasetViewrowPagination: $DatasetViewPagination,
+    @Body('columnPagination') datasetViewcolumnPagination: $DatasetViewPagination
   ) {
     return this.datasetsService.getViewById(
       datasetId,
       currentUserId,
-      datasetViewRowPaginationDto,
-      datasetViewColumnPaginationDto
+      datasetViewrowPagination,
+      datasetViewcolumnPagination
     );
   }
 

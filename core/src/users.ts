@@ -3,9 +3,12 @@ import { z } from 'zod/v4';
 const $UserRole = z.enum(['ADMIN', 'STANDARD']);
 
 const $CreateUser = z.object({
-  confirmedAt: z.coerce.date().optional(),
+  confirmedAt: z.iso
+    .date()
+    .transform((dateStr) => new Date(dateStr))
+    .nullish(),
 
-  datasetId: z.string().array(),
+  datasetIds: z.string().array(),
 
   email: z.email(),
 
@@ -17,7 +20,10 @@ const $CreateUser = z.object({
 
   role: z.optional($UserRole),
 
-  verifiedAt: z.coerce.date().nullable().optional()
+  verifiedAt: z.iso
+    .date()
+    .transform((dateStr) => new Date(dateStr))
+    .nullish()
 });
 
 type User = {
@@ -36,7 +42,7 @@ const $UpdateUser = $CreateUser.partial();
 
 const $CurrentUser = z.object({
   confirmedAt: z.date().nullish(),
-  datasetId: z.string().array(),
+  datasetIds: z.string().array(),
   email: z.string(),
   firstName: z.string(),
   id: z.string(),

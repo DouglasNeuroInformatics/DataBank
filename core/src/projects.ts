@@ -4,13 +4,13 @@ import { $ColumnType, $TabularColumnInfo, $TabularColumnSummary } from './column
 
 //===================== Project Info ================================
 const $ProjectInfo = z.object({
-  createdAt: z.coerce.date(),
-  description: z.string(),
-  expiry: z.coerce.date(),
-  externalId: z.string(),
+  createdAt: z.iso.date().transform((dateStr) => new Date(dateStr)),
+  description: z.string().nullish(),
+  expiry: z.iso.date().transform((dateStr) => new Date(dateStr)),
+  externalId: z.string().nullish(),
   id: z.string(),
   name: z.string(),
-  updatedAt: z.coerce.date(),
+  updatedAt: z.iso.date().transform((dateStr) => new Date(dateStr)),
   userIds: z.string().array()
 });
 type $ProjectInfo = z.infer<typeof $ProjectInfo>;
@@ -31,8 +31,8 @@ type $ProjectColumnSummary = z.infer<typeof $ProjectColumnSummary>;
 //===================== Project Column Transformation ========================
 const $ProjectDatasetRowConfig = z
   .object({
-    rowMax: z.number().int().nullable(),
-    rowMin: z.number().int().gte(0).default(0)
+    rowMax: z.int().nullable(),
+    rowMin: z.int().gte(0).default(0)
   })
   .refine((data) => data.rowMax === null || data.rowMax >= data.rowMin, {
     message: 'rowMax must be greater than or equal to rowMin'
@@ -40,15 +40,15 @@ const $ProjectDatasetRowConfig = z
 type $ProjectDatasetRowConfig = z.infer<typeof $ProjectDatasetRowConfig>;
 
 const $ProjectDatasetColumnHash = z.object({
-  length: z.number().int().default(10),
+  length: z.int().default(10),
   salt: z.string().nullable()
 });
 type $ProjectDatasetColumnHash = z.infer<typeof $ProjectDatasetColumnHash>;
 
 const $ProjectDatasetColumnTrim = z
   .object({
-    end: z.number().int().nullable(),
-    start: z.number().int().gte(0).default(0)
+    end: z.int().nullable(),
+    start: z.int().gte(0).default(0)
   })
   .refine((data) => data.end === null || data.end >= data.start, {
     message: 'end must be greater than or equal to start'
@@ -73,7 +73,7 @@ const $ProjectDataset = z.object({
 const $CreateProject = z.object({
   datasets: $ProjectDataset.array(),
   description: z.string().optional(),
-  expiry: z.coerce.date(),
+  expiry: z.iso.date().transform((dateStr) => new Date(dateStr)),
   externalId: z.string().optional(),
   name: z.string().min(1),
   userIds: z.string().array().min(1)
@@ -100,7 +100,7 @@ const $UpdateProject = z
       })
       .array(),
     description: z.string().optional(),
-    expiry: z.coerce.date(),
+    expiry: z.iso.date().transform((dateStr) => new Date(dateStr)),
     externalId: z.string().optional(),
     name: z.string().min(1),
     userIds: z.string().array().min(1)
@@ -119,16 +119,16 @@ const $GetColumnViewDto = z.object({
   columnId: z.string(),
   hash: z
     .object({
-      length: z.number().int().gte(0),
+      length: z.int().gte(0),
       salt: z.string().optional()
     })
     .optional(),
-  rowMax: z.number().int().gte(0).optional(),
-  rowMin: z.number().int().gte(0).optional(),
+  rowMax: z.int().gte(0).optional(),
+  rowMin: z.int().gte(0).optional(),
   trim: z
     .object({
-      end: z.number().int().gte(0).optional(),
-      start: z.number().int().gte(0)
+      end: z.int().gte(0).optional(),
+      start: z.int().gte(0)
     })
     .optional()
 });
@@ -144,9 +144,9 @@ type $ProjectDatasetSelectedColumn = z.infer<typeof $ProjectDatasetSelectedColum
 
 const $ProjectAddDatasetConfig = z.object({
   columnsConfig: z.record(z.string(), $ProjectDatasetColumnConfig),
-  currentColumnIdIndex: z.number().int().default(0),
+  currentColumnIdIndex: z.int().default(0),
   currentStep: $ProjectDatasetConfigStep,
-  pageSize: z.number().int().default(10),
+  pageSize: z.int().default(10),
   rowConfig: $ProjectDatasetRowConfig,
   selectedColumns: z.record(z.string(), $ProjectDatasetSelectedColumn)
 });

@@ -1,7 +1,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { $CreateAdminData, $CreateDataset, $SetupOptions, $SetupState } from '@databank/core';
+import {
+  $CreateAdminData,
+  $CreateDataset,
+  $SetupOptions,
+  $SetupState,
+  createDemoDatasetDto,
+  DEMO_USERS
+} from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
 import { Injectable } from '@nestjs/common';
@@ -20,7 +27,7 @@ export class SetupService {
   ) {}
 
   async getState(): Promise<$SetupState> {
-    return { isSetup: await this.isSetup() };
+    return { isDemo: await this.isDemo(), isSetup: await this.isSetup() };
   }
 
   async getVerificationStrategy(): Promise<UserVerificationStrategy> {
@@ -54,6 +61,24 @@ export class SetupService {
       adminUser.id
     );
 
+    // setup for demo version: create demo users and demo dataset
+    if (setupConfig.isDemo) {
+      for (const user of DEMO_USERS) {
+        const demoUser = await this.usersService.createUser({
+          ...user,
+          datasetIds: [...user.datasetIds]
+        });
+
+        if (user.isDataManager) {
+          await this.datasetsService.createDataset(
+            createDemoDatasetDto,
+            await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'demo-dataset.csv'), 'utf-8'),
+            demoUser.id
+          );
+        }
+      }
+    }
+
     return { success: true };
   }
 
@@ -61,21 +86,29 @@ export class SetupService {
     return this.usersService.createUser({
       ...admin,
       confirmedAt: new Date(),
-      datasetId: [],
+      datasetIds: [],
       role: 'ADMIN',
       verifiedAt: new Date()
     });
   }
 
   private async getSetupConfig(): Promise<SetupConfig> {
-    const setupConfig = await this.setupConfigModel.findFirst({});
+    const setupConfig = await this.setupConfigModel.findFirst();
     if (!setupConfig) {
       throw new ServiceUnavailableException('Application is not setup');
     }
     return setupConfig;
   }
 
+  private async isDemo(): Promise<boolean> {
+    const setupConfig = await this.setupConfigModel.findFirst();
+    if (!setupConfig?.isDemo) {
+      return false;
+    }
+    return true;
+  }
+
   private async isSetup(): Promise<boolean> {
-    return (await this.setupConfigModel.count({})) !== 0;
+    return (await this.setupConfigModel.count()) !== 0;
   }
 }

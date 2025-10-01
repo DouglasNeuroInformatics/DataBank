@@ -5,6 +5,8 @@ import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
 import axios from 'axios';
 
+import { DemoBanner } from '@/components/DemoBanner';
+import { useSetupState } from '@/hooks/useSetupState';
 import { useAuthStore } from '@/stores/auth-store';
 
 import { AuthLayout } from '../components/AuthLayout';
@@ -14,6 +16,8 @@ export const LoginPage = () => {
   const auth = useAuthStore();
   const navigate = useNavigate();
   const { t } = useTranslation('common');
+  const setupState = useSetupState();
+  const isDemo = setupState.data?.isDemo;
 
   useEffect(() => {
     if (auth.accessToken && auth.currentUser?.confirmedAt) {
@@ -42,8 +46,11 @@ export const LoginPage = () => {
   }, []);
 
   return (
-    <AuthLayout maxWidth="sm" title={t('login')}>
-      <LoginForm onSubmit={(data) => void login(data)} />
-    </AuthLayout>
+    <>
+      {isDemo && <DemoBanner onLogin={(credentials: $LoginCredentials) => void login(credentials)} />}
+      <AuthLayout maxWidth="sm" title={t('login')}>
+        <LoginForm onSubmit={(data) => void login(data)} />
+      </AuthLayout>
+    </>
   );
 };

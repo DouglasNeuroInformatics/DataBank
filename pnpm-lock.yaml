@@ -140,6 +140,9 @@ importers:
 
   core:
     dependencies:
+      '@douglasneuroinformatics/libjs':
+        specifier: 'catalog:'
+        version: 3.1.0(neverthrow@8.2.0)(zod@3.25.76)
       '@douglasneuroinformatics/liblicense':
         specifier: ^1.0.0
         version: 1.0.0
@@ -185,6 +188,9 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tanstack/zod-adapter':
+        specifier: ^1.132.7
+        version: 1.132.7(@tanstack/react-router@1.117.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(zod@3.25.76)
       axios:
         specifier: ^1.8.4
         version: 1.8.4
@@ -2914,6 +2920,14 @@ packages:
     resolution:
       { integrity: sha512-XLUh1Py3AftcERrxkxC5Y5m5mfllRH3YR6YVlyjFgI2Tc2Ssy2NKmQFQIafoxfW459UJ8Dn81nWKETEIJifE4g== }
     engines: { node: '>=12' }
+
+  '@tanstack/zod-adapter@1.132.7':
+    resolution:
+      { integrity: sha512-q5Bzo/pyTvAVHdUtOHYJIwpO3vaiNBaXRtSHJ2tLESPFd0CHQdZQhLp+FMWll/hUCIYDkYFW6CzvmDfp3L9Ttg== }
+    engines: { node: '>=12' }
+    peerDependencies:
+      '@tanstack/react-router': '>=1.43.2'
+      zod: ^3.23.8
 
   '@testing-library/dom@10.4.0':
     resolution:
@@ -9695,6 +9709,11 @@ snapshots:
   '@tanstack/virtual-core@3.13.6': {}
 
   '@tanstack/virtual-file-routes@1.115.0': {}
+
+  '@tanstack/zod-adapter@1.132.7(@tanstack/react-router@1.117.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(zod@3.25.76)':
+    dependencies:
+      '@tanstack/react-router': 1.117.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      zod: 3.25.76
 
   '@testing-library/dom@10.4.0':
     dependencies:

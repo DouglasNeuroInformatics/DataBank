@@ -38,8 +38,8 @@ model User {
   confirmedAt DateTime?
 
   verifiedAt DateTime?
-  dataset    Dataset[] @relation(fields: [datasetId], references: [id])
-  datasetId  String[]  @db.ObjectId
+  dataset    Dataset[] @relation(fields: [datasetIds], references: [id])
+  datasetIds String[]  @db.ObjectId
 }
 
 enum UserRole {

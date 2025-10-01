@@ -1,7 +1,7 @@
 import { $CreateUser } from '@databank/core';
 
 export const createUserDtoStubFactory = (): $CreateUser => ({
-  datasetId: [],
+  datasetIds: [],
   email: 'johnsmith@gmail.com',
   firstName: 'John',
   lastName: 'Smith',

@@ -635,6 +635,10 @@
     "en": "Setup Page Title",
     "fr": "Titre de la page de configuration"
   },
+  "isDemoVersion": {
+    "en": "Is this the demo version?",
+    "fr": "Est-ce la version de démonstration ?"
+  },
   "logout": {
     "en": "Logout",
     "fr": "Se déconnecter"
@@ -658,5 +662,31 @@
   "reloadPage": {
     "en": "Reload Page",
     "fr": "Recharger la page"
+  },
+  "demo": {
+    "info": {
+      "en": "Demo Information",
+      "fr": "Informations sur la démonstration"
+    },
+    "tryDemo": {
+      "en": "Try the Demo Now",
+      "fr": "Essayer la démo maintenant"
+    },
+    "role": {
+      "en": "Role",
+      "fr": "Rôle"
+    },
+    "summary": {
+      "en": "This demo includes a number of users with different roles (permission levels) and some demo datasets. To access the platform, please select a user from the options below.",
+      "fr": "Cette démo comprend plusieurs utilisateurs avec différents rôles (niveaux d’autorisation) ainsi que quelques jeux de données de démonstration. Pour accéder à la plateforme, veuillez sélectionner un utilisateur parmi les options ci-dessous."
+    },
+    "useCredentials": {
+      "en": "Use these credentials",
+      "fr": "Utilisez ces informations d'identification"
+    },
+    "welcome": {
+      "en": "Welcome to the Demo Version of Open Data Bank",
+      "fr": "Bienvenue sur la version de démonstration de la plateforme Open Data Bank"
+    }
   }
 }

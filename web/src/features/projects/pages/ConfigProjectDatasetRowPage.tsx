@@ -33,8 +33,8 @@ export const ConfigProjectDatasetRowPage = ({ setRowConfig, setStep }: ConfigPro
       }}
       validationSchema={z
         .object({
-          rowMin: z.number().int().gte(0),
-          rowMax: z.number().int().gte(0).optional()
+          rowMin: z.int().gte(0),
+          rowMax: z.int().gte(0).optional()
         })
         .refine(
           (data) => {

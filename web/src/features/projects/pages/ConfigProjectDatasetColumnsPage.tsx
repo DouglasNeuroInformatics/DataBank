@@ -24,10 +24,10 @@ export const ConfigProjectDatasetColumnsPage = ({
 
     for (const columnId in selectedColumns) {
       formValidationObject[columnId] = z.boolean().default(false);
-      formValidationObject[columnId + 'HashLength'] = z.number().int().gte(0).optional();
+      formValidationObject[columnId + 'HashLength'] = z.int().gte(0).optional();
       formValidationObject[columnId + 'HashSalt'] = z.string().optional();
-      formValidationObject[columnId + 'TrimStart'] = z.number().int().gte(0).optional();
-      formValidationObject[columnId + 'TrimEnd'] = z.number().int().gte(0).optional();
+      formValidationObject[columnId + 'TrimStart'] = z.int().gte(0).optional();
+      formValidationObject[columnId + 'TrimEnd'] = z.int().gte(0).optional();
     }
     return z.object(formValidationObject) as z.ZodType<FormTypes.Data>;
   }, [selectedColumns]);
