@@ -59,11 +59,11 @@ export class DatasetsService {
       );
     }
 
-    const newDatasetIds = managerToAdd.datasetId;
+    const newDatasetIds = managerToAdd.datasetIds;
     newDatasetIds.push(datasetId);
 
     const updateNewManagerDatasetsIds = this.usersService.updateUser(managerToAdd.id, {
-      datasetId: newDatasetIds
+      datasetIds: newDatasetIds
     });
 
     const newManagerIds = dataset.managerIds;
@@ -151,10 +151,10 @@ export class DatasetsService {
 
   async createDataset(createTabularDatasetDto: $CreateDataset, file: Express.Multer.File | string, managerId: string) {
     const currUser = await this.usersService.findById(managerId);
-    if (!currUser.datasetId) {
+    if (!currUser.datasetIds) {
       throw new NotFoundException('User Not Found or datasetId field does not exist in this user!');
     }
-    const datasetIdArr = currUser.datasetId;
+    const datasetIdArr = currUser.datasetIds;
 
     // create base dataset without file
     if (!file) {
@@ -174,7 +174,7 @@ export class DatasetsService {
       datasetIdArr.push(baseDataset.id);
 
       await this.usersService.updateUser(managerId, {
-        datasetId: datasetIdArr
+        datasetIds: datasetIdArr
       });
       return baseDataset;
     }
@@ -242,7 +242,7 @@ export class DatasetsService {
     datasetIdArr.push(dataset.id);
 
     await this.usersService.updateUser(managerId, {
-      datasetId: datasetIdArr
+      datasetIds: datasetIdArr
     });
 
     return dataset;
@@ -273,10 +273,10 @@ export class DatasetsService {
     const updateManagers = [];
 
     for (const manager of managersToUpdate) {
-      const newDatasetId = manager.datasetId.filter((val) => val !== dataset.id);
+      const newDatasetId = manager.datasetIds.filter((val) => val !== dataset.id);
       updateManagers.push(
         this.usersService.updateUser(manager.id, {
-          datasetId: newDatasetId
+          datasetIds: newDatasetId
         })
       );
     }
@@ -908,10 +908,10 @@ export class DatasetsService {
       }
     });
 
-    const newDatasetIds = managerToRemove.datasetId.filter((val) => val !== datasetId);
+    const newDatasetIds = managerToRemove.datasetIds.filter((val) => val !== datasetId);
 
     const updateManagerToRemoveDatasetIds = this.usersService.updateUser(managerIdToRemove, {
-      datasetId: newDatasetIds
+      datasetIds: newDatasetIds
     });
 
     return await this.prisma.$transaction([updateDatasetManagerIds, updateManagerToRemoveDatasetIds]);

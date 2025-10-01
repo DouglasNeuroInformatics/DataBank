@@ -5,7 +5,7 @@ const $UserRole = z.enum(['ADMIN', 'STANDARD']);
 const $CreateUser = z.object({
   confirmedAt: z.coerce.date().optional(),
 
-  datasetId: z.string().array(),
+  datasetIds: z.string().array(),
 
   email: z.email(),
 
@@ -36,7 +36,7 @@ const $UpdateUser = $CreateUser.partial();
 
 const $CurrentUser = z.object({
   confirmedAt: z.date().nullish(),
-  datasetId: z.string().array(),
+  datasetIds: z.string().array(),
   email: z.string(),
   firstName: z.string(),
   id: z.string(),

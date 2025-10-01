@@ -7,7 +7,7 @@ import { $CreateUser } from './users';
 const DEMO_USERS = deepFreeze<$CreateUser[]>([
   {
     confirmedAt: new Date(),
-    datasetId: [],
+    datasetIds: [],
     email: 'data-manager@example.org',
     firstName: 'Jane',
     lastName: 'Doe',
@@ -16,7 +16,7 @@ const DEMO_USERS = deepFreeze<$CreateUser[]>([
   },
   {
     confirmedAt: new Date(),
-    datasetId: [],
+    datasetIds: [],
     email: 'login-user@example.org',
     firstName: 'John',
     lastName: 'Smith',
@@ -24,7 +24,7 @@ const DEMO_USERS = deepFreeze<$CreateUser[]>([
   },
   {
     confirmedAt: new Date(),
-    datasetId: [],
+    datasetIds: [],
     email: 'verified-user@example.org',
     firstName: 'François',
     lastName: 'Bouchard',

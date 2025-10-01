@@ -343,7 +343,7 @@ export class ProjectsService {
     const project = await this.getProjectById(currentUserId, projectId);
 
     const datasetIdSet = new Set();
-    for (const curr_datasetId of user.datasetId) {
+    for (const curr_datasetId of user.datasetIds) {
       datasetIdSet.add(curr_datasetId);
     }
 

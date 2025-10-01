@@ -1,7 +1,7 @@
 import z from 'zod/v4';
 
 const $CreateAccount = z.object({
-  datasetId: z.string().array(),
+  datasetIds: z.string().array(),
   email: z.string().min(1),
   firstName: z.string().min(1),
   lastName: z.string().min(1),

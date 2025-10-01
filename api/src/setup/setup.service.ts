@@ -66,7 +66,7 @@ export class SetupService {
       for (const user of DEMO_USERS) {
         const demoUser = await this.usersService.createUser({
           ...user,
-          datasetId: [...user.datasetId]
+          datasetIds: [...user.datasetIds]
         });
 
         if (demoUser.email === 'data-manager@example.org') {
@@ -86,7 +86,7 @@ export class SetupService {
     return this.usersService.createUser({
       ...admin,
       confirmedAt: new Date(),
-      datasetId: [],
+      datasetIds: [],
       role: 'ADMIN',
       verifiedAt: new Date()
     });

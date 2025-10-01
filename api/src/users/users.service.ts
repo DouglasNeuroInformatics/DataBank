@@ -13,7 +13,7 @@ export class UsersService {
 
   /** Insert a new user into the database */
   async createUser(input: $CreateUser): Promise<Omit<User, 'hashedPassword'>> {
-    const { datasetId, email, firstName, lastName, password } = input;
+    const { datasetIds, email, firstName, lastName, password } = input;
     const userExists = await this.findByEmail(email);
     if (userExists) {
       throw new ConflictException(`User with the provided email already exists: ${email}`);
@@ -22,7 +22,7 @@ export class UsersService {
     const createdUser = await this.userModel.create({
       data: {
         confirmedAt: input.confirmedAt ?? undefined,
-        datasetId,
+        datasetIds,
         email,
         firstName,
         hashedPassword,
@@ -60,7 +60,7 @@ export class UsersService {
   async findManyByDatasetId(datasetId: string) {
     const users = await this.userModel.findMany({
       where: {
-        datasetId: {
+        datasetIds: {
           has: datasetId
         }
       }
@@ -75,7 +75,7 @@ export class UsersService {
 
   async isOwnerOfDatasets(userId: string) {
     const user = await this.findById(userId);
-    return user.datasetId.length > 0 ? true : false;
+    return user.datasetIds.length > 0 ? true : false;
   }
 
   async setVerified(email: string) {
