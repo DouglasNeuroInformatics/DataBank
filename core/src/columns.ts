@@ -7,11 +7,11 @@ const $PermissionLevel = z.enum(['PUBLIC', 'LOGIN', 'VERIFIED', 'MANAGER']);
 type $PermissionLevel = z.infer<typeof $PermissionLevel>;
 
 const $BasicSummary = z.object({
-  count: z.number().int().gte(0),
+  count: z.int().gte(0),
   dataPermission: $PermissionLevel,
   metadataPermission: $PermissionLevel,
   nullable: z.boolean(),
-  nullCount: z.number().int().gte(0)
+  nullCount: z.int().gte(0)
 });
 
 const $TabularColumnInfo = z
@@ -28,11 +28,11 @@ type $TabularColumnInfo = z.infer<typeof $TabularColumnInfo>;
 
 // ---------------------- Column Summaries ---------------------
 const $IntSummary = z.object({
-  max: z.number().int(),
+  max: z.int(),
   mean: z.number(),
   median: z.number(),
-  min: z.number().int(),
-  mode: z.number().int(),
+  min: z.int(),
+  mode: z.int(),
   std: z.number()
 });
 
@@ -40,7 +40,7 @@ const $EnumSummaryFromDB = z.object({
   distribution: z
     .object({
       '': z.string(),
-      count: z.number().int().gte(0)
+      count: z.int().gte(0)
     })
     .array()
 });
@@ -153,14 +153,14 @@ const $RawQueryColumn = z.object({
   description: z.string().nullable(),
   enumData: z.object({ value: z.string().nullable() }).array().nullable(),
   floatData: z.object({ value: z.number().nullable() }).array().nullable(),
-  intData: z.object({ value: z.number().int().nullable() }).array().nullable(),
+  intData: z.object({ value: z.int().nullable() }).array().nullable(),
   kind: $ColumnType,
   name: z.string(),
   nullable: z.boolean(),
   // store the actual data in a pl.series(array) depending on the type of the column
   stringData: z.object({ value: z.string().nullable() }).array().nullable(),
   summary: z.object({
-    count: z.number().int().gte(0),
+    count: z.int().gte(0),
     datetimeSummary: z
       .object({
         max: z.object({ $date: z.coerce.date() }),
@@ -170,7 +170,7 @@ const $RawQueryColumn = z.object({
     enumSummary: $EnumSummaryFromDB.nullable(),
     floatSummary: $FloatSummary.nullable(),
     intSummary: $IntSummary.nullable(),
-    nullCount: z.number().int().gte(0)
+    nullCount: z.int().gte(0)
   }),
   summaryPermission: $PermissionLevel,
   tabularDataId: z.string()
