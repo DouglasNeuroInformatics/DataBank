@@ -69,7 +69,7 @@ export class SetupService {
           datasetIds: [...user.datasetIds]
         });
 
-        if (demoUser.email === 'data-manager@example.org') {
+        if (user.isDataManager) {
           await this.datasetsService.createDataset(
             createDemoDatasetDto,
             await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'demo-dataset.csv'), 'utf-8'),

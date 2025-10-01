@@ -1,15 +1,24 @@
 import { deepFreeze } from '@douglasneuroinformatics/libjs';
+import z from 'zod/v4';
 
 import { $LoginCredentials } from './auth';
 import { $CreateDataset } from './datasets';
 import { $CreateUser } from './users';
 
-const DEMO_USERS = deepFreeze<$CreateUser[]>([
+const $CreateDemoUser = $CreateUser.and(
+  z.object({
+    isDataManager: z.boolean().optional()
+  })
+);
+type $CreateDemoUser = z.infer<typeof $CreateDemoUser>;
+
+const DEMO_USERS = deepFreeze<$CreateDemoUser[]>([
   {
     confirmedAt: new Date(),
     datasetIds: [],
     email: 'data-manager@example.org',
     firstName: 'Jane',
+    isDataManager: true,
     lastName: 'Doe',
     password: 'data-manager-dnp',
     verifiedAt: new Date()
