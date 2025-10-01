@@ -121,10 +121,6 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
     );
   };
 
-  console.log('##########################');
-  console.log(tabularDataset.metadata);
-  console.log('##########################');
-
   return (
     <div className="bg-card text-muted-foreground shadow-xs m-3 rounded-md border tracking-tight">
       <Table>
