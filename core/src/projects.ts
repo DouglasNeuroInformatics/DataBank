@@ -4,13 +4,13 @@ import { $ColumnType, $TabularColumnInfo, $TabularColumnSummary } from './column
 
 //===================== Project Info ================================
 const $ProjectInfo = z.object({
-  createdAt: z.coerce.date(),
+  createdAt: z.iso.date().transform((dateStr) => new Date(dateStr)),
   description: z.string().nullish(),
-  expiry: z.coerce.date(),
+  expiry: z.iso.date().transform((dateStr) => new Date(dateStr)),
   externalId: z.string().nullish(),
   id: z.string(),
   name: z.string(),
-  updatedAt: z.coerce.date(),
+  updatedAt: z.iso.date().transform((dateStr) => new Date(dateStr)),
   userIds: z.string().array()
 });
 type $ProjectInfo = z.infer<typeof $ProjectInfo>;
@@ -73,7 +73,7 @@ const $ProjectDataset = z.object({
 const $CreateProject = z.object({
   datasets: $ProjectDataset.array(),
   description: z.string().optional(),
-  expiry: z.coerce.date(),
+  expiry: z.iso.date().transform((dateStr) => new Date(dateStr)),
   externalId: z.string().optional(),
   name: z.string().min(1),
   userIds: z.string().array().min(1)
@@ -100,7 +100,7 @@ const $UpdateProject = z
       })
       .array(),
     description: z.string().optional(),
-    expiry: z.coerce.date(),
+    expiry: z.iso.date().transform((dateStr) => new Date(dateStr)),
     externalId: z.string().optional(),
     name: z.string().min(1),
     userIds: z.string().array().min(1)

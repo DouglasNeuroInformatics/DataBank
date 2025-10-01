@@ -54,8 +54,8 @@ const $FloatSummary = z.object({
 });
 
 const $DatetimeSummary = z.object({
-  max: z.coerce.date(),
-  min: z.coerce.date()
+  max: z.iso.date().transform((dateStr) => new Date(dateStr)),
+  min: z.iso.date().transform((dateStr) => new Date(dateStr))
 });
 
 const $StringColumn = z.object({
@@ -110,7 +110,10 @@ const $EnumColumnSummary = $EnumColumn.omit({ enumData: true });
 const $DatetimeColumn = z.object({
   datetimeData: z.array(
     z.object({
-      value: z.coerce.date().optional()
+      value: z.iso
+        .date()
+        .transform((dateStr) => new Date(dateStr))
+        .optional()
     })
   ),
   datetimeSummary: $DatetimeSummary,
@@ -145,7 +148,10 @@ const $RawQueryColumn = z.object({
   datetimeData: z
     .object({
       value: z.object({
-        $date: z.coerce.date().nullable()
+        $date: z.iso
+          .date()
+          .transform((dateStr) => new Date(dateStr))
+          .nullable()
       })
     })
     .array()
@@ -163,8 +169,8 @@ const $RawQueryColumn = z.object({
     count: z.int().gte(0),
     datetimeSummary: z
       .object({
-        max: z.object({ $date: z.coerce.date() }),
-        min: z.object({ $date: z.coerce.date() })
+        max: z.object({ $date: z.iso.date().transform((dateStr) => new Date(dateStr)) }),
+        min: z.object({ $date: z.iso.date().transform((dateStr) => new Date(dateStr)) })
       })
       .nullable(),
     enumSummary: $EnumSummaryFromDB.nullable(),
