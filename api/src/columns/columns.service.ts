@@ -141,7 +141,14 @@ export class ColumnsService {
           // },
           summary: {
             count: colSeries.len() - colSeries.nullCount(),
-            enumSummary: enumSummary.enumSummary,
+            enumSummary: {
+              distribution: enumSummary.enumSummary.distribution.map((entry) => {
+                return {
+                  '': entry[colSeries.name] ? 'True' : 'False',
+                  count: entry.count as number
+                };
+              })
+            },
             nullCount: colSeries.nullCount()
           },
           summaryPermission: 'MANAGER',
