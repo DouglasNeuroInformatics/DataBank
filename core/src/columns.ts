@@ -54,8 +54,8 @@ const $FloatSummary = z.object({
 });
 
 const $DatetimeSummary = z.object({
-  max: z.date(),
-  min: z.date()
+  max: z.coerce.date(),
+  min: z.coerce.date()
 });
 
 const $StringColumn = z.object({
@@ -110,7 +110,7 @@ const $EnumColumnSummary = $EnumColumn.omit({ enumData: true });
 const $DatetimeColumn = z.object({
   datetimeData: z.array(
     z.object({
-      value: z.date().optional()
+      value: z.coerce.date().optional()
     })
   ),
   datetimeSummary: $DatetimeSummary,
@@ -145,7 +145,7 @@ const $RawQueryColumn = z.object({
   datetimeData: z
     .object({
       value: z.object({
-        $date: z.date().nullable()
+        $date: z.coerce.date().nullable()
       })
     })
     .array()
