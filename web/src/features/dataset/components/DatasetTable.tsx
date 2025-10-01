@@ -6,14 +6,9 @@ import { ChevronDownIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/r
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-import { LoadingFallback } from '@/components';
-
 type DatasetTableProps = Omit<$TabularDataset, 'permission'> & { isManager: boolean; isProject: boolean };
 
 export const DatasetTable = (tabularDataset: DatasetTableProps) => {
-  if (!tabularDataset.metadata) {
-    return <LoadingFallback />;
-  }
   const { t } = useTranslation('common');
   const notifications = useNotificationsStore();
   const queryClient = useQueryClient();
