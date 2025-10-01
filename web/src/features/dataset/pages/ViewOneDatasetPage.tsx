@@ -1,6 +1,4 @@
 /* eslint-disable perfectionist/sort-objects */
-import { useState } from 'react';
-
 import { $DatasetViewPagination, $TabularDataset, licensesObjects } from '@databank/core';
 import { capitalize } from '@douglasneuroinformatics/libjs';
 import { Button, Card, DropdownMenu, Heading, HoverCard } from '@douglasneuroinformatics/libui/components';
@@ -11,7 +9,6 @@ import {
   useTranslation
 } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 
@@ -24,10 +21,20 @@ import { DatasetTable } from '../components/DatasetTable';
 import { useDeleteDataset } from '../hooks/useDeleteDataset';
 
 type ViewOneDatasetPageProps = {
-  isPublic: boolean;
+  columnPagination: $DatasetViewPagination;
+  dataset: $TabularDataset;
+  downloadDataUrl: string;
+  downloadMetaDataUrl: string;
+  rowPagination: $DatasetViewPagination;
 };
 
-const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
+const ViewOneDatasetPage = ({
+  dataset,
+  downloadDataUrl,
+  downloadMetaDataUrl,
+  columnPagination,
+  rowPagination
+}: ViewOneDatasetPageProps) => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
@@ -35,33 +42,22 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
   const download = useDownload();
   const deleteDataset = useDeleteDataset();
   const { currentUser } = useAuthStore();
-  const dataQueryUrl = isPublic ? `/v1/datasets/public/${params.datasetId}` : `/v1/datasets/${params.datasetId}`;
-  const downloadDataUrl = isPublic ? `/v1/datasets/public/download-data/` : `/v1/datasets/download-data/`;
-  const downloadMetaDataUrl = isPublic ? `/v1/datasets/public/download-metadata/` : `/v1/datasets/download-metadata/`;
 
-  const [columnPaginationDto, setColumnPaginationDto] = useState<$DatasetViewPagination>({
-    currentPage: 1,
-    itemsPerPage: 10
-  });
-
-  const [rowPaginationDto, setRowPaginationDto] = useState<$DatasetViewPagination>({
-    currentPage: 1,
-    itemsPerPage: 10
-  });
-
-  const datasetQuery = useQuery({
-    queryFn: async () => {
-      const response = await axios.post<$TabularDataset>(dataQueryUrl, {
-        columnPaginationDto,
-        rowPaginationDto
-      });
-      return $TabularDataset.parse(response.data);
-    },
-    queryKey: ['dataset-query', params.datasetId, columnPaginationDto, rowPaginationDto]
-  });
-
-  const dataset = datasetQuery.data;
   const isManager = currentUser ? Boolean(dataset?.managerIds.includes(currentUser.id)) : false;
+
+  const setColumnPagination = (newPagination: $DatasetViewPagination) => {
+    void navigate({
+      to: '.',
+      search: (prev) => ({ ...prev, columnPagination: newPagination })
+    });
+  };
+
+  const setRowPagination = (newPagination: $DatasetViewPagination) => {
+    void navigate({
+      to: '.',
+      search: (prev) => ({ ...prev, rowPagination: newPagination })
+    });
+  };
 
   const handleDataDownload = (format: 'CSV' | 'TSV', data: $TabularDataset) => {
     const filename = data.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
@@ -185,20 +181,20 @@ const ViewOneDatasetPage = ({ isPublic }: ViewOneDatasetPageProps) => {
               </ul>
 
               <DatasetPagination
-                currentPage={columnPaginationDto.currentPage}
-                itemsPerPage={columnPaginationDto.itemsPerPage}
+                currentPage={columnPagination.currentPage}
+                itemsPerPage={columnPagination.itemsPerPage}
                 kind={'COLUMN'}
-                setDatasetPagination={setColumnPaginationDto}
+                setDatasetPagination={setColumnPagination}
                 totalNumberOfItems={dataset.totalNumberOfColumns}
               />
 
               <DatasetTable isManager={isManager} isProject={false} {...dataset} />
 
               <DatasetPagination
-                currentPage={rowPaginationDto.currentPage}
-                itemsPerPage={rowPaginationDto.itemsPerPage}
+                currentPage={rowPagination.currentPage}
+                itemsPerPage={rowPagination.itemsPerPage}
                 kind={'ROW'}
-                setDatasetPagination={setRowPaginationDto}
+                setDatasetPagination={setRowPagination}
                 totalNumberOfItems={dataset.totalNumberOfRows}
               />
             </Card.Content>
