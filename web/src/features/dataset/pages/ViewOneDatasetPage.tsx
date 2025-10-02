@@ -12,7 +12,6 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import axios from 'axios';
 
-import { LoadingFallback } from '@/components';
 import { PageHeading } from '@/components/PageHeading';
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -92,9 +91,9 @@ const ViewOneDatasetPage = ({
       .catch(console.error);
   });
 
-  if (!dataset) {
-    return <LoadingFallback />;
-  }
+  // if (!dataset) {
+  //   return <LoadingFallback />;
+  // }
 
   const datasetName = capitalize(dataset.name);
 

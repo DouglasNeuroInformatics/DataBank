@@ -29,12 +29,7 @@ const getPublicDatasetQueryOptions = (
       return $TabularDataset.parse(response.data);
     },
     queryKey: [
-      'dataset-query',
-      datasetId,
-      columnPagination.currentPage,
-      columnPagination.itemsPerPage,
-      rowPagination.currentPage,
-      rowPagination.itemsPerPage
+      `public-dataset-query-${datasetId}-colPage-${columnPagination.currentPage}-colItems-${columnPagination.itemsPerPage}-rowPage-${rowPagination.currentPage}-rowItems-${rowPagination.itemsPerPage}`
     ]
   });
 };
