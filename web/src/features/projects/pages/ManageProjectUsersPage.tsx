@@ -11,7 +11,7 @@ const ManageProjectUsersPage = () => {
   const { projectId, userIds } = route.useSearch();
   const { t } = useTranslation('common');
 
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
 
   const addManager = (userEmailToAdd: string) => {
@@ -20,7 +20,7 @@ const ManageProjectUsersPage = () => {
         newUserEmail: userEmailToAdd
       })
       .then(() => {
-        notifications.addNotification({
+        addNotification({
           message: `User with Email ${userEmailToAdd} has been added to the current project`,
           type: 'success'
         });

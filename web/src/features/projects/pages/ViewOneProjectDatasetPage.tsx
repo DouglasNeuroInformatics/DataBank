@@ -23,7 +23,7 @@ import { DatasetTable } from '../../dataset/components/DatasetTable';
 const ViewOneProjectDatasetPage = () => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const params = useParams({ strict: false });
   const [dataset, setDataset] = useState<$TabularDataset | null>(null);
   const download = useDownload();
@@ -60,7 +60,7 @@ const ViewOneProjectDatasetPage = () => {
     axios
       .delete(`/v1/projects/remove-dataset/${params.projectId}/${params.datasetId}`)
       .then(() => {
-        notifications.addNotification({
+        addNotification({
           type: 'success',
           message: `Dataset with Id ${params.datasetId} has been deleted`
         });

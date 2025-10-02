@@ -17,13 +17,13 @@ const ViewProjectsPage = ({ projectsInfoArray }: ViewProjectsPageProps) => {
   const { currentUser } = useAuthStore();
   const { t } = useTranslation('common');
   const navigate = useNavigate();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
 
   const handleCreateProject = () => {
     if (currentUser?.datasetIds.length && currentUser?.datasetIds.length > 0) {
       void navigate({ to: '/portal/projects/create' });
     } else {
-      notifications.addNotification({
+      addNotification({
         type: 'error',
         message: 'Please upload your own dataset before creating a project!'
       });

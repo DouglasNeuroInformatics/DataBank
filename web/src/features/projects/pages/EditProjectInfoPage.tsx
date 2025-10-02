@@ -27,7 +27,7 @@ type $EditProjectInfoProps = z.infer<typeof $EditProjectInfoProps>;
 const EditProjectInfoPage = ({ name, description, externalId, expiryDate }: $EditProjectInfoProps) => {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
 
   const handleSubmit = useCallback(
@@ -37,7 +37,7 @@ const EditProjectInfoPage = ({ name, description, externalId, expiryDate }: $Edi
           updateProjectDto: data
         })
         .then(() => {
-          notifications.addNotification({ message: 'Project Information Updated!', type: 'success' });
+          addNotification({ message: 'Project Information Updated!', type: 'success' });
           void navigate({ to: `/portal/projects/${params.projectId}` });
         })
         .catch(console.error);

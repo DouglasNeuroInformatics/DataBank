@@ -28,7 +28,7 @@ type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
 
 const CreateDatasetPage = () => {
   const MAX_UPLOAD_FILE_SIZE = 1024 * 1024 * 1024;
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
   const navigate = useNavigate();
 
@@ -65,9 +65,9 @@ const CreateDatasetPage = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      notifications.addNotification({ message: t('createDatasetSuccess'), type: 'success' });
+      addNotification({ message: t('createDatasetSuccess'), type: 'success' });
     } catch {
-      notifications.addNotification({ type: 'error', message: t('createDatasetFailure') });
+      addNotification({ type: 'error', message: t('createDatasetFailure') });
     }
 
     void navigate({
@@ -77,11 +77,11 @@ const CreateDatasetPage = () => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (!acceptedFiles[0]) {
-      notifications.addNotification({ type: 'error', message: 'Unexpected file error' });
+      addNotification({ type: 'error', message: 'Unexpected file error' });
     } else if (!acceptedFiles[0].name.includes('.csv') && !acceptedFiles[0].name.includes('.tsv')) {
-      notifications.addNotification({ type: 'error', message: 'Only CSV or TSV files are allowed!' });
+      addNotification({ type: 'error', message: 'Only CSV or TSV files are allowed!' });
     } else if (acceptedFiles[0].size > MAX_UPLOAD_FILE_SIZE) {
-      notifications.addNotification({ type: 'error', message: 'File size larger than 1 GB' });
+      addNotification({ type: 'error', message: 'File size larger than 1 GB' });
     } else {
       setFile(acceptedFiles[0]);
     }

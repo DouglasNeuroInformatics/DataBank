@@ -16,7 +16,7 @@ type ManagerCardProps = {
 
 const ManagerCard = ({ datasetId, isManager, managerId }: ManagerCardProps) => {
   const { t } = useTranslation('common');
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
   const [user, setUser] = useState<null | User>(null);
   const { currentUser } = useAuthStore();
@@ -34,7 +34,7 @@ const ManagerCard = ({ datasetId, isManager, managerId }: ManagerCardProps) => {
     axios
       .delete(`/v1/datasets/managers/${datasetId}/${managerId}`)
       .then(() => {
-        notifications.addNotification({
+        addNotification({
           message: `User with Id ${managerIdToRemove} has been removed from the dataset`,
           type: 'success'
         });

@@ -36,7 +36,7 @@ const ViewOneDatasetPage = ({
 }: ViewOneDatasetPageProps) => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const params = useParams({ strict: false });
   const download = useDownload();
   const deleteDataset = useDeleteDataset();
@@ -82,7 +82,7 @@ const ViewOneDatasetPage = ({
     axios
       .patch(`/v1/datasets/share/${datasetId}`)
       .then(() => {
-        notifications.addNotification({
+        addNotification({
           type: 'success',
           message: `Dataset with Id ${datasetId} is now ready to share!`
         });

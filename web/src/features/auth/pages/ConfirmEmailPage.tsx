@@ -14,7 +14,7 @@ import { Countdown } from '../components/Countdown';
 
 export const ConfirmEmailPage = () => {
   const auth = useAuthStore();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   const [seconds, setSeconds] = useState<number>();
@@ -41,7 +41,7 @@ export const ConfirmEmailPage = () => {
 
   const verifyCode = async (code: number) => {
     const response = await axios.post<$AuthPayload>('/v1/auth/verify-account', { code });
-    notifications.addNotification({ type: 'success' });
+    addNotification({ type: 'success' });
     auth.setAccessToken(response.data.accessToken);
     void navigate({ to: '/portal/dashboard' });
   };

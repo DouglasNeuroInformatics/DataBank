@@ -31,7 +31,7 @@ type $EditDatasetInfoPageProps = z.infer<typeof $EditDatasetInfoPageProps>;
 const EditDatasetInfoPage = ({ name, description, permission, license }: $EditDatasetInfoPageProps) => {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
 
   const { subscribe, licenseOptions } = useDebounceLicensesFilter();
@@ -50,7 +50,7 @@ const EditDatasetInfoPage = ({ name, description, permission, license }: $EditDa
           editDatasetInfoDto: data
         })
         .then(() => {
-          notifications.addNotification({ message: 'Dataset Information Updated!', type: 'success' });
+          addNotification({ message: 'Dataset Information Updated!', type: 'success' });
           void navigate({ to: `/portal/datasets/${params.datasetId}` });
         })
         .catch(console.error);
