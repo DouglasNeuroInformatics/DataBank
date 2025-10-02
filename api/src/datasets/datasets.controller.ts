@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-classes */
 
-import { $CreateDataset, $DatasetViewPagination, $EditDatasetInfo } from '@databank/core';
+import { $CreateDataset, $DatasetInfo, $DatasetViewPagination, $EditDatasetInfo } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -81,7 +81,7 @@ export class DatasetsController {
   @ApiOperation({ summary: 'Get All Available Datasets' })
   @Get()
   @RouteAccess({ role: 'STANDARD' })
-  getAvailable(@CurrentUser('id') currentUserId: string) {
+  getAvailable(@CurrentUser('id') currentUserId: string): Promise<$DatasetInfo[]> {
     return this.datasetsService.getAvailable(currentUserId);
   }
 

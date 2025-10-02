@@ -520,7 +520,7 @@ export class DatasetsService {
     });
   }
 
-  async getAvailable(currentUserId: string) {
+  async getAvailable(currentUserId: string): Promise<$DatasetInfo[]> {
     const currentUser = await this.usersService.findById(currentUserId);
 
     const availableDatasets = await this.datasetModel.findMany({
