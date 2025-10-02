@@ -36,7 +36,7 @@ const $EditDatasetInfo = z.object({
 type $EditDatasetInfo = z.infer<typeof $EditDatasetInfo>;
 
 const $DatasetInfo = z.object({
-  createdAt: z.iso.date().transform((dateStr) => new Date(dateStr)),
+  createdAt: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
   datasetType: $DatasetType,
   description: z.string().nullable(),
   id: z.string(),
@@ -46,7 +46,7 @@ const $DatasetInfo = z.object({
   name: z.string(),
   permission: $PermissionLevel,
   status: $DatasetStatus,
-  updatedAt: z.iso.date().transform((dateStr) => new Date(dateStr))
+  updatedAt: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()])
 });
 type $DatasetInfo = z.infer<typeof $DatasetInfo>;
 
