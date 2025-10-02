@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import type { $UpdateProject } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { z } from 'zod/v4';
@@ -16,19 +16,13 @@ const $EditProjectInfoDto = z.object({
   expiry: z.date().min(new Date()).optional()
 });
 
-const $EditProjectInfoProps = z.object({
-  name: z.string(),
-  description: z.string().optional(),
-  externalId: z.string().optional(),
-  expiryDate: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()])
-});
-type $EditProjectInfoProps = z.infer<typeof $EditProjectInfoProps>;
-
-const EditProjectInfoPage = ({ name, description, externalId, expiryDate }: $EditProjectInfoProps) => {
+const EditProjectInfoPage = () => {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
+
+  const { name, description, externalId, expiryDate } = useSearch({ from: '/portal/projects/edit-info/$projectId' });
 
   const handleSubmit = useCallback(
     (data: $UpdateProject) => {

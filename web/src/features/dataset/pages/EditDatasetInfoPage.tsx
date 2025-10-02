@@ -1,10 +1,10 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useCallback } from 'react';
 
-import { $DatasetLicenses, $EditDatasetInfo, $PermissionLevel } from '@databank/core';
+import { $DatasetLicenses, $EditDatasetInfo } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { z } from 'zod/v4';
@@ -20,21 +20,15 @@ const $EditDatasetInfoDto = z.object({
   searchLicenseString: z.string().optional()
 });
 
-const $EditDatasetInfoPageProps = z.object({
-  name: z.string(),
-  description: z.string().optional(),
-  permission: $PermissionLevel,
-  license: z.string()
-});
-type $EditDatasetInfoPageProps = z.infer<typeof $EditDatasetInfoPageProps>;
-
-const EditDatasetInfoPage = ({ name, description, permission, license }: $EditDatasetInfoPageProps) => {
+const EditDatasetInfoPage = () => {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
 
   const { subscribe, licenseOptions } = useDebounceLicensesFilter();
+
+  const { name, description, permission, license } = useSearch({ from: '/portal/datasets/edit-info/$datasetId' });
 
   const permissionOption = {
     LOGIN: 'LOGIN',

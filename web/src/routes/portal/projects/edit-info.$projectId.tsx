@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import { createFileRoute, useSearch } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import z from 'zod/v4';
 
 import { EditProjectInfoPage } from '@/features/projects/pages/EditProjectInfoPage';
@@ -15,7 +15,6 @@ type $EditProjectInfoSearchParams = z.infer<typeof $EditProjectInfoSearchParams>
 export const Route = createFileRoute('/portal/projects/edit-info/$projectId')({
   validateSearch: $EditProjectInfoSearchParams,
   component: () => {
-    const EditProjectInfoSearchParams = useSearch({ from: '/portal/projects/edit-info/$projectId' });
-    return <EditProjectInfoPage {...EditProjectInfoSearchParams} />;
+    return <EditProjectInfoPage />;
   }
 });
