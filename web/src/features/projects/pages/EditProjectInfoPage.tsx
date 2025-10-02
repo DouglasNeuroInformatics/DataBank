@@ -1,4 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
+import { useCallback } from 'react';
+
 import type { $UpdateProject } from '@databank/core';
 import { Button, Form, Heading } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -14,23 +16,34 @@ const $EditProjectInfoDto = z.object({
   expiry: z.date().min(new Date()).optional()
 });
 
-const EditProjectInfoPage = () => {
+const $EditProjectInfoProps = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  externalId: z.string().optional(),
+  expiryDate: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()])
+});
+type $EditProjectInfoProps = z.infer<typeof $EditProjectInfoProps>;
+
+const EditProjectInfoPage = ({ name, description, externalId, expiryDate }: $EditProjectInfoProps) => {
   const params = useParams({ strict: false });
   const navigate = useNavigate();
   const notifications = useNotificationsStore();
   const { t } = useTranslation('common');
 
-  const handleSubmit = (data: $UpdateProject) => {
-    axios
-      .patch(`/v1/projects/update/${params.projectId}`, {
-        updateProjectDto: data
-      })
-      .then(() => {
-        notifications.addNotification({ message: 'Project Information Updated!', type: 'success' });
-        void navigate({ to: `/portal/projects/${params.projectId}` });
-      })
-      .catch(console.error);
-  };
+  const handleSubmit = useCallback(
+    (data: $UpdateProject) => {
+      axios
+        .patch(`/v1/projects/update/${params.projectId}`, {
+          updateProjectDto: data
+        })
+        .then(() => {
+          notifications.addNotification({ message: 'Project Information Updated!', type: 'success' });
+          void navigate({ to: `/portal/projects/${params.projectId}` });
+        })
+        .catch(console.error);
+    },
+    [params.projectId]
+  );
 
   return (
     <div className="mt-6 w-full space-y-40 sm:max-w-md">
@@ -52,22 +65,25 @@ const EditProjectInfoPage = () => {
                 name: {
                   kind: 'string',
                   variant: 'input',
-                  label: t('newProjectName')
+                  label: t('newProjectName'),
+                  placeholder: name
                 },
                 description: {
                   kind: 'string',
                   variant: 'input',
-                  label: t('newProjectDescription')
+                  label: t('newProjectDescription'),
+                  placeholder: description
                 },
                 externalId: {
                   kind: 'string',
                   variant: 'input',
                   label: t('newProjectExternalId'),
-                  description: t('projectExternalIdDescription')
+                  description: t('projectExternalIdDescription'),
+                  placeholder: externalId
                 },
                 expiry: {
                   kind: 'date',
-                  label: t('newProjectExpiryDate')
+                  label: `${t('newProjectExpiryDate')} (Current Expiry: ${expiryDate.toISOString()})`
                 }
               }}
               resetBtn={true}

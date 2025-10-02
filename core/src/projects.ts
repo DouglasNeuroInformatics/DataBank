@@ -4,13 +4,13 @@ import { $ColumnType, $TabularColumnInfo, $TabularColumnSummary } from './column
 
 //===================== Project Info ================================
 const $ProjectInfo = z.object({
-  createdAt: z.iso.date().transform((dateStr) => new Date(dateStr)),
+  createdAt: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
   description: z.string().nullish(),
-  expiry: z.iso.date().transform((dateStr) => new Date(dateStr)),
+  expiry: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
   externalId: z.string().nullish(),
   id: z.string(),
   name: z.string(),
-  updatedAt: z.iso.date().transform((dateStr) => new Date(dateStr)),
+  updatedAt: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
   userIds: z.string().array()
 });
 type $ProjectInfo = z.infer<typeof $ProjectInfo>;
@@ -73,7 +73,7 @@ const $ProjectDataset = z.object({
 const $CreateProject = z.object({
   datasets: $ProjectDataset.array(),
   description: z.string().optional(),
-  expiry: z.iso.date().transform((dateStr) => new Date(dateStr)),
+  expiry: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
   externalId: z.string().optional(),
   name: z.string().min(1),
   userIds: z.string().array().min(1)
@@ -100,7 +100,7 @@ const $UpdateProject = z
       })
       .array(),
     description: z.string().optional(),
-    expiry: z.iso.date().transform((dateStr) => new Date(dateStr)),
+    expiry: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
     externalId: z.string().optional(),
     name: z.string().min(1),
     userIds: z.string().array().min(1)

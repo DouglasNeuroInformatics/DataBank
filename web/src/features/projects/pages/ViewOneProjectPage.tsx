@@ -152,7 +152,17 @@ const ViewOneProjectPage = () => {
                 <Button
                   className="m-2"
                   variant={'primary'}
-                  onClick={() => void navigate({ to: `/portal/projects/edit-info/${project.id}` })}
+                  onClick={() =>
+                    void navigate({
+                      to: `/portal/projects/edit-info/${project.id}`,
+                      search: {
+                        name: project.name,
+                        description: project.description,
+                        externalId: project.externalId,
+                        expiryDate: project.expiry
+                      }
+                    })
+                  }
                 >
                   {t('editProjectInfo')}
                 </Button>
