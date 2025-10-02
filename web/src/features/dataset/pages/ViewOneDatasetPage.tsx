@@ -207,7 +207,17 @@ const ViewOneDatasetPage = ({
               <Button
                 className="m-2"
                 variant={'primary'}
-                onClick={() => void navigate({ to: `/portal/datasets/edit-info/${dataset.id}` })}
+                onClick={() =>
+                  void navigate({
+                    to: `/portal/datasets/edit-info/${dataset.id}`,
+                    search: {
+                      name: dataset.name,
+                      description: dataset.description ?? undefined,
+                      license: dataset.license,
+                      permission: dataset.permission
+                    }
+                  })
+                }
               >
                 {t('editDatasetInfo')}
               </Button>
