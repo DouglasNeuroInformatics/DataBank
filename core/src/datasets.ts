@@ -23,7 +23,7 @@ const $CreateDataset = z.object({
   license: $DatasetLicenses,
   name: z.string(),
   permission: $PermissionLevel,
-  primaryKeys: z.string().optional()
+  primaryKeys: z.string().array()
 });
 type $CreateDataset = z.infer<typeof $CreateDataset>;
 

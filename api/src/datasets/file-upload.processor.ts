@@ -27,7 +27,7 @@ export class FileUploadProcessor extends WorkerHost {
       datasetId: string;
       filePath?: string;
       isJSON: boolean;
-      primaryKeys: string;
+      primaryKeys: string[];
       uploadedString?: string;
     };
     const jobData = job.data as FileUploadJobData;
@@ -54,13 +54,7 @@ export class FileUploadProcessor extends WorkerHost {
     }
 
     try {
-      // prepare the primary keys array
-      if (jobData.primaryKeys) {
-        const primaryKeysArray = jobData.primaryKeys.split(',').map((key) => key.trim());
-        await this.tabularDataService.create(df, jobData.datasetId, primaryKeysArray);
-      } else {
-        await this.tabularDataService.create(df, jobData.datasetId, []);
-      }
+      await this.tabularDataService.create(df, jobData.datasetId, jobData.primaryKeys);
       await this.datasetsService.updateDatasetStatus(jobData.datasetId, 'Success');
     } catch (error) {
       this.logger.error(`Error processing file upload: ${(error as Error).message}`, error, FileUploadProcessor.name);
