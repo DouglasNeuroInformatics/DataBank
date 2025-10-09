@@ -19,7 +19,12 @@ const $CreateDatasetFormValidation = z.object({
   datasetType: z.enum(['BASE', 'TABULAR']),
   license: $DatasetLicenses,
   name: z.string().min(1),
-  primaryKeys: z.string().optional(),
+  hasPrimaryKeys: z.boolean(),
+  primaryKeys: z.array(
+    z.object({
+      key: z.string()
+    })
+  ),
   isOpenSource: z.boolean().optional(),
   searchLicenseString: z.string().optional()
 });
@@ -50,7 +55,7 @@ const CreateDatasetPage = () => {
       requestFormData.append('license', String(formData?.license));
       requestFormData.append('name', formData.name);
       requestFormData.append('description', formData.description ?? '');
-      requestFormData.append('primaryKeys', formData?.primaryKeys ?? '');
+      formData.primaryKeys.forEach((entry) => requestFormData.append('primaryKeys', entry.key));
       requestFormData.append('isJSON', 'false');
       requestFormData.append('isReadyToShare', 'false');
       requestFormData.append('permission', 'MANAGER');
@@ -127,15 +132,35 @@ const CreateDatasetPage = () => {
                     },
                     variant: 'select'
                   },
-                  primaryKeys: {
+                  hasPrimaryKeys: {
                     kind: 'dynamic',
                     deps: ['datasetType'],
                     render: (data) => {
                       return data.datasetType === 'TABULAR'
                         ? {
-                            kind: 'string',
-                            variant: 'input',
-                            label: t('primaryKeys')
+                            kind: 'boolean',
+                            label: 'Do you want to add primary keys to your dataset?',
+                            // description: "A set of primary keys can uniquely identify an entry of your dataset. If you skip this step, an automatically generated id column will be added to the beginning of your tabular dataset.",
+                            variant: 'radio'
+                          }
+                        : null;
+                    }
+                  },
+                  primaryKeys: {
+                    kind: 'dynamic',
+                    deps: ['hasPrimaryKeys'],
+                    render: (data) => {
+                      return data.hasPrimaryKeys
+                        ? {
+                            kind: 'record-array',
+                            label: 'Primary Keys',
+                            fieldset: {
+                              key: {
+                                kind: 'string',
+                                variant: 'input',
+                                label: 'Variable/Column Name as a key'
+                              }
+                            }
                           }
                         : null;
                     }
