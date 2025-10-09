@@ -1,4 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
+import { $ISODate } from '@databank/core';
 import { createFileRoute } from '@tanstack/react-router';
 import z from 'zod/v4';
 
@@ -8,7 +9,7 @@ const $EditProjectInfoSearchParams = z.object({
   name: z.string(),
   description: z.string().optional(),
   externalId: z.string().optional(),
-  expiryDate: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()])
+  expiryDate: $ISODate
 });
 type $EditProjectInfoSearchParams = z.infer<typeof $EditProjectInfoSearchParams>;
 
