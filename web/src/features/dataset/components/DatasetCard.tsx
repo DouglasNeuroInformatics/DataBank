@@ -1,7 +1,9 @@
 import type { $DatasetCardProps } from '@databank/core';
-import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
+import { licensesObjects } from '@databank/core';
+import { Badge, Button, Card, Tooltip } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { useNavigate } from '@tanstack/react-router';
+import { InfoIcon } from 'lucide-react';
 
 import { useDeleteDataset } from '../hooks/useDeleteDataset';
 
@@ -48,6 +50,12 @@ const DatasetCard = ({
             </li>
             <li key={id + license}>
               {t('datasetLicense')}: {license}
+              <Tooltip>
+                <Tooltip.Trigger className="mx-1 inline border-0" size="icon">
+                  <InfoIcon />
+                </Tooltip.Trigger>
+                <Tooltip.Content>{licensesObjects[license]?.name}</Tooltip.Content>
+              </Tooltip>
             </li>
             <li key={id + 'managerIds'}>
               {t('managerId')}:{' '}
