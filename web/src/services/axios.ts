@@ -23,9 +23,9 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    const addNotification = useNotificationsStore((state) => state.addNotification);
+    const notifications = useNotificationsStore.getState();
     if (!isAxiosError(error)) {
-      addNotification({
+      notifications.addNotification({
         message: i18n.t({
           en: 'Unknown Error',
           fr: 'Erreur inconnue'
@@ -35,7 +35,7 @@ axios.interceptors.response.use(
       console.error(error);
       return Promise.reject(error as Error);
     }
-    addNotification({
+    notifications.addNotification({
       message: i18n.t({
         en: 'HTTP Request Failed',
         fr: 'Échec de la requête HTTP'
