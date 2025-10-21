@@ -23,7 +23,7 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    const notifications = useNotificationsStore.getState();
+    const addNotification = useNotificationsStore((state) => state.addNotification);
     if (!isAxiosError(error)) {
       addNotification({
         message: i18n.t({
