@@ -26,7 +26,7 @@ export const CreateAccountPage = () => {
   }, [auth.accessToken]);
 
   const createAccount = async (data: CreateAccountData) => {
-    await axios.post('/v1/auth/account', { ...data, datasetId: [] });
+    await axios.post('/v1/auth/account', { ...data, datasetIds: [] });
     addNotification({ message: t('pleaseSignIn'), type: 'success' });
     auth.logout();
     void navigate({ to: '/auth/login' });
