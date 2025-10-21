@@ -1,5 +1,8 @@
 import { z } from 'zod/v4';
 
+const $ISODate = z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]);
+type $ISODate = z.infer<typeof $ISODate>;
+
 const $ColumnType = z.enum(['STRING', 'INT', 'FLOAT', 'ENUM', 'DATETIME']);
 type $ColumnType = z.infer<typeof $ColumnType>;
 
@@ -54,8 +57,8 @@ const $FloatSummary = z.object({
 });
 
 const $DatetimeSummary = z.object({
-  max: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
-  min: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()])
+  max: $ISODate,
+  min: $ISODate
 });
 
 const $StringColumn = z.object({
@@ -169,8 +172,8 @@ const $RawQueryColumn = z.object({
     count: z.int().gte(0),
     datetimeSummary: z
       .object({
-        max: z.object({ $date: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]) }),
-        min: z.object({ $date: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]) })
+        max: z.object({ $date: $ISODate }),
+        min: z.object({ $date: $ISODate })
       })
       .nullable(),
     enumSummary: $EnumSummaryFromDB.nullable(),
@@ -189,6 +192,7 @@ export {
   $EnumColumn,
   $FloatColumn,
   $IntColumn,
+  $ISODate,
   $PermissionLevel,
   $RawQueryColumn,
   $StringColumn,

@@ -12,14 +12,14 @@ const ManageDatasetManagersPage = () => {
   const route = getRouteApi('/portal/datasets/manage-managers');
   const { t } = useTranslation('common');
   const { datasetId, isManager, managerIds } = route.useSearch();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
 
   const addManager = (managerEmailToAdd: string) => {
     axios
       .patch(`/v1/datasets/managers/${datasetId}/${managerEmailToAdd}`)
       .then(() => {
-        notifications.addNotification({
+        addNotification({
           message: `User with Email ${managerEmailToAdd} has been added to the current dataset`,
           type: 'success'
         });

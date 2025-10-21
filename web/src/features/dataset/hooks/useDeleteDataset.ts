@@ -5,7 +5,7 @@ import { useNavigate } from '@tanstack/react-router';
 import axios, { isAxiosError } from 'axios';
 
 export const useDeleteDataset = () => {
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const queryClient = useQueryClient();
   const navigation = useNavigate();
 
@@ -13,7 +13,7 @@ export const useDeleteDataset = () => {
     axios
       .delete(`/v1/datasets/${datasetId}`)
       .then(() => {
-        notifications.addNotification({
+        addNotification({
           message: `Dataset with Id ${datasetId} has been deleted`,
           type: 'success'
         });
@@ -30,7 +30,7 @@ export const useDeleteDataset = () => {
         } else {
           message = 'Unknown Error';
         }
-        notifications.addNotification({
+        addNotification({
           message: `Failed to delete dataset: ${message}`,
           type: 'error'
         });

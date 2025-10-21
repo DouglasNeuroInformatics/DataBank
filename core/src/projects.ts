@@ -1,16 +1,16 @@
 import { z } from 'zod/v4';
 
-import { $ColumnType, $TabularColumnInfo, $TabularColumnSummary } from './columns';
+import { $ColumnType, $ISODate, $TabularColumnInfo, $TabularColumnSummary } from './columns';
 
 //===================== Project Info ================================
 const $ProjectInfo = z.object({
-  createdAt: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
+  createdAt: $ISODate,
   description: z.string().nullish(),
-  expiry: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
+  expiry: $ISODate,
   externalId: z.string().nullish(),
   id: z.string(),
   name: z.string(),
-  updatedAt: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
+  updatedAt: $ISODate,
   userIds: z.string().array()
 });
 type $ProjectInfo = z.infer<typeof $ProjectInfo>;
@@ -73,7 +73,7 @@ const $ProjectDataset = z.object({
 const $CreateProject = z.object({
   datasets: $ProjectDataset.array(),
   description: z.string().optional(),
-  expiry: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
+  expiry: $ISODate,
   externalId: z.string().optional(),
   name: z.string().min(1),
   userIds: z.string().array().min(1)
@@ -100,7 +100,7 @@ const $UpdateProject = z
       })
       .array(),
     description: z.string().optional(),
-    expiry: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
+    expiry: $ISODate,
     externalId: z.string().optional(),
     name: z.string().min(1),
     userIds: z.string().array().min(1)

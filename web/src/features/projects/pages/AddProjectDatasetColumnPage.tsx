@@ -32,7 +32,7 @@ const AddProjectDatasetColumnPage = () => {
   } = useStore(projectDatasetStore);
 
   const navigate = useNavigate();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
 
   type CurrentStep = 'configColumns' | 'configRows' | 'selectColumns';
@@ -83,7 +83,7 @@ const AddProjectDatasetColumnPage = () => {
   const handleSubmitConfig = () => {
     // format the request body here and send to the backend
     if (selectedColumnsIdArray.length === 0) {
-      notifications.addNotification({
+      addNotification({
         message: 'Please select at least one column before finishing.',
         type: 'error'
       });
@@ -100,14 +100,14 @@ const AddProjectDatasetColumnPage = () => {
     axios
       .post(`/v1/projects/add-dataset/${params.projectId}`, { projectDatasetDto: projectDatasetConfig })
       .then(() => {
-        notifications.addNotification({
+        addNotification({
           message: `Added dataset ${params.datasetId} to project ${params.projectId}`,
           type: 'success'
         });
         void navigate({ to: `/portal/projects/${params.projectId}` });
       })
       .catch((error) => {
-        notifications.addNotification({
+        addNotification({
           message: `Failed to add dataset to project: ${error}`,
           type: 'error'
         });

@@ -16,7 +16,7 @@ type UserCardProps = {
 
 const UserCard = ({ projectId, userId, userNumber }: UserCardProps) => {
   const { t } = useTranslation('common');
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
   const [user, setUser] = useState<null | User>(null);
   const { currentUser } = useAuthStore();
@@ -34,7 +34,7 @@ const UserCard = ({ projectId, userId, userNumber }: UserCardProps) => {
     axios
       .delete(`/v1/projects/remove-user/${projectId}/${userId}`)
       .then(() => {
-        notifications.addNotification({
+        addNotification({
           message: `User with Id ${userIdToRemove} has been removed from the project`,
           type: 'success'
         });

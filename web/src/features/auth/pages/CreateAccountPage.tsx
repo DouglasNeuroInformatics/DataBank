@@ -13,7 +13,7 @@ import type { CreateAccountData } from '../components/CreateAccountForm';
 
 export const CreateAccountPage = () => {
   const auth = useAuthStore();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
   const { t } = useTranslation('common');
 
@@ -26,8 +26,8 @@ export const CreateAccountPage = () => {
   }, [auth.accessToken]);
 
   const createAccount = async (data: CreateAccountData) => {
-    await axios.post('/v1/auth/account', { ...data, datasetId: [] });
-    notifications.addNotification({ message: t('pleaseSignIn'), type: 'success' });
+    await axios.post('/v1/auth/account', { ...data, datasetIds: [] });
+    addNotification({ message: t('pleaseSignIn'), type: 'success' });
     auth.logout();
     void navigate({ to: '/auth/login' });
   };

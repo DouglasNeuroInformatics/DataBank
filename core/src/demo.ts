@@ -42,7 +42,7 @@ const DEMO_USERS = deepFreeze<$CreateDemoUser[]>([
   }
 ]);
 
-const createDemoDatasetDto: $CreateDataset = deepFreeze({
+const createDemoDataset: $CreateDataset = {
   datasetType: 'TABULAR',
   description: 'Demo dataset to show various properties of DataBank',
   isJSON: 'false',
@@ -50,7 +50,11 @@ const createDemoDatasetDto: $CreateDataset = deepFreeze({
   license: 'CC0-1.0',
   name: 'Demo Dataset',
   permission: 'MANAGER',
-  primaryKeys: 'name, date_of_birth'
+  primaryKeys: ['name', 'date_of_birth']
+};
+
+const createDemoDatasetData = deepFreeze({
+  ...createDemoDataset
 });
 
 const dataManagerLoginCredentials: $LoginCredentials = deepFreeze({
@@ -68,7 +72,7 @@ const verifiedUserLoginCredentials: $LoginCredentials = deepFreeze({
   password: 'verified-user-dnp'
 });
 export {
-  createDemoDatasetDto,
+  createDemoDatasetData,
   dataManagerLoginCredentials,
   DEMO_USERS,
   loginUserLoginCredentials,

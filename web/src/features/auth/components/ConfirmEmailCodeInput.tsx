@@ -20,7 +20,7 @@ function getUpdatedDigits(digits: (null | number)[], index: number, value: null 
 }
 
 export const ConfirmEmailCodeInput = ({ className, onComplete }: ConfirmEmailCodeInputProps) => {
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
   const [digits, setDigits] = useState<(null | number)[]>([...EMPTY_CODE]);
   const inputRefs = digits.map(() => useRef<HTMLInputElement>(null));
@@ -75,7 +75,7 @@ export const ConfirmEmailCodeInput = ({ className, onComplete }: ConfirmEmailCod
     if (isValid) {
       setDigits(pastedDigits);
     } else {
-      notifications.addNotification({
+      addNotification({
         message: t('invalidCodeFormat'),
         type: 'warning'
       });

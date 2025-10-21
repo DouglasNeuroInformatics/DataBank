@@ -26,7 +26,7 @@ type Project = {
 const ViewOneProjectPage = () => {
   const { projectId } = useParams({ strict: false });
   const [project, setProject] = useState<null | Project>(null);
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const [isManager, setIsManager] = useState(false);
 
   const { t } = useTranslation('common');
@@ -38,7 +38,7 @@ const ViewOneProjectPage = () => {
     axios
       .delete(`/v1/projects/${projectId}`)
       .then(() => {
-        notifications.addNotification({
+        addNotification({
           type: 'success',
           message: `Project with Id ${projectId} has been deleted`
         });

@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-import { $PermissionLevel, $TabularColumnSummary } from './columns';
+import { $ISODate, $PermissionLevel, $TabularColumnSummary } from './columns';
 import { $DatasetLicenses } from './licenses';
 
 const $DatasetViewPagination = z.object({
@@ -23,7 +23,7 @@ const $CreateDataset = z.object({
   license: $DatasetLicenses,
   name: z.string(),
   permission: $PermissionLevel,
-  primaryKeys: z.string().optional()
+  primaryKeys: z.string().array()
 });
 type $CreateDataset = z.infer<typeof $CreateDataset>;
 
@@ -36,7 +36,7 @@ const $EditDatasetInfo = z.object({
 type $EditDatasetInfo = z.infer<typeof $EditDatasetInfo>;
 
 const $DatasetInfo = z.object({
-  createdAt: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()]),
+  createdAt: $ISODate,
   datasetType: $DatasetType,
   description: z.string().nullable(),
   id: z.string(),
@@ -46,7 +46,7 @@ const $DatasetInfo = z.object({
   name: z.string(),
   permission: $PermissionLevel,
   status: $DatasetStatus,
-  updatedAt: z.union([z.iso.datetime().transform((dateStr) => new Date(dateStr)), z.date()])
+  updatedAt: $ISODate
 });
 type $DatasetInfo = z.infer<typeof $DatasetInfo>;
 

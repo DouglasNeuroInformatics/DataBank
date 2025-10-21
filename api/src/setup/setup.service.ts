@@ -6,7 +6,7 @@ import {
   $CreateDataset,
   $SetupOptions,
   $SetupState,
-  createDemoDatasetDto,
+  createDemoDatasetData,
   DEMO_USERS
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
@@ -52,7 +52,7 @@ export class SetupService {
       license: 'CC0-1.0',
       name: 'iris',
       permission: 'PUBLIC',
-      primaryKeys: ''
+      primaryKeys: []
     };
 
     await this.datasetsService.createDataset(
@@ -71,7 +71,10 @@ export class SetupService {
 
         if (user.isDataManager) {
           await this.datasetsService.createDataset(
-            createDemoDatasetDto,
+            {
+              ...createDemoDatasetData,
+              primaryKeys: [...createDemoDatasetData.primaryKeys]
+            },
             await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'demo-dataset.csv'), 'utf-8'),
             demoUser.id
           );

@@ -10,7 +10,7 @@ type DatasetTableProps = Omit<$TabularDataset, 'permission'> & { isManager: bool
 
 export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const { t } = useTranslation('common');
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const queryClient = useQueryClient();
 
   const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: $PermissionLevel) => {
@@ -18,7 +18,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
       permission: newPermissionLevel
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    notifications.addNotification({
+    addNotification({
       message: `The metadata permission level of column with Id ${columnId} has been modified`,
       type: 'success'
     });
@@ -29,7 +29,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
       permission: newPermissionLevel
     });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    notifications.addNotification({
+    addNotification({
       message: `The data permission level of column with Id ${columnId} has been modified`,
       type: 'success'
     });
@@ -38,7 +38,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const handleToggleColumnNullable = async (columnId: string) => {
     await axios.patch(`/v1/datasets/column-nullable/${tabularDataset.id}/${columnId}`);
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    notifications.addNotification({
+    addNotification({
       message: `The nullability of column with Id ${columnId} has been modified`,
       type: 'success'
     });
@@ -47,7 +47,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const handleChangeColumnType = async (columnId: string, type: $ColumnType) => {
     await axios.patch(`/v1/datasets/column-type/${tabularDataset.id}/${columnId}`, { kind: type });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    notifications.addNotification({
+    addNotification({
       message: `The column type of column with Id ${columnId} has been modified`,
       type: 'success'
     });
@@ -56,7 +56,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const handleDeleteColumn = useDestructiveAction(async (columnId: string) => {
     await axios.delete(`/v1/datasets/column/${tabularDataset.id}/${columnId}`);
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    notifications.addNotification({
+    addNotification({
       message: `Column with Id ${columnId} has been deleted`,
       type: 'success'
     });

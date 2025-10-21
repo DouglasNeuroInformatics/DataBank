@@ -21,7 +21,7 @@ const $CreateProjectFormValidation = z.object({
 
 const CreateProjectPage = () => {
   const { currentUser } = useAuthStore();
-  const notifications = useNotificationsStore();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
   const navigate = useNavigate();
 
@@ -39,7 +39,7 @@ const CreateProjectPage = () => {
       userIds: [currentUser?.id],
       ...projectData
     });
-    notifications.addNotification({ message: t('createProjectSuccess'), type: 'success' });
+    addNotification({ message: t('createProjectSuccess'), type: 'success' });
     void navigate({ to: '/portal/projects' });
   };
 
