@@ -16,7 +16,7 @@ type Project = {
   datasets: string[];
   description: string;
   expiry: Date;
-  externalId: string;
+  externalId?: string;
   id: string;
   name: string;
   updatedAt: Date;

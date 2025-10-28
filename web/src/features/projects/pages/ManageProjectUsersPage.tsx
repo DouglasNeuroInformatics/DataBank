@@ -16,15 +16,13 @@ const ManageProjectUsersPage = () => {
 
   const addManager = (userEmailToAdd: string) => {
     axios
-      .post(`/v1/projects/add-user/${projectId}`, {
-        newUserEmail: userEmailToAdd
-      })
+      .post(`/v1/projects/add-user/${projectId}/${userEmailToAdd}`)
       .then(() => {
         addNotification({
           message: `User with Email ${userEmailToAdd} has been added to the current project`,
           type: 'success'
         });
-        void navigate({ to: `/portal/project/${projectId}` });
+        void navigate({ to: `/portal/projects/${projectId}` });
       })
       .catch(console.error);
   };
@@ -35,13 +33,13 @@ const ManageProjectUsersPage = () => {
         content={{
           newManagerEmail: {
             kind: 'string',
-            label: t('newManagerEmail'),
+            label: t('newProjectUserEmail'),
             variant: 'input'
           }
         }}
-        submitBtnLabel={t('addManager')}
+        submitBtnLabel={t('addUser')}
         validationSchema={z.object({
-          newManagerEmail: z.string().email()
+          newManagerEmail: z.email()
         })}
         onSubmit={(data) => {
           addManager(data.newManagerEmail);

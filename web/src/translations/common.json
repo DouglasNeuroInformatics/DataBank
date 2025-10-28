@@ -67,6 +67,10 @@
     "en": "New Manage Email: ",
     "fr": "Nouvel e-mail du gestionnaire :"
   },
+  "newProjectUserEmail": {
+    "en": "New Project User Email: ",
+    "fr": "Courriel du nouvel utilisateur du projet : "
+  },
   "managerFirstName": {
     "en": "Manager First Name: ",
     "fr": "Prénom du gestionnaire :"
