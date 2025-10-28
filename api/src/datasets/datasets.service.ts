@@ -520,7 +520,8 @@ export class DatasetsService {
       where: {
         managerIds: {
           has: currentUserId
-        }
+        },
+        status: 'Success'
       }
     });
   }
