@@ -165,7 +165,11 @@ const CreateDatasetPage = () => {
                             kind: 'boolean',
                             label: 'Do you want to add primary keys to your dataset?',
                             // description: "A set of primary keys can uniquely identify an entry of your dataset. If you skip this step, an automatically generated id column will be added to the beginning of your tabular dataset.",
-                            variant: 'radio'
+                            variant: 'radio',
+                            options: {
+                              false: 'No',
+                              true: 'Yes'
+                            }
                           }
                         : null;
                     }
@@ -198,7 +202,11 @@ const CreateDatasetPage = () => {
                   isOpenSource: {
                     kind: 'boolean',
                     label: 'Is License Open Source',
-                    variant: 'radio'
+                    variant: 'radio',
+                    options: {
+                      false: 'No',
+                      true: 'Yes'
+                    }
                   },
                   searchLicenseString: {
                     kind: 'string',
