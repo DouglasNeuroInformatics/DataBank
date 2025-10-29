@@ -419,6 +419,22 @@
     "en": "Error: unable to change dataset sharing settings.",
     "fr": "Erreur : impossible de modifier les paramètres de partage du jeu de données."
   },
+  "deleteProjectFailure": {
+    "en": "Error: unable to delete the project.",
+    "fr": "Erreur : impossible de supprimer le projet."
+  },
+  "fetchProjectFailure": {
+    "en": "Error: unable to fetch project details.",
+    "fr": "Erreur : impossible de récupérer les détails du projet."
+  },
+  "isProjectManagerFailure": {
+    "en": "Error: unable to verify project manager status.",
+    "fr": "Erreur : impossible de vérifier le statut de gestionnaire du projet."
+  },
+  "fetchProjectDatasetsFailure": {
+    "en": "Error: unable to fetch datasets for the project.",
+    "fr": "Erreur : impossible de récupérer les jeux de données du projet."
+  },
   "unexpectedValue": {
     "en": "Unexpected Value",
     "fr": "Valeur inattendue"
