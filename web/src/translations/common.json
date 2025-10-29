@@ -375,6 +375,10 @@
     "en": "Error: unable to edit dataset information",
     "fr": "Erreur : impossible de modifier les informations du jeu de données."
   },
+  "editProjectInfoFailure": {
+    "en": "Error: unable to edit project information",
+    "fr": "Erreur : impossible de modifier les informations du projet."
+  },
   "removeDatasetManagerFailure": {
     "en": "Error: unable to remove dataset manager",
     "fr": "Erreur : impossible de supprimer le gestionnaire du jeu de données"

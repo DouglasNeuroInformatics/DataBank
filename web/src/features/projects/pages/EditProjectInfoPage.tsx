@@ -34,7 +34,13 @@ const EditProjectInfoPage = () => {
           addNotification({ message: 'Project Information Updated!', type: 'success' });
           void navigate({ to: `/portal/projects/${params.projectId}` });
         })
-        .catch(console.error);
+        .catch((error) => {
+          console.error(error);
+          addNotification({
+            message: t('editProjectInfoFailure'),
+            type: 'error'
+          });
+        });
     },
     [params.projectId]
   );
