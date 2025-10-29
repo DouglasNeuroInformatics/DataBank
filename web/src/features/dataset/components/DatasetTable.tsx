@@ -189,7 +189,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                       <ChevronDownIcon className="w-3" />
                     </div>
                   </DropdownMenu.Trigger>
-                  <DropdownMenu.Content className="w-56">
+                  <DropdownMenu.Content className="w-64">
                     {tabularDataset.isManager && (
                       <>
                         <DropdownMenu.Group>
