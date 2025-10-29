@@ -367,6 +367,10 @@
     "en": "Error: unable to created dataset",
     "fr": "Erreur : impossible de créer la base de données"
   },
+  "fetchDatasetFailure": {
+    "en": "Error: unable to find dataset owned by the current user",
+    "fr": "Erreur : impossible de trouver un jeu de données appartenant à l'utilisateur actuel"
+  },
   "editDatasetInfoFailure": {
     "en": "Error: unable to edit dataset information",
     "fr": "Erreur : impossible de modifier les informations du jeu de données."
