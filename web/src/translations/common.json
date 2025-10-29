@@ -383,6 +383,18 @@
     "en": "Error: unable to add project user. Please make sure you enter the correct email address.",
     "fr": "Erreur : impossible d'ajouter l'utilisateur au projet. Veuillez vous assurer que vous avez saisi la bonne adresse courriel."
   },
+  "downloadDatasetDataFailure": {
+    "en": "Error: unable to download dataset data.",
+    "fr": "Erreur : impossible de télécharger les données du jeu de données."
+  },
+  "downloadDatasetMetadataFailure": {
+    "en": "Error: unable to download dataset metadata.",
+    "fr": "Erreur : impossible de télécharger les métadonnées du jeu de données."
+  },
+  "setDatasetSharableFailure": {
+    "en": "Error: unable to change dataset sharing settings.",
+    "fr": "Erreur : impossible de modifier les paramètres de partage du jeu de données."
+  },
   "unexpectedValue": {
     "en": "Unexpected Value",
     "fr": "Valeur inattendue"

@@ -65,7 +65,13 @@ const ViewOneDatasetPage = ({
       .then((response) => {
         void download(filename, response.data);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('downloadDatasetDataFailure'),
+          type: 'error'
+        });
+      });
   };
 
   const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: $TabularDataset) => {
@@ -75,7 +81,13 @@ const ViewOneDatasetPage = ({
       .then((response) => {
         void download(filename, response.data);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('downloadDatasetMetadataFailure'),
+          type: 'error'
+        });
+      });
   };
 
   const handleSetReadyToShare = useDestructiveAction((datasetId: string) => {
@@ -88,7 +100,13 @@ const ViewOneDatasetPage = ({
         });
         void navigate({ to: '/portal/datasets' });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('setDatasetSharableFailure'),
+          type: 'error'
+        });
+      });
   });
 
   // if (!dataset) {
