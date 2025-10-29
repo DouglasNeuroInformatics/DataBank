@@ -13,53 +13,107 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const queryClient = useQueryClient();
 
-  const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: $PermissionLevel) => {
-    await axios.patch(`/v1/datasets/column-metadata-permission/${tabularDataset.id}/${columnId}`, {
-      permission: newPermissionLevel
-    });
-    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    addNotification({
-      message: `The metadata permission level of column with Id ${columnId} has been modified`,
-      type: 'success'
-    });
-  };
+  const handleSetColumnMetadataPermissionLevel = useDestructiveAction(
+    async (columnId: string, newPermissionLevel: $PermissionLevel) => {
+      await axios
+        .patch(`/v1/datasets/column-metadata-permission/${tabularDataset.id}/${columnId}`, {
+          permission: newPermissionLevel
+        })
+        .then(() => {
+          addNotification({
+            message: `The metadata permission level of column with Id ${columnId} has been modified`,
+            type: 'success'
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          addNotification({
+            message: t('setColumnMetadataPermissionFailure'),
+            type: 'error'
+          });
+        });
+      await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    }
+  );
 
-  const handleSetColumnDataPermissionLevel = async (columnId: string, newPermissionLevel: $PermissionLevel) => {
-    await axios.patch(`/v1/datasets/column-data-permission/${tabularDataset.id}/${columnId}`, {
-      permission: newPermissionLevel
-    });
-    await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    addNotification({
-      message: `The data permission level of column with Id ${columnId} has been modified`,
-      type: 'success'
-    });
-  };
+  const handleSetColumnDataPermissionLevel = useDestructiveAction(
+    async (columnId: string, newPermissionLevel: $PermissionLevel) => {
+      await axios
+        .patch(`/v1/datasets/column-data-permission/${tabularDataset.id}/${columnId}`, {
+          permission: newPermissionLevel
+        })
+        .then(() => {
+          addNotification({
+            message: `The data permission level of column with Id ${columnId} has been modified`,
+            type: 'success'
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          addNotification({
+            message: t('setColumnDataPermissionFailure'),
+            type: 'error'
+          });
+        });
+      await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
+    }
+  );
 
   const handleToggleColumnNullable = async (columnId: string) => {
-    await axios.patch(`/v1/datasets/column-nullable/${tabularDataset.id}/${columnId}`);
+    await axios
+      .patch(`/v1/datasets/column-nullable/${tabularDataset.id}/${columnId}`)
+      .then(() => {
+        addNotification({
+          message: `The data permission level of column with Id ${columnId} has been modified`,
+          type: 'success'
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('toggleColumnNullableFailure'),
+          type: 'error'
+        });
+      });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    addNotification({
-      message: `The nullability of column with Id ${columnId} has been modified`,
-      type: 'success'
-    });
   };
 
-  const handleChangeColumnType = async (columnId: string, type: $ColumnType) => {
-    await axios.patch(`/v1/datasets/column-type/${tabularDataset.id}/${columnId}`, { kind: type });
+  const handleChangeColumnType = useDestructiveAction(async (columnId: string, type: $ColumnType) => {
+    await axios
+      .patch(`/v1/datasets/column-type/${tabularDataset.id}/${columnId}`, { kind: type })
+      .then(() => {
+        addNotification({
+          message: `The data type of column with Id ${columnId} has been modified`,
+          type: 'success'
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('changeColumnDataTypeFailure'),
+          type: 'error'
+        });
+      });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    addNotification({
-      message: `The column type of column with Id ${columnId} has been modified`,
-      type: 'success'
-    });
-  };
+  });
 
   const handleDeleteColumn = useDestructiveAction(async (columnId: string) => {
-    await axios.delete(`/v1/datasets/column/${tabularDataset.id}/${columnId}`);
+    await axios
+      .delete(`/v1/datasets/column/${tabularDataset.id}/${columnId}`)
+      .then(() => {
+        addNotification({
+          message: `The data type of column with Id ${columnId} has been modified`,
+          type: 'success'
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('deleteColumnFailure'),
+          type: 'error'
+        });
+      });
     await queryClient.invalidateQueries({ queryKey: ['dataset-query'] });
-    addNotification({
-      message: `Column with Id ${columnId} has been deleted`,
-      type: 'success'
-    });
   });
 
   const getSummary = (columnName: string) => {

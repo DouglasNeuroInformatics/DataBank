@@ -435,6 +435,26 @@
     "en": "Error: unable to fetch datasets for the project.",
     "fr": "Erreur : impossible de récupérer les jeux de données du projet."
   },
+  "setColumnMetadataPermissionFailure": {
+    "en": "Error: unable to set column metadata permissions.",
+    "fr": "Erreur : impossible de définir les permissions des métadonnées de la colonne."
+  },
+  "setColumnDataPermissionFailure": {
+    "en": "Error: unable to set column data permissions.",
+    "fr": "Erreur : impossible de définir les permissions des données de la colonne."
+  },
+  "toggleColumnNullableFailure": {
+    "en": "Error: unable to change column nullability.",
+    "fr": "Erreur : impossible de modifier la possibilité de valeur nulle de la colonne."
+  },
+  "changeColumnDataTypeFailure": {
+    "en": "Error: unable to change column data type.",
+    "fr": "Erreur : impossible de modifier le type de données de la colonne."
+  },
+  "deleteColumnFailure": {
+    "en": "Error: unable to delete column.",
+    "fr": "Erreur : impossible de supprimer la colonne."
+  },
   "unexpectedValue": {
     "en": "Unexpected Value",
     "fr": "Valeur inattendue"
