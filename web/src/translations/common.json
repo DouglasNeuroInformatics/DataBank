@@ -383,6 +383,10 @@
     "en": "Error: unable to add project user. Please make sure you enter the correct email address.",
     "fr": "Erreur : impossible d'ajouter l'utilisateur au projet. Veuillez vous assurer que vous avez saisi la bonne adresse courriel."
   },
+  "removeProjectUserFailure": {
+    "en": "Error: unable to remove project user",
+    "fr": "Erreur : impossible de supprimer l'utilisateur du projet"
+  },
   "downloadDatasetDataFailure": {
     "en": "Error: unable to download dataset data.",
     "fr": "Erreur : impossible de télécharger les données du jeu de données."
