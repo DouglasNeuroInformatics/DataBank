@@ -14,7 +14,7 @@ const ManageProjectUsersPage = () => {
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
 
-  const addManager = (userEmailToAdd: string) => {
+  const addProjectUser = (userEmailToAdd: string) => {
     axios
       .post(`/v1/projects/add-user/${projectId}/${userEmailToAdd}`)
       .then(() => {
@@ -24,7 +24,13 @@ const ManageProjectUsersPage = () => {
         });
         void navigate({ to: `/portal/projects/${projectId}` });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('addProjectUserFailure'),
+          type: 'error'
+        });
+      });
   };
 
   return (
@@ -42,7 +48,7 @@ const ManageProjectUsersPage = () => {
           newManagerEmail: z.email()
         })}
         onSubmit={(data) => {
-          addManager(data.newManagerEmail);
+          addProjectUser(data.newManagerEmail);
         }}
       />
       <ul>

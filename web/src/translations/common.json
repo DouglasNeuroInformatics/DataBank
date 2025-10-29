@@ -371,6 +371,18 @@
     "en": "Error: unable to edit dataset information",
     "fr": "Erreur : impossible de modifier les informations du jeu de données."
   },
+  "removeDatasetManagerFailure": {
+    "en": "Error: unable to remove dataset manager",
+    "fr": "Erreur : impossible de supprimer le gestionnaire du jeu de données"
+  },
+  "addDatasetManagerFailure": {
+    "en": "Error: unable to add dataset manager. Please make sure you enter the correct email address.",
+    "fr": "Erreur : impossible d'ajouter le gestionnaire du jeu de données. Veuillez vous assurer que vous avez saisi la bonne adresse courriel."
+  },
+  "addProjectUserFailure": {
+    "en": "Error: unable to add project user. Please make sure you enter the correct email address.",
+    "fr": "Erreur : impossible d'ajouter l'utilisateur au projet. Veuillez vous assurer que vous avez saisi la bonne adresse courriel."
+  },
   "unexpectedValue": {
     "en": "Unexpected Value",
     "fr": "Valeur inattendue"
