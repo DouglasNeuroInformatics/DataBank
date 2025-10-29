@@ -383,6 +383,10 @@
     "en": "Error: unable to edit dataset information",
     "fr": "Erreur : impossible de modifier les informations du jeu de données."
   },
+  "fetchProjectDatasetSummaryFailure": {
+    "en": "Error: unable to fetch the summary for the current project dataset.",
+    "fr": "Erreur : impossible de récupérer le résumé du jeu de données du projet actuel."
+  },
   "editProjectInfoFailure": {
     "en": "Error: unable to edit project information",
     "fr": "Erreur : impossible de modifier les informations du projet."
