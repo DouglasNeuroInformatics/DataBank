@@ -196,10 +196,7 @@ export class ColumnsService {
           // },
           summary: {
             count: colSeries.len() - colSeries.nullCount(),
-            datetimeSummary: {
-              max: new Date(),
-              min: new Date()
-            },
+            datetimeSummary: datetimeSummary.datetimeSummary,
             nullCount: colSeries.nullCount()
           },
           summaryPermission: 'MANAGER',
