@@ -40,7 +40,13 @@ const UserCard = ({ projectId, userId, userNumber }: UserCardProps) => {
         });
         void navigate({ to: `/portal/projects/${projectId}` });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('removeProjectUserFailure'),
+          type: 'error'
+        });
+      });
   };
 
   return (

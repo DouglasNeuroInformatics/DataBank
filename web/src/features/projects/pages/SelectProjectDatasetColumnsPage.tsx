@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { $ProjectColumnSummary, $ProjectDatasetConfigStep } from '@databank/core';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import axios from 'axios';
 
 import { LoadingFallback } from '@/components';
@@ -24,6 +25,8 @@ export const SelectProjectDatasetColumnsPage = ({
   setStep
 }: SelectProjectDatasetColumnsPagePros) => {
   const [data, setData] = useState<$ProjectColumnSummary[]>([]);
+  const addNotification = useNotificationsStore((state) => state.addNotification);
+  const { t } = useTranslation('common');
 
   useEffect(() => {
     axios
@@ -31,7 +34,13 @@ export const SelectProjectDatasetColumnsPage = ({
       .then((response) => {
         setData(response.data);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('fetchProjectDatasetSummaryFailure'),
+          type: 'error'
+        });
+      });
   }, [datasetId]);
 
   return (

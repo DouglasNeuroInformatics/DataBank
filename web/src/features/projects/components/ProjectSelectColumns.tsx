@@ -7,7 +7,7 @@ const formatSummary = (column: $ProjectColumnSummary): string => {
   switch (column.kind) {
     case 'DATETIME':
       return Object.entries(column.datetimeSummary)
-        .map(([key, value]) => `${key}: ${value.toISOString()}`)
+        .map(([key, value]) => `${key}: ${new Date(value).toISOString()}`)
         .join(', ');
     case 'ENUM':
       return column.enumSummary.distribution.map((entry) => `${entry['']}: ${entry.count}`).join(', ');

@@ -40,7 +40,13 @@ const ManagerCard = ({ datasetId, isManager, managerId }: ManagerCardProps) => {
         });
         void navigate({ to: `/portal/datasets` });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('removeDatasetManagerFailure'),
+          type: 'error'
+        });
+      });
   };
 
   return (

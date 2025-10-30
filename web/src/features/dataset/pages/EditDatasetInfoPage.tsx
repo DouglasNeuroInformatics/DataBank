@@ -47,7 +47,13 @@ const EditDatasetInfoPage = () => {
           addNotification({ message: 'Dataset Information Updated!', type: 'success' });
           void navigate({ to: `/portal/datasets/${params.datasetId}` });
         })
-        .catch(console.error);
+        .catch((error) => {
+          console.error(error);
+          addNotification({
+            message: t('editDatasetInfoFailure'),
+            type: 'error'
+          });
+        });
     },
     [params.datasetId]
   );

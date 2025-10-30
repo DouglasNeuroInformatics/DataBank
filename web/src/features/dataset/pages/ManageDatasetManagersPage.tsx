@@ -25,7 +25,13 @@ const ManageDatasetManagersPage = () => {
         });
         void navigate({ to: `/portal/datasets/${datasetId}` });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('addDatasetManagerFailure'),
+          type: 'error'
+        });
+      });
   };
 
   return (

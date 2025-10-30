@@ -49,7 +49,13 @@ const ViewOneProjectDatasetPage = () => {
         .then((response) => {
           setDataset(response.data);
         })
-        .catch(console.error);
+        .catch((error) => {
+          console.error(error);
+          addNotification({
+            message: t('fetchProjectDatasetFailure'),
+            type: 'error'
+          });
+        });
     };
     void fetchDataset();
   }, [columnPaginationDto, rowPaginationDto]);
@@ -66,7 +72,13 @@ const ViewOneProjectDatasetPage = () => {
         });
         void navigate({ to: `/portal/projects/${params.projectId}` });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('deleteProjectDatasetFailure'),
+          type: 'error'
+        });
+      });
   });
 
   const handleDataDownload = async (format: 'CSV' | 'TSV', data: $TabularDataset) => {

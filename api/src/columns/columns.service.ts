@@ -163,10 +163,30 @@ export class ColumnsService {
       if (!datetimeSummary?.datetimeSummary) {
         throw new NotFoundException('Datetime summary NOT FOUND!');
       }
+
+      let datetimeDataArray: { value: Date }[];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      if (colSeries.dtype.toString() === pl.Datetime('us').toString()) {
+        datetimeDataArray = dataArray.map((entry) => {
+          return {
+            value: new Date(Math.floor(entry.value / 1000))
+          };
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      } else if (colSeries.dtype.toString() === pl.Datetime('ns').toString()) {
+        datetimeDataArray = dataArray.map((entry) => {
+          return {
+            value: new Date(Math.floor(entry.value / 1000000))
+          };
+        });
+      } else {
+        datetimeDataArray = dataArray;
+      }
+
       await this.columnModel.create({
         data: {
           dataPermission: 'MANAGER',
-          datetimeData: dataArray,
+          datetimeData: datetimeDataArray,
           kind: 'DATETIME',
           name: colSeries.name,
           nullable: colSeries.nullCount() !== 0,
@@ -870,8 +890,8 @@ export class ColumnsService {
         return {
           count: currSeries.len() - currSeries.nullCount(),
           datetimeSummary: {
-            max: new Date(currSeries.max() * 24 * 3600 * 1000),
-            min: new Date(currSeries.min() * 24 * 3600 * 1000)
+            max: new Date(Math.floor(currSeries.cast(pl.Datetime('ns'), true).max() / 1000000)),
+            min: new Date(Math.floor(currSeries.cast(pl.Datetime('ns'), true).min() / 1000000))
           },
           nullCount: currSeries.nullCount()
         };

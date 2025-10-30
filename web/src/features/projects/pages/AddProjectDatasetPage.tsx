@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { $DatasetCardProps } from '@databank/core';
 import { Card } from '@douglasneuroinformatics/libui/components';
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { getRouteApi } from '@tanstack/react-router';
 import axios from 'axios';
 
@@ -13,6 +13,7 @@ const AddProjectDatasetPage = () => {
   const [datasetsInfoArray, setDatasetsInfoArray] = useState<$DatasetCardProps[] | null>(null);
   const route = getRouteApi('/portal/projects/add-dataset/$projectId');
   const params = route.useParams();
+  const addNotification = useNotificationsStore((state) => state.addNotification);
 
   useEffect(() => {
     axios
@@ -20,7 +21,13 @@ const AddProjectDatasetPage = () => {
       .then((response) => {
         setDatasetsInfoArray(response.data);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('fetchDatasetFailure'),
+          type: 'error'
+        });
+      });
   }, []);
 
   return (
