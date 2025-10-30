@@ -64,7 +64,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
       .patch(`/v1/datasets/column-nullable/${tabularDataset.id}/${columnId}`)
       .then(() => {
         addNotification({
-          message: `The data permission level of column with Id ${columnId} has been modified`,
+          message: `The nullability of column with Id ${columnId} has been modified`,
           type: 'success'
         });
       })
@@ -102,7 +102,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
       .delete(`/v1/datasets/column/${tabularDataset.id}/${columnId}`)
       .then(() => {
         addNotification({
-          message: `The data type of column with Id ${columnId} has been modified`,
+          message: `The column with Id ${columnId} has been deleted.`,
           type: 'success'
         });
       })
