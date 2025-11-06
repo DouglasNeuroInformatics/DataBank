@@ -181,6 +181,11 @@ export class DatasetsService {
 
     // Add a job to the file-upload queue
     let dataset;
+    const primaryKeysArray = createTabularDatasetDto.primaryKeys
+      ? Array.isArray(createTabularDatasetDto.primaryKeys)
+        ? createTabularDatasetDto.primaryKeys
+        : [createTabularDatasetDto.primaryKeys]
+      : [];
     if (typeof file !== 'string') {
       // Resolve once from configuration or env
       await fs.promises.mkdir(this.uploadsDir, { recursive: true });
@@ -210,7 +215,7 @@ export class DatasetsService {
           typeof createTabularDatasetDto.isJSON === 'string'
             ? createTabularDatasetDto.isJSON.toLowerCase() === 'true'
             : Boolean(createTabularDatasetDto.isJSON),
-        primaryKeys: createTabularDatasetDto.primaryKeys ?? undefined
+        primaryKeys: primaryKeysArray
       });
     } else {
       dataset = await this.datasetModel.create({
@@ -234,7 +239,7 @@ export class DatasetsService {
           typeof createTabularDatasetDto.isJSON === 'string'
             ? createTabularDatasetDto.isJSON.toLowerCase() === 'true'
             : Boolean(createTabularDatasetDto.isJSON),
-        primaryKeys: createTabularDatasetDto.primaryKeys,
+        primaryKeys: primaryKeysArray,
         uploadedString: file
       });
     }
@@ -515,7 +520,8 @@ export class DatasetsService {
       where: {
         managerIds: {
           has: currentUserId
-        }
+        },
+        status: 'Success'
       }
     });
   }

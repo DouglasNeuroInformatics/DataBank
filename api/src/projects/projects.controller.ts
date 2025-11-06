@@ -24,12 +24,12 @@ export class ProjectsController {
   }
 
   @ApiOperation({ summary: 'Add a User to a Project' })
-  @Post('add-user/:id')
+  @Post('add-user/:projectId/:userEmailToAdd')
   @RouteAccess({ role: 'STANDARD' })
   addUserToProject(
     @CurrentUser('id') currentUserId: string,
-    @Param('id') projectId: string,
-    @Body('newUserEmail') newUserEmail: string
+    @Param('projectId') projectId: string,
+    @Param('userEmailToAdd') newUserEmail: string
   ) {
     return this.projectsService.addUser(currentUserId, projectId, newUserEmail);
   }

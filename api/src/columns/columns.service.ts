@@ -163,10 +163,31 @@ export class ColumnsService {
       if (!datetimeSummary?.datetimeSummary) {
         throw new NotFoundException('Datetime summary NOT FOUND!');
       }
+
+      let datetimeDataArray: { value: Date | null }[];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      if (colSeries.dtype.toString() === pl.Datetime('us').toString()) {
+        datetimeDataArray = dataArray.map((entry) => {
+          return {
+            value: entry.value === undefined || entry.value === null ? new Date(Math.floor(entry.value / 1000)) : null
+          };
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      } else if (colSeries.dtype.toString() === pl.Datetime('ns').toString()) {
+        datetimeDataArray = dataArray.map((entry) => {
+          return {
+            value:
+              entry.value === undefined || entry.value === null ? new Date(Math.floor(entry.value / 1000000)) : null
+          };
+        });
+      } else {
+        datetimeDataArray = dataArray;
+      }
+
       await this.columnModel.create({
         data: {
           dataPermission: 'MANAGER',
-          datetimeData: dataArray,
+          datetimeData: datetimeDataArray,
           kind: 'DATETIME',
           name: colSeries.name,
           nullable: colSeries.nullCount() !== 0,
@@ -703,7 +724,7 @@ export class ColumnsService {
           data: {
             datetimeColumnValidation: {
               max: new Date(),
-              min: '1970-01-01'
+              min: new Date()
             },
             datetimeData: data.toArray().map((entry: Date) => {
               return { value: entry };
@@ -869,10 +890,13 @@ export class ColumnsService {
       case 'DATETIME':
         return {
           count: currSeries.len() - currSeries.nullCount(),
-          datetimeSummary: {
-            max: new Date(currSeries.max() * 24 * 3600 * 1000),
-            min: new Date(currSeries.min() * 24 * 3600 * 1000)
-          },
+          datetimeSummary:
+            currSeries.len === currSeries.nullCount
+              ? null
+              : {
+                  max: new Date(Math.floor(currSeries.cast(pl.Datetime('ns'), true).max() / 1000000)),
+                  min: new Date(Math.floor(currSeries.cast(pl.Datetime('ns'), true).min() / 1000000))
+                },
           nullCount: currSeries.nullCount()
         };
       case 'ENUM':

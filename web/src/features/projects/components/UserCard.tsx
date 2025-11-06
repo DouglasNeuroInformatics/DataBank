@@ -40,7 +40,13 @@ const UserCard = ({ projectId, userId, userNumber }: UserCardProps) => {
         });
         void navigate({ to: `/portal/projects/${projectId}` });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('removeProjectUserFailure'),
+          type: 'error'
+        });
+      });
   };
 
   return (
@@ -50,13 +56,13 @@ const UserCard = ({ projectId, userId, userNumber }: UserCardProps) => {
           <Card.Content>
             <ul>
               <li key={user.firstName}>
-                {t('userFirstName')}: {user.firstName}
+                {t('userFirstName')} {user.firstName}
               </li>
               <li key={user.lastName}>
-                {t('userLastName')}: {user.lastName}
+                {t('userLastName')} {user.lastName}
               </li>
               <li key={user.email}>
-                {t('userEmail')}: {user.email}
+                {t('userEmail')} {user.email}
               </li>
             </ul>
           </Card.Content>

@@ -1,5 +1,5 @@
 import { LanguageToggle, ThemeToggle, Tooltip } from '@douglasneuroinformatics/libui/components';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 
 import { Logo } from '@/components';
 
@@ -17,9 +17,9 @@ export const DesktopSidebar = ({ isLogIn, navigation }: DesktopSidebarProps) => 
   return (
     <div className="hidden h-full w-20 flex-col bg-slate-800 p-2 text-slate-100 lg:flex">
       <div className="grow">
-        <Link className="flex items-center justify-center" to="/">
+        <div className="flex items-center justify-center">
           <Logo className="h-12 w-12 fill-slate-100" />
-        </Link>
+        </div>
         <hr className="my-3" />
         <nav aria-label="sidebar" className="flex flex-col items-center space-y-3">
           {navigation.map((item) => (

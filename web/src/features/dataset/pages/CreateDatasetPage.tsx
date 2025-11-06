@@ -14,20 +14,45 @@ import { z } from 'zod/v4';
 import { LoadingFallback } from '@/components';
 import { useDebounceLicensesFilter } from '@/hooks/useDebounceLicensesFilter';
 
-const $CreateDatasetFormValidation = z.object({
-  description: z.string().optional(),
-  datasetType: z.enum(['BASE', 'TABULAR']),
-  license: $DatasetLicenses,
-  name: z.string().min(1),
-  hasPrimaryKeys: z.boolean(),
-  primaryKeys: z.array(
-    z.object({
-      key: z.string()
-    })
-  ),
-  isOpenSource: z.boolean().optional(),
-  searchLicenseString: z.string().optional()
-});
+const $CreateDatasetFormValidation = z
+  .object({
+    description: z.string().optional(),
+    datasetType: z.enum(['BASE', 'TABULAR']),
+    license: $DatasetLicenses,
+    name: z.string().min(1),
+    hasPrimaryKeys: z.boolean().optional(),
+    primaryKeys: z
+      .array(
+        z.object({
+          key: z.string()
+        })
+      )
+      .optional(),
+    isOpenSource: z.boolean().optional(),
+    searchLicenseString: z.string().optional()
+  })
+  .check((ctx) => {
+    if (ctx.value.datasetType === 'TABULAR' && ctx.value.hasPrimaryKeys === undefined) {
+      ctx.issues.push({
+        code: 'custom',
+        input: ctx.value.hasPrimaryKeys,
+        message: 'hasPrimaryKeys cannot be undefined for tabular dataset.'
+      });
+    }
+
+    if (
+      ctx.value.datasetType === 'TABULAR' &&
+      ctx.value.hasPrimaryKeys === true &&
+      ctx.value.primaryKeys === undefined
+    ) {
+      ctx.issues.push({
+        code: 'custom',
+        input: ctx.value.primaryKeys,
+        message: 'Must enter at least 1 primary key because hasPrimaryKeys is set to true.'
+      });
+    }
+  });
+// .refine((val)=> val.datasetType === "TABULAR" && val.hasPrimaryKeys === false && val.primaryKeys === undefined, {error: "Must enter at least 1 primary key because hasPrimaryKeys is set to true."});
 
 type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
 
@@ -55,15 +80,14 @@ const CreateDatasetPage = () => {
       requestFormData.append('license', String(formData?.license));
       requestFormData.append('name', formData.name);
       requestFormData.append('description', formData.description ?? '');
-      formData.primaryKeys.forEach((entry) => requestFormData.append('primaryKeys', entry.key));
+      formData.primaryKeys?.forEach((entry) => requestFormData.append('primaryKeys', entry.key));
       requestFormData.append('isJSON', 'false');
       requestFormData.append('isReadyToShare', 'false');
       requestFormData.append('permission', 'MANAGER');
 
-      if (!file) {
-        return;
+      if (file) {
+        requestFormData.append('file', file);
       }
-      requestFormData.append('file', file);
 
       await axios.post('/v1/datasets/create', requestFormData, {
         headers: {
@@ -141,7 +165,11 @@ const CreateDatasetPage = () => {
                             kind: 'boolean',
                             label: 'Do you want to add primary keys to your dataset?',
                             // description: "A set of primary keys can uniquely identify an entry of your dataset. If you skip this step, an automatically generated id column will be added to the beginning of your tabular dataset.",
-                            variant: 'radio'
+                            variant: 'radio',
+                            options: {
+                              false: 'No',
+                              true: 'Yes'
+                            }
                           }
                         : null;
                     }
@@ -174,7 +202,11 @@ const CreateDatasetPage = () => {
                   isOpenSource: {
                     kind: 'boolean',
                     label: 'Is License Open Source',
-                    variant: 'radio'
+                    variant: 'radio',
+                    options: {
+                      false: 'No',
+                      true: 'Yes'
+                    }
                   },
                   searchLicenseString: {
                     kind: 'string',

@@ -341,7 +341,7 @@ export class TabularDataService {
             if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
-              rows[i][col.name] = entry.value.$date ? new Date(entry.value.$date).toDateString() : null;
+              rows[i][col.name] = entry.value ? new Date(entry.value.$date!).toDateString() : null;
             }
           });
 

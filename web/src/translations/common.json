@@ -64,8 +64,12 @@
     "fr": "Gérer les gestionnaires de bases de données"
   },
   "newManagerEmail": {
-    "en": "New Manage Email: ",
+    "en": "New Manager Email: ",
     "fr": "Nouvel e-mail du gestionnaire :"
+  },
+  "newProjectUserEmail": {
+    "en": "New Project User Email: ",
+    "fr": "Courriel du nouvel utilisateur du projet : "
   },
   "managerFirstName": {
     "en": "Manager First Name: ",
@@ -362,6 +366,94 @@
   "createDatasetFailure": {
     "en": "Error: unable to created dataset",
     "fr": "Erreur : impossible de créer la base de données"
+  },
+  "fetchDatasetFailure": {
+    "en": "Error: unable to find dataset owned by the current user",
+    "fr": "Erreur : impossible de trouver un jeu de données appartenant à l'utilisateur actuel"
+  },
+  "fetchProjectDatasetFailure": {
+    "en": "Error: unable to fetch the current project dataset",
+    "fr": "Erreur : impossible de récupérer le jeu de données du projet actuel"
+  },
+  "deleteProjectDatasetFailure": {
+    "en": "Error: unable to delete the current project dataset",
+    "fr": "Erreur : impossible de supprimer le jeu de données du projet actuel"
+  },
+  "editDatasetInfoFailure": {
+    "en": "Error: unable to edit dataset information",
+    "fr": "Erreur : impossible de modifier les informations du jeu de données."
+  },
+  "fetchProjectDatasetSummaryFailure": {
+    "en": "Error: unable to fetch the summary for the current project dataset.",
+    "fr": "Erreur : impossible de récupérer le résumé du jeu de données du projet actuel."
+  },
+  "editProjectInfoFailure": {
+    "en": "Error: unable to edit project information",
+    "fr": "Erreur : impossible de modifier les informations du projet."
+  },
+  "removeDatasetManagerFailure": {
+    "en": "Error: unable to remove dataset manager",
+    "fr": "Erreur : impossible de supprimer le gestionnaire du jeu de données"
+  },
+  "addDatasetManagerFailure": {
+    "en": "Error: unable to add dataset manager. Please make sure you enter the correct email address.",
+    "fr": "Erreur : impossible d'ajouter le gestionnaire du jeu de données. Veuillez vous assurer que vous avez saisi la bonne adresse courriel."
+  },
+  "addProjectUserFailure": {
+    "en": "Error: unable to add project user. Please make sure you enter the correct email address.",
+    "fr": "Erreur : impossible d'ajouter l'utilisateur au projet. Veuillez vous assurer que vous avez saisi la bonne adresse courriel."
+  },
+  "removeProjectUserFailure": {
+    "en": "Error: unable to remove project user",
+    "fr": "Erreur : impossible de supprimer l'utilisateur du projet"
+  },
+  "downloadDatasetDataFailure": {
+    "en": "Error: unable to download dataset data.",
+    "fr": "Erreur : impossible de télécharger les données du jeu de données."
+  },
+  "downloadDatasetMetadataFailure": {
+    "en": "Error: unable to download dataset metadata.",
+    "fr": "Erreur : impossible de télécharger les métadonnées du jeu de données."
+  },
+  "setDatasetSharableFailure": {
+    "en": "Error: unable to change dataset sharing settings.",
+    "fr": "Erreur : impossible de modifier les paramètres de partage du jeu de données."
+  },
+  "deleteProjectFailure": {
+    "en": "Error: unable to delete the project.",
+    "fr": "Erreur : impossible de supprimer le projet."
+  },
+  "fetchProjectFailure": {
+    "en": "Error: unable to fetch project details.",
+    "fr": "Erreur : impossible de récupérer les détails du projet."
+  },
+  "isProjectManagerFailure": {
+    "en": "Error: unable to verify project manager status.",
+    "fr": "Erreur : impossible de vérifier le statut de gestionnaire du projet."
+  },
+  "fetchProjectDatasetsFailure": {
+    "en": "Error: unable to fetch datasets for the project.",
+    "fr": "Erreur : impossible de récupérer les jeux de données du projet."
+  },
+  "setColumnMetadataPermissionFailure": {
+    "en": "Error: unable to set column metadata permissions.",
+    "fr": "Erreur : impossible de définir les permissions des métadonnées de la colonne."
+  },
+  "setColumnDataPermissionFailure": {
+    "en": "Error: unable to set column data permissions.",
+    "fr": "Erreur : impossible de définir les permissions des données de la colonne."
+  },
+  "toggleColumnNullableFailure": {
+    "en": "Error: unable to change column nullability.",
+    "fr": "Erreur : impossible de modifier la possibilité de valeur nulle de la colonne."
+  },
+  "changeColumnDataTypeFailure": {
+    "en": "Error: unable to change column data type.",
+    "fr": "Erreur : impossible de modifier le type de données de la colonne."
+  },
+  "deleteColumnFailure": {
+    "en": "Error: unable to delete column.",
+    "fr": "Erreur : impossible de supprimer la colonne."
   },
   "unexpectedValue": {
     "en": "Unexpected Value",

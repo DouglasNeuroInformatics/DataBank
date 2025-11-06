@@ -73,7 +73,7 @@ export class SetupService {
           await this.datasetsService.createDataset(
             {
               ...createDemoDatasetData,
-              primaryKeys: [...createDemoDatasetData.primaryKeys]
+              primaryKeys: createDemoDatasetData.primaryKeys
             },
             await fs.readFile(path.resolve(import.meta.dirname, 'resources', 'demo-dataset.csv'), 'utf-8'),
             demoUser.id

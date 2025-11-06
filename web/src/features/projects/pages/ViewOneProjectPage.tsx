@@ -16,7 +16,7 @@ type Project = {
   datasets: string[];
   description: string;
   expiry: Date;
-  externalId: string;
+  externalId?: string;
   id: string;
   name: string;
   updatedAt: Date;
@@ -44,7 +44,13 @@ const ViewOneProjectPage = () => {
         });
         void navigate({ to: '/portal/projects' });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('deleteProjectFailure'),
+          type: 'error'
+        });
+      });
   });
 
   useEffect(() => {
@@ -53,21 +59,39 @@ const ViewOneProjectPage = () => {
       .then((response) => {
         setProject(response.data);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('fetchProjectFailure'),
+          type: 'error'
+        });
+      });
 
     axios
       .get<boolean>(`/v1/projects/is-manager/${projectId}`)
       .then((response) => {
         setIsManager(response.data);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('isProjectManagerFailure'),
+          type: 'error'
+        });
+      });
 
     axios
       .get<$DatasetCardProps[]>(`/v1/projects/datasets/${projectId}`)
       .then((response) => {
         setDatasetsInfoArray(response.data);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('fetchProjectDatasetsFailure'),
+          type: 'error'
+        });
+      });
   }, [projectId]);
 
   return (

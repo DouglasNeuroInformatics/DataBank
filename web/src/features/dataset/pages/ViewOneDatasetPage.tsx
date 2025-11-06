@@ -24,6 +24,7 @@ type ViewOneDatasetPageProps = {
   dataset: $TabularDataset;
   downloadDataUrl: string;
   downloadMetaDataUrl: string;
+  queryKey: string;
   rowPagination: $DatasetViewPagination;
 };
 
@@ -32,7 +33,8 @@ const ViewOneDatasetPage = ({
   downloadDataUrl,
   downloadMetaDataUrl,
   columnPagination,
-  rowPagination
+  rowPagination,
+  queryKey
 }: ViewOneDatasetPageProps) => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
@@ -65,7 +67,13 @@ const ViewOneDatasetPage = ({
       .then((response) => {
         void download(filename, response.data);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('downloadDatasetDataFailure'),
+          type: 'error'
+        });
+      });
   };
 
   const handleMetaDataDownload = (format: 'CSV' | 'TSV', data: $TabularDataset) => {
@@ -75,7 +83,13 @@ const ViewOneDatasetPage = ({
       .then((response) => {
         void download(filename, response.data);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('downloadDatasetMetadataFailure'),
+          type: 'error'
+        });
+      });
   };
 
   const handleSetReadyToShare = useDestructiveAction((datasetId: string) => {
@@ -88,7 +102,13 @@ const ViewOneDatasetPage = ({
         });
         void navigate({ to: '/portal/datasets' });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        addNotification({
+          message: t('setDatasetSharableFailure'),
+          type: 'error'
+        });
+      });
   });
 
   // if (!dataset) {
@@ -187,7 +207,7 @@ const ViewOneDatasetPage = ({
                 totalNumberOfItems={dataset.totalNumberOfColumns}
               />
 
-              <DatasetTable isManager={isManager} isProject={false} {...dataset} />
+              <DatasetTable isManager={isManager} isProject={false} queryKey={queryKey} {...dataset} />
 
               <DatasetPagination
                 currentPage={rowPagination.currentPage}
