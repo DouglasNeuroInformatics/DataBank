@@ -1,6 +1,6 @@
 import { cn } from '@douglasneuroinformatics/libui/utils';
 
-export const Logo = ({ className, ...props }: React.ComponentPropsWithoutRef<'svg'>) => (
+export const Logo = ({ className, ...props }: React.ComponentProps<'svg'>) => (
   <svg
     className={cn('fill-sky-900 dark:fill-slate-100', className)}
     height="1388"

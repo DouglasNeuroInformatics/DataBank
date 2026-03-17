@@ -144,3 +144,5 @@ testemails.txt
 *.tsv
 *.csv
 !demo-dataset.csv
+
+.claude

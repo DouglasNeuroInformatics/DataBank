@@ -10,9 +10,7 @@ const config: StorybookConfig = {
     '@storybook/addon-interactions',
     '@storybook/addon-themes'
   ],
-  docs: {
-    autodocs: 'tag'
-  },
+  docs: {},
   framework: {
     name: '@storybook/react-vite',
     options: {}

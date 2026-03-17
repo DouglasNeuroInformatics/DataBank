@@ -1,13 +1,34 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
-// import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import React from 'react';
 
-import { SetupProvider } from '@/features/setup';
+import { CoreProvider } from '@douglasneuroinformatics/libui/providers';
+import type { QueryClient } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
-export const Route = createRootRoute({
-  component: () => (
-    <SetupProvider>
-      <Outlet />
-      {/* <TanStackRouterDevtools hidden='true' position="bottom-right" /> */}
-    </SetupProvider>
-  )
+import '@/services/axios';
+import '@/services/i18n';
+
+type RouterContext = {
+  queryClient: QueryClient;
+};
+
+const RouteComponent = () => {
+  return (
+    <React.Fragment>
+      <CoreProvider>
+        <Outlet />
+      </CoreProvider>
+      {import.meta.env.DEV && (
+        <div className="hidden md:block">
+          <ReactQueryDevtools buttonPosition="top-right" />
+          <TanStackRouterDevtools position="bottom-right" />
+        </div>
+      )}
+    </React.Fragment>
+  );
+};
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: RouteComponent
 });

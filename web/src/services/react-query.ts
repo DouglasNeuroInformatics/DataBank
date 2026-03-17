@@ -6,6 +6,7 @@ export const queryClient = new QueryClient({
       throwOnError: true
     },
     queries: {
+      staleTime: Infinity,
       throwOnError: true
     }
   }
