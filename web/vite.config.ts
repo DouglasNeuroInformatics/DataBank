@@ -1,10 +1,10 @@
-import fs from 'fs/promises';
-import * as path from 'path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 
 import importMetaEnv from '@import-meta-env/unplugin';
 import tailwindcss from '@tailwindcss/vite';
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
-import react from '@vitejs/plugin-react-swc';
+import tanstackRouter from '@tanstack/router-plugin/vite';
+import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 async function getAppVersion() {
@@ -24,14 +24,12 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(await getAppVersion())
   },
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'es2022'
-    },
-    force: true
-  },
   plugins: [
-    TanStackRouterVite({ autoCodeSplitting: true, target: 'react' }),
+    tanstackRouter({
+      autoCodeSplitting: true,
+      generatedRouteTree: './src/route-tree.ts',
+      target: 'react'
+    }),
     react(),
     tailwindcss(),
     importMetaEnv.vite({
@@ -53,6 +51,7 @@ export default defineConfig({
           port: parseInt(process.env.API_DEV_SERVER_PORT ?? '5500')
         }
       }
-    }
+    },
+    strictPort: true
   }
 });

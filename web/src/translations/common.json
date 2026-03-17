@@ -1,303 +1,119 @@
 {
-  "platformName": {
-    "en": "Open Data Bank",
-    "fr": "Banque de données ouverte"
+  "accountCreated": {
+    "en": "Account Created",
+    "fr": "Compte créé"
   },
-  "platformDescription": {
-    "en": "Open Data Bank is your gateway to a vast repository of research data. It offers an easy-to-use and secure environment for researchers to upload, store, and share their datasets with colleagues and collaborators worldwide. ",
-    "fr": "Open Data Bank est votre porte d'entrée vers un vaste dépôt de données de recherche. La plateforme offre aux chercheurs un environnement facile à utiliser et sécurisé pour télécharger, stocker et partager leurs bases de données avec des collègues et des collaborateurs du monde entier."
+  "addDatasetToProject": {
+    "en": "Add Dataset to Current Project",
+    "fr": "Ajouter une base de données au projet actuel"
   },
-  "getStarted": {
-    "en": "Get started",
-    "fr": "Commencer"
+  "addManager": {
+    "en": "Add Manager",
+    "fr": "Ajouter un gestionnaire"
   },
-  "learnMore": {
-    "en": "Learn more",
-    "fr": "En savoir plus"
+  "addRows": {
+    "en": "Add Rows",
+    "fr": "Ajouter des lignes"
   },
-  "viewDatasets": {
-    "en": "View Datasets",
-    "fr": "Voir les bases de données"
+  "addUser": {
+    "en": "Add User",
+    "fr": "Ajouter un utilisateur"
   },
-  "currentDatasetPermission": {
-    "en": "Current Dataset Permission Level",
-    "fr": "Niveau d'autorisation actuel de l'ensemble de données "
+  "apologizeForInconvenience": {
+    "en": "We apologize for the inconvenience. Please contact us for further assistance.",
+    "fr": "Nous nous excusons pour les inconvénients. Veuillez nous contacter pour obtenir de l'aide."
   },
-  "datasetReadyToShare": {
-    "en": "This dataset is ready to be shared",
-    "fr": "Ce jeu de données est prêt à être partagé"
+  "back": {
+    "en": "Back",
+    "fr": "Retour"
   },
-  "datasetNotReadyToShare": {
-    "en": "This dataset is staged and not ready to be shared",
-    "fr": "Ce jeu de données est en préparation et n'est pas prêt à être partagé"
+  "changeColumnType": {
+    "en": "Change Data Type",
+    "fr": "Modifier le type de données"
   },
-  "home": {
-    "en": "Home Page",
-    "fr": "Page d'accueil"
+  "column": {
+    "en": "Column",
+    "fr": "Colonne"
   },
-  "login": {
-    "en": "Login",
-    "fr": "Connexion"
+  "columnDescription": {
+    "en": "Column Description",
+    "fr": "Description de la colonne"
   },
-  "manageDataset": {
-    "en": "Manage Dataset",
-    "fr": "Gérer la base de données"
+  "columnName": {
+    "en": "Column Name",
+    "fr": "Nom de la colonne"
   },
-  "selectDataset": {
-    "en": "Select Dataset",
-    "fr": "Sélectionner la base de données"
+  "columnNullable": {
+    "en": "Column Nullable",
+    "fr": "Colonne facultative"
   },
-  "viewDataset": {
-    "en": "View Dataset",
-    "fr": "Voir la base de données"
+  "columnPagination": {
+    "en": "Column Page",
+    "fr": "Page des colonnes"
   },
-  "totalDatasets": {
-    "en": "Total Datasets Owned",
-    "fr": "Total des bases de données détenus"
+  "columnsPerPage": {
+    "en": "Columns Per Page",
+    "fr": "Colonnes par page"
   },
-  "totalProjects": {
-    "en": "Total Projects Owned",
-    "fr": "Total des projets détenus"
+  "confirm": {
+    "en": "Confirm",
+    "fr": "Confirmer"
   },
-  "manageDatasetManagers": {
-    "en": "Manage Dataset Managers",
-    "fr": "Gérer les gestionnaires de bases de données"
+  "confirmCreateBaseDataset": {
+    "en": "Please confirm that you want to create a BASE dataset without any files",
+    "fr": "Veuillez confirmer la création d'une base de données de BASE sans aucun fichier."
   },
-  "newManagerEmail": {
-    "en": "New Manage Email: ",
-    "fr": "Nouvel e-mail du gestionnaire :"
-  },
-  "managerFirstName": {
-    "en": "Manager First Name: ",
-    "fr": "Prénom du gestionnaire :"
-  },
-  "managerLastName": {
-    "en": "Manager Last Name: ",
-    "fr": "Nom de famille du gestionnaire :"
-  },
-  "managerEmail": {
-    "en": "Manager Email: ",
-    "fr": "E-mail du gestionnaire :"
-  },
-  "delete": {
-    "en": "Delete",
-    "fr": "Supprimer"
-  },
-  "publicDatasets": {
-    "en": "Public Datasets",
-    "fr": "Bases de données publiques"
+  "contactOwner": {
+    "en": "Contact owner",
+    "fr": "Contacter le propriétaire"
   },
   "createAccount": {
     "en": "Create Account",
     "fr": "Créer un compte"
   },
-  "viewPublicDatasets": {
-    "en": "View Public Datasets",
-    "fr": "Voir les bases de données publiques"
-  },
-  "verifyAccount": {
-    "en": "Verify Account",
-    "fr": "Vérifier le compte"
-  },
-  "verificationMethods": {
-    "en": "Verification Methods",
-    "fr": "Méthodes de vérification"
-  },
-  "manualVerification": {
-    "en": "Manual Verification",
-    "fr": "Vérification manuelle"
-  },
-  "verifyWhenConfirmEmail": {
-    "en": "Verify When Confirming Email",
-    "fr": "Vérifier lors de la confirmation de l'e-mail"
-  },
-  "verifyWithEmailRegex": {
-    "en": "Verify With Email Regex",
-    "fr": "Vérifier avec l'expression régulière de l'e-mail"
-  },
-  "verificationSectionTitle": {
-    "en": "User Verification Options",
-    "fr": "Options de vérification de l'utilisateur"
-  },
-  "verificationSectionDescription": {
-    "en": "Admin selects the method for user verification",
-    "fr": "L'administrateur sélectionne la méthode de vérification de l'utilisateur"
-  },
-  "regularExpression": {
-    "en": "Regular Expression",
-    "fr": "Expression régulière"
-  },
-  "pleaseSignIn": {
-    "en": "Please sign in",
-    "fr": "Veuillez vous connecter"
-  },
-  "accountCreated": {
-    "en": "Account Created",
-    "fr": "Compte créé"
-  },
-  "invalidCodeFormat": {
-    "en": "Invalid code format",
-    "fr": "Format de code invalide"
-  },
-  "timeRemaining": {
-    "en": "Time Remaining",
-    "fr": "Temps restant"
-  },
-  "email": {
-    "en": "Email",
-    "fr": "E-mail"
-  },
-  "firstName": {
-    "en": "First Name",
-    "fr": "Prénom"
-  },
-  "lastName": {
-    "en": "Last Name",
-    "fr": "Nom de famille"
-  },
-  "password": {
-    "en": "Password",
-    "fr": "Mot de passe"
-  },
-  "submit": {
-    "en": "Submit",
-    "fr": "Soumettre"
-  },
-  "restart": {
-    "en": "Restart",
-    "fr": "Recommencer"
-  },
-  "schemaValidationFailed": {
-    "en": "Schema Validation Failed",
-    "fr": "Échec de la validation du schéma"
-  },
-  "viewProjects": {
-    "en": "View Projects",
-    "fr": "Voir les projets"
-  },
-  "projectName": {
-    "en": "Project Name",
-    "fr": "Nom du projet"
-  },
-  "projectId": {
-    "en": "Project Id",
-    "fr": "ID du projet"
-  },
-  "userId": {
-    "en": "User Id",
-    "fr": "ID de l'utilisateur"
-  },
-  "managerId": {
-    "en": "Manager Id",
-    "fr": "ID du gestionnaire"
-  },
-  "manageProjectUsers": {
-    "en": "Manage Project Users",
-    "fr": "Gérer les utilisateurs du projet"
-  },
-  "projectDescription": {
-    "en": "Project Description",
-    "fr": "Description du projet"
-  },
-  "projectExternalId": {
-    "en": "Project External ID",
-    "fr": "ID externe du projet"
-  },
-  "projectExpiry": {
-    "en": "Project Expiry",
-    "fr": "Expiration du projet"
-  },
-  "projectDatasets": {
-    "en": "Project Datasets",
-    "fr": "Bases de données des projets"
-  },
-  "projectDataset": {
-    "en": "Project Dataset",
-    "fr": "Base de données du projet"
-  },
-  "viewProjectDataset": {
-    "en": "View Project Dataset",
-    "fr": "Voir la base de données du projet"
-  },
-  "manageProjectDataset": {
-    "en": "Manage Project Dataset",
-    "fr": "Gérer la base de données du projet"
-  },
-  "manageProject": {
-    "en": "Manage Project",
-    "fr": "Gérer le projet"
-  },
-  "viewProject": {
-    "en": "View Project",
-    "fr": "Voir le projet"
-  },
-  "datasetsAvailableToAdd": {
-    "en": "Datasets Available To Add",
-    "fr": "Bases de données disponibles pour ajout"
-  },
-  "userFirstName": {
-    "en": "User First Name: ",
-    "fr": "Prénom de l'utilisateur : "
-  },
-  "userLastName": {
-    "en": "User Last Name: ",
-    "fr": "Nom de l'utilisateur : "
-  },
-  "userEmail": {
-    "en": "User Email: ",
-    "fr": "E-mail de l'utilisateur : "
-  },
-  "paginationPrevious": {
-    "en": "Previous",
-    "fr": "Précédent"
-  },
-  "paginationNext": {
-    "en": "Next",
-    "fr": "Suivant"
-  },
-  "previousConfigStep": {
-    "en": "Previous Config Step",
-    "fr": "Étape de configuration précédente"
-  },
-  "finishConfig": {
-    "en": "Finish All Configs",
-    "fr": "Terminer toutes les configurations"
-  },
-  "finishColumnSelection": {
-    "en": "Finish Column Selection",
-    "fr": "Terminer la sélection de colonnes"
-  },
-  "dropFile": {
-    "en": "Drop the file here ...",
-    "fr": "Déposez le fichier ici ..."
-  },
-  "dropOrSelectFile": {
-    "en": "Drag and drop the file here, or click to select file",
-    "fr": "Glissez-déposez le fichier ici, ou cliquez pour sélectionner un fichier"
-  },
-  "onlyCsvTsv": {
-    "en": "Only CSV or TSV files are allowed.",
-    "fr": "Seuls les fichiers CSV ou TSV sont autorisés."
-  },
-  "maxFileSize": {
-    "en": "Maximum file size: 1 GB",
-    "fr": "Taille maximale du fichier : 1 Go"
-  },
   "createDataset": {
     "en": "Create Dataset",
-    "fr": "Créer un ensemble de données"
+    "fr": "Créer une base de données"
   },
-  "datasetName": {
-    "en": "Dataset Name",
-    "fr": "Nom de la base de données"
+  "createDatasetFailure": {
+    "en": "Error: unable to created dataset",
+    "fr": "Erreur : impossible de créer la base de données"
   },
-  "datasetId": {
-    "en": "Dataset ID",
-    "fr": "ID de la base de données"
+  "createDatasetSuccess": {
+    "en": "successfully created dataset",
+    "fr": "Base de données créée avec succès"
+  },
+  "createProjectSuccess": {
+    "en": "Successfully created project",
+    "fr": "Projet créé avec succès"
+  },
+  "createdAt": {
+    "en": "Created At",
+    "fr": "Créé le"
+  },
+  "currentDatasetPermission": {
+    "en": "Current Dataset Permission Level",
+    "fr": "Niveau d'autorisation actuel de la base de données"
+  },
+  "dashboard": {
+    "en": "Dashboard",
+    "fr": "Tableau de bord"
+  },
+  "dashboardSummary": {
+    "en": "Dashboard Summary",
+    "fr": "Résumé du tableau de bord"
+  },
+  "dataType": {
+    "en": "Data Type",
+    "fr": "Type de données"
   },
   "datasetDescription": {
     "en": "Dataset Description",
     "fr": "Description de la base de données"
+  },
+  "datasetId": {
+    "en": "Dataset ID",
+    "fr": "ID de la base de données"
   },
   "datasetLicense": {
     "en": "Dataset License",
@@ -311,137 +127,439 @@
     "en": "Dataset License Reference",
     "fr": "Référence de la licence de la base de données"
   },
-  "publicDomain": {
-    "en": "Public Domain",
-    "fr": "Domaine public"
+  "datasetName": {
+    "en": "Dataset Name",
+    "fr": "Nom de la base de données"
   },
-  "other": {
-    "en": "Other",
-    "fr": "Autre"
+  "datasetNotReadyToShare": {
+    "en": "This dataset is staged and not ready to be shared",
+    "fr": "Cette base de données est en cours de préparation et n'est pas prête à être partagée"
   },
   "datasetNullable": {
     "en": "Dataset Nullable",
-    "fr": "Base de données nullable"
+    "fr": "Base de données facultative"
   },
-  "yes": {
-    "en": "Yes",
-    "fr": "Oui"
+  "datasetPrimaryKeys": {
+    "en": "Primary keys",
+    "fr": "Clés primaires"
   },
-  "no": {
-    "en": "No",
-    "fr": "Non"
-  },
-  "back": {
-    "en": "Back",
-    "fr": "Retour"
-  },
-  "confirm": {
-    "en": "Confirm",
-    "fr": "Confirmer"
-  },
-  "confirmCreateBaseDataset": {
-    "en": "Please confirm that you want to create a BASE dataset without any files",
-    "fr": "Veuillez confirmer que vous souhaitez créer une base de données BASE sans aucun fichier."
-  },
-  "datasets": {
-    "en": "Datasets",
-    "fr": "Bases de données"
+  "datasetReadyToShare": {
+    "en": "This dataset is ready to be shared",
+    "fr": "Cette base de données est prête à être partagée"
   },
   "datasetType": {
     "en": "Dataset Type",
     "fr": "Type de base de données"
   },
-  "primaryKeys": {
-    "en": "Primary keys (use , as the delimiter)",
-    "fr": "Clés primaires (utilisez , comme délimiteur)"
+  "datasets": {
+    "en": "Datasets",
+    "fr": "Bases de données"
   },
-  "createDatasetSuccess": {
-    "en": "successfully created dataset",
-    "fr": "Base de données créée avec succès"
+  "datasetsAvailableToAdd": {
+    "en": "Datasets Available To Add",
+    "fr": "Bases de données pouvant être ajoutées"
   },
-  "createDatasetFailure": {
-    "en": "Error: unable to created dataset",
-    "fr": "Erreur : impossible de créer la base de données"
+  "delete": {
+    "en": "Delete",
+    "fr": "Supprimer"
   },
-  "unexpectedValue": {
-    "en": "Unexpected Value",
-    "fr": "Valeur inattendue"
+  "deleteColumn": {
+    "en": "Delete Column",
+    "fr": "Supprimer la colonne"
   },
-  "unexpectedError": {
-    "en": "Unexpected Error",
-    "fr": "Erreur inattendue"
+  "deleteDataset": {
+    "en": "Delete Dataset",
+    "fr": "Supprimer la base de données"
   },
-  "maxFileSizeError": {
-    "en": "Max File Size Error",
-    "fr": "Erreur de taille de fichier maximale"
+  "deleteProject": {
+    "en": "Delete Project",
+    "fr": "Supprimer le projet"
   },
-  "fileParseError": {
-    "en": "File Parse Error",
-    "fr": "Erreur d'analyse de fichier"
+  "demo": {
+    "info": {
+      "en": "Demo Information",
+      "fr": "Informations de démonstration"
+    },
+    "role": {
+      "en": "Role",
+      "fr": "Rôle"
+    },
+    "summary": {
+      "en": "This demo includes a number of users with different roles (permission levels) and some demo datasets. To access the platform, please select a user from the options below.",
+      "fr": "Cette démo comprend plusieurs utilisateurs avec différents rôles (niveaux d’autorisation) ainsi que des bases de données de démonstration. Pour accéder à la plateforme, veuillez sélectionner un utilisateur ci-dessous."
+    },
+    "tryDemo": {
+      "en": "Try the Demo Now",
+      "fr": "Essayer la démo maintenant"
+    },
+    "useCredentials": {
+      "en": "Use these credentials",
+      "fr": "Utiliser ces identifiants"
+    },
+    "welcome": {
+      "en": "Welcome to the Demo Version of Open Data Bank",
+      "fr": "Bienvenue dans la version démo de Open Data Bank"
+    }
   },
-  "invalidEmptyColumnError": {
-    "en": "Invalid Empty Column Error",
-    "fr": "Erreur de colonne vide invalide"
+  "download": {
+    "en": "Download",
+    "fr": "Télécharger"
   },
-  "invalidColumnNameError": {
-    "en": "Invalid Column Name Error",
-    "fr": "Erreur de nom de colonne invalide"
+  "downloadCsv": {
+    "en": "Download CSV",
+    "fr": "Télécharger en format CSV"
   },
-  "reset": {
-    "en": "Reset",
-    "fr": "Réinitialiser"
+  "downloadDataset": {
+    "en": "Download Dataset",
+    "fr": "Télécharger la base de données"
   },
-  "columnDescription": {
-    "en": "Column Description",
-    "fr": "Description de la colonne"
+  "downloadMetadata": {
+    "en": "Download Metadata",
+    "fr": "Télécharger les métadonnées"
   },
-  "columnName": {
-    "en": "Column Name",
-    "fr": "Nom de la colonne"
+  "downloadTsv": {
+    "en": "Download TSV",
+    "fr": "Télécharger en format TSV"
   },
-  "columnNullable": {
-    "en": "Column Nullable",
-    "fr": "Colonne nullable"
-  },
-  "dataType": {
-    "en": "Data Type",
-    "fr": "Type de données"
-  },
-  "float": {
-    "en": "Float",
-    "fr": "Nombre flottant"
-  },
-  "integer": {
-    "en": "Integer",
-    "fr": "Entier"
-  },
-  "string": {
-    "en": "String",
-    "fr": "Chaîne de caractères"
-  },
-  "column": {
-    "en": "Column",
-    "fr": "Colonne"
-  },
-  "releaseToUpload": {
-    "en": "Release to Upload",
-    "fr": "Relâchez pour télécharger"
+  "dropFile": {
+    "en": "Drop the file here ...",
+    "fr": "Déposez le fichier ici..."
   },
   "dropHere": {
     "en": "Drop Here",
     "fr": "Déposez ici"
   },
+  "dropOrSelectFile": {
+    "en": "Drag and drop the file here, or click to select file",
+    "fr": "Glissez et déposez le fichier ici, ou cliquez pour le sélectionner"
+  },
+  "editDatasetInfo": {
+    "en": "Edit Dataset Information",
+    "fr": "Modifier les informations de la base de données"
+  },
+  "editProjectInfo": {
+    "en": "Edit Project Information",
+    "fr": "Modifier les informations du projet"
+  },
+  "email": {
+    "en": "Email",
+    "fr": "Courriel"
+  },
+  "fileParseError": {
+    "en": "File Parse Error",
+    "fr": "Erreur d'analyse du fichier"
+  },
+  "finishColumnSelection": {
+    "en": "Finish Column Selection",
+    "fr": "Terminer la sélection des colonnes"
+  },
+  "finishConfig": {
+    "en": "Finish All Configs",
+    "fr": "Terminer toutes les configurations"
+  },
+  "firstName": {
+    "en": "First Name",
+    "fr": "Prénom"
+  },
+  "float": {
+    "en": "Float",
+    "fr": "Nombre flottant"
+  },
+  "getStarted": {
+    "en": "Get started",
+    "fr": "Commencer"
+  },
+  "home": {
+    "en": "Home Page",
+    "fr": "Accueil"
+  },
+  "integer": {
+    "en": "Integer",
+    "fr": "Nombre entier"
+  },
+  "invalidCodeFormat": {
+    "en": "Invalid code format",
+    "fr": "Format de code invalide"
+  },
+  "invalidColumnNameError": {
+    "en": "Invalid Column Name Error",
+    "fr": "Erreur : nom de colonne invalide"
+  },
+  "invalidEmptyColumnError": {
+    "en": "Invalid Empty Column Error",
+    "fr": "Erreur : colonne vide"
+  },
   "invalidFileError": {
     "en": "Invalid File Error",
-    "fr": "Erreur de fichier invalide"
+    "fr": "Erreur : fichier invalide"
   },
-  "timeUnit.year": {
-    "en": "Year",
-    "fr": "Année"
+  "isDemoVersion": {
+    "en": "Is this the demo version?",
+    "fr": "Est-ce la version démo?"
   },
-  "timeUnit.month": {
-    "en": "Month",
-    "fr": "Mois"
+  "lastName": {
+    "en": "Last Name",
+    "fr": "Nom"
+  },
+  "learnMore": {
+    "en": "Learn more",
+    "fr": "En savoir plus"
+  },
+  "login": {
+    "en": "Login",
+    "fr": "Connexion"
+  },
+  "logout": {
+    "en": "Logout",
+    "fr": "Déconnexion"
+  },
+  "manageDataset": {
+    "en": "Manage Dataset",
+    "fr": "Gérer la base de données"
+  },
+  "manageDatasetManagers": {
+    "en": "Manage Dataset Managers",
+    "fr": "Gérer les gestionnaires de bases de données"
+  },
+  "manageDatasets": {
+    "en": "Manage Datasets",
+    "fr": "Gérer les bases de données"
+  },
+  "manageProject": {
+    "en": "Manage Project",
+    "fr": "Gérer le projet"
+  },
+  "manageProjectDataset": {
+    "en": "Manage Project Dataset",
+    "fr": "Gérer la base de données du projet"
+  },
+  "manageProjectUsers": {
+    "en": "Manage Project Users",
+    "fr": "Gérer les utilisateurs du projet"
+  },
+  "managerEmail": {
+    "en": "Manager Email: ",
+    "fr": "Courriel du gestionnaire : "
+  },
+  "managerFirstName": {
+    "en": "Manager First Name: ",
+    "fr": "Prénom du gestionnaire : "
+  },
+  "managerId": {
+    "en": "Manager Id",
+    "fr": "ID du gestionnaire"
+  },
+  "managerLastName": {
+    "en": "Manager Last Name: ",
+    "fr": "Nom du gestionnaire : "
+  },
+  "manualVerification": {
+    "en": "Manual Verification",
+    "fr": "Vérification manuelle"
+  },
+  "maxFileSize": {
+    "en": "Maximum file size: 1 GB",
+    "fr": "Taille maximale du fichier : 1 Go"
+  },
+  "maxFileSizeError": {
+    "en": "Max File Size Error",
+    "fr": "Erreur : taille de fichier maximale dépassée"
+  },
+  "more": {
+    "en": "More",
+    "fr": "Plus"
+  },
+  "newManagerEmail": {
+    "en": "New Manage Email: ",
+    "fr": "Nouveau courriel du gestionnaire : "
+  },
+  "newProjectDescription": {
+    "en": "New Project Description",
+    "fr": "Description du nouveau projet"
+  },
+  "newProjectExpiryDate": {
+    "en": "New Expiry Date",
+    "fr": "Nouvelle date d'expiration"
+  },
+  "newProjectExternalId": {
+    "en": "New External ID",
+    "fr": "Nouvel identifiant externe"
+  },
+  "newProjectName": {
+    "en": "New Project Name",
+    "fr": "Nom du nouveau projet"
+  },
+  "no": {
+    "en": "No",
+    "fr": "Non"
+  },
+  "noResultsFound": {
+    "en": "No Results Found",
+    "fr": "Aucun résultat trouvé"
+  },
+  "onlyCsvTsv": {
+    "en": "Only CSV or TSV files are allowed.",
+    "fr": "Seuls les fichiers CSV ou TSV sont autorisés."
+  },
+  "other": {
+    "en": "Other",
+    "fr": "Autre"
+  },
+  "paginationNext": {
+    "en": "Next",
+    "fr": "Suivant"
+  },
+  "paginationPrevious": {
+    "en": "Previous",
+    "fr": "Précédent"
+  },
+  "password": {
+    "en": "Password",
+    "fr": "Mot de passe"
+  },
+  "platformDescription": {
+    "en": "Open Data Bank is your gateway to a vast repository of research data. It offers an easy-to-use and secure environment for researchers to upload, store, and share their datasets with colleagues and collaborators worldwide. ",
+    "fr": "Open Data Bank est votre porte d'entrée vers un vaste dépôt de données de recherche. La plateforme offre aux chercheurs un environnement sécurisé et convivial pour téléverser, stocker et partager leurs bases de données avec des collaborateurs du monde entier."
+  },
+  "platformName": {
+    "en": "Open Data Bank",
+    "fr": "Banque de données ouvertes"
+  },
+  "pleaseSignIn": {
+    "en": "Please sign in",
+    "fr": "Veuillez vous connecter"
+  },
+  "preferences": {
+    "en": "Preferences",
+    "fr": "Préférences"
+  },
+  "previousConfigStep": {
+    "en": "Previous Config Step",
+    "fr": "Étape de configuration précédente"
+  },
+  "primaryKeys": {
+    "en": "Primary keys (use , as the delimiter)",
+    "fr": "Clés primaires (utilisez la virgule « , » comme délimiteur)"
+  },
+  "projectDataset": {
+    "en": "Project Dataset",
+    "fr": "Base de données du projet"
+  },
+  "projectDatasets": {
+    "en": "Project Datasets",
+    "fr": "Bases de données du projet"
+  },
+  "projectDescription": {
+    "en": "Project Description",
+    "fr": "Description du projet"
+  },
+  "projectExpiry": {
+    "en": "Project Expiry",
+    "fr": "Date d'expiration du projet"
+  },
+  "projectExternalId": {
+    "en": "Project External ID",
+    "fr": "ID externe du projet"
+  },
+  "projectExternalIdDescription": {
+    "en": "A custom identifier for your project, e.g., \"mcgill-health-01\". This can be used to link your project to external systems or internal naming conventions. This field is optional if you don't have a project external ID.",
+    "fr": "Un identifiant personnalisé pour votre projet (ex. : « mcgill-health-01 »). Ceci peut être utilisé pour lier votre projet à des systèmes externes. Ce champ est facultatif."
+  },
+  "projectId": {
+    "en": "Project Id",
+    "fr": "ID du projet"
+  },
+  "projectName": {
+    "en": "Project Name",
+    "fr": "Nom du projet"
+  },
+  "projects": {
+    "en": "Projects",
+    "fr": "Projets"
+  },
+  "publicDatasets": {
+    "en": "Public Datasets",
+    "fr": "Bases de données publiques"
+  },
+  "publicDomain": {
+    "en": "Public Domain",
+    "fr": "Domaine public"
+  },
+  "recentActivity": {
+    "en": "Recent Activity",
+    "fr": "Activité récente"
+  },
+  "regularExpression": {
+    "en": "Regular Expression",
+    "fr": "Expression régulière"
+  },
+  "releaseToUpload": {
+    "en": "Release to Upload",
+    "fr": "Relâchez pour téléverser"
+  },
+  "reloadPage": {
+    "en": "Reload Page",
+    "fr": "Actualiser la page"
+  },
+  "removeManager": {
+    "en": "Remove Manager",
+    "fr": "Retirer le gestionnaire"
+  },
+  "removeUser": {
+    "en": "Remove User",
+    "fr": "Retirer l'utilisateur"
+  },
+  "reset": {
+    "en": "Reset",
+    "fr": "Réinitialiser"
+  },
+  "restart": {
+    "en": "Restart",
+    "fr": "Recommencer"
+  },
+  "rowPagination": {
+    "en": "Row Page",
+    "fr": "Page des lignes"
+  },
+  "rowsPerPage": {
+    "en": "Rows Per Page",
+    "fr": "Lignes par page"
+  },
+  "schemaValidationFailed": {
+    "en": "Schema Validation Failed",
+    "fr": "Échec de la validation du schéma"
+  },
+  "selectDataset": {
+    "en": "Select Dataset",
+    "fr": "Sélectionner la base de données"
+  },
+  "setColumnMetadataPermission": {
+    "en": "Set Metadata Permission",
+    "fr": "Définir les permissions des métadonnées"
+  },
+  "setColumnPermission": {
+    "en": "Set Data Permission",
+    "fr": "Définir les permissions des données"
+  },
+  "setDatasetSharable": {
+    "en": "Set Dataset Sharable",
+    "fr": "Rendre la base de données partageable"
+  },
+  "somethingWentWrong": {
+    "en": "Something Went Wrong",
+    "fr": "Une erreur est survenue"
+  },
+  "string": {
+    "en": "String",
+    "fr": "Chaîne de caractères"
+  },
+  "submit": {
+    "en": "Submit",
+    "fr": "Soumettre"
+  },
+  "timeRemaining": {
+    "en": "Time Remaining",
+    "fr": "Temps restant"
   },
   "timeUnit.day": {
     "en": "Day",
@@ -455,238 +573,100 @@
     "en": "Minute",
     "fr": "Minute"
   },
+  "timeUnit.month": {
+    "en": "Month",
+    "fr": "Mois"
+  },
   "timeUnit.second": {
     "en": "Second",
     "fr": "Seconde"
   },
-  "dashboard": {
-    "en": "Dashboard",
-    "fr": "Tableau de bord"
+  "timeUnit.year": {
+    "en": "Year",
+    "fr": "Année"
   },
-  "dashboardSummary": {
-    "en": "Dashboard Summary",
-    "fr": "Résumé du tableau de bord"
+  "toggleColumnNullable": {
+    "en": "Toggle Nullable",
+    "fr": "Basculer l'état facultatif"
   },
-  "recentActivity": {
-    "en": "Recent Activity",
-    "fr": "Activité récente"
+  "totalDatasets": {
+    "en": "Total Datasets Owned",
+    "fr": "Nombre total de bases de données détenues"
   },
-  "addRows": {
-    "en": "Add Rows",
-    "fr": "Ajouter des lignes"
+  "totalProjects": {
+    "en": "Total Projects Owned",
+    "fr": "Nombre total de projets détenus"
   },
-  "download": {
-    "en": "Download",
-    "fr": "Télécharger"
+  "unexpectedError": {
+    "en": "Unexpected Error",
+    "fr": "Erreur inattendue"
   },
-  "deleteDataset": {
-    "en": "Delete Dataset",
-    "fr": "Supprimer la base de données"
-  },
-  "addManager": {
-    "en": "Add Manager",
-    "fr": "Ajouter un gestionnaire"
-  },
-  "removeManager": {
-    "en": "Remove Manager",
-    "fr": "Supprimer un gestionnaire"
-  },
-  "editDatasetInfo": {
-    "en": "Edit Dataset Information",
-    "fr": "Modifier les informations de la base de données"
-  },
-  "editProjectInfo": {
-    "en": "Edit Project Information",
-    "fr": "Modifier les informations du projet"
-  },
-  "createProjectSuccess": {
-    "en": "Successfully created project",
-    "fr": "Projet créé avec succès"
-  },
-  "projectExternalIdDescription": {
-    "en": "A custom identifier for your project, e.g., \"mcgill-health-01\". This can be used to link your project to external systems or internal naming conventions. This field is optional if you don't have a project external ID.",
-    "fr": "Un identifiant personnalisé pour votre projet, par exemple « mcgill-health-01 ». Il peut être utilisé pour relier votre projet à des systèmes externes ou suivre vos conventions de nommage internes. Ce champ est optionnel si vous n’avez pas d’identifiant externe pour votre projet."
-  },
-  "newProjectName": {
-    "en": "New Project Name",
-    "fr": "Nom du nouveau projet"
-  },
-  "newProjectDescription": {
-    "en": "New Project Description",
-    "fr": "Description du nouveau projet"
-  },
-  "newProjectExternalId": {
-    "en": "New External ID",
-    "fr": "Nouvel identifiant externe"
-  },
-  "newProjectExpiryDate": {
-    "en": "New Expiry Date",
-    "fr": "Nouvelle date d'expiration"
-  },
-  "setDatasetSharable": {
-    "en": "Set Dataset Sharable",
-    "fr": "Rendre la base de données partageable"
-  },
-  "downloadDataset": {
-    "en": "Download Dataset",
-    "fr": "Télécharger la base de données"
-  },
-  "downloadTsv": {
-    "en": "Download TSV",
-    "fr": "Télécharger TSV"
-  },
-  "downloadCsv": {
-    "en": "Download CSV",
-    "fr": "Télécharger CSV"
-  },
-  "downloadMetadata": {
-    "en": "Download Metadata",
-    "fr": "Télécharger les métadonnées"
-  },
-  "createdAt": {
-    "en": "Created At",
-    "fr": "Créé le"
+  "unexpectedValue": {
+    "en": "Unexpected Value",
+    "fr": "Valeur inattendue"
   },
   "updatedAt": {
     "en": "Updated At",
     "fr": "Mis à jour le"
   },
-  "datasetPrimaryKeys": {
-    "en": "Primary keys",
-    "fr": "Clés primaires"
+  "userEmail": {
+    "en": "User Email: ",
+    "fr": "Courriel de l'utilisateur : "
   },
-  "setColumnPermission": {
-    "en": "Set Data Permission",
-    "fr": "Définir les permissions des données"
+  "userFirstName": {
+    "en": "User First Name: ",
+    "fr": "Prénom de l'utilisateur : "
   },
-  "setColumnMetadataPermission": {
-    "en": "Set Metadata Permission",
-    "fr": "Définir les permissions des métadonnées"
+  "userId": {
+    "en": "User Id",
+    "fr": "ID de l'utilisateur"
   },
-  "toggleColumnNullable": {
-    "en": "Toggle Nullable",
-    "fr": "Activer/désactiver la nullité"
+  "userLastName": {
+    "en": "User Last Name: ",
+    "fr": "Nom de l'utilisateur : "
   },
-  "changeColumnType": {
-    "en": "Change Data Type",
-    "fr": "Changer le type de données"
+  "verificationMethods": {
+    "en": "Verification Methods",
+    "fr": "Méthodes de vérification"
   },
-  "deleteColumn": {
-    "en": "Delete Column",
-    "fr": "Supprimer la colonne"
+  "verifyAccount": {
+    "en": "Verify Account",
+    "fr": "Vérifier le compte"
   },
-  "columnPagination": {
-    "en": "Column Page",
-    "fr": "Pagination des colonnes"
+  "verifyWhenConfirmEmail": {
+    "en": "Verify When Confirming Email",
+    "fr": "Vérifier lors de la confirmation du courriel"
   },
-  "rowPagination": {
-    "en": "Row Page",
-    "fr": "Pagination des lignes"
+  "verifyWithEmailRegex": {
+    "en": "Verify With Email Regex",
+    "fr": "Vérifier par expression régulière de courriel"
   },
-  "columnsPerPage": {
-    "en": "Columns Per Page",
-    "fr": "Colonnes par page"
+  "viewDataset": {
+    "en": "View Dataset",
+    "fr": "Voir la base de données"
   },
-  "rowsPerPage": {
-    "en": "Rows Per Page",
-    "fr": "Lignes par page"
+  "viewDatasets": {
+    "en": "View Datasets",
+    "fr": "Voir les bases de données"
   },
-  "more": {
-    "en": "More",
-    "fr": "Plus"
+  "viewProject": {
+    "en": "View Project",
+    "fr": "Voir le projet"
   },
-  "manageDatasets": {
-    "en": "Manage Datasets",
-    "fr": "Gérer les bases de données"
+  "viewProjectDataset": {
+    "en": "View Project Dataset",
+    "fr": "Voir la base de données du projet"
   },
-  "noResultsFound": {
-    "en": "No Results Found",
-    "fr": "Aucun résultat trouvé"
+  "viewProjects": {
+    "en": "View Projects",
+    "fr": "Voir les projets"
   },
-  "projects": {
-    "en": "Projects",
-    "fr": "Projets"
+  "viewPublicDatasets": {
+    "en": "View Public Datasets",
+    "fr": "Voir les bases de données publiques"
   },
-  "addDatasetToProject": {
-    "en": "Add Dataset to Current Project",
-    "fr": "Ajouter un jeu de données au projet actuel"
-  },
-  "addUser": {
-    "en": "Add User",
-    "fr": "Ajouter un utilisateur"
-  },
-  "removeUser": {
-    "en": "Remove User",
-    "fr": "Supprimer un utilisateur"
-  },
-  "deleteProject": {
-    "en": "Delete Project",
-    "fr": "Supprimer le projet"
-  },
-  "setupAdminDescription": {
-    "en": "Setup Admin Description",
-    "fr": "Description de la configuration administrateur"
-  },
-  "setupAdminTitle": {
-    "en": "Setup Admin Title",
-    "fr": "Titre de la configuration administrateur"
-  },
-  "setupPageTitle": {
-    "en": "Setup Page Title",
-    "fr": "Titre de la page de configuration"
-  },
-  "isDemoVersion": {
-    "en": "Is this the demo version?",
-    "fr": "Est-ce la version de démonstration ?"
-  },
-  "logout": {
-    "en": "Logout",
-    "fr": "Se déconnecter"
-  },
-  "preferences": {
-    "en": "Preferences",
-    "fr": "Préférences"
-  },
-  "contactOwner": {
-    "en": "Contact owner",
-    "fr": "Contacter le propriétaire"
-  },
-  "somethingWentWrong": {
-    "en": "Something Went Wrong",
-    "fr": "Une erreur est survenue"
-  },
-  "apologizeForInconvenience": {
-    "en": "We apologize for the inconvenience. Please contact us for further assistance.",
-    "fr": "Nous nous excusons pour le désagrément. Veuillez nous contacter pour obtenir de l'aide."
-  },
-  "reloadPage": {
-    "en": "Reload Page",
-    "fr": "Recharger la page"
-  },
-  "demo": {
-    "info": {
-      "en": "Demo Information",
-      "fr": "Informations sur la démonstration"
-    },
-    "tryDemo": {
-      "en": "Try the Demo Now",
-      "fr": "Essayer la démo maintenant"
-    },
-    "role": {
-      "en": "Role",
-      "fr": "Rôle"
-    },
-    "summary": {
-      "en": "This demo includes a number of users with different roles (permission levels) and some demo datasets. To access the platform, please select a user from the options below.",
-      "fr": "Cette démo comprend plusieurs utilisateurs avec différents rôles (niveaux d’autorisation) ainsi que quelques jeux de données de démonstration. Pour accéder à la plateforme, veuillez sélectionner un utilisateur parmi les options ci-dessous."
-    },
-    "useCredentials": {
-      "en": "Use these credentials",
-      "fr": "Utilisez ces informations d'identification"
-    },
-    "welcome": {
-      "en": "Welcome to the Demo Version of Open Data Bank",
-      "fr": "Bienvenue sur la version de démonstration de la plateforme Open Data Bank"
-    }
+  "yes": {
+    "en": "Yes",
+    "fr": "Oui"
   }
 }

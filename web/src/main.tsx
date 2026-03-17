@@ -1,11 +1,7 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { App } from './App.js';
-
-import './styles.css';
-import './services/axios';
-import './services/i18n';
+import { App } from './App';
 
 const root = document.getElementById('root')!;
 

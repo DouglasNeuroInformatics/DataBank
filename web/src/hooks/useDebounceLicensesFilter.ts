@@ -7,7 +7,6 @@ import {
   openSourceLicensesArray
 } from '@databank/core';
 import type { $DatasetLicenses, LicenseWithLowercase } from '@databank/core';
-import type FormTypes from '@douglasneuroinformatics/libui-form-types';
 
 type BaseFormData = {
   isOpenSource?: boolean;
@@ -67,7 +66,7 @@ export function useDebounceLicensesFilter() {
           }
         }, 500);
       },
-      selector: (values: FormTypes.PartialData<BaseFormData>) => {
+      selector: (values: Partial<BaseFormData>) => {
         return `${values.isOpenSource}-${values.searchLicenseString}`;
       }
     }),

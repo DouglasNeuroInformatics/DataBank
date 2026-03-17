@@ -1,0 +1,3 @@
+/dist
+/coverage
+web/src/route-tree.ts
