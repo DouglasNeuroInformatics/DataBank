@@ -38,8 +38,8 @@ const UserDropup = () => {
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger asChild>
-        <Button className="size-9" size="icon" type="button" variant="ghost">
-          <CircleUserRoundIcon className="size-5" />
+        <Button className="p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700" size="icon" type="button" variant="ghost">
+          <CircleUserRoundIcon className="size-5!" />
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content align="start" className="w-48" side="top" sideOffset={4}>
@@ -67,9 +67,9 @@ const DesktopSidebar = ({ navigation }: { navigation: NavItem[] }) => {
   const location = useLocation();
 
   return (
-    <div className="bg-card hidden h-full w-16 flex-col items-center border-r py-4 lg:flex">
-      <Link className="mb-6 flex items-center justify-center" to="/">
-        <Logo className="h-8 w-8" />
+    <div className="bg-card w-18 hidden h-full flex-col items-center border-r py-4 lg:flex">
+      <Link className="mb-4 flex items-center justify-center" to="/">
+        <Logo className="h-auto w-11" />
       </Link>
       <Separator className="mx-auto mb-4 w-8" />
       <nav aria-label="sidebar" className="flex flex-1 flex-col items-center gap-1">
@@ -78,12 +78,15 @@ const DesktopSidebar = ({ navigation }: { navigation: NavItem[] }) => {
           return (
             <Tooltip key={item.href}>
               <Tooltip.Trigger
-                className={cn('size-9 rounded-md', isActive && 'bg-slate-200 dark:bg-slate-700')}
+                className={cn(
+                  'rounded-md p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700',
+                  isActive && 'bg-slate-200 dark:bg-slate-700'
+                )}
                 size="icon"
                 variant="ghost"
                 onClick={() => void navigate({ to: item.href })}
               >
-                <item.icon className="size-4" />
+                <item.icon className="size-5!" />
               </Tooltip.Trigger>
               <Tooltip.Content side="right">
                 <p>{item.label}</p>
@@ -93,10 +96,11 @@ const DesktopSidebar = ({ navigation }: { navigation: NavItem[] }) => {
         })}
       </nav>
       <div className="flex flex-col items-center gap-1">
-        <ThemeToggle className="size-9 [&>svg]:size-4" variant="ghost" />
+        <ThemeToggle className="[&>svg]:size-5! p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700" variant="ghost" />
         <LanguageToggle
+          contentClassName="mb-1 translate-y-1"
           options={{ en: 'English', fr: 'Français' }}
-          triggerClassName="size-9 [&>svg]:size-4"
+          triggerClassName="[&>svg]:size-5! p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700"
           variant="ghost"
         />
         <Separator className="mx-auto my-2 w-8" />
