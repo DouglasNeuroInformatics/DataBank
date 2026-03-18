@@ -42,7 +42,7 @@ const RouteComponent = () => {
 
   return (
     <div className="mx-auto max-w-xl">
-      <PageHeading>
+      <PageHeading centered>
         {t({
           en: 'Create New Project',
           fr: 'Créer un nouveau projet'
