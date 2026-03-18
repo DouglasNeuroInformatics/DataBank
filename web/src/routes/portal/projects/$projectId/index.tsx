@@ -217,8 +217,8 @@ const RouteComponent = () => {
               <DatabaseIcon className="text-muted-foreground/50 size-10" />
               <p className="text-muted-foreground mt-3 text-sm">
                 {t({
-                  en: 'No datasets added to this project yet.',
-                  fr: 'Aucun jeu de données ajouté à ce projet pour le moment.'
+                  en: 'No Datasets Added to This Project Yet',
+                  fr: 'Aucun base de données ajouté à ce projet pour le moment'
                 })}
               </p>
             </div>
