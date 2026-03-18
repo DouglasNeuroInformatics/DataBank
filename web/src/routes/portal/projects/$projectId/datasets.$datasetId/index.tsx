@@ -133,7 +133,7 @@ const RouteComponent = () => {
                 {t('datasetLicense')}
               </dt>
               <dd className="mt-1">
-                <Badge variant="secondary" title={licenseInfo?.name}>
+                <Badge title={licenseInfo?.name} variant="secondary">
                   {dataset.license}
                 </Badge>
               </dd>

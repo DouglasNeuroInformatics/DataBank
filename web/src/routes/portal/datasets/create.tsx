@@ -92,7 +92,6 @@ const RouteComponent = () => {
         content={[
           {
             title: 'Basic Dataset Information',
-            description: 'Basic dataset information details',
             fields: {
               name: { kind: 'string', label: t('datasetName'), variant: 'input' },
               description: { kind: 'string', label: t('datasetDescription'), variant: 'textarea' },
@@ -189,7 +188,7 @@ const RouteComponent = () => {
             )}
           </div>
           <div className="flex gap-3">
-            <Button className="flex-1" variant="outline" onClick={() => setFile(null)} disabled={!file}>
+            <Button className="flex-1" disabled={!file} variant="outline" onClick={() => setFile(null)}>
               {t('reset')}
             </Button>
             <Button
@@ -207,7 +206,7 @@ const RouteComponent = () => {
 
   return (
     <div className="mx-auto max-w-xl">
-      <PageHeading>{t('createDataset')}</PageHeading>
+      <PageHeading centered>{t('createDataset')}</PageHeading>
       {element}
     </div>
   );
