@@ -200,10 +200,8 @@ const RouteComponent = () => {
     <div className="flex h-screen flex-col lg:flex-row">
       <DesktopSidebar navigation={navigation} />
       <MobileNavbar navigation={navigation} />
-      <main className="flex-1 overflow-hidden">
-        <div className="mx-auto h-full w-full max-w-7xl overflow-auto px-4 pb-6 sm:px-6 lg:px-8">
-          <Outlet />
-        </div>
+      <main className="container grow">
+        <Outlet />
       </main>
     </div>
   );
