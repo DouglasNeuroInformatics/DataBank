@@ -125,15 +125,15 @@ const MobileNavbar = ({ navigation }: { navigation: NavItem[] }) => {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <div className="bg-card flex w-full items-center justify-between border-b px-4 py-3 lg:hidden">
         <Link to="/">
-          <Logo className="h-8 w-8" />
+          <Logo className="h-auto w-11" />
         </Link>
         <Sheet.Trigger>
-          <MenuIcon className="text-muted-foreground hover:text-foreground size-6" />
+          <MenuIcon className="text-muted-foreground hover:text-foreground size-7!" />
         </Sheet.Trigger>
       </div>
       <Sheet.Content className="flex h-full flex-col gap-0">
         <div className="flex items-center gap-3">
-          <Logo className="h-8 w-auto" />
+          <Logo className="h-auto w-11" />
         </div>
         <Separator className="my-4" />
         <nav className="flex grow flex-col gap-1">
@@ -143,7 +143,7 @@ const MobileNavbar = ({ navigation }: { navigation: NavItem[] }) => {
               <Link
                 className={cn(
                   'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium',
-                  isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  isActive ? 'bg-slate-200 dark:bg-slate-700' : ''
                 )}
                 key={item.href}
                 to={item.href}
@@ -156,13 +156,15 @@ const MobileNavbar = ({ navigation }: { navigation: NavItem[] }) => {
           })}
         </nav>
         <Separator className="my-4" />
-        <div className="flex items-center justify-end gap-2">
-          <LanguageToggle
-            options={{ en: 'English', fr: 'Français' }}
-            triggerClassName="[&>svg]:size-4"
-            variant="outline"
-          />
-          <ThemeToggle className="[&>svg]:size-4" variant="outline" />
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <LanguageToggle
+              options={{ en: 'English', fr: 'Français' }}
+              triggerClassName="[&>svg]:size-4!"
+              variant="outline"
+            />
+            <ThemeToggle className="[&>svg]:size-4!" variant="outline" />
+          </div>
           <UserDropup />
         </div>
       </Sheet.Content>
