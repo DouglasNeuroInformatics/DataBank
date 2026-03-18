@@ -197,11 +197,15 @@ const RouteComponent = () => {
   );
 
   return (
-    <div className="flex h-screen flex-col lg:flex-row">
+    <div className="flex h-screen flex-col overflow-hidden lg:flex-row">
       <DesktopSidebar navigation={navigation} />
       <MobileNavbar navigation={navigation} />
-      <main className="container grow">
-        <Outlet />
+      <main className="flex grow flex-col overflow-hidden">
+        <div className="overflow-auto pb-6">
+          <div className="container">
+            <Outlet />
+          </div>
+        </div>
       </main>
     </div>
   );
