@@ -10,16 +10,18 @@ import type {
   $ProjectDatasetSelectedColumn
 } from '@databank/core';
 import {
+  Badge,
   Button,
   Card,
   Checkbox,
   Form,
-  Heading,
   SearchBar,
+  Separator,
   Spinner,
   Table
 } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { cn } from '@douglasneuroinformatics/libui/utils';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import {
   flexRender,
@@ -32,11 +34,25 @@ import {
 import type { ColumnDef, ColumnFiltersState, SortingState } from '@tanstack/react-table';
 import axios from 'axios';
 import { produce } from 'immer';
-import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
+import {
+  ArrowLeftIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+  ColumnsIcon,
+  RotateCcwIcon,
+  RowsIcon,
+  SendIcon,
+  SlidersHorizontalIcon
+} from 'lucide-react';
 import { z } from 'zod/v4';
 import { useStore } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { createStore } from 'zustand/vanilla';
+
+import { PageHeading } from '@/components/PageHeading';
 
 // --- Store ---
 
@@ -118,6 +134,54 @@ const createProjectDatasetConfigStore = (projectId: string, datasetId: string) =
   );
 };
 
+// --- Step Indicator ---
+
+const STEPS: { icon: React.FC<{ className?: string }>; key: $ProjectDatasetConfigStep; label: string }[] = [
+  { icon: ColumnsIcon, key: 'selectColumns', label: 'Select Columns' },
+  { icon: RowsIcon, key: 'configRows', label: 'Configure Rows' },
+  { icon: SlidersHorizontalIcon, key: 'configColumns', label: 'Configure Columns' }
+];
+
+const StepIndicator = ({ currentStep }: { currentStep: $ProjectDatasetConfigStep }) => {
+  const currentIndex = STEPS.findIndex((s) => s.key === currentStep);
+
+  return (
+    <div className="mb-6 flex items-center justify-center gap-2">
+      {STEPS.map((step, i) => {
+        const isComplete = i < currentIndex;
+        const isCurrent = i === currentIndex;
+        const Icon = step.icon;
+
+        return (
+          <div className="flex items-center gap-2" key={step.key}>
+            {i > 0 && <div className={cn('h-px w-8 sm:w-12', isComplete ? 'bg-primary' : 'bg-border')} />}
+            <div className="flex items-center gap-1.5">
+              <div
+                className={cn(
+                  'flex size-7 items-center justify-center rounded-full text-xs font-medium transition-colors',
+                  isComplete && 'bg-primary text-primary-foreground',
+                  isCurrent && 'bg-primary text-primary-foreground ring-primary/25 ring-4',
+                  !isComplete && !isCurrent && 'bg-muted text-muted-foreground'
+                )}
+              >
+                {isComplete ? <CheckIcon className="size-3.5" /> : <Icon className="size-3.5" />}
+              </div>
+              <span
+                className={cn(
+                  'hidden text-xs font-medium sm:inline',
+                  isCurrent ? 'text-foreground' : 'text-muted-foreground'
+                )}
+              >
+                {step.label}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 // --- Column Definitions ---
 
 const formatSummary = (column: $ProjectColumnSummary): string => {
@@ -141,6 +205,14 @@ const formatSummary = (column: $ProjectColumnSummary): string => {
     default:
       return '';
   }
+};
+
+const KIND_COLORS: Record<string, 'default' | 'secondary'> = {
+  DATETIME: 'secondary',
+  ENUM: 'default',
+  FLOAT: 'secondary',
+  INT: 'secondary',
+  STRING: 'default'
 };
 
 const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
@@ -167,20 +239,19 @@ const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <div className="flex">
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Column Name
-          {column.getIsSorted() === 'desc' ? (
-            <ChevronDownIcon className="transform-gpu transition-transform" />
-          ) : (
-            <ChevronUpIcon className="transform-gpu transition-transform" />
-          )}
-        </Button>
-      </div>
+      <Button className="px-0" variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        Column Name
+        {column.getIsSorted() === 'desc' ? (
+          <ChevronDownIcon className="ml-1 size-3.5" />
+        ) : (
+          <ChevronUpIcon className="ml-1 size-3.5" />
+        )}
+      </Button>
     )
   },
   {
     accessorKey: 'kind',
+    cell: ({ row }) => <Badge variant="outline">{row.original.kind}</Badge>,
     header: 'Data Type'
   },
   {
@@ -198,7 +269,11 @@ const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
   },
   {
     accessorKey: 'summary',
-    cell: ({ row }) => formatSummary(row.original),
+    cell: ({ row }) => (
+      <span className="line-clamp-1 max-w-48" title={formatSummary(row.original)}>
+        {formatSummary(row.original)}
+      </span>
+    ),
     header: 'Summary'
   }
 ];
@@ -240,6 +315,9 @@ const SelectColumnsStep = ({
     state: { columnFilters, rowSelection, sorting }
   });
 
+  const selectedCount = table.getFilteredSelectedRowModel().rows.length;
+  const totalCount = table.getFilteredRowModel().rows.length;
+
   const handleSubmitSelection = useCallback(() => {
     const selected: SelectedColumnsRecord = {};
     table.getFilteredSelectedRowModel().rows.forEach((row) => {
@@ -254,28 +332,28 @@ const SelectColumnsStep = ({
 
   if (data.length === 0) {
     return (
-      <div className="flex items-center justify-center py-10">
+      <div className="flex items-center justify-center py-12">
         <Spinner />
       </div>
     );
   }
 
   return (
-    <div className="w-full">
-      <div className="flex items-center gap-4 py-4">
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <SearchBar
           placeholder="Filter column names..."
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onValueChange={(inputString) => table.getColumn('name')?.setFilterValue(inputString)}
         />
-        <div className="text-muted-foreground text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-          selected.
-        </div>
+        <p className="text-muted-foreground shrink-0 text-sm tabular-nums">
+          {selectedCount} of {totalCount} column(s) selected
+        </p>
       </div>
-      <div className="w-full rounded-md border">
-        <Table className="w-full">
-          <Table.Header className="w-full">
+
+      <div className="overflow-hidden rounded-md border">
+        <Table>
+          <Table.Header>
             {table.getHeaderGroups().map((headerGroup) => (
               <Table.Row key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -286,7 +364,7 @@ const SelectColumnsStep = ({
               </Table.Row>
             ))}
           </Table.Header>
-          <Table.Body className="w-full">
+          <Table.Body>
             {table.getRowModel().rows.map((row) => (
               <Table.Row data-state={row.getIsSelected() && 'selected'} key={row.id}>
                 {row.getVisibleCells().map((cell) => (
@@ -295,31 +373,29 @@ const SelectColumnsStep = ({
               </Table.Row>
             ))}
           </Table.Body>
-          <Table.Footer className="w-full">
-            <Table.Row className="w-full">
-              <Table.Cell>
-                <Button size="sm" variant="primary" onClick={handleSubmitSelection}>
-                  {t('finishColumnSelection')}
-                </Button>
-              </Table.Cell>
-              <Table.Cell>
-                <Button
-                  disabled={!table.getCanPreviousPage()}
-                  size="sm"
-                  variant="outline"
-                  onClick={() => table.previousPage()}
-                >
-                  {t('paginationPrevious')}
-                </Button>
-              </Table.Cell>
-              <Table.Cell>
-                <Button disabled={!table.getCanNextPage()} size="sm" variant="outline" onClick={() => table.nextPage()}>
-                  {t('paginationNext')}
-                </Button>
-              </Table.Cell>
-            </Table.Row>
-          </Table.Footer>
         </Table>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Button
+            disabled={!table.getCanPreviousPage()}
+            size="sm"
+            variant="outline"
+            onClick={() => table.previousPage()}
+          >
+            <ChevronLeftIcon className="mr-1 size-3.5" />
+            {t('paginationPrevious')}
+          </Button>
+          <Button disabled={!table.getCanNextPage()} size="sm" variant="outline" onClick={() => table.nextPage()}>
+            {t('paginationNext')}
+            <ChevronRightIcon className="ml-1 size-3.5" />
+          </Button>
+        </div>
+        <Button disabled={selectedCount === 0} size="sm" onClick={handleSubmitSelection}>
+          {t('finishColumnSelection')}
+          <ChevronRightIcon className="ml-1 size-3.5" />
+        </Button>
       </div>
     </div>
   );
@@ -335,32 +411,35 @@ const ConfigRowsStep = ({
   setStep: (step: $ProjectDatasetConfigStep) => void;
 }) => {
   return (
-    <Form
-      content={{
-        rowMin: {
-          kind: 'number',
-          label: 'Row filter minimum',
-          variant: 'input'
-        },
-        rowMax: {
-          kind: 'number',
-          label: 'Row filter maximum',
-          variant: 'input'
-        }
-      }}
-      validationSchema={z
-        .object({
-          rowMin: z.int().gte(0),
-          rowMax: z.int().gte(0).optional()
-        })
-        .refine((data) => data.rowMax === undefined || data.rowMax >= data.rowMin, {
-          error: 'rowMax must be greater than or equal to rowMin'
-        })}
-      onSubmit={(data) => {
-        setRowConfig({ rowMin: data.rowMin, rowMax: data.rowMax ?? null });
-        setStep('configColumns');
-      }}
-    />
+    <div className="mx-auto max-w-md">
+      <Form
+        content={{
+          rowMin: {
+            kind: 'number',
+            label: 'Row filter minimum',
+            variant: 'input'
+          },
+          rowMax: {
+            kind: 'number',
+            label: 'Row filter maximum',
+            variant: 'input'
+          }
+        }}
+        submitBtnLabel="Continue"
+        validationSchema={z
+          .object({
+            rowMin: z.int().gte(0),
+            rowMax: z.int().gte(0).optional()
+          })
+          .refine((data) => data.rowMax === undefined || data.rowMax >= data.rowMin, {
+            error: 'rowMax must be greater than or equal to rowMin'
+          })}
+        onSubmit={(data) => {
+          setRowConfig({ rowMin: data.rowMin, rowMax: data.rowMax ?? null });
+          setStep('configColumns');
+        }}
+      />
+    </div>
   );
 };
 
@@ -449,10 +528,32 @@ const ConfigColumnsStep = ({
     [selectedColumns, setColumnsConfig]
   );
 
-  return <Form className="w-full" content={formContent} validationSchema={formValidation} onSubmit={handleSubmit} />;
+  return (
+    <Form
+      content={formContent}
+      submitBtnLabel="Save Column Config"
+      validationSchema={formValidation}
+      onSubmit={handleSubmit}
+    />
+  );
 };
 
 // --- Main Route Component ---
+
+const STEP_META: Record<$ProjectDatasetConfigStep, { description: string; title: string }> = {
+  selectColumns: {
+    title: 'Select Columns',
+    description: 'Choose which columns from this dataset to include in the project.'
+  },
+  configRows: {
+    title: 'Configure Rows',
+    description: 'Set row range filters to limit the data included.'
+  },
+  configColumns: {
+    title: 'Configure Columns',
+    description: 'Optionally apply hash or trim transformations to selected columns.'
+  }
+};
 
 const RouteComponent = () => {
   const { projectId, datasetId } = Route.useParams();
@@ -505,18 +606,6 @@ const RouteComponent = () => {
     );
   };
 
-  const getCurrentStepLabel = (step: $ProjectDatasetConfigStep): string => {
-    const prefix = 'Current Configuration Step: ';
-    switch (step) {
-      case 'configColumns':
-        return prefix + 'Set Column Transformations';
-      case 'configRows':
-        return prefix + 'Set Row Configurations';
-      case 'selectColumns':
-        return prefix + 'Select Project Dataset Columns';
-    }
-  };
-
   const handleSubmitConfig = () => {
     if (selectedColumnsIdArray.length === 0) {
       addNotification({
@@ -550,85 +639,128 @@ const RouteComponent = () => {
       });
   };
 
+  const meta = STEP_META[currentStep];
+
   return (
-    <Card className="my-3 flex flex-col items-center">
-      <Card.Header>
-        <Heading variant="h1">Project Dataset Configuration</Heading>
-      </Card.Header>
-
-      <Card.Description>
-        <Heading variant="h3">{getCurrentStepLabel(currentStep)}</Heading>
-      </Card.Description>
-
-      <Card.Content className="w-full">
-        {(() => {
-          switch (currentStep) {
-            case 'configColumns': {
-              const selectedColumnsForPage: SelectedColumnsRecord = {};
-              selectedColumnsIdArray.slice(currentColumnIdIndex, currentColumnIdIndex + pageSize).forEach((colId) => {
-                selectedColumnsForPage[colId] = selectedColumns[colId]!;
-              });
-
-              return (
-                <>
-                  <ConfigColumnsStep selectedColumns={selectedColumnsForPage} setColumnsConfig={setColumnsConfig} />
-                  <div className="flex gap-2 py-2">
-                    <Button
-                      disabled={currentColumnIdIndex === 0}
-                      variant="secondary"
-                      onClick={handlePreviousConfigColumnsPage}
-                    >
-                      {t('paginationPrevious')}
-                    </Button>
-                    <Button
-                      disabled={currentColumnIdIndex === Math.floor(selectedColumnsIdArray.length / (pageSize + 1))}
-                      variant="secondary"
-                      onClick={handleNextConfigColumnsPage}
-                    >
-                      {t('paginationNext')}
-                    </Button>
-                  </div>
-                </>
-              );
+    <div>
+      <PageHeading
+        actions={
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() =>
+              void navigate({
+                params: { projectId },
+                to: '/portal/projects/$projectId'
+              })
             }
-            case 'configRows':
-              return <ConfigRowsStep setRowConfig={setRowConfig} setStep={setStep} />;
-            case 'selectColumns':
-              return (
-                <SelectColumnsStep datasetId={datasetId} setSelectedColumns={setSelectedColumns} setStep={setStep} />
-              );
-            default:
-              return (
-                <div className="flex items-center justify-center py-10">
-                  <Spinner />
-                </div>
-              );
-          }
-        })()}
-      </Card.Content>
+          >
+            <ArrowLeftIcon className="mr-1.5 size-3.5" />
+            {t({
+              en: 'Back to Project',
+              fr: 'Retour au projet'
+            })}
+          </Button>
+        }
+        description={t({
+          en: 'Configure how this dataset is shared within the project.',
+          fr: 'Configurez la manière dont ce jeu de données est partagé dans le projet.'
+        })}
+      >
+        {t({
+          en: 'Dataset Configuration',
+          fr: 'Configuration du jeu de données'
+        })}
+      </PageHeading>
 
-      <Card.Footer className="flex w-full justify-between">
-        <div className="flex w-full flex-col">
-          <div className="flex w-full justify-between p-1">
+      <StepIndicator currentStep={currentStep} />
+
+      <Card>
+        <Card.Header>
+          <Card.Title className="text-base">{meta.title}</Card.Title>
+          <Card.Description>{meta.description}</Card.Description>
+        </Card.Header>
+        <Separator />
+        <Card.Content className="pt-4">
+          {(() => {
+            switch (currentStep) {
+              case 'selectColumns':
+                return (
+                  <SelectColumnsStep datasetId={datasetId} setSelectedColumns={setSelectedColumns} setStep={setStep} />
+                );
+              case 'configRows':
+                return <ConfigRowsStep setRowConfig={setRowConfig} setStep={setStep} />;
+              case 'configColumns': {
+                const selectedColumnsForPage: SelectedColumnsRecord = {};
+                selectedColumnsIdArray.slice(currentColumnIdIndex, currentColumnIdIndex + pageSize).forEach((colId) => {
+                  selectedColumnsForPage[colId] = selectedColumns[colId]!;
+                });
+
+                return (
+                  <div className="space-y-4">
+                    <ConfigColumnsStep selectedColumns={selectedColumnsForPage} setColumnsConfig={setColumnsConfig} />
+                    {selectedColumnsIdArray.length > pageSize && (
+                      <div className="flex items-center justify-center gap-2">
+                        <Button
+                          disabled={currentColumnIdIndex === 0}
+                          size="sm"
+                          variant="outline"
+                          onClick={handlePreviousConfigColumnsPage}
+                        >
+                          <ChevronLeftIcon className="mr-1 size-3.5" />
+                          {t('paginationPrevious')}
+                        </Button>
+                        <p className="text-muted-foreground text-xs tabular-nums">
+                          {Math.floor(currentColumnIdIndex / pageSize) + 1} /{' '}
+                          {Math.ceil(selectedColumnsIdArray.length / pageSize)}
+                        </p>
+                        <Button
+                          disabled={currentColumnIdIndex + pageSize >= selectedColumnsIdArray.length}
+                          size="sm"
+                          variant="outline"
+                          onClick={handleNextConfigColumnsPage}
+                        >
+                          {t('paginationNext')}
+                          <ChevronRightIcon className="ml-1 size-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              default:
+                return (
+                  <div className="flex items-center justify-center py-10">
+                    <Spinner />
+                  </div>
+                );
+            }
+          })()}
+        </Card.Content>
+        <Separator />
+        <Card.Footer className="flex items-center justify-between pt-4">
+          <div className="flex items-center gap-2">
             <Button
               disabled={currentStep === 'selectColumns'}
-              variant="secondary"
+              size="sm"
+              variant="outline"
               onClick={() => handlePreviousStep(currentStep)}
             >
+              <ArrowLeftIcon className="mr-1.5 size-3.5" />
               {t('previousConfigStep')}
             </Button>
-          </div>
-          <div className="flex w-full justify-between p-1">
-            <Button variant="primary" onClick={handleSubmitConfig}>
-              {t('finishConfig')}
-            </Button>
-            <Button variant="danger" onClick={reset}>
+            <Button size="sm" variant="outline" onClick={reset}>
+              <RotateCcwIcon className="mr-1.5 size-3.5" />
               {t('restart')}
             </Button>
           </div>
-        </div>
-      </Card.Footer>
-    </Card>
+          <Button disabled={selectedColumnsIdArray.length === 0} size="sm" onClick={handleSubmitConfig}>
+            <SendIcon className="mr-1.5 size-3.5" />
+            {t('finishConfig')}
+          </Button>
+        </Card.Footer>
+      </Card>
+    </div>
   );
 };
 
