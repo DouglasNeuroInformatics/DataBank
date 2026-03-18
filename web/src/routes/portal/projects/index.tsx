@@ -1,27 +1,18 @@
-/* eslint-disable perfectionist/sort-objects */
 import { $ProjectInfo } from '@databank/core';
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { CalendarIcon, FolderOpenIcon, PlusIcon } from 'lucide-react';
-import { z } from 'zod/v4';
 
 import { PageHeading } from '@/components/PageHeading';
+import { useProjectIsManagerQuery } from '@/hooks/queries/useProjectIsManagerQuery';
 import { projectsQueryOptions, useProjectsQuery } from '@/hooks/queries/useProjectsQuery';
 import { useAppStore } from '@/store';
 
 const ProjectCard = ({ project }: { project: $ProjectInfo }) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
-  const { data: isProjectManager } = useQuery({
-    queryFn: async () => {
-      const response = await axios.get(`v1/projects/is-manager/${project.id}`);
-      return z.boolean().parse(response.data);
-    },
-    queryKey: [`is-project-manager-${project.id}`]
-  });
+  const { data: isProjectManager } = useProjectIsManagerQuery(project.id);
 
   return (
     <Card className="transition-shadow hover:shadow-md">
@@ -68,8 +59,11 @@ const RouteComponent = () => {
       void navigate({ to: '/portal/projects/create' });
     } else {
       addNotification({
-        type: 'error',
-        message: 'Please upload your own dataset before creating a project!'
+        message: t({
+          en: 'Please upload your own dataset before creating a project!',
+          fr: 'Veuillez télécharger votre propre ensemble de données avant de créer un projet!'
+        }),
+        type: 'error'
       });
     }
   };

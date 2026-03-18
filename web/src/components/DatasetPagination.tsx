@@ -21,24 +21,9 @@ export const DatasetPagination = ({
   const { t } = useTranslation('common');
   const totalNumberOfPage = Math.ceil(totalNumberOfItems / itemsPerPage);
 
-  const handleSelectPageOption = (options: string) => {
-    switch (options) {
-      case '10':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: 10 });
-        break;
-      case '20':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: 20 });
-        break;
-      case '50':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: 50 });
-        break;
-      case '100':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: 100 });
-        break;
-      case 'All':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: totalNumberOfItems });
-        break;
-    }
+  const handleSelectPageOption = (option: string) => {
+    const itemsPerPage = option === 'All' ? totalNumberOfItems : parseInt(option);
+    setDatasetPagination({ currentPage: 1, itemsPerPage });
   };
 
   return (

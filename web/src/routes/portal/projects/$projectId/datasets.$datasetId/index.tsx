@@ -1,9 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
-import { useEffect, useState } from 'react';
-
 import { $DatasetViewPagination, licensesObjects } from '@databank/core';
-import type { $TabularDataset } from '@databank/core';
-import { Badge, Button, Card, DropdownMenu, Spinner } from '@douglasneuroinformatics/libui/components';
+import type { $DatasetViewPagination as DatasetViewPaginationType } from '@databank/core';
+import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
 import {
   useDestructiveAction,
   useDownload,
@@ -11,80 +9,65 @@ import {
   useTranslation
 } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { zodValidator } from '@tanstack/zod-adapter';
 import axios from 'axios';
-import { ArrowLeftIcon, DownloadIcon, TrashIcon } from 'lucide-react';
+import { ArrowLeftIcon, TrashIcon } from 'lucide-react';
+import { z } from 'zod/v4';
 
 import { DatasetPagination } from '@/components/DatasetPagination';
 import { DatasetTable } from '@/components/DatasetTable';
+import { DownloadDropdowns } from '@/components/DownloadDropdowns';
 import { PageHeading } from '@/components/PageHeading';
+import { projectDatasetQueryOptions, useProjectDatasetQuery } from '@/hooks/queries/useProjectDatasetQuery';
 import { useAppStore } from '@/store';
 
+const $SearchParams = z.object({
+  columnPagination: $DatasetViewPagination.default({ currentPage: 1, itemsPerPage: 10 }),
+  rowPagination: $DatasetViewPagination.default({ currentPage: 1, itemsPerPage: 10 })
+});
+
 const RouteComponent = () => {
-  const { projectId, datasetId } = Route.useParams();
+  const { datasetId, projectId } = Route.useParams();
+  const { columnPagination, rowPagination } = Route.useSearch();
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const download = useDownload();
   const currentUser = useAppStore((s) => s.auth.ctx.currentUser);
 
-  const [dataset, setDataset] = useState<$TabularDataset | null>(null);
+  const { data: dataset } = useProjectDatasetQuery(projectId, datasetId, columnPagination, rowPagination);
 
-  const [columnPaginationDto, setColumnPaginationDto] = useState<$DatasetViewPagination>({
-    currentPage: 1,
-    itemsPerPage: 10
-  });
-
-  const [rowPaginationDto, setRowPaginationDto] = useState<$DatasetViewPagination>({
-    currentPage: 1,
-    itemsPerPage: 10
-  });
-
-  useEffect(() => {
-    axios
-      .post<$TabularDataset>(`/v1/projects/dataset/${projectId}/${datasetId}`, {
-        columnPaginationDto,
-        rowPaginationDto
-      })
-      .then((response) => setDataset(response.data))
-      .catch(console.error);
-  }, [columnPaginationDto, rowPaginationDto, projectId, datasetId]);
-
-  const isManager = Boolean(dataset?.managerIds.includes(currentUser!.id));
+  const isManager = Boolean(dataset.managerIds.includes(currentUser!.id));
 
   const deleteDataset = useDestructiveAction(() => {
     axios
       .delete(`/v1/projects/remove-dataset/${projectId}/${datasetId}`)
       .then(() => {
-        addNotification({
-          type: 'success',
-          message: `Dataset with Id ${datasetId} has been removed from the project`
-        });
-        void navigate({ to: '/portal/projects/$projectId', params: { projectId } });
+        addNotification({ type: 'success' });
+        void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
       })
       .catch(console.error);
   });
 
   const handleDataDownload = async (format: 'CSV' | 'TSV') => {
-    if (!dataset) return;
-    const filename = dataset.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
+    const filename = `${dataset.name}_${new Date().toISOString()}.${format.toLowerCase()}`;
     const response = await axios.get(`/v1/projects/download-data/${projectId}/${datasetId}/${format}`);
     void download(filename, response.data as string);
   };
 
-  const handleMetaDataDownload = async (format: 'CSV' | 'TSV') => {
-    if (!dataset) return;
-    const filename = 'metadata_' + dataset.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
+  const handleMetadataDownload = async (format: 'CSV' | 'TSV') => {
+    const filename = `metadata_${dataset.name}_${new Date().toISOString()}.${format.toLowerCase()}`;
     const response = await axios.get(`/v1/projects/download-metadata/${projectId}/${datasetId}/${format}`);
     void download(filename, response.data as string);
   };
 
-  if (!dataset) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <Spinner />
-      </div>
-    );
-  }
+  const setColumnPagination = (pagination: DatasetViewPaginationType) => {
+    void navigate({ search: (prev) => ({ ...prev, columnPagination: pagination }), to: '.' });
+  };
+
+  const setRowPagination = (pagination: DatasetViewPaginationType) => {
+    void navigate({ search: (prev) => ({ ...prev, rowPagination: pagination }), to: '.' });
+  };
 
   const licenseInfo = licensesObjects[dataset.license];
 
@@ -96,7 +79,7 @@ const RouteComponent = () => {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => void navigate({ to: '/portal/projects/$projectId', params: { projectId } })}
+              onClick={() => void navigate({ params: { projectId }, to: '/portal/projects/$projectId' })}
             >
               <ArrowLeftIcon className="mr-1.5 size-3.5" />
               {t({
@@ -145,48 +128,26 @@ const RouteComponent = () => {
       <div>
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold">Data</h3>
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenu.Trigger asChild>
-                <Button size="sm" variant="outline">
-                  <DownloadIcon className="mr-1.5 size-3.5" />
-                  {t('downloadDataset')}
-                </Button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content align="end">
-                <DropdownMenu.Item onClick={() => void handleDataDownload('CSV')}>CSV</DropdownMenu.Item>
-                <DropdownMenu.Item onClick={() => void handleDataDownload('TSV')}>TSV</DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu>
-            <DropdownMenu>
-              <DropdownMenu.Trigger asChild>
-                <Button size="sm" variant="outline">
-                  <DownloadIcon className="mr-1.5 size-3.5" />
-                  {t('downloadMetadata')}
-                </Button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content align="end">
-                <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV')}>CSV</DropdownMenu.Item>
-                <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV')}>TSV</DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu>
-          </div>
+          <DownloadDropdowns
+            onDataDownload={(format) => void handleDataDownload(format)}
+            onMetadataDownload={(format) => void handleMetadataDownload(format)}
+          />
         </div>
         <DatasetPagination
-          currentPage={columnPaginationDto.currentPage}
-          itemsPerPage={columnPaginationDto.itemsPerPage}
+          currentPage={columnPagination.currentPage}
+          itemsPerPage={columnPagination.itemsPerPage}
           kind="COLUMN"
-          setDatasetPagination={setColumnPaginationDto}
+          setDatasetPagination={setColumnPagination}
           totalNumberOfItems={dataset.totalNumberOfColumns}
         />
         <div className="overflow-hidden rounded-md border">
           <DatasetTable isManager={false} isProject={true} {...dataset} />
         </div>
         <DatasetPagination
-          currentPage={rowPaginationDto.currentPage}
-          itemsPerPage={rowPaginationDto.itemsPerPage}
+          currentPage={rowPagination.currentPage}
+          itemsPerPage={rowPagination.itemsPerPage}
           kind="ROW"
-          setDatasetPagination={setRowPaginationDto}
+          setDatasetPagination={setRowPagination}
           totalNumberOfItems={dataset.totalNumberOfRows}
         />
       </div>
@@ -195,5 +156,12 @@ const RouteComponent = () => {
 };
 
 export const Route = createFileRoute('/portal/projects/$projectId/datasets/$datasetId/')({
+  validateSearch: zodValidator($SearchParams),
+  loaderDeps: ({ search: { columnPagination, rowPagination } }) => ({ columnPagination, rowPagination }),
+  loader: async ({ context, deps: { columnPagination, rowPagination }, params }) => {
+    await context.queryClient.ensureQueryData(
+      projectDatasetQueryOptions(params.projectId, params.datasetId, columnPagination, rowPagination)
+    );
+  },
   component: RouteComponent
 });

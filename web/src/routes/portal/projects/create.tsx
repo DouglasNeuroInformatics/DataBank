@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Form, Spinner } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -22,19 +22,14 @@ const RouteComponent = () => {
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
   const navigate = useNavigate();
-  const [projectData, setProjectData] = useState<null | z.infer<typeof $CreateProjectFormValidation>>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (projectData) {
-      void createProject();
-    }
-  }, [projectData]);
-
-  const createProject = async () => {
+  const createProject = async (data: z.infer<typeof $CreateProjectFormValidation>) => {
+    setIsSubmitting(true);
     await axios.post('/v1/projects/create', {
       datasets: [],
       userIds: [currentUser?.id],
-      ...projectData
+      ...data
     });
     addNotification({ message: t('createProjectSuccess'), type: 'success' });
     void navigate({ to: '/portal/projects' });
@@ -48,7 +43,7 @@ const RouteComponent = () => {
           fr: 'Créer un nouveau projet'
         })}
       </PageHeading>
-      {projectData ? (
+      {isSubmitting ? (
         <div className="flex flex-col items-center justify-center py-12">
           <Spinner />
           <p className="text-muted-foreground mt-4 text-sm">
@@ -73,7 +68,7 @@ const RouteComponent = () => {
           }}
           submitBtnLabel="Confirm"
           validationSchema={$CreateProjectFormValidation}
-          onSubmit={(data) => setProjectData(data)}
+          onSubmit={(data) => void createProject(data)}
         />
       )}
     </div>

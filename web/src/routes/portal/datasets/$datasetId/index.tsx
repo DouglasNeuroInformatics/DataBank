@@ -2,7 +2,7 @@
 
 import { $DatasetViewPagination, licensesObjects } from '@databank/core';
 import type { $DatasetViewPagination as DatasetViewPaginationType } from '@databank/core';
-import { Badge, Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
+import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
 import {
   useDestructiveAction,
   useDownload,
@@ -12,11 +12,12 @@ import {
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import axios from 'axios';
-import { DownloadIcon, PencilIcon, TrashIcon, UsersIcon } from 'lucide-react';
+import { PencilIcon, TrashIcon, UsersIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
 import { DatasetPagination } from '@/components/DatasetPagination';
 import { DatasetTable } from '@/components/DatasetTable';
+import { DownloadDropdowns } from '@/components/DownloadDropdowns';
 import { PageHeading } from '@/components/PageHeading';
 import { datasetQueryOptions, useDatasetQuery } from '@/hooks/queries/useDatasetQuery';
 import { useAppStore } from '@/store';
@@ -46,13 +47,13 @@ const RouteComponent = () => {
   });
 
   const handleDataDownload = async (format: 'CSV' | 'TSV') => {
-    const filename = dataset.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
+    const filename = `${dataset.name}_${new Date().toISOString()}.${format.toLowerCase()}`;
     const response = await axios.get(`/v1/datasets/download-data/${datasetId}/${format}`);
     void download(filename, response.data as string);
   };
 
-  const handleMetaDataDownload = async (format: 'CSV' | 'TSV') => {
-    const filename = 'metadata_' + dataset.name + '_' + new Date().toISOString() + '.' + format.toLowerCase();
+  const handleMetadataDownload = async (format: 'CSV' | 'TSV') => {
+    const filename = `metadata_${dataset.name}_${new Date().toISOString()}.${format.toLowerCase()}`;
     const response = await axios.get(`/v1/datasets/download-metadata/${datasetId}/${format}`);
     void download(filename, response.data as string);
   };
@@ -159,32 +160,10 @@ const RouteComponent = () => {
       <div>
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold">Data</h3>
-          <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenu.Trigger asChild>
-                <Button size="sm" variant="outline">
-                  <DownloadIcon className="mr-1.5 size-3.5" />
-                  {t('downloadDataset')}
-                </Button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content align="end">
-                <DropdownMenu.Item onClick={() => void handleDataDownload('CSV')}>CSV</DropdownMenu.Item>
-                <DropdownMenu.Item onClick={() => void handleDataDownload('TSV')}>TSV</DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu>
-            <DropdownMenu>
-              <DropdownMenu.Trigger asChild>
-                <Button size="sm" variant="outline">
-                  <DownloadIcon className="mr-1.5 size-3.5" />
-                  {t('downloadMetadata')}
-                </Button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content align="end">
-                <DropdownMenu.Item onClick={() => void handleMetaDataDownload('CSV')}>CSV</DropdownMenu.Item>
-                <DropdownMenu.Item onClick={() => void handleMetaDataDownload('TSV')}>TSV</DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu>
-          </div>
+          <DownloadDropdowns
+            onDataDownload={(format) => void handleDataDownload(format)}
+            onMetadataDownload={(format) => void handleMetadataDownload(format)}
+          />
         </div>
         <DatasetPagination
           currentPage={columnPagination.currentPage}

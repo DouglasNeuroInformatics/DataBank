@@ -1,28 +1,16 @@
-import { useEffect, useState } from 'react';
-
-import type { $DatasetCardProps } from '@databank/core';
-import { Badge, Button, Card, Spinner } from '@douglasneuroinformatics/libui/components';
+import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { ArrowLeftIcon, DatabaseIcon, PlusIcon } from 'lucide-react';
 
 import { PageHeading } from '@/components/PageHeading';
+import { ownedDatasetsQueryOptions, useOwnedDatasetsQuery } from '@/hooks/queries/useOwnedDatasetsQuery';
 
 const RouteComponent = () => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const { projectId } = Route.useParams();
-  const [datasetsInfoArray, setDatasetsInfoArray] = useState<$DatasetCardProps[] | null>(null);
-
-  useEffect(() => {
-    axios
-      .get<$DatasetCardProps[]>('/v1/datasets/owned-by')
-      .then((response) => {
-        setDatasetsInfoArray(response.data);
-      })
-      .catch(console.error);
-  }, []);
+  const { data: datasets } = useOwnedDatasetsQuery();
 
   return (
     <div>
@@ -53,11 +41,7 @@ const RouteComponent = () => {
         {t('datasetsAvailableToAdd')}
       </PageHeading>
 
-      {!datasetsInfoArray ? (
-        <div className="flex items-center justify-center py-16">
-          <Spinner />
-        </div>
-      ) : datasetsInfoArray.length === 0 ? (
+      {datasets.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16">
           <DatabaseIcon className="text-muted-foreground/50 size-12" />
           <p className="text-muted-foreground mt-4 text-sm">
@@ -69,19 +53,19 @@ const RouteComponent = () => {
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {datasetsInfoArray.map((datasetInfo) =>
-            datasetInfo ? (
-              <Card className="transition-shadow hover:shadow-md" key={datasetInfo.id}>
+          {datasets.map((dataset) =>
+            dataset ? (
+              <Card className="transition-shadow hover:shadow-md" key={dataset.id}>
                 <Card.Header className="pb-3">
-                  <Card.Title className="truncate">{datasetInfo.name}</Card.Title>
-                  {datasetInfo.description && (
-                    <Card.Description className="line-clamp-2">{datasetInfo.description}</Card.Description>
+                  <Card.Title className="truncate">{dataset.name}</Card.Title>
+                  {dataset.description && (
+                    <Card.Description className="line-clamp-2">{dataset.description}</Card.Description>
                   )}
                 </Card.Header>
                 <Card.Content className="pb-3">
-                  <Badge variant="secondary">{datasetInfo.license}</Badge>
+                  <Badge variant="secondary">{dataset.license}</Badge>
                   <p className="text-muted-foreground mt-2 text-xs">
-                    {t('createdAt')}: {new Date(datasetInfo.createdAt).toLocaleDateString()}
+                    {t('createdAt')}: {new Date(dataset.createdAt).toLocaleDateString()}
                   </p>
                 </Card.Content>
                 <Card.Footer>
@@ -89,7 +73,7 @@ const RouteComponent = () => {
                     size="sm"
                     onClick={() =>
                       void navigate({
-                        params: { datasetId: datasetInfo.id, projectId },
+                        params: { datasetId: dataset.id, projectId },
                         to: '/portal/projects/$projectId/datasets/$datasetId/add-columns'
                       })
                     }
@@ -108,5 +92,8 @@ const RouteComponent = () => {
 };
 
 export const Route = createFileRoute('/portal/projects/$projectId/add-dataset')({
-  component: RouteComponent
+  component: RouteComponent,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(ownedDatasetsQueryOptions());
+  }
 });

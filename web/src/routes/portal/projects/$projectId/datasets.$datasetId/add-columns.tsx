@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import type {
   $ProjectColumnSummary,
@@ -17,7 +17,6 @@ import {
   Form,
   SearchBar,
   Separator,
-  Spinner,
   Table
 } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -53,6 +52,7 @@ import { persist } from 'zustand/middleware';
 import { createStore } from 'zustand/vanilla';
 
 import { PageHeading } from '@/components/PageHeading';
+import { columnSummariesQueryOptions, useColumnSummariesQuery } from '@/hooks/queries/useColumnSummariesQuery';
 
 // --- Store ---
 
@@ -281,18 +281,11 @@ const SelectColumnsStep = ({
   setSelectedColumns: (selectedColumns: SelectedColumnsRecord) => void;
   setStep: (step: $ProjectDatasetConfigStep) => void;
 }) => {
-  const [data, setData] = useState<$ProjectColumnSummary[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const { t } = useTranslation('common');
-
-  useEffect(() => {
-    axios
-      .get<$ProjectColumnSummary[]>(`/v1/datasets/columns/${datasetId}`)
-      .then((response) => setData(response.data))
-      .catch(console.error);
-  }, [datasetId]);
+  const { data } = useColumnSummariesQuery(datasetId);
 
   const table = useReactTable({
     columns: projectColumnDefs,
@@ -321,14 +314,6 @@ const SelectColumnsStep = ({
     setSelectedColumns(selected);
     setStep('configRows');
   }, [table, setSelectedColumns, setStep]);
-
-  if (data.length === 0) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <Spinner />
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">
@@ -721,11 +706,7 @@ const RouteComponent = () => {
                   <SelectColumnsStep datasetId={datasetId} setSelectedColumns={setSelectedColumns} setStep={setStep} />
                 );
               default:
-                return (
-                  <div className="flex items-center justify-center py-10">
-                    <Spinner />
-                  </div>
-                );
+                return null;
             }
           })()}
         </Card.Content>
@@ -757,5 +738,8 @@ const RouteComponent = () => {
 };
 
 export const Route = createFileRoute('/portal/projects/$projectId/datasets/$datasetId/add-columns')({
-  component: RouteComponent
+  component: RouteComponent,
+  loader: async ({ context, params }) => {
+    await context.queryClient.ensureQueryData(columnSummariesQueryOptions(params.datasetId));
+  }
 });
