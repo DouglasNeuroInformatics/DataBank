@@ -207,14 +207,6 @@ const formatSummary = (column: $ProjectColumnSummary): string => {
   }
 };
 
-const KIND_COLORS: Record<string, 'default' | 'secondary'> = {
-  DATETIME: 'secondary',
-  ENUM: 'default',
-  FLOAT: 'secondary',
-  INT: 'secondary',
-  STRING: 'default'
-};
-
 const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
   {
     accessorKey: 'select',
@@ -540,7 +532,7 @@ const ConfigColumnsStep = ({
 
 // --- Main Route Component ---
 
-const STEP_META: Record<$ProjectDatasetConfigStep, { description: string; title: string }> = {
+const STEP_META: { [K in $ProjectDatasetConfigStep]: { description: string; title: string } } = {
   selectColumns: {
     title: 'Select Columns',
     description: 'Choose which columns from this dataset to include in the project.'
@@ -684,12 +676,6 @@ const RouteComponent = () => {
         <Card.Content className="pt-4">
           {(() => {
             switch (currentStep) {
-              case 'selectColumns':
-                return (
-                  <SelectColumnsStep datasetId={datasetId} setSelectedColumns={setSelectedColumns} setStep={setStep} />
-                );
-              case 'configRows':
-                return <ConfigRowsStep setRowConfig={setRowConfig} setStep={setStep} />;
               case 'configColumns': {
                 const selectedColumnsForPage: SelectedColumnsRecord = {};
                 selectedColumnsIdArray.slice(currentColumnIdIndex, currentColumnIdIndex + pageSize).forEach((colId) => {
@@ -728,6 +714,12 @@ const RouteComponent = () => {
                   </div>
                 );
               }
+              case 'configRows':
+                return <ConfigRowsStep setRowConfig={setRowConfig} setStep={setStep} />;
+              case 'selectColumns':
+                return (
+                  <SelectColumnsStep datasetId={datasetId} setSelectedColumns={setSelectedColumns} setStep={setStep} />
+                );
               default:
                 return (
                   <div className="flex items-center justify-center py-10">
