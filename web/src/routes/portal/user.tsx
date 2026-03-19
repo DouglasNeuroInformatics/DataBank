@@ -19,7 +19,7 @@ const RouteComponent = () => {
   }
 
   return (
-    <div className="mx-auto max-w-xl">
+    <div className="mx-auto w-full max-w-xl">
       <PageHeading>{t('preferences')}</PageHeading>
       <div className="flex items-center gap-4">
         <div className="bg-muted flex size-14 items-center justify-center rounded-full">

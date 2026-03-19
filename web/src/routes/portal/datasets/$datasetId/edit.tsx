@@ -53,7 +53,7 @@ const RouteComponent = () => {
   );
 
   return (
-    <div className="mx-auto max-w-xl">
+    <div className="mx-auto w-full max-w-xl">
       <PageHeading
         actions={
           <Button

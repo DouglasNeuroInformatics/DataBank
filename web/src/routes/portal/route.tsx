@@ -84,7 +84,9 @@ const DesktopSidebar = ({ navigation }: { navigation: NavItem[] }) => {
                 )}
                 size="icon"
                 variant="ghost"
-                onClick={() => void navigate({ to: item.href })}
+                onClick={() => {
+                  void navigate({ to: item.href });
+                }}
               >
                 <item.icon className="size-5!" />
               </Tooltip.Trigger>
@@ -201,8 +203,8 @@ const RouteComponent = () => {
       <DesktopSidebar navigation={navigation} />
       <MobileNavbar navigation={navigation} />
       <main className="flex grow flex-col overflow-hidden">
-        <div className="overflow-auto pb-6">
-          <div className="container">
+        <div className="flex grow flex-col overflow-auto pb-6">
+          <div className="container flex grow flex-col">
             <Outlet />
           </div>
         </div>
