@@ -59,7 +59,7 @@ export class ColumnsService {
     });
   }
 
-  async createFromSeries(tabularDataId: string, colSeries: Series) {
+  async createFromSeries(tabularDataId: string, colSeries: Series, permissionLevel: $PermissionLevel = 'MANAGER') {
     const dataArray = colSeries.toArray().map((x) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       return { value: x };
@@ -73,7 +73,7 @@ export class ColumnsService {
 
       await this.columnModel.create({
         data: {
-          dataPermission: 'MANAGER',
+          dataPermission: permissionLevel,
           floatData: dataArray,
           kind: 'FLOAT',
           name: colSeries.name,
@@ -87,7 +87,7 @@ export class ColumnsService {
             floatSummary: floatSummary.floatSummary,
             nullCount: colSeries.nullCount()
           },
-          summaryPermission: 'MANAGER',
+          summaryPermission: permissionLevel,
           tabularDataId: tabularDataId
         }
       });
@@ -99,7 +99,7 @@ export class ColumnsService {
       }
       await this.columnModel.create({
         data: {
-          dataPermission: 'MANAGER',
+          dataPermission: permissionLevel,
           intData: dataArray,
           kind: 'INT',
           name: colSeries.name,
@@ -113,7 +113,7 @@ export class ColumnsService {
             intSummary: intSummary.intSummary,
             nullCount: colSeries.nullCount()
           },
-          summaryPermission: 'MANAGER',
+          summaryPermission: permissionLevel,
           tabularDataId: tabularDataId
         }
       });
@@ -128,7 +128,7 @@ export class ColumnsService {
 
       await this.columnModel.create({
         data: {
-          dataPermission: 'MANAGER',
+          dataPermission: permissionLevel,
           enumData: dataArray.map((entry) => {
             return { value: String(entry.value) };
           }),
@@ -151,7 +151,7 @@ export class ColumnsService {
             },
             nullCount: colSeries.nullCount()
           },
-          summaryPermission: 'MANAGER',
+          summaryPermission: permissionLevel,
           tabularDataId: tabularDataId
         }
       });
@@ -165,7 +165,7 @@ export class ColumnsService {
       }
       await this.columnModel.create({
         data: {
-          dataPermission: 'MANAGER',
+          dataPermission: permissionLevel,
           datetimeData: dataArray,
           kind: 'DATETIME',
           name: colSeries.name,
@@ -179,7 +179,7 @@ export class ColumnsService {
             datetimeSummary: datetimeSummary.datetimeSummary,
             nullCount: colSeries.nullCount()
           },
-          summaryPermission: 'MANAGER',
+          summaryPermission: permissionLevel,
           tabularDataId: tabularDataId
         }
       });
@@ -189,7 +189,7 @@ export class ColumnsService {
     if (colSeries.isString()) {
       await this.columnModel.create({
         data: {
-          dataPermission: 'MANAGER',
+          dataPermission: permissionLevel,
           kind: 'STRING',
           name: colSeries.name,
           nullable: colSeries.nullCount() !== 0,
@@ -202,7 +202,7 @@ export class ColumnsService {
             count: colSeries.len() - colSeries.nullCount(),
             nullCount: colSeries.nullCount()
           },
-          summaryPermission: 'MANAGER',
+          summaryPermission: permissionLevel,
           tabularDataId: tabularDataId
         }
       });

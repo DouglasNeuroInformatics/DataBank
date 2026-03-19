@@ -2,6 +2,7 @@
 
 import { $DatasetViewPagination, licensesObjects } from '@databank/core';
 import { Badge, Card } from '@douglasneuroinformatics/libui/components';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import {
@@ -16,8 +17,6 @@ import {
   TagIcon
 } from 'lucide-react';
 import { z } from 'zod/v4';
-
-import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 
 import { PageHeading } from '@/components/PageHeading';
 import { publicDatasetQueryOptions, usePublicDatasetQuery } from '@/hooks/queries/usePublicDatasetQuery';
@@ -157,9 +156,7 @@ const RouteComponent = () => {
                   <ShieldIcon className="size-3.5" />
                   {t({ en: 'Permission', fr: 'Permission' })}
                 </dt>
-                <dd>
-                  <Badge variant="secondary">{dataset.permission}</Badge>
-                </dd>
+                <dd className="text-sm font-medium">{dataset.permission}</dd>
               </div>
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground flex items-center gap-2 text-sm">

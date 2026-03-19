@@ -210,6 +210,7 @@ export class DatasetsService {
           typeof createTabularDatasetDto.isJSON === 'string'
             ? createTabularDatasetDto.isJSON.toLowerCase() === 'true'
             : Boolean(createTabularDatasetDto.isJSON),
+        permission: createTabularDatasetDto.permission,
         primaryKeys: createTabularDatasetDto.primaryKeys ?? undefined
       });
     } else {
@@ -234,6 +235,7 @@ export class DatasetsService {
           typeof createTabularDatasetDto.isJSON === 'string'
             ? createTabularDatasetDto.isJSON.toLowerCase() === 'true'
             : Boolean(createTabularDatasetDto.isJSON),
+        permission: createTabularDatasetDto.permission,
         primaryKeys: createTabularDatasetDto.primaryKeys,
         uploadedString: file
       });

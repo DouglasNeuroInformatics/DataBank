@@ -44,7 +44,7 @@ export class TabularDataService {
   }
 
   // create tabular dataset
-  async create(df: DataFrame, datasetId: string, primaryKeys: string[]) {
+  async create(df: DataFrame, datasetId: string, primaryKeys: string[], permission: PermissionLevel = 'MANAGER') {
     // for datasets without primary keys, generate a sequential id column
     if (primaryKeys.length === 0) {
       const indexArray = [];
@@ -69,7 +69,7 @@ export class TabularDataService {
 
     try {
       for (const col of df.getColumns()) {
-        await this.columnsService.createFromSeries(tabularData.id, col);
+        await this.columnsService.createFromSeries(tabularData.id, col, permission);
       }
     } catch {
       await this.columnsService.deleteByTabularDataId(tabularData.id);
