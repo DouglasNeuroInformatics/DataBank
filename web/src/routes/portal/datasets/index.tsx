@@ -90,13 +90,13 @@ const RouteComponent = () => {
           <p className="text-muted-foreground mt-4 text-lg font-medium">
             {t({
               en: 'No Datasets Available',
-              fr: 'Aucun ensemble de données disponible'
+              fr: 'Aucun base de données disponible'
             })}
           </p>
           <p className="text-muted-foreground mt-1 text-sm">
             {t({
               en: 'Create your first dataset to get started.',
-              fr: 'Créez votre premier ensemble de données pour commencer.'
+              fr: 'Créez votre premier base de données pour commencer.'
             })}
           </p>
           <Button className="mt-6" variant="outline" onClick={() => void navigate({ to: '/portal/datasets/create' })}>

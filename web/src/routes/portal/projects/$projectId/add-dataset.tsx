@@ -35,7 +35,7 @@ const RouteComponent = () => {
         }
         description={t({
           en: 'Select a dataset to add to this project.',
-          fr: 'Sélectionnez un ensemble de données à ajouter à ce projet.'
+          fr: 'Sélectionnez un base de données à ajouter à ce projet.'
         })}
       >
         {t('datasetsAvailableToAdd')}
@@ -47,7 +47,7 @@ const RouteComponent = () => {
           <p className="text-muted-foreground mt-4 text-sm">
             {t({
               en: 'No datasets available. Create a dataset first.',
-              fr: "Aucun ensemble de données disponible. Créez d'abord un ensemble de données."
+              fr: "Aucun base de données disponible. Créez d'abord un base de données."
             })}
           </p>
         </div>

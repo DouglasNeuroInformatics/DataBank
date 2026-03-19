@@ -61,7 +61,7 @@ const RouteComponent = () => {
       addNotification({
         message: t({
           en: 'Please upload your own dataset before creating a project!',
-          fr: 'Veuillez télécharger votre propre ensemble de données avant de créer un projet!'
+          fr: 'Veuillez télécharger votre propre base de données avant de créer un projet!'
         }),
         type: 'error'
       });
