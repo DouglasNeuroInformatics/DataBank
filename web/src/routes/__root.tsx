@@ -3,8 +3,10 @@ import React from 'react';
 import { CoreProvider } from '@douglasneuroinformatics/libui/providers';
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, Outlet, redirect } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+
+import { setupStateQueryOptions } from '@/hooks/queries/useSetupStateQuery';
 
 import '@/services/axios';
 import '@/services/i18n';
@@ -30,5 +32,11 @@ const RouteComponent = () => {
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  component: RouteComponent
+  component: RouteComponent,
+  loader: async ({ context, location }) => {
+    const { isSetup } = await context.queryClient.ensureQueryData(setupStateQueryOptions());
+    if (!isSetup && location.pathname !== '/setup') {
+      throw redirect({ to: '/setup' });
+    }
+  }
 });
