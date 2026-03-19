@@ -5,7 +5,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { CalendarIcon, FolderOpenIcon, PlusIcon } from 'lucide-react';
 
 import { PageHeading } from '@/components/PageHeading';
-import { useProjectIsManagerQuery } from '@/hooks/queries/useProjectIsManagerQuery';
+import { projectIsManagerQueryOptions, useProjectIsManagerQuery } from '@/hooks/queries/useProjectIsManagerQuery';
 import { projectsQueryOptions, useProjectsQuery } from '@/hooks/queries/useProjectsQuery';
 import { useAppStore } from '@/store';
 
@@ -120,6 +120,9 @@ const RouteComponent = () => {
 export const Route = createFileRoute('/portal/projects/')({
   component: RouteComponent,
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(projectsQueryOptions());
+    const projects = await context.queryClient.ensureQueryData(projectsQueryOptions());
+    await Promise.all(
+      projects.map((project) => context.queryClient.ensureQueryData(projectIsManagerQueryOptions(project.id)))
+    );
   }
 });
