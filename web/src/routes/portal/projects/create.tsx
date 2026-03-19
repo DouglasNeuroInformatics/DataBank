@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import { Form, Spinner } from '@douglasneuroinformatics/libui/components';
+import { Form } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod/v4';
@@ -45,34 +45,22 @@ const RouteComponent = () => {
           fr: 'Créer un nouveau projet'
         })}
       </PageHeading>
-      {createProjectMutation.isPending ? (
-        <div className="flex flex-col items-center justify-center py-12">
-          <Spinner />
-          <p className="text-muted-foreground mt-4 text-sm">
-            {t({
-              en: 'Creating project...',
-              fr: 'Création du projet...'
-            })}
-          </p>
-        </div>
-      ) : (
-        <Form
-          content={{
-            name: { kind: 'string', label: t('projectName'), variant: 'input' },
-            description: { kind: 'string', label: t('projectDescription'), variant: 'textarea' },
-            externalId: {
-              kind: 'string',
-              label: t('projectExternalId'),
-              description: t('projectExternalIdDescription'),
-              variant: 'input'
-            },
-            expiry: { kind: 'date', label: t('projectExpiry') }
-          }}
-          submitBtnLabel="Confirm"
-          validationSchema={$CreateProjectFormValidation}
-          onSubmit={(data) => createProject(data)}
-        />
-      )}
+      <Form
+        content={{
+          name: { kind: 'string', label: t('projectName'), variant: 'input' },
+          description: { kind: 'string', label: t('projectDescription'), variant: 'textarea' },
+          externalId: {
+            kind: 'string',
+            label: t('projectExternalId'),
+            description: t('projectExternalIdDescription'),
+            variant: 'input'
+          },
+          expiry: { kind: 'date', label: t('projectExpiry') }
+        }}
+        submitBtnLabel="Confirm"
+        validationSchema={$CreateProjectFormValidation}
+        onSubmit={(data) => createProject(data)}
+      />
     </div>
   );
 };
