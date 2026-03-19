@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { z } from 'zod/v4';
 
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
+
 import { PageHeading } from '@/components/PageHeading';
 import { publicDatasetQueryOptions, usePublicDatasetQuery } from '@/hooks/queries/usePublicDatasetQuery';
 
@@ -79,6 +81,7 @@ const ColumnTypeBar: React.FC<{ counts: { [key: string]: number }; total: number
 };
 
 const RouteComponent = () => {
+  const { t } = useTranslation();
   const { columnPagination, rowPagination } = Route.useSearch();
   const { datasetId } = Route.useParams();
   const { data: dataset } = usePublicDatasetQuery(datasetId, columnPagination, rowPagination);
@@ -109,16 +112,24 @@ const RouteComponent = () => {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={<RowsIcon className="size-5" />}
-          label="Total Rows"
+          label={t({ en: 'Total Rows', fr: 'Lignes totales' })}
           value={dataset.totalNumberOfRows.toLocaleString()}
         />
         <StatCard
           icon={<ColumnsIcon className="size-5" />}
-          label="Total Columns"
+          label={t({ en: 'Total Columns', fr: 'Colonnes totales' })}
           value={dataset.totalNumberOfColumns.toLocaleString()}
         />
-        <StatCard icon={<DatabaseIcon className="size-5" />} label="Primary Keys" value={dataset.primaryKeys.length} />
-        <StatCard icon={<HashIcon className="size-5" />} label="Null Values" value={totalNulls.toLocaleString()} />
+        <StatCard
+          icon={<DatabaseIcon className="size-5" />}
+          label={t({ en: 'Primary Keys', fr: 'Clés primaires' })}
+          value={dataset.primaryKeys.length}
+        />
+        <StatCard
+          icon={<HashIcon className="size-5" />}
+          label={t({ en: 'Null Values', fr: 'Valeurs nulles' })}
+          value={totalNulls.toLocaleString()}
+        />
       </div>
 
       {/* Metadata & Column Types */}
@@ -127,7 +138,7 @@ const RouteComponent = () => {
           <Card.Header>
             <Card.Title className="flex items-center gap-2 text-base">
               <TagIcon className="size-4" />
-              Dataset Information
+              {t({ en: 'Dataset Information', fr: 'Informations sur le jeu de données' })}
             </Card.Title>
           </Card.Header>
           <Card.Content>
@@ -135,7 +146,7 @@ const RouteComponent = () => {
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground flex items-center gap-2 text-sm">
                   <ScaleIcon className="size-3.5" />
-                  License
+                  {t({ en: 'License', fr: 'Licence' })}
                 </dt>
                 <dd className="text-sm font-medium" title={licenseInfo?.name}>
                   {dataset.license}
@@ -144,7 +155,7 @@ const RouteComponent = () => {
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground flex items-center gap-2 text-sm">
                   <ShieldIcon className="size-3.5" />
-                  Permission
+                  {t({ en: 'Permission', fr: 'Permission' })}
                 </dt>
                 <dd>
                   <Badge variant="secondary">{dataset.permission}</Badge>
@@ -153,14 +164,14 @@ const RouteComponent = () => {
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground flex items-center gap-2 text-sm">
                   <CalendarIcon className="size-3.5" />
-                  Created
+                  {t({ en: 'Created', fr: 'Créé' })}
                 </dt>
                 <dd className="text-sm font-medium">{new Date(dataset.createdAt).toLocaleDateString()}</dd>
               </div>
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground flex items-center gap-2 text-sm">
                   <ClockIcon className="size-3.5" />
-                  Updated
+                  {t({ en: 'Updated', fr: 'Mis à jour' })}
                 </dt>
                 <dd className="text-sm font-medium">{new Date(dataset.updatedAt).toLocaleDateString()}</dd>
               </div>
@@ -172,7 +183,7 @@ const RouteComponent = () => {
           <Card.Header>
             <Card.Title className="flex items-center gap-2 text-base">
               <ColumnsIcon className="size-4" />
-              Column Types
+              {t({ en: 'Column Types', fr: 'Types de colonnes' })}
             </Card.Title>
           </Card.Header>
           <Card.Content>
@@ -182,7 +193,9 @@ const RouteComponent = () => {
                 total={Object.values(columnTypeCounts).reduce((a, b) => a + b, 0)}
               />
             ) : (
-              <p className="text-muted-foreground text-sm">No column metadata available</p>
+              <p className="text-muted-foreground text-sm">
+                {t({ en: 'No Column Metadata Available', fr: 'Aucune métadonnée de colonne disponible' })}
+              </p>
             )}
           </Card.Content>
         </Card>
