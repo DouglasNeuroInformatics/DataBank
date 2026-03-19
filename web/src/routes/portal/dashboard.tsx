@@ -46,7 +46,7 @@ const StatCard = ({
       </Card.Content>
       <Card.Footer>
         <Link
-          className="text-primary hover:text-primary/80 inline-flex items-center gap-1 text-sm font-medium"
+          className="text-foreground hover:text-muted-foreground inline-flex items-center gap-1 text-sm font-medium"
           to={createHref}
         >
           <PlusIcon className="size-3.5" />
