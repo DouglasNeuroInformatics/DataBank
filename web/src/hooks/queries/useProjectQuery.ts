@@ -2,12 +2,13 @@ import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { z } from 'zod/v4';
 
+// TODO - this needs to be synced correctly with the backend
 const $Project = z.object({
   createdAt: z.coerce.date(),
   datasets: z.array(z.string()),
-  description: z.string(),
+  description: z.string().nullish(),
   expiry: z.coerce.date(),
-  externalId: z.string(),
+  externalId: z.string().nullish(),
   id: z.string(),
   name: z.string(),
   updatedAt: z.coerce.date(),
