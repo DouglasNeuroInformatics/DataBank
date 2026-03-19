@@ -1,25 +1,21 @@
 import { $DatasetInfo } from '@databank/core';
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
-import { useDestructiveAction, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { useQueryClient } from '@tanstack/react-query';
+import { useDestructiveAction, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { DatabaseIcon, PlusIcon, TrashIcon } from 'lucide-react';
 
 import { PageHeading } from '@/components/PageHeading';
-import { DATASETS_QUERY_KEY, datasetsQueryOptions, useDatasetsQuery } from '@/hooks/queries/useDatasetsQuery';
+import { useDeleteDatasetMutation } from '@/hooks/mutations/useDeleteDatasetMutation';
+import { datasetsQueryOptions, useDatasetsQuery } from '@/hooks/queries/useDatasetsQuery';
 import { useAppStore } from '@/store';
 
 const DatasetCard = ({ dataset, isManager }: { dataset: $DatasetInfo; isManager: boolean }) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
-  const addNotification = useNotificationsStore((state) => state.addNotification);
-  const queryClient = useQueryClient();
+  const deleteDatasetMutation = useDeleteDatasetMutation();
 
-  const deleteDataset = useDestructiveAction(async () => {
-    await axios.delete(`/v1/datasets/${dataset.id}`);
-    addNotification({ message: `Dataset ${dataset.id} deleted`, type: 'success' });
-    await queryClient.invalidateQueries({ queryKey: [DATASETS_QUERY_KEY] });
+  const deleteDataset = useDestructiveAction(() => {
+    deleteDatasetMutation.mutate(dataset.id);
   });
 
   return (

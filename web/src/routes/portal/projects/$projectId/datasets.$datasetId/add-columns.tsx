@@ -31,7 +31,6 @@ import {
   useReactTable
 } from '@tanstack/react-table';
 import type { ColumnDef, ColumnFiltersState, SortingState } from '@tanstack/react-table';
-import axios from 'axios';
 import { produce } from 'immer';
 import {
   ArrowLeftIcon,
@@ -52,6 +51,7 @@ import { persist } from 'zustand/middleware';
 import { createStore } from 'zustand/vanilla';
 
 import { PageHeading } from '@/components/PageHeading';
+import { useAddDatasetToProjectMutation } from '@/hooks/mutations/useAddDatasetToProjectMutation';
 import { columnSummariesQueryOptions, useColumnSummariesQuery } from '@/hooks/queries/useColumnSummariesQuery';
 
 // --- Store ---
@@ -537,6 +537,7 @@ const RouteComponent = () => {
   const navigate = useNavigate();
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
+  const addDatasetToProjectMutation = useAddDatasetToProjectMutation();
 
   const [store] = useState(() => createProjectDatasetConfigStore(projectId, datasetId));
   const {
@@ -599,21 +600,20 @@ const RouteComponent = () => {
       rowConfig
     };
 
-    axios
-      .post(`/v1/projects/add-dataset/${projectId}`, { projectDatasetDto: projectDatasetConfig })
-      .then(() => {
-        addNotification({
-          message: `Added dataset ${datasetId} to project ${projectId}`,
-          type: 'success'
-        });
-        void navigate({ to: '/portal/projects/$projectId', params: { projectId } });
-      })
-      .catch((error) => {
-        addNotification({
-          message: `Failed to add dataset to project: ${error}`,
-          type: 'error'
-        });
-      });
+    addDatasetToProjectMutation.mutate(
+      { projectDatasetDto: projectDatasetConfig, projectId },
+      {
+        onError(error) {
+          addNotification({
+            message: `Failed to add dataset to project: ${error}`,
+            type: 'error'
+          });
+        },
+        onSuccess() {
+          void navigate({ to: '/portal/projects/$projectId', params: { projectId } });
+        }
+      }
+    );
   };
 
   const meta = STEP_META[currentStep];

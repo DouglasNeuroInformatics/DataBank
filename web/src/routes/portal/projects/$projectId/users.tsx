@@ -1,38 +1,42 @@
 import { Button, Card, Form, Separator } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { ArrowLeftIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
 import { PageHeading } from '@/components/PageHeading';
 import { UserInfoCard } from '@/components/UserInfoCard';
+import { useAddProjectUserMutation } from '@/hooks/mutations/useAddProjectUserMutation';
+import { useRemoveProjectUserMutation } from '@/hooks/mutations/useRemoveProjectUserMutation';
 
 const RouteComponent = () => {
   const { projectId } = Route.useParams();
   const { userIds } = Route.useSearch();
   const { t } = useTranslation('common');
-  const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
+  const addUserMutation = useAddProjectUserMutation();
+  const removeUserMutation = useRemoveProjectUserMutation();
 
   const addUser = (email: string) => {
-    axios
-      .post(`/v1/projects/add-user/${projectId}`, { newUserEmail: email })
-      .then(() => {
-        addNotification({ type: 'success' });
-        void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
-      })
-      .catch(console.error);
+    addUserMutation.mutate(
+      { newUserEmail: email, projectId },
+      {
+        onSuccess() {
+          void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
+        }
+      }
+    );
   };
 
   const removeUser = (userId: string) => {
-    axios
-      .delete(`/v1/projects/remove-user/${projectId}/${userId}`)
-      .then(() => {
-        addNotification({ type: 'success' });
-        void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
-      })
-      .catch(console.error);
+    removeUserMutation.mutate(
+      { projectId, userId },
+      {
+        onSuccess() {
+          void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
+        }
+      }
+    );
   };
 
   return (

@@ -1,13 +1,13 @@
-import { $ColumnType, $PermissionLevel } from '@databank/core';
 import type { $TabularDataset } from '@databank/core';
 import { DropdownMenu, Table } from '@douglasneuroinformatics/libui/components';
-import { useDestructiveAction, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { useDestructiveAction, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { ChevronDownIcon, HelpCircleIcon, TrashIcon } from 'lucide-react';
 
-import { DATASET_QUERY_KEY } from '@/hooks/queries/useDatasetQuery';
-import { PROJECT_DATASET_QUERY_KEY } from '@/hooks/queries/useProjectDatasetQuery';
+import { useChangeColumnTypeMutation } from '@/hooks/mutations/useChangeColumnTypeMutation';
+import { useDeleteColumnMutation } from '@/hooks/mutations/useDeleteColumnMutation';
+import { useSetColumnDataPermissionMutation } from '@/hooks/mutations/useSetColumnDataPermissionMutation';
+import { useSetColumnMetadataPermissionMutation } from '@/hooks/mutations/useSetColumnMetadataPermissionMutation';
+import { useToggleColumnNullableMutation } from '@/hooks/mutations/useToggleColumnNullableMutation';
 
 type DatasetTableProps = Omit<$TabularDataset, 'permission'> & { isManager: boolean; isProject: boolean };
 
@@ -16,46 +16,15 @@ const PERMISSION_LEVELS = ['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED'] as const;
 
 export const DatasetTable = (tabularDataset: DatasetTableProps) => {
   const { t } = useTranslation('common');
-  const addNotification = useNotificationsStore((state) => state.addNotification);
-  const queryClient = useQueryClient();
 
-  const invalidateDataset = () => {
-    const key = tabularDataset.isProject ? PROJECT_DATASET_QUERY_KEY : DATASET_QUERY_KEY;
-    return queryClient.invalidateQueries({ queryKey: [key] });
-  };
+  const setColumnMetadataPermission = useSetColumnMetadataPermissionMutation({ isProject: tabularDataset.isProject });
+  const setColumnDataPermission = useSetColumnDataPermissionMutation({ isProject: tabularDataset.isProject });
+  const toggleColumnNullable = useToggleColumnNullableMutation({ isProject: tabularDataset.isProject });
+  const changeColumnType = useChangeColumnTypeMutation({ isProject: tabularDataset.isProject });
+  const deleteColumn = useDeleteColumnMutation({ isProject: tabularDataset.isProject });
 
-  const handleSetColumnMetadataPermissionLevel = async (columnId: string, newPermissionLevel: $PermissionLevel) => {
-    await axios.patch(`/v1/datasets/column-metadata-permission/${tabularDataset.id}/${columnId}`, {
-      permission: newPermissionLevel
-    });
-    await invalidateDataset();
-    addNotification({ type: 'success' });
-  };
-
-  const handleSetColumnDataPermissionLevel = async (columnId: string, newPermissionLevel: $PermissionLevel) => {
-    await axios.patch(`/v1/datasets/column-data-permission/${tabularDataset.id}/${columnId}`, {
-      permission: newPermissionLevel
-    });
-    await invalidateDataset();
-    addNotification({ type: 'success' });
-  };
-
-  const handleToggleColumnNullable = async (columnId: string) => {
-    await axios.patch(`/v1/datasets/column-nullable/${tabularDataset.id}/${columnId}`);
-    await invalidateDataset();
-    addNotification({ type: 'success' });
-  };
-
-  const handleChangeColumnType = async (columnId: string, type: $ColumnType) => {
-    await axios.patch(`/v1/datasets/column-type/${tabularDataset.id}/${columnId}`, { kind: type });
-    await invalidateDataset();
-    addNotification({ type: 'success' });
-  };
-
-  const handleDeleteColumn = useDestructiveAction(async (columnId: string) => {
-    await axios.delete(`/v1/datasets/column/${tabularDataset.id}/${columnId}`);
-    await invalidateDataset();
-    addNotification({ type: 'success' });
+  const handleDeleteColumn = useDestructiveAction((columnId: string) => {
+    deleteColumn.mutate({ columnId, datasetId: tabularDataset.id });
   });
 
   const getSummary = (columnName: string) => {
@@ -139,7 +108,12 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                           ) : null}
                           <DropdownMenu.Item
                             disabled={tabularDataset.primaryKeys.includes(column)}
-                            onClick={() => void handleToggleColumnNullable(tabularDataset.columnIds[column]!)}
+                            onClick={() =>
+                              toggleColumnNullable.mutate({
+                                columnId: tabularDataset.columnIds[column]!,
+                                datasetId: tabularDataset.id
+                              })
+                            }
                           >
                             {t('toggleColumnNullable')}
                             <DropdownMenu.Shortcut>
@@ -148,7 +122,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                           </DropdownMenu.Item>
                           <DropdownMenu.Item
                             disabled={tabularDataset.primaryKeys.includes(column)}
-                            onClick={() => void handleDeleteColumn(tabularDataset.columnIds[column]!)}
+                            onClick={() => handleDeleteColumn(tabularDataset.columnIds[column]!)}
                           >
                             {t('deleteColumn')}
                             <DropdownMenu.Shortcut>
@@ -166,7 +140,11 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                   <DropdownMenu.Item
                                     key={option}
                                     onClick={() =>
-                                      void handleSetColumnDataPermissionLevel(tabularDataset.columnIds[column]!, option)
+                                      setColumnDataPermission.mutate({
+                                        columnId: tabularDataset.columnIds[column]!,
+                                        datasetId: tabularDataset.id,
+                                        permission: option
+                                      })
                                     }
                                   >
                                     {option}
@@ -183,10 +161,11 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                   <DropdownMenu.Item
                                     key={option}
                                     onClick={() =>
-                                      void handleSetColumnMetadataPermissionLevel(
-                                        tabularDataset.columnIds[column]!,
-                                        option
-                                      )
+                                      setColumnMetadataPermission.mutate({
+                                        columnId: tabularDataset.columnIds[column]!,
+                                        datasetId: tabularDataset.id,
+                                        permission: option
+                                      })
                                     }
                                   >
                                     {option}
@@ -206,7 +185,11 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                                         <DropdownMenu.Item
                                           key={option}
                                           onClick={() =>
-                                            void handleChangeColumnType(tabularDataset.columnIds[column]!, option)
+                                            changeColumnType.mutate({
+                                              columnId: tabularDataset.columnIds[column]!,
+                                              datasetId: tabularDataset.id,
+                                              type: option
+                                            })
                                           }
                                         >
                                           {option}

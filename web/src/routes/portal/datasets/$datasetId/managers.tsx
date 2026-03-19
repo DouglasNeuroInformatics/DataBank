@@ -1,38 +1,42 @@
 import { Button, Card, Form, Separator } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { ArrowLeftIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
 import { PageHeading } from '@/components/PageHeading';
 import { UserInfoCard } from '@/components/UserInfoCard';
+import { useAddDatasetManagerMutation } from '@/hooks/mutations/useAddDatasetManagerMutation';
+import { useRemoveDatasetManagerMutation } from '@/hooks/mutations/useRemoveDatasetManagerMutation';
 
 const RouteComponent = () => {
   const { datasetId } = Route.useParams();
   const { isManager, managerIds } = Route.useSearch();
   const { t } = useTranslation('common');
-  const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
+  const addManagerMutation = useAddDatasetManagerMutation();
+  const removeManagerMutation = useRemoveDatasetManagerMutation();
 
   const addManager = (email: string) => {
-    axios
-      .post(`/v1/datasets/managers/${datasetId}`, { newManagerEmail: email })
-      .then(() => {
-        addNotification({ message: `Manager with email ${email} added`, type: 'success' });
-        void navigate({ params: { datasetId }, to: '/portal/datasets/$datasetId' });
-      })
-      .catch(console.error);
+    addManagerMutation.mutate(
+      { datasetId, newManagerEmail: email },
+      {
+        onSuccess() {
+          void navigate({ params: { datasetId }, to: '/portal/datasets/$datasetId' });
+        }
+      }
+    );
   };
 
   const removeManager = (managerId: string) => {
-    axios
-      .delete(`/v1/datasets/managers/${datasetId}/${managerId}`)
-      .then(() => {
-        addNotification({ type: 'success' });
-        void navigate({ to: '/portal/datasets' });
-      })
-      .catch(console.error);
+    removeManagerMutation.mutate(
+      { datasetId, managerId },
+      {
+        onSuccess() {
+          void navigate({ to: '/portal/datasets' });
+        }
+      }
+    );
   };
 
   return (

@@ -5,13 +5,13 @@ import { $DatasetLicenses } from '@databank/core';
 import { Button, Form, Spinner } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { ArrowLeftIcon, FileUpIcon, UploadIcon } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import { match } from 'ts-pattern';
 import { z } from 'zod/v4';
 
 import { PageHeading } from '@/components/PageHeading';
+import { useCreateDatasetMutation } from '@/hooks/mutations/useCreateDatasetMutation';
 import { useDebounceLicensesFilter } from '@/hooks/useDebounceLicensesFilter';
 
 const $CreateDatasetFormValidation = z.object({
@@ -32,39 +32,39 @@ const RouteComponent = () => {
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
   const navigate = useNavigate();
+  const createDatasetMutation = useCreateDatasetMutation();
 
   const [formData, setFormData] = useState<CreateDatasetFormData | null>(null);
-  const [processingFile, setProcessingFile] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const { licenseOptions, subscribe } = useDebounceLicensesFilter();
 
-  const createDataset = async () => {
-    setProcessingFile(true);
+  const createDataset = () => {
     if (!formData) return;
 
-    try {
-      const requestFormData = new FormData();
-      requestFormData.append('datasetType', String(formData.datasetType));
-      requestFormData.append('license', String(formData.license));
-      requestFormData.append('name', formData.name);
-      requestFormData.append('description', formData.description ?? '');
-      formData.primaryKeys.forEach((entry) => requestFormData.append('primaryKeys', entry.key));
-      requestFormData.append('isJSON', 'false');
-      requestFormData.append('isReadyToShare', 'false');
-      requestFormData.append('permission', 'MANAGER');
+    const requestFormData = new FormData();
+    requestFormData.append('datasetType', String(formData.datasetType));
+    requestFormData.append('license', String(formData.license));
+    requestFormData.append('name', formData.name);
+    requestFormData.append('description', formData.description ?? '');
+    formData.primaryKeys.forEach((entry) => requestFormData.append('primaryKeys', entry.key));
+    requestFormData.append('isJSON', 'false');
+    requestFormData.append('isReadyToShare', 'false');
+    requestFormData.append('permission', 'MANAGER');
 
-      if (!file) return;
-      requestFormData.append('file', file);
+    if (!file) return;
+    requestFormData.append('file', file);
 
-      await axios.post('/v1/datasets/create', requestFormData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      addNotification({ message: t('createDatasetSuccess'), type: 'success' });
-    } catch {
-      addNotification({ type: 'error', message: t('createDatasetFailure') });
-    }
-
-    void navigate({ to: '/portal/datasets' });
+    createDatasetMutation.mutate(requestFormData, {
+      onError() {
+        addNotification({ type: 'error', message: t('createDatasetFailure') });
+      },
+      onSettled() {
+        void navigate({ to: '/portal/datasets' });
+      },
+      onSuccess() {
+        addNotification({ message: t('createDatasetSuccess'), type: 'success' });
+      }
+    });
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -147,14 +147,14 @@ const RouteComponent = () => {
             <ArrowLeftIcon className="mr-1.5 size-4" />
             {t('back')}
           </Button>
-          <Button className="flex-1" onClick={() => void createDataset()}>
+          <Button className="flex-1" onClick={() => createDataset()}>
             {t('confirm')}
           </Button>
         </div>
       </div>
     ))
     .otherwise(() =>
-      processingFile ? (
+      createDatasetMutation.isPending ? (
         <div className="flex flex-col items-center justify-center py-12">
           <Spinner />
           <p className="text-muted-foreground mt-4 text-sm">Uploading dataset...</p>
@@ -194,7 +194,7 @@ const RouteComponent = () => {
             <Button
               className="flex-1"
               disabled={!file && formData?.datasetType !== 'BASE'}
-              onClick={() => void createDataset()}
+              onClick={() => createDataset()}
             >
               <UploadIcon className="mr-1.5 size-4" />
               {t('submit')}

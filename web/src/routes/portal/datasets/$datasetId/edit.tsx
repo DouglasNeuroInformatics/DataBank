@@ -3,13 +3,13 @@ import { useCallback } from 'react';
 
 import { $DatasetLicenses, $EditDatasetInfo, $PermissionLevel } from '@databank/core';
 import { Button, Form } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { ArrowLeftIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
 import { PageHeading } from '@/components/PageHeading';
+import { useEditDatasetInfoMutation } from '@/hooks/mutations/useEditDatasetInfoMutation';
 import { useDebounceLicensesFilter } from '@/hooks/useDebounceLicensesFilter';
 
 const $EditDatasetInfoDto = z.object({
@@ -31,22 +31,23 @@ const $EditDatasetInfoSearchParams = z.object({
 const RouteComponent = () => {
   const { datasetId } = Route.useParams();
   const navigate = useNavigate();
-  const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
   const { subscribe, licenseOptions } = useDebounceLicensesFilter();
   const { name, description, permission, license } = Route.useSearch();
+  const editDatasetInfoMutation = useEditDatasetInfoMutation();
 
   const permissionOption = { LOGIN: 'LOGIN', MANAGER: 'MANAGER', PUBLIC: 'PUBLIC', VERIFIED: 'VERIFIED' };
 
   const handleSubmit = useCallback(
     (data: $EditDatasetInfo) => {
-      axios
-        .patch(`/v1/datasets/info/${datasetId}`, { editDatasetInfoDto: data })
-        .then(() => {
-          addNotification({ message: 'Dataset Information Updated!', type: 'success' });
-          void navigate({ to: '/portal/datasets/$datasetId', params: { datasetId } });
-        })
-        .catch(console.error);
+      editDatasetInfoMutation.mutate(
+        { datasetId, editDatasetInfoDto: data },
+        {
+          onSuccess() {
+            void navigate({ to: '/portal/datasets/$datasetId', params: { datasetId } });
+          }
+        }
+      );
     },
     [datasetId]
   );

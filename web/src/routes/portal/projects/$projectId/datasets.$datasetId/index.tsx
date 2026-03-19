@@ -2,15 +2,9 @@
 import { $DatasetViewPagination, licensesObjects } from '@databank/core';
 import type { $DatasetViewPagination as DatasetViewPaginationType } from '@databank/core';
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
-import {
-  useDestructiveAction,
-  useDownload,
-  useNotificationsStore,
-  useTranslation
-} from '@douglasneuroinformatics/libui/hooks';
+import { useDestructiveAction, useDownload, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
-import axios from 'axios';
 import { ArrowLeftIcon, TrashIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
@@ -18,6 +12,9 @@ import { DatasetPagination } from '@/components/DatasetPagination';
 import { DatasetTable } from '@/components/DatasetTable';
 import { DownloadDropdowns } from '@/components/DownloadDropdowns';
 import { PageHeading } from '@/components/PageHeading';
+import { useDownloadProjectDataMutation } from '@/hooks/mutations/useDownloadProjectDataMutation';
+import { useDownloadProjectMetadataMutation } from '@/hooks/mutations/useDownloadProjectMetadataMutation';
+import { useRemoveProjectDatasetMutation } from '@/hooks/mutations/useRemoveProjectDatasetMutation';
 import { projectDatasetQueryOptions, useProjectDatasetQuery } from '@/hooks/queries/useProjectDatasetQuery';
 import { useAppStore } from '@/store';
 
@@ -31,34 +28,49 @@ const RouteComponent = () => {
   const { columnPagination, rowPagination } = Route.useSearch();
   const { t } = useTranslation('common');
   const navigate = useNavigate();
-  const addNotification = useNotificationsStore((state) => state.addNotification);
   const download = useDownload();
   const currentUser = useAppStore((s) => s.auth.ctx.currentUser);
+  const removeDatasetMutation = useRemoveProjectDatasetMutation();
+  const downloadDataMutation = useDownloadProjectDataMutation();
+  const downloadMetadataMutation = useDownloadProjectMetadataMutation();
 
   const { data: dataset } = useProjectDatasetQuery(projectId, datasetId, columnPagination, rowPagination);
 
   const isManager = Boolean(dataset.managerIds.includes(currentUser!.id));
 
   const deleteDataset = useDestructiveAction(() => {
-    axios
-      .delete(`/v1/projects/remove-dataset/${projectId}/${datasetId}`)
-      .then(() => {
-        addNotification({ type: 'success' });
-        void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
-      })
-      .catch(console.error);
+    removeDatasetMutation.mutate(
+      { datasetId, projectId },
+      {
+        onSuccess() {
+          void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
+        }
+      }
+    );
   });
 
-  const handleDataDownload = async (format: 'CSV' | 'TSV') => {
+  const handleDataDownload = (format: 'CSV' | 'TSV') => {
     const filename = `${dataset.name}_${new Date().toISOString()}.${format.toLowerCase()}`;
-    const response = await axios.get(`/v1/projects/download-data/${projectId}/${datasetId}/${format}`);
-    void download(filename, response.data as string);
+    downloadDataMutation.mutate(
+      { datasetId, format, projectId },
+      {
+        onSuccess(response) {
+          void download(filename, response.data);
+        }
+      }
+    );
   };
 
-  const handleMetadataDownload = async (format: 'CSV' | 'TSV') => {
+  const handleMetadataDownload = (format: 'CSV' | 'TSV') => {
     const filename = `metadata_${dataset.name}_${new Date().toISOString()}.${format.toLowerCase()}`;
-    const response = await axios.get(`/v1/projects/download-metadata/${projectId}/${datasetId}/${format}`);
-    void download(filename, response.data as string);
+    downloadMetadataMutation.mutate(
+      { datasetId, format, projectId },
+      {
+        onSuccess(response) {
+          void download(filename, response.data);
+        }
+      }
+    );
   };
 
   const setColumnPagination = (pagination: DatasetViewPaginationType) => {
@@ -129,8 +141,8 @@ const RouteComponent = () => {
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold">Data</h3>
           <DownloadDropdowns
-            onDataDownload={(format) => void handleDataDownload(format)}
-            onMetadataDownload={(format) => void handleMetadataDownload(format)}
+            onDataDownload={(format) => handleDataDownload(format)}
+            onMetadataDownload={(format) => handleMetadataDownload(format)}
           />
         </div>
         <DatasetPagination

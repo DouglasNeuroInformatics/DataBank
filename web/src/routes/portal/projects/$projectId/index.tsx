@@ -1,11 +1,11 @@
 import type { $DatasetCardProps } from '@databank/core';
 import { Badge, Button, Card, Separator } from '@douglasneuroinformatics/libui/components';
-import { useDestructiveAction, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useDestructiveAction, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { CalendarIcon, DatabaseIcon, PencilIcon, PlusIcon, TrashIcon, UsersIcon } from 'lucide-react';
 
 import { PageHeading } from '@/components/PageHeading';
+import { useDeleteProjectMutation } from '@/hooks/mutations/useDeleteProjectMutation';
 import { projectDatasetsQueryOptions, useProjectDatasetsQuery } from '@/hooks/queries/useProjectDatasetsQuery';
 import { projectIsManagerQueryOptions, useProjectIsManagerQuery } from '@/hooks/queries/useProjectIsManagerQuery';
 import { projectQueryOptions, useProjectQuery } from '@/hooks/queries/useProjectQuery';
@@ -54,20 +54,18 @@ const RouteComponent = () => {
   const { projectId } = Route.useParams();
   const { t } = useTranslation('common');
   const navigate = useNavigate();
-  const addNotification = useNotificationsStore((state) => state.addNotification);
+  const deleteProjectMutation = useDeleteProjectMutation();
 
   const { data: project } = useProjectQuery(projectId);
   const { data: isManager } = useProjectIsManagerQuery(projectId);
   const { data: datasets } = useProjectDatasetsQuery(projectId);
 
   const deleteProject = useDestructiveAction(() => {
-    axios
-      .delete(`/v1/projects/${projectId}`)
-      .then(() => {
-        addNotification({ message: `Project with Id ${projectId} has been deleted`, type: 'success' });
+    deleteProjectMutation.mutate(projectId, {
+      onSuccess() {
         void navigate({ to: '/portal/projects' });
-      })
-      .catch(console.error);
+      }
+    });
   });
 
   return (

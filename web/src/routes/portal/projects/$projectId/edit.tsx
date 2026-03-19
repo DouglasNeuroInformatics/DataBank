@@ -4,13 +4,13 @@ import { useCallback } from 'react';
 import { $ISODate } from '@databank/core';
 import type { $UpdateProject } from '@databank/core';
 import { Button, Form } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { ArrowLeftIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
 import { PageHeading } from '@/components/PageHeading';
+import { useEditProjectInfoMutation } from '@/hooks/mutations/useEditProjectInfoMutation';
 
 const $EditProjectInfoDto = z.object({
   name: z.string().optional(),
@@ -29,19 +29,20 @@ const $EditProjectInfoSearchParams = z.object({
 const RouteComponent = () => {
   const { projectId } = Route.useParams();
   const navigate = useNavigate();
-  const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
   const { name, description, externalId, expiryDate } = Route.useSearch();
+  const editProjectInfoMutation = useEditProjectInfoMutation();
 
   const handleSubmit = useCallback(
     (data: $UpdateProject) => {
-      axios
-        .patch(`/v1/projects/update/${projectId}`, { updateProjectDto: data })
-        .then(() => {
-          addNotification({ message: 'Project Information Updated!', type: 'success' });
-          void navigate({ to: '/portal/projects/$projectId', params: { projectId } });
-        })
-        .catch(console.error);
+      editProjectInfoMutation.mutate(
+        { projectId, updateProjectDto: data },
+        {
+          onSuccess() {
+            void navigate({ to: '/portal/projects/$projectId', params: { projectId } });
+          }
+        }
+      );
     },
     [projectId]
   );
