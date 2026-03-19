@@ -8,6 +8,7 @@ import { PageHeading } from '@/components/PageHeading';
 import { UserInfoCard } from '@/components/UserInfoCard';
 import { useAddDatasetManagerMutation } from '@/hooks/mutations/useAddDatasetManagerMutation';
 import { useRemoveDatasetManagerMutation } from '@/hooks/mutations/useRemoveDatasetManagerMutation';
+import { userQueryOptions } from '@/hooks/queries/useUserQuery';
 
 const RouteComponent = () => {
   const { datasetId } = Route.useParams();
@@ -123,6 +124,11 @@ const RouteComponent = () => {
 
 export const Route = createFileRoute('/portal/datasets/$datasetId/managers')({
   component: RouteComponent,
+  loaderDeps: ({ search }) => ({ managerIds: search.managerIds }),
+  // eslint-disable-next-line perfectionist/sort-objects
+  loader: async ({ context, deps }) => {
+    await Promise.all(deps.managerIds.map((id) => context.queryClient.ensureQueryData(userQueryOptions(id))));
+  },
   validateSearch: z.object({
     isManager: z.boolean(),
     managerIds: z.string().array().min(1)

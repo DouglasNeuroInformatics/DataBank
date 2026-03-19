@@ -8,6 +8,7 @@ import { PageHeading } from '@/components/PageHeading';
 import { UserInfoCard } from '@/components/UserInfoCard';
 import { useAddProjectUserMutation } from '@/hooks/mutations/useAddProjectUserMutation';
 import { useRemoveProjectUserMutation } from '@/hooks/mutations/useRemoveProjectUserMutation';
+import { userQueryOptions } from '@/hooks/queries/useUserQuery';
 
 const RouteComponent = () => {
   const { projectId } = Route.useParams();
@@ -127,6 +128,11 @@ const RouteComponent = () => {
 
 export const Route = createFileRoute('/portal/projects/$projectId/users')({
   component: RouteComponent,
+  loaderDeps: ({ search }) => ({ userIds: search.userIds }),
+  // eslint-disable-next-line perfectionist/sort-objects
+  loader: async ({ context, deps }) => {
+    await Promise.all(deps.userIds.map((id) => context.queryClient.ensureQueryData(userQueryOptions(id))));
+  },
   validateSearch: z.object({
     userIds: z.string().array()
   })

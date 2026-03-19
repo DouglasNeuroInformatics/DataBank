@@ -1,5 +1,5 @@
 import type { User } from '@databank/core';
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 export const USER_QUERY_KEY = 'user';
@@ -15,5 +15,5 @@ export const userQueryOptions = (userId: string) => {
 };
 
 export function useUserQuery(userId: string) {
-  return useQuery(userQueryOptions(userId));
+  return useSuspenseQuery(userQueryOptions(userId));
 }

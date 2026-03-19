@@ -1,4 +1,4 @@
-import { Button, Spinner } from '@douglasneuroinformatics/libui/components';
+import { Button } from '@douglasneuroinformatics/libui/components';
 import { MailIcon, TrashIcon, UserCircleIcon } from 'lucide-react';
 
 import { useUserQuery } from '@/hooks/queries/useUserQuery';
@@ -11,15 +11,7 @@ type UserInfoCardProps = {
 };
 
 export const UserInfoCard = ({ actionLabel, canRemove, onRemove, userId }: UserInfoCardProps) => {
-  const { data: user, isLoading } = useUserQuery(userId);
-
-  if (isLoading || !user) {
-    return (
-      <div className="flex items-center justify-center rounded-lg border p-4">
-        <Spinner />
-      </div>
-    );
-  }
+  const { data: user } = useUserQuery(userId);
 
   return (
     <div className="flex items-center justify-between rounded-lg border p-4">
