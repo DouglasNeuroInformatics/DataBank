@@ -98,7 +98,7 @@ const RouteComponent = () => {
     <div className="mx-auto max-w-7xl">
       <PageHeading
         actions={
-          <Badge className="text-sm" variant="secondary">
+          <Badge className="rounded-md px-2 py-1.5 text-xs" variant="secondary">
             {dataset.datasetType}
           </Badge>
         }

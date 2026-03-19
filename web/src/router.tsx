@@ -95,6 +95,7 @@ const DefaultNotFoundComponent = () => {
 const defaultPendingComponent = () => (
   <div className="flex grow items-center justify-center">
     <Spinner />
+    Load!!
   </div>
 );
 
