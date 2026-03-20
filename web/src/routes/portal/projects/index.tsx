@@ -1,5 +1,5 @@
 import { $ProjectInfo } from '@databank/core';
-import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
+import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { CalendarIcon, FolderOpenIcon, PlusIcon } from 'lucide-react';
@@ -30,13 +30,6 @@ const ProjectCard = ({ project }: { project: $ProjectInfo }) => {
             {new Date(project.expiry).toLocaleDateString()}
           </dd>
         </dl>
-        {project.userIds.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-1">
-            <Badge variant="secondary">
-              {project.userIds.length} {project.userIds.length === 1 ? 'user' : 'users'}
-            </Badge>
-          </div>
-        )}
       </Card.Content>
       <Card.Footer>
         <Button size="sm" variant="outline" onClick={() => void navigate({ to: `/portal/projects/${project.id}` })}>
