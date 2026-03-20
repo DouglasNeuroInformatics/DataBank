@@ -3,6 +3,8 @@ import type { $DatasetViewPagination } from '@databank/core';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+export const DATASET_QUERY_KEY = 'dataset';
+
 export const datasetQueryOptions = (
   datasetId: string,
   columnPagination: $DatasetViewPagination,
@@ -16,9 +18,7 @@ export const datasetQueryOptions = (
       });
       return $TabularDataset.parse(response.data);
     },
-    queryKey: [
-      `dataset-query-${datasetId}-colPage-${columnPagination.currentPage}-colItems-${columnPagination.itemsPerPage}-rowPage-${rowPagination.currentPage}-rowItems-${rowPagination.itemsPerPage}`
-    ]
+    queryKey: [DATASET_QUERY_KEY, datasetId, { columnPagination, rowPagination }]
   });
 };
 

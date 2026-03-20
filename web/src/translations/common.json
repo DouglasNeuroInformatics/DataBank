@@ -47,10 +47,6 @@
     "en": "Column Nullable",
     "fr": "Colonne facultative"
   },
-  "columnPagination": {
-    "en": "Column Page",
-    "fr": "Page des colonnes"
-  },
   "columnsPerPage": {
     "en": "Columns Per Page",
     "fr": "Colonnes par page"
@@ -516,10 +512,6 @@
   "restart": {
     "en": "Restart",
     "fr": "Recommencer"
-  },
-  "rowPagination": {
-    "en": "Row Page",
-    "fr": "Page des lignes"
   },
   "rowsPerPage": {
     "en": "Rows Per Page",

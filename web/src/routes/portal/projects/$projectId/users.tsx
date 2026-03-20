@@ -1,84 +1,43 @@
-import { useEffect, useState } from 'react';
-
-import type { User } from '@databank/core';
 import { Button, Card, Form, Separator } from '@douglasneuroinformatics/libui/components';
-import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
+import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
-import { ArrowLeftIcon, MailIcon, TrashIcon, UserCircleIcon } from 'lucide-react';
+import { ArrowLeftIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
 import { PageHeading } from '@/components/PageHeading';
-
-const UserCard = ({ projectId, userId, userNumber }: { projectId: string; userId: string; userNumber: number }) => {
-  const { t } = useTranslation('common');
-  const addNotification = useNotificationsStore((state) => state.addNotification);
-  const navigate = useNavigate();
-  const [user, setUser] = useState<null | User>(null);
-
-  useEffect(() => {
-    void axios.get<User>(`/v1/users/${userId}`).then((response) => {
-      setUser(response.data);
-    });
-  }, [projectId, userId]);
-
-  const removeUser = (userIdToRemove: string) => {
-    axios
-      .delete(`/v1/projects/remove-user/${projectId}/${userId}`)
-      .then(() => {
-        addNotification({
-          message: `User with Id ${userIdToRemove} has been removed from the project`,
-          type: 'success'
-        });
-        void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
-      })
-      .catch(console.error);
-  };
-
-  if (!user) return null;
-
-  return (
-    <div className="flex items-center justify-between rounded-lg border p-4">
-      <div className="flex items-center gap-3">
-        <div className="bg-muted flex size-10 items-center justify-center rounded-full">
-          <UserCircleIcon className="text-muted-foreground size-6" />
-        </div>
-        <div>
-          <p className="text-sm font-medium">
-            {user.firstName} {user.lastName}
-          </p>
-          <p className="text-muted-foreground flex items-center gap-1 text-xs">
-            <MailIcon className="size-3" />
-            {user.email}
-          </p>
-        </div>
-      </div>
-      <Button disabled={userNumber === 1} size="sm" variant="danger" onClick={() => removeUser(userId)}>
-        <TrashIcon className="mr-1.5 size-3.5" />
-        {t('removeUser')}
-      </Button>
-    </div>
-  );
-};
+import { UserInfoCard } from '@/components/UserInfoCard';
+import { useAddProjectUserMutation } from '@/hooks/mutations/useAddProjectUserMutation';
+import { useRemoveProjectUserMutation } from '@/hooks/mutations/useRemoveProjectUserMutation';
+import { userQueryOptions } from '@/hooks/queries/useUserQuery';
 
 const RouteComponent = () => {
   const { projectId } = Route.useParams();
   const { userIds } = Route.useSearch();
   const { t } = useTranslation('common');
-  const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
+  const addUserMutation = useAddProjectUserMutation();
+  const removeUserMutation = useRemoveProjectUserMutation();
 
   const addUser = (email: string) => {
-    axios
-      .post(`/v1/projects/add-user/${projectId}`, { newUserEmail: email })
-      .then(() => {
-        addNotification({
-          message: `User with Email ${email} has been added to the current project`,
-          type: 'success'
-        });
-        void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
-      })
-      .catch(console.error);
+    addUserMutation.mutate(
+      { newUserEmail: email, projectId },
+      {
+        onSuccess() {
+          void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
+        }
+      }
+    );
+  };
+
+  const removeUser = (userId: string) => {
+    removeUserMutation.mutate(
+      { projectId, userId },
+      {
+        onSuccess() {
+          void navigate({ params: { projectId }, to: '/portal/projects/$projectId' });
+        }
+      }
+    );
   };
 
   return (
@@ -117,17 +76,23 @@ const RouteComponent = () => {
         <Card.Content>
           <Form
             content={{
-              newManagerEmail: {
+              newUserEmail: {
                 kind: 'string',
-                label: t('newManagerEmail'),
+                label: t({
+                  en: 'User Email',
+                  fr: "Courriel de l'utilisateur"
+                }),
                 variant: 'input'
               }
             }}
-            submitBtnLabel={t('addManager')}
-            validationSchema={z.object({
-              newManagerEmail: z.string().email()
+            submitBtnLabel={t({
+              en: 'Add User',
+              fr: 'Ajouter un utilisateur'
             })}
-            onSubmit={(data) => addUser(data.newManagerEmail)}
+            validationSchema={z.object({
+              newUserEmail: z.string().email()
+            })}
+            onSubmit={(data) => addUser(data.newUserEmail)}
           />
         </Card.Content>
       </Card>
@@ -147,7 +112,13 @@ const RouteComponent = () => {
         <Separator />
         <Card.Content className="space-y-3 pt-4">
           {userIds.map((userId) => (
-            <UserCard key={userId} projectId={projectId} userId={userId} userNumber={userIds.length} />
+            <UserInfoCard
+              actionLabel={t('removeUser')}
+              canRemove={userIds.length > 1}
+              key={userId}
+              userId={userId}
+              onRemove={() => removeUser(userId)}
+            />
           ))}
         </Card.Content>
       </Card>
@@ -157,6 +128,11 @@ const RouteComponent = () => {
 
 export const Route = createFileRoute('/portal/projects/$projectId/users')({
   component: RouteComponent,
+  loaderDeps: ({ search }) => ({ userIds: search.userIds }),
+  // eslint-disable-next-line perfectionist/sort-objects
+  loader: async ({ context, deps }) => {
+    await Promise.all(deps.userIds.map((id) => context.queryClient.ensureQueryData(userQueryOptions(id))));
+  },
   validateSearch: z.object({
     userIds: z.string().array()
   })

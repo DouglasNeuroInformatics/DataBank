@@ -38,8 +38,8 @@ const UserDropup = () => {
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger asChild>
-        <Button className="size-9" size="icon" type="button" variant="ghost">
-          <CircleUserRoundIcon className="size-5" />
+        <Button className="p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700" size="icon" type="button" variant="ghost">
+          <CircleUserRoundIcon className="size-5!" />
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content align="start" className="w-48" side="top" sideOffset={4}>
@@ -67,9 +67,9 @@ const DesktopSidebar = ({ navigation }: { navigation: NavItem[] }) => {
   const location = useLocation();
 
   return (
-    <div className="bg-card hidden h-full w-16 flex-col items-center border-r py-4 lg:flex">
-      <Link className="mb-6 flex items-center justify-center" to="/">
-        <Logo className="h-8 w-8" />
+    <div className="bg-card w-18 hidden h-full flex-col items-center border-r py-4 lg:flex">
+      <Link className="mb-4 flex items-center justify-center" to="/">
+        <Logo className="h-auto w-11" />
       </Link>
       <Separator className="mx-auto mb-4 w-8" />
       <nav aria-label="sidebar" className="flex flex-1 flex-col items-center gap-1">
@@ -78,12 +78,17 @@ const DesktopSidebar = ({ navigation }: { navigation: NavItem[] }) => {
           return (
             <Tooltip key={item.href}>
               <Tooltip.Trigger
-                className={cn('size-9 rounded-md', isActive && 'bg-slate-200 dark:bg-slate-700')}
+                className={cn(
+                  'rounded-md p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700',
+                  isActive && 'bg-slate-200 dark:bg-slate-700'
+                )}
                 size="icon"
                 variant="ghost"
-                onClick={() => void navigate({ to: item.href })}
+                onClick={() => {
+                  void navigate({ to: item.href });
+                }}
               >
-                <item.icon className="size-4" />
+                <item.icon className="size-5!" />
               </Tooltip.Trigger>
               <Tooltip.Content side="right">
                 <p>{item.label}</p>
@@ -93,10 +98,11 @@ const DesktopSidebar = ({ navigation }: { navigation: NavItem[] }) => {
         })}
       </nav>
       <div className="flex flex-col items-center gap-1">
-        <ThemeToggle className="size-9 [&>svg]:size-4" variant="ghost" />
+        <ThemeToggle className="[&>svg]:size-5! p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700" variant="ghost" />
         <LanguageToggle
+          contentClassName="mb-1 translate-y-1"
           options={{ en: 'English', fr: 'Français' }}
-          triggerClassName="size-9 [&>svg]:size-4"
+          triggerClassName="[&>svg]:size-5! p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700"
           variant="ghost"
         />
         <Separator className="mx-auto my-2 w-8" />
@@ -121,15 +127,15 @@ const MobileNavbar = ({ navigation }: { navigation: NavItem[] }) => {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <div className="bg-card flex w-full items-center justify-between border-b px-4 py-3 lg:hidden">
         <Link to="/">
-          <Logo className="h-8 w-8" />
+          <Logo className="h-auto w-11" />
         </Link>
         <Sheet.Trigger>
-          <MenuIcon className="text-muted-foreground hover:text-foreground size-6" />
+          <MenuIcon className="text-muted-foreground hover:text-foreground size-7!" />
         </Sheet.Trigger>
       </div>
       <Sheet.Content className="flex h-full flex-col gap-0">
         <div className="flex items-center gap-3">
-          <Logo className="h-8 w-auto" />
+          <Logo className="h-auto w-11" />
         </div>
         <Separator className="my-4" />
         <nav className="flex grow flex-col gap-1">
@@ -139,7 +145,7 @@ const MobileNavbar = ({ navigation }: { navigation: NavItem[] }) => {
               <Link
                 className={cn(
                   'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium',
-                  isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  isActive ? 'bg-slate-200 dark:bg-slate-700' : ''
                 )}
                 key={item.href}
                 to={item.href}
@@ -152,13 +158,15 @@ const MobileNavbar = ({ navigation }: { navigation: NavItem[] }) => {
           })}
         </nav>
         <Separator className="my-4" />
-        <div className="flex items-center justify-end gap-2">
-          <LanguageToggle
-            options={{ en: 'English', fr: 'Français' }}
-            triggerClassName="[&>svg]:size-4"
-            variant="outline"
-          />
-          <ThemeToggle className="[&>svg]:size-4" variant="outline" />
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <LanguageToggle
+              options={{ en: 'English', fr: 'Français' }}
+              triggerClassName="[&>svg]:size-4!"
+              variant="outline"
+            />
+            <ThemeToggle className="[&>svg]:size-4!" variant="outline" />
+          </div>
           <UserDropup />
         </div>
       </Sheet.Content>
@@ -191,12 +199,14 @@ const RouteComponent = () => {
   );
 
   return (
-    <div className="flex h-screen flex-col lg:flex-row">
+    <div className="flex h-screen flex-col overflow-hidden lg:flex-row">
       <DesktopSidebar navigation={navigation} />
       <MobileNavbar navigation={navigation} />
-      <main className="flex-1 overflow-hidden">
-        <div className="mx-auto h-full w-full max-w-7xl overflow-auto px-4 pb-6 sm:px-6 lg:px-8">
-          <Outlet />
+      <main className="flex grow flex-col overflow-hidden">
+        <div className="flex grow flex-col overflow-auto pb-6">
+          <div className="container flex grow flex-col">
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>

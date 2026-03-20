@@ -1,29 +1,25 @@
 import { $DatasetInfo } from '@databank/core';
 import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
-import { useDestructiveAction, useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { useQueryClient } from '@tanstack/react-query';
+import { useDestructiveAction, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { DatabaseIcon, PlusIcon, TrashIcon } from 'lucide-react';
 
 import { PageHeading } from '@/components/PageHeading';
-import { DATASETS_QUERY_KEY, datasetsQueryOptions, useDatasetsQuery } from '@/hooks/queries/useDatasetsQuery';
+import { useDeleteDatasetMutation } from '@/hooks/mutations/useDeleteDatasetMutation';
+import { datasetsQueryOptions, useDatasetsQuery } from '@/hooks/queries/useDatasetsQuery';
 import { useAppStore } from '@/store';
 
 const DatasetCard = ({ dataset, isManager }: { dataset: $DatasetInfo; isManager: boolean }) => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
-  const addNotification = useNotificationsStore((state) => state.addNotification);
-  const queryClient = useQueryClient();
+  const deleteDatasetMutation = useDeleteDatasetMutation();
 
-  const deleteDataset = useDestructiveAction(async () => {
-    await axios.delete(`/v1/datasets/${dataset.id}`);
-    addNotification({ message: `Dataset ${dataset.id} deleted`, type: 'success' });
-    await queryClient.invalidateQueries({ queryKey: [DATASETS_QUERY_KEY] });
+  const deleteDataset = useDestructiveAction(() => {
+    deleteDatasetMutation.mutate(dataset.id);
   });
 
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card className="flex flex-col transition-shadow hover:shadow-md">
       <Card.Header className="pb-3">
         <div className="flex items-start justify-between">
           <div className="min-w-0 flex-1">
@@ -47,7 +43,7 @@ const DatasetCard = ({ dataset, isManager }: { dataset: $DatasetInfo; isManager:
           <dd>{new Date(dataset.createdAt).toLocaleDateString()}</dd>
         </dl>
       </Card.Content>
-      <Card.Footer className="flex items-center justify-between gap-2">
+      <Card.Footer className="mt-auto flex items-center justify-between gap-2 pt-3">
         <Button
           disabled={dataset.status !== 'Success'}
           size="sm"
@@ -94,13 +90,13 @@ const RouteComponent = () => {
           <p className="text-muted-foreground mt-4 text-lg font-medium">
             {t({
               en: 'No Datasets Available',
-              fr: 'Aucun ensemble de données disponible'
+              fr: 'Aucun base de données disponible'
             })}
           </p>
           <p className="text-muted-foreground mt-1 text-sm">
             {t({
               en: 'Create your first dataset to get started.',
-              fr: 'Créez votre premier ensemble de données pour commencer.'
+              fr: 'Créez votre premier base de données pour commencer.'
             })}
           </p>
           <Button className="mt-6" variant="outline" onClick={() => void navigate({ to: '/portal/datasets/create' })}>

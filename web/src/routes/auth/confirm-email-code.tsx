@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react';
 
-import { $AuthPayload, $EmailConfirmationProcedureInfo } from '@databank/core';
 import { Spinner } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { cn } from '@douglasneuroinformatics/libui/utils';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 
 import { AuthLayout } from '@/components/AuthLayout';
+import { useSendConfirmEmailCodeMutation } from '@/hooks/mutations/useSendConfirmEmailCodeMutation';
+import { useVerifyAccountMutation } from '@/hooks/mutations/useVerifyAccountMutation';
 import { useAppStore } from '@/store';
 
 const CODE_LENGTH = 6;
@@ -25,7 +25,7 @@ const ConfirmEmailCodeInput = ({
   onComplete
 }: {
   className?: string;
-  onComplete: (code: number) => Promise<void>;
+  onComplete: (code: number) => void;
 }) => {
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const { t } = useTranslation('common');
@@ -35,7 +35,7 @@ const ConfirmEmailCodeInput = ({
   useEffect(() => {
     const isComplete = digits.every((value) => Number.isInteger(value));
     if (isComplete) {
-      void onComplete(parseInt(digits.join('')));
+      onComplete(parseInt(digits.join('')));
       setDigits([...EMPTY_CODE]);
     }
   }, [digits]);
@@ -144,10 +144,16 @@ const RouteComponent = () => {
   const { t } = useTranslation('common');
   const [seconds, setSeconds] = useState<number>();
   const hasSentEmail = useRef(false);
+  const sendConfirmEmailCode = useSendConfirmEmailCodeMutation();
+  const verifyAccount = useVerifyAccountMutation();
 
   useEffect(() => {
     if (!hasSentEmail.current) {
-      void sendConfirmEmailCode();
+      sendConfirmEmailCode.mutate(undefined, {
+        onSuccess(response) {
+          setSeconds(Math.floor((new Date(response.data.expiry).getTime() - Date.now()) / 60000) * 60);
+        }
+      });
       hasSentEmail.current = true;
     }
   }, []);
@@ -158,21 +164,19 @@ const RouteComponent = () => {
     }
   }, [currentUser]);
 
-  const sendConfirmEmailCode = async () => {
-    const response = await axios.post<$EmailConfirmationProcedureInfo>('/v1/auth/confirm-email-code');
-    setSeconds(Math.floor((new Date(response.data.expiry).getTime() - Date.now()) / 60000) * 60);
-  };
-
-  const verifyCode = async (code: number) => {
-    const response = await axios.post<$AuthPayload>('/v1/auth/verify-account', { code });
-    addNotification({ type: 'success' });
-    login(response.data.accessToken);
-    void navigate({ to: '/portal/dashboard' });
+  const handleVerifyCode = (code: number) => {
+    verifyAccount.mutate(code, {
+      onSuccess(response) {
+        addNotification({ type: 'success' });
+        login(response.data.accessToken);
+        void navigate({ to: '/portal/dashboard' });
+      }
+    });
   };
 
   return seconds ? (
     <AuthLayout maxWidth="sm" title={t('verifyAccount')}>
-      <ConfirmEmailCodeInput className="my-5" onComplete={verifyCode} />
+      <ConfirmEmailCodeInput className="my-5" onComplete={handleVerifyCode} />
       <Countdown seconds={seconds} />
     </AuthLayout>
   ) : (

@@ -21,58 +21,43 @@ export const DatasetPagination = ({
   const { t } = useTranslation('common');
   const totalNumberOfPage = Math.ceil(totalNumberOfItems / itemsPerPage);
 
-  const handleSelectPageOption = (options: string) => {
-    switch (options) {
-      case '10':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: 10 });
-        break;
-      case '20':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: 20 });
-        break;
-      case '50':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: 50 });
-        break;
-      case '100':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: 100 });
-        break;
-      case 'All':
-        setDatasetPagination({ currentPage: 1, itemsPerPage: totalNumberOfItems });
-        break;
-    }
+  const handleSelectPageOption = (option: string) => {
+    const itemsPerPage = option === 'All' ? totalNumberOfItems : parseInt(option);
+    setDatasetPagination({ currentPage: 1, itemsPerPage });
   };
 
   return (
-    <div className="flex items-center justify-between border-t py-3">
-      <p className="text-muted-foreground hidden text-sm sm:block">
-        {kind === 'COLUMN' ? t('columnPagination') : t('rowPagination')}
-      </p>
-      <div className="flex flex-1 items-center justify-end gap-2">
+    <div className="flex w-full items-center justify-between">
+      <div className="flex flex-1 items-center justify-end gap-4">
         <ActionDropdown
           options={['10', '20', '50', '100', 'All']}
           title={(kind === 'COLUMN' ? t('columnsPerPage') : t('rowsPerPage')).concat(`: ${itemsPerPage}`)}
           onSelection={(options) => handleSelectPageOption(options)}
         />
-        <p className="text-muted-foreground text-sm tabular-nums">
+        <p className="text-muted-foreground whitespace-nowrap text-sm tabular-nums">
+          {kind === 'COLUMN' ? t({ en: 'Column ' }) : t({ en: 'Row ' })}
           {currentPage} / {totalNumberOfPage}
         </p>
-        <Button
-          disabled={currentPage === 1}
-          size="sm"
-          type="button"
-          variant="outline"
-          onClick={() => setDatasetPagination({ currentPage: currentPage - 1, itemsPerPage })}
-        >
-          <ChevronLeftIcon className="size-4" />
-        </Button>
-        <Button
-          disabled={currentPage === totalNumberOfPage}
-          size="sm"
-          type="button"
-          variant="outline"
-          onClick={() => setDatasetPagination({ currentPage: currentPage + 1, itemsPerPage })}
-        >
-          <ChevronRightIcon className="size-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            disabled={currentPage === 1}
+            size="icon"
+            type="button"
+            variant="outline"
+            onClick={() => setDatasetPagination({ currentPage: currentPage - 1, itemsPerPage })}
+          >
+            <ChevronLeftIcon className="size-4" />
+          </Button>
+          <Button
+            disabled={currentPage === totalNumberOfPage}
+            size="icon"
+            type="button"
+            variant="outline"
+            onClick={() => setDatasetPagination({ currentPage: currentPage + 1, itemsPerPage })}
+          >
+            <ChevronRightIcon className="size-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

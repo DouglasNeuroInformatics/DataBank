@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 
-import { $AuthPayload, $LoginCredentials, DEMO_USERS } from '@databank/core';
+import { $LoginCredentials, DEMO_USERS } from '@databank/core';
 import { Card, Dialog, Form, Table, Tooltip } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { InfoIcon, LogInIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
 import { AuthLayout } from '@/components/AuthLayout';
+import { useLoginMutation } from '@/hooks/mutations/useLoginMutation';
 import { setupStateQueryOptions, useSetupStateQuery } from '@/hooks/queries/useSetupStateQuery';
 import { useAppStore } from '@/store';
 
@@ -107,6 +107,7 @@ const RouteComponent = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
   const { data: setupState } = useSetupStateQuery();
+  const loginMutation = useLoginMutation();
 
   useEffect(() => {
     if (accessToken && currentUser?.confirmedAt) {
@@ -116,14 +117,17 @@ const RouteComponent = () => {
     }
   }, [accessToken]);
 
-  const handleLogin = async (credentials: $LoginCredentials) => {
-    const response = await axios.post<$AuthPayload>('/v1/auth/login', credentials);
-    login(response.data.accessToken);
+  const handleLogin = (credentials: $LoginCredentials) => {
+    loginMutation.mutate(credentials, {
+      onSuccess(response) {
+        login(response.data.accessToken);
+      }
+    });
   };
 
   useEffect(() => {
     if (import.meta.env.DEV && import.meta.env.VITE_DEV_BYPASS_AUTH === 'true') {
-      void handleLogin({
+      handleLogin({
         email: import.meta.env.VITE_DEV_EMAIL!,
         password: import.meta.env.VITE_DEV_PASSWORD!
       });
@@ -132,7 +136,7 @@ const RouteComponent = () => {
 
   return (
     <>
-      {setupState.isDemo && <DemoBanner onLogin={(credentials) => void handleLogin(credentials)} />}
+      {setupState.isDemo && <DemoBanner onLogin={(credentials) => handleLogin(credentials)} />}
       <AuthLayout maxWidth="sm" title={t('login')}>
         <Form
           content={{
@@ -144,7 +148,7 @@ const RouteComponent = () => {
             email: z.string().min(1),
             password: z.string().min(1)
           })}
-          onSubmit={(data) => void handleLogin(data)}
+          onSubmit={(data) => handleLogin(data)}
         />
       </AuthLayout>
     </>

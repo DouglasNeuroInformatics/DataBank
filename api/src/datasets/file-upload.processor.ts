@@ -1,5 +1,6 @@
 import fs from 'fs';
 
+import type { $PermissionLevel } from '@databank/core';
 import { LoggingService } from '@douglasneuroinformatics/libnest';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { UnprocessableEntityException } from '@nestjs/common';
@@ -27,6 +28,7 @@ export class FileUploadProcessor extends WorkerHost {
       datasetId: string;
       filePath?: string;
       isJSON: boolean;
+      permission: $PermissionLevel;
       primaryKeys: string[];
       uploadedString?: string;
     };
@@ -54,7 +56,7 @@ export class FileUploadProcessor extends WorkerHost {
     }
 
     try {
-      await this.tabularDataService.create(df, jobData.datasetId, jobData.primaryKeys);
+      await this.tabularDataService.create(df, jobData.datasetId, jobData.primaryKeys, jobData.permission);
       await this.datasetsService.updateDatasetStatus(jobData.datasetId, 'Success');
     } catch (error) {
       this.logger.error(`Error processing file upload: ${(error as Error).message}`, error, FileUploadProcessor.name);

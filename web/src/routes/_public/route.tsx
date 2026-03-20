@@ -2,11 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { LanguageToggle, Separator, Sheet, ThemeToggle } from '@douglasneuroinformatics/libui/components';
 import { useMediaQuery, useTranslation } from '@douglasneuroinformatics/libui/hooks';
-import { createFileRoute, Link, Outlet, redirect } from '@tanstack/react-router';
+import { createFileRoute, Link, Outlet } from '@tanstack/react-router';
 import { MenuIcon } from 'lucide-react';
 
 import { Logo } from '@/components/Logo';
-import { setupStateQueryOptions } from '@/hooks/queries/useSetupStateQuery';
 
 const Header = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -161,11 +160,5 @@ const RouteComponent = () => {
 };
 
 export const Route = createFileRoute('/_public')({
-  beforeLoad: async ({ context }) => {
-    const { isSetup } = await context.queryClient.ensureQueryData(setupStateQueryOptions());
-    if (!isSetup) {
-      throw redirect({ to: '/setup' });
-    }
-  },
   component: RouteComponent
 });

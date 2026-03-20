@@ -4,10 +4,10 @@ import { estimatePasswordStrength } from '@douglasneuroinformatics/libpasswd';
 import { Form } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import axios from 'axios';
 import { z } from 'zod/v4';
 
 import { AuthLayout } from '@/components/AuthLayout';
+import { useCreateAccountMutation } from '@/hooks/mutations/useCreateAccountMutation';
 import { useAppStore } from '@/store';
 
 const $CreateAccount = z.object({
@@ -27,6 +27,7 @@ const RouteComponent = () => {
   const addNotification = useNotificationsStore((state) => state.addNotification);
   const navigate = useNavigate();
   const { t } = useTranslation('common');
+  const createAccountMutation = useCreateAccountMutation();
 
   useEffect(() => {
     if (accessToken && currentUser?.confirmedAt) {
@@ -36,11 +37,14 @@ const RouteComponent = () => {
     }
   }, [accessToken]);
 
-  const createAccount = async (data: z.infer<typeof $CreateAccount>) => {
-    await axios.post('/v1/auth/account', { ...data, datasetIds: [] });
-    addNotification({ message: t('pleaseSignIn'), type: 'success' });
-    logout();
-    void navigate({ to: '/auth/login' });
+  const createAccount = (data: z.infer<typeof $CreateAccount>) => {
+    createAccountMutation.mutate(data, {
+      onSuccess() {
+        addNotification({ message: t('pleaseSignIn'), type: 'success' });
+        logout();
+        void navigate({ to: '/auth/login' });
+      }
+    });
   };
 
   return (
@@ -72,7 +76,7 @@ const RouteComponent = () => {
           }
         }}
         validationSchema={$CreateAccount}
-        onSubmit={(data) => void createAccount(data)}
+        onSubmit={(data) => createAccount(data)}
       />
     </AuthLayout>
   );

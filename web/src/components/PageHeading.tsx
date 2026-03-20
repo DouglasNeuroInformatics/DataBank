@@ -3,14 +3,15 @@ import { cn } from '@douglasneuroinformatics/libui/utils';
 
 export const PageHeading: React.FC<{
   actions?: React.ReactNode;
+  centered?: boolean;
   children: string;
   className?: string;
-  description?: string;
-}> = ({ actions, children, className, description }) => {
+  description?: null | string;
+}> = ({ actions, centered, children, className, description }) => {
   return (
     <div className={cn('flex flex-col gap-2 py-6', className)}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+        <div className={cn('w-full', centered && 'text-center')}>
           <Heading variant="h2">{children}</Heading>
           {description && <p className="text-muted-foreground mt-1 text-sm">{description}</p>}
         </div>

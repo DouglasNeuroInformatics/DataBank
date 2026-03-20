@@ -3,23 +3,22 @@ import type { $DatasetViewPagination } from '@databank/core';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+export const PUBLIC_DATASET_QUERY_KEY = 'public-dataset';
+
 export const publicDatasetQueryOptions = (
   datasetId: string,
   columnPagination: $DatasetViewPagination,
   rowPagination: $DatasetViewPagination
 ) => {
-  const dataQueryUrl = `/v1/datasets/public/${datasetId}`;
   return queryOptions({
     queryFn: async () => {
-      const response = await axios.post<$TabularDataset>(dataQueryUrl, {
+      const response = await axios.post<$TabularDataset>(`/v1/datasets/public/${datasetId}`, {
         columnPagination,
         rowPagination
       });
       return $TabularDataset.parse(response.data);
     },
-    queryKey: [
-      `public-dataset-query-${datasetId}-colPage-${columnPagination.currentPage}-colItems-${columnPagination.itemsPerPage}-rowPage-${rowPagination.currentPage}-rowItems-${rowPagination.itemsPerPage}`
-    ]
+    queryKey: [PUBLIC_DATASET_QUERY_KEY, datasetId, { columnPagination, rowPagination }]
   });
 };
 

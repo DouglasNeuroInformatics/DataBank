@@ -49,11 +49,11 @@ const $EnumSummaryFromDB = z.object({
 });
 
 const $FloatSummary = z.object({
-  max: z.number(),
-  mean: z.number(),
-  median: z.number(),
-  min: z.number(),
-  std: z.number()
+  max: z.number().nullable(),
+  mean: z.number().nullable(),
+  median: z.number().nullable(),
+  min: z.number().nullable(),
+  std: z.number().nullable()
 });
 
 const $DatetimeSummary = z.object({
