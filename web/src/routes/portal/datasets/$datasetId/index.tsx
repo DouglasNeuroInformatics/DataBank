@@ -2,7 +2,7 @@
 
 import { $DatasetViewPagination, licensesObjects } from '@databank/core';
 import type { $DatasetViewPagination as DatasetViewPaginationType } from '@databank/core';
-import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
+import { Badge, Button, Card, Separator } from '@douglasneuroinformatics/libui/components';
 import { useDestructiveAction, useDownload, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
@@ -178,23 +178,29 @@ const RouteComponent = () => {
             onMetadataDownload={(format) => handleMetadataDownload(format)}
           />
         </div>
-        <DatasetPagination
-          currentPage={columnPagination.currentPage}
-          itemsPerPage={columnPagination.itemsPerPage}
-          kind="COLUMN"
-          setDatasetPagination={setColumnPagination}
-          totalNumberOfItems={dataset.totalNumberOfColumns}
-        />
+        <div className="flex flex-col gap-6 py-6">
+          <Separator />
+          <div className="flex items-center gap-6">
+            <DatasetPagination
+              currentPage={columnPagination.currentPage}
+              itemsPerPage={columnPagination.itemsPerPage}
+              kind="COLUMN"
+              setDatasetPagination={setColumnPagination}
+              totalNumberOfItems={dataset.totalNumberOfColumns}
+            />
+            <Separator className="h-10" orientation="vertical" />
+            <DatasetPagination
+              currentPage={rowPagination.currentPage}
+              itemsPerPage={rowPagination.itemsPerPage}
+              kind="ROW"
+              setDatasetPagination={setRowPagination}
+              totalNumberOfItems={dataset.totalNumberOfRows}
+            />
+          </div>
+        </div>
         <div className="overflow-hidden rounded-md border">
           <DatasetTable isManager={isManager} isProject={false} {...dataset} />
         </div>
-        <DatasetPagination
-          currentPage={rowPagination.currentPage}
-          itemsPerPage={rowPagination.itemsPerPage}
-          kind="ROW"
-          setDatasetPagination={setRowPagination}
-          totalNumberOfItems={dataset.totalNumberOfRows}
-        />
       </div>
     </div>
   );

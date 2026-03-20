@@ -27,17 +27,15 @@ export const DatasetPagination = ({
   };
 
   return (
-    <div className="mt-5 flex items-center justify-between border-t py-5">
-      <p className="text-muted-foreground hidden text-sm sm:block">
-        {kind === 'COLUMN' ? t('columnPagination') : t('rowPagination')}
-      </p>
+    <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center justify-end gap-2">
         <ActionDropdown
           options={['10', '20', '50', '100', 'All']}
           title={(kind === 'COLUMN' ? t('columnsPerPage') : t('rowsPerPage')).concat(`: ${itemsPerPage}`)}
           onSelection={(options) => handleSelectPageOption(options)}
         />
-        <p className="text-muted-foreground text-sm tabular-nums">
+        <p className="text-muted-foreground whitespace-nowrap text-sm tabular-nums">
+          {kind === 'COLUMN' ? t({ en: 'Column ' }) : t({ en: 'Row ' })}
           {currentPage} / {totalNumberOfPage}
         </p>
         <Button
