@@ -5,7 +5,7 @@ import { z } from 'zod/v4';
 // TODO - this needs to be synced correctly with the backend
 const $Project = z.object({
   createdAt: z.coerce.date(),
-  datasets: z.array(z.string()),
+  datasets: z.array(z.any()),
   description: z.string().nullish(),
   expiry: z.coerce.date(),
   externalId: z.string().nullish(),
