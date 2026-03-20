@@ -19,7 +19,7 @@ const DatasetCard = ({ dataset, isManager }: { dataset: $DatasetInfo; isManager:
   });
 
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card className="flex flex-col transition-shadow hover:shadow-md">
       <Card.Header className="pb-3">
         <div className="flex items-start justify-between">
           <div className="min-w-0 flex-1">
@@ -43,7 +43,7 @@ const DatasetCard = ({ dataset, isManager }: { dataset: $DatasetInfo; isManager:
           <dd>{new Date(dataset.createdAt).toLocaleDateString()}</dd>
         </dl>
       </Card.Content>
-      <Card.Footer className="flex items-center justify-between gap-2">
+      <Card.Footer className="mt-auto flex items-center justify-between gap-2 pt-3">
         <Button
           disabled={dataset.status !== 'Success'}
           size="sm"
