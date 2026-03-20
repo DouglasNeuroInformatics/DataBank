@@ -1,4 +1,5 @@
-import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
+import { licensesObjects } from '@databank/core';
+import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { ArrowLeftIcon, DatabaseIcon, PlusIcon } from 'lucide-react';
@@ -42,34 +43,41 @@ const RouteComponent = () => {
       </PageHeading>
 
       {datasets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <DatabaseIcon className="text-muted-foreground/50 size-12" />
-          <p className="text-muted-foreground mt-4 text-sm">
-            {t({
-              en: 'No datasets available. Create a dataset first.',
-              fr: "Aucun base de données disponible. Créez d'abord un base de données."
-            })}
-          </p>
-        </div>
+        <Card>
+          <Card.Content className="flex flex-col items-center justify-center py-12">
+            <DatabaseIcon className="text-muted-foreground/50 size-10" />
+            <p className="text-muted-foreground mt-3 text-sm">
+              {t({
+                en: 'No datasets available. Create a dataset first.',
+                fr: "Aucun base de données disponible. Créez d'abord un base de données."
+              })}
+            </p>
+          </Card.Content>
+        </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {datasets.map((dataset) =>
-            dataset ? (
-              <Card className="transition-shadow hover:shadow-md" key={dataset.id}>
-                <Card.Header className="pb-3">
-                  <Card.Title className="truncate">{dataset.name}</Card.Title>
-                  {dataset.description && (
-                    <Card.Description className="line-clamp-2">{dataset.description}</Card.Description>
-                  )}
-                </Card.Header>
-                <Card.Content className="pb-3">
-                  <Badge variant="secondary">{dataset.license}</Badge>
-                  <p className="text-muted-foreground mt-2 text-xs">
-                    {t('createdAt')}: {new Date(dataset.createdAt).toLocaleDateString()}
-                  </p>
-                </Card.Content>
-                <Card.Footer>
+        <Card>
+          <Card.Content className="divide-y p-0">
+            {datasets.map((dataset) =>
+              dataset ? (
+                <div className="flex w-full items-center justify-between px-6 py-5" key={dataset.id}>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">{dataset.name}</p>
+                    {dataset.description && (
+                      <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">{dataset.description}</p>
+                    )}
+                    <div className="text-muted-foreground mt-2 flex flex-col text-sm">
+                      <p>
+                        <span className="font-semibold tracking-tight">{t({ en: 'License: ', fr: 'Licence : ' })}</span>
+                        {licensesObjects[dataset.license]?.name ?? dataset.license}
+                      </p>
+                      <p>
+                        <span className="font-semibold tracking-tight">{t({ en: 'Created: ', fr: 'Créé : ' })}</span>
+                        {new Date(dataset.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
                   <Button
+                    className="ml-6 shrink-0"
                     size="sm"
                     onClick={() =>
                       void navigate({
@@ -81,11 +89,11 @@ const RouteComponent = () => {
                     <PlusIcon className="mr-1.5 size-3.5" />
                     {t('selectDataset')}
                   </Button>
-                </Card.Footer>
-              </Card>
-            ) : null
-          )}
-        </div>
+                </div>
+              ) : null
+            )}
+          </Card.Content>
+        </Card>
       )}
     </div>
   );
