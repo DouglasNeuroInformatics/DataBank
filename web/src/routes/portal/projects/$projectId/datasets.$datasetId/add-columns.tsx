@@ -1,5 +1,5 @@
 /* eslint-disable perfectionist/sort-objects */
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import type {
   $ProjectColumnSummary,
@@ -10,13 +10,13 @@ import type {
   $ProjectDatasetSelectedColumn
 } from '@databank/core';
 import {
-  Badge,
   Button,
   Card,
   Checkbox,
   Form,
+  Input,
+  Label,
   SearchBar,
-  Separator,
   Table
 } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -34,6 +34,7 @@ import type { ColumnDef, ColumnFiltersState, SortingState } from '@tanstack/reac
 import { produce } from 'immer';
 import {
   ArrowLeftIcon,
+  ArrowRightIcon,
   CheckIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -60,9 +61,7 @@ type SelectedColumnsRecord = { [key: string]: $ProjectDatasetSelectedColumn };
 
 type ProjectDatasetConfigState = {
   columnsConfig: { [key: string]: $ProjectDatasetColumnConfig };
-  currentColumnIdIndex: number;
   currentStep: $ProjectDatasetConfigStep;
-  pageSize: number;
   rowConfig: $ProjectDatasetRowConfig;
   selectedColumns: SelectedColumnsRecord;
 };
@@ -70,8 +69,6 @@ type ProjectDatasetConfigState = {
 type ProjectDatasetConfigStore = ProjectDatasetConfigState & {
   reset: () => void;
   setColumnsConfig: (id: string, config: $ProjectDatasetColumnConfig) => void;
-  setCurrentColumnIdIndex: (index: number) => void;
-  setPageSize: (size: number) => void;
   setRowConfig: (rowConfig: $ProjectDatasetRowConfig) => void;
   setSelectedColumns: (selectedColumns: SelectedColumnsRecord) => void;
   setStep: (step: $ProjectDatasetConfigStep) => void;
@@ -80,9 +77,7 @@ type ProjectDatasetConfigStore = ProjectDatasetConfigState & {
 const createProjectDatasetConfigStore = (projectId: string, datasetId: string) => {
   const emptyState: ProjectDatasetConfigState = {
     columnsConfig: {},
-    currentColumnIdIndex: 0,
     currentStep: 'selectColumns',
-    pageSize: 10,
     rowConfig: { rowMax: null, rowMin: 0 },
     selectedColumns: {}
   };
@@ -96,18 +91,6 @@ const createProjectDatasetConfigStore = (projectId: string, datasetId: string) =
           set((state) =>
             produce(state, (draft) => {
               draft.columnsConfig[id] = colConfig;
-            })
-          ),
-        setCurrentColumnIdIndex: (ind) =>
-          set((state) =>
-            produce(state, (draft) => {
-              draft.currentColumnIdIndex = ind;
-            })
-          ),
-        setPageSize: (size) =>
-          set((state) =>
-            produce(state, (draft) => {
-              draft.pageSize = size;
             })
           ),
         setRowConfig: (newRowConfig) =>
@@ -138,40 +121,35 @@ const createProjectDatasetConfigStore = (projectId: string, datasetId: string) =
 
 const STEPS: { icon: React.FC<{ className?: string }>; key: $ProjectDatasetConfigStep; label: string }[] = [
   { icon: ColumnsIcon, key: 'selectColumns', label: 'Select Columns' },
-  { icon: RowsIcon, key: 'configRows', label: 'Configure Rows' },
-  { icon: SlidersHorizontalIcon, key: 'configColumns', label: 'Configure Columns' }
+  { icon: RowsIcon, key: 'configRows', label: 'Row Range' },
+  { icon: SlidersHorizontalIcon, key: 'configColumns', label: 'Transformations' }
 ];
 
 const StepIndicator = ({ currentStep }: { currentStep: $ProjectDatasetConfigStep }) => {
   const currentIndex = STEPS.findIndex((s) => s.key === currentStep);
 
   return (
-    <div className="mb-6 flex items-center justify-center gap-2">
+    <div className="mb-8 flex items-center justify-center">
       {STEPS.map((step, i) => {
         const isComplete = i < currentIndex;
         const isCurrent = i === currentIndex;
         const Icon = step.icon;
 
         return (
-          <div className="flex items-center gap-2" key={step.key}>
-            {i > 0 && <div className={cn('h-px w-8 sm:w-12', isComplete ? 'bg-primary' : 'bg-border')} />}
-            <div className="flex items-center gap-1.5">
+          <div className="flex items-center" key={step.key}>
+            {i > 0 && <div className={cn('h-px w-12 sm:w-20', isComplete ? 'bg-primary' : 'bg-border')} />}
+            <div className="flex flex-col items-center gap-1.5">
               <div
                 className={cn(
-                  'flex size-7 items-center justify-center rounded-full text-xs font-medium transition-colors',
+                  'flex size-9 items-center justify-center rounded-full transition-colors',
                   isComplete && 'bg-primary text-primary-foreground',
-                  isCurrent && 'bg-primary text-primary-foreground ring-primary/25 ring-4',
+                  isCurrent && 'bg-primary text-primary-foreground ring-primary/20 ring-4',
                   !isComplete && !isCurrent && 'bg-muted text-muted-foreground'
                 )}
               >
-                {isComplete ? <CheckIcon className="size-3.5" /> : <Icon className="size-3.5" />}
+                {isComplete ? <CheckIcon className="size-4" /> : <Icon className="size-4" />}
               </div>
-              <span
-                className={cn(
-                  'hidden text-xs font-medium sm:inline',
-                  isCurrent ? 'text-foreground' : 'text-muted-foreground'
-                )}
-              >
+              <span className={cn('text-xs font-medium', isCurrent ? 'text-foreground' : 'text-muted-foreground')}>
                 {step.label}
               </span>
             </div>
@@ -182,7 +160,7 @@ const StepIndicator = ({ currentStep }: { currentStep: $ProjectDatasetConfigStep
   );
 };
 
-// --- Column Definitions ---
+// --- Column Summary Formatting ---
 
 const formatSummary = (column: $ProjectColumnSummary): string => {
   switch (column.kind) {
@@ -206,6 +184,8 @@ const formatSummary = (column: $ProjectColumnSummary): string => {
       return '';
   }
 };
+
+// --- Column Definitions ---
 
 const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
   {
@@ -243,8 +223,8 @@ const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
   },
   {
     accessorKey: 'kind',
-    cell: ({ row }) => <Badge variant="outline">{row.original.kind}</Badge>,
-    header: 'Data Type'
+    cell: ({ row }) => <span className="text-muted-foreground text-xs font-medium uppercase">{row.original.kind}</span>,
+    header: 'Type'
   },
   {
     accessorKey: 'count',
@@ -257,12 +237,12 @@ const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
   },
   {
     accessorKey: 'nullCount',
-    header: 'Null Count'
+    header: 'Nulls'
   },
   {
     accessorKey: 'summary',
     cell: ({ row }) => (
-      <span className="line-clamp-1 max-w-48" title={formatSummary(row.original)}>
+      <span className="text-muted-foreground line-clamp-1 max-w-48 text-xs" title={formatSummary(row.original)}>
         {formatSummary(row.original)}
       </span>
     ),
@@ -270,7 +250,7 @@ const projectColumnDefs: ColumnDef<$ProjectColumnSummary>[] = [
   }
 ];
 
-// --- Select Columns Step ---
+// --- Step 1: Select Columns ---
 
 const SelectColumnsStep = ({
   datasetId,
@@ -284,7 +264,6 @@ const SelectColumnsStep = ({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
-  const { t } = useTranslation('common');
   const { data } = useColumnSummariesQuery(datasetId);
 
   const table = useReactTable({
@@ -303,7 +282,7 @@ const SelectColumnsStep = ({
   const selectedCount = table.getFilteredSelectedRowModel().rows.length;
   const totalCount = table.getFilteredRowModel().rows.length;
 
-  const handleSubmitSelection = useCallback(() => {
+  const handleContinue = useCallback(() => {
     const selected: SelectedColumnsRecord = {};
     table.getFilteredSelectedRowModel().rows.forEach((row) => {
       const { id, kind, name } = row.original;
@@ -319,12 +298,12 @@ const SelectColumnsStep = ({
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <SearchBar
-          placeholder="Filter column names..."
+          placeholder="Search columns..."
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onValueChange={(inputString) => table.getColumn('name')?.setFilterValue(inputString)}
+          onValueChange={(value) => table.getColumn('name')?.setFilterValue(value)}
         />
         <p className="text-muted-foreground shrink-0 text-sm tabular-nums">
-          {selectedCount} of {totalCount} column(s) selected
+          {selectedCount} of {totalCount} selected
         </p>
       </div>
 
@@ -342,13 +321,21 @@ const SelectColumnsStep = ({
             ))}
           </Table.Header>
           <Table.Body>
-            {table.getRowModel().rows.map((row) => (
-              <Table.Row data-state={row.getIsSelected() && 'selected'} key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <Table.Cell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Table.Cell>
-                ))}
+            {table.getRowModel().rows.length === 0 ? (
+              <Table.Row>
+                <Table.Cell className="text-muted-foreground py-8 text-center" colSpan={projectColumnDefs.length}>
+                  No columns found.
+                </Table.Cell>
               </Table.Row>
-            ))}
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <Table.Row data-state={row.getIsSelected() && 'selected'} key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <Table.Cell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Table.Cell>
+                  ))}
+                </Table.Row>
+              ))
+            )}
           </Table.Body>
         </Table>
       </div>
@@ -362,23 +349,23 @@ const SelectColumnsStep = ({
             onClick={() => table.previousPage()}
           >
             <ChevronLeftIcon className="mr-1 size-3.5" />
-            {t('paginationPrevious')}
+            Previous
           </Button>
           <Button disabled={!table.getCanNextPage()} size="sm" variant="outline" onClick={() => table.nextPage()}>
-            {t('paginationNext')}
+            Next
             <ChevronRightIcon className="ml-1 size-3.5" />
           </Button>
         </div>
-        <Button disabled={selectedCount === 0} size="sm" onClick={handleSubmitSelection}>
-          {t('finishColumnSelection')}
-          <ChevronRightIcon className="ml-1 size-3.5" />
+        <Button disabled={selectedCount === 0} size="sm" onClick={handleContinue}>
+          Continue
+          <ArrowRightIcon className="ml-1.5 size-3.5" />
         </Button>
       </div>
     </div>
   );
 };
 
-// --- Config Rows Step ---
+// --- Step 2: Configure Rows ---
 
 const ConfigRowsStep = ({
   setRowConfig,
@@ -388,149 +375,245 @@ const ConfigRowsStep = ({
   setStep: (step: $ProjectDatasetConfigStep) => void;
 }) => {
   return (
-    <div className="mx-auto max-w-md">
-      <Form
-        content={{
-          rowMin: {
-            kind: 'number',
-            label: 'Row filter minimum',
-            variant: 'input'
-          },
-          rowMax: {
-            kind: 'number',
-            label: 'Row filter maximum',
-            variant: 'input'
-          }
-        }}
-        submitBtnLabel="Continue"
-        validationSchema={z
-          .object({
-            rowMin: z.int().gte(0),
-            rowMax: z.int().gte(0).optional()
-          })
-          .refine((data) => data.rowMax === undefined || data.rowMax >= data.rowMin, {
-            error: 'rowMax must be greater than or equal to rowMin'
-          })}
-        onSubmit={(data) => {
-          setRowConfig({ rowMin: data.rowMin, rowMax: data.rowMax ?? null });
-          setStep('configColumns');
-        }}
-      />
+    <Card>
+      <Card.Content className="pt-6">
+        <p className="text-muted-foreground mb-6 text-sm">
+          Optionally limit which rows are included. Leave maximum empty to include all rows from the starting index.
+        </p>
+        <Form
+          content={{
+            rowMin: {
+              kind: 'number',
+              label: 'Starting row index',
+              variant: 'input'
+            },
+            rowMax: {
+              kind: 'number',
+              label: 'Maximum row index (optional)',
+              variant: 'input'
+            }
+          }}
+          submitBtnLabel="Continue"
+          validationSchema={z
+            .object({
+              rowMin: z.int().gte(0),
+              rowMax: z.int().gte(0).optional()
+            })
+            .refine((data) => data.rowMax === undefined || data.rowMax >= data.rowMin, {
+              error: 'Maximum must be greater than or equal to minimum'
+            })}
+          onSubmit={(data) => {
+            setRowConfig({ rowMin: data.rowMin, rowMax: data.rowMax ?? null });
+            setStep('configColumns');
+          }}
+        />
+      </Card.Content>
+    </Card>
+  );
+};
+
+// --- Step 3: Configure Column Transformations ---
+
+const ColumnConfigCard = ({
+  column,
+  columnId,
+  config,
+  onConfigChange
+}: {
+  column: $ProjectDatasetSelectedColumn;
+  columnId: string;
+  config: $ProjectDatasetColumnConfig | undefined;
+  onConfigChange: (columnId: string, config: $ProjectDatasetColumnConfig | null) => void;
+}) => {
+  const isEnabled = config !== undefined;
+  const [hashLength, setHashLength] = useState(config?.hash?.length?.toString() ?? '10');
+  const [hashSalt, setHashSalt] = useState(config?.hash?.salt ?? '');
+  const [trimStart, setTrimStart] = useState(config?.trim?.start?.toString() ?? '0');
+  const [trimEnd, setTrimEnd] = useState(config?.trim?.end?.toString() ?? '');
+  const [hashEnabled, setHashEnabled] = useState(config?.hash !== null && config?.hash !== undefined);
+  const [trimEnabled, setTrimEnabled] = useState(config?.trim !== null && config?.trim !== undefined);
+
+  const handleToggle = (enabled: boolean) => {
+    if (!enabled) {
+      onConfigChange(columnId, null);
+    } else {
+      onConfigChange(columnId, { hash: null, trim: null });
+    }
+  };
+
+  const updateConfig = (newHash: boolean, newTrim: boolean) => {
+    const newConfig: $ProjectDatasetColumnConfig = {
+      hash: newHash ? { length: parseInt(hashLength) || 10, salt: hashSalt || null } : null,
+      trim: newTrim ? { start: parseInt(trimStart) || 0, end: trimEnd ? parseInt(trimEnd) : null } : null
+    };
+    onConfigChange(columnId, newConfig);
+  };
+
+  return (
+    <Card>
+      <Card.Content className="pt-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-medium">{column.name}</p>
+            <p className="text-muted-foreground text-xs uppercase">{column.kind}</p>
+          </div>
+          <Checkbox checked={isEnabled} onCheckedChange={(checked: boolean) => handleToggle(checked)} />
+        </div>
+
+        {isEnabled && (
+          <div className="mt-4 space-y-4">
+            {/* Hash Config */}
+            <div className="rounded-md border p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">Hash</p>
+                  <p className="text-muted-foreground text-xs">
+                    Apply a hash transformation to this column&apos;s values
+                  </p>
+                </div>
+                <Checkbox
+                  checked={hashEnabled}
+                  onCheckedChange={(checked: boolean) => {
+                    setHashEnabled(checked);
+                    updateConfig(checked, trimEnabled);
+                  }}
+                />
+              </div>
+              {hashEnabled && (
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor={`${columnId}-hash-length`}>Length</Label>
+                    <Input
+                      id={`${columnId}-hash-length`}
+                      type="number"
+                      value={hashLength}
+                      onChange={(e) => {
+                        setHashLength(e.target.value);
+                        updateConfig(true, trimEnabled);
+                      }}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor={`${columnId}-hash-salt`}>Salt (optional)</Label>
+                    <Input
+                      id={`${columnId}-hash-salt`}
+                      placeholder="Enter salt..."
+                      type="text"
+                      value={hashSalt}
+                      onChange={(e) => {
+                        setHashSalt(e.target.value);
+                        updateConfig(true, trimEnabled);
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Trim Config */}
+            <div className="rounded-md border p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">Trim</p>
+                  <p className="text-muted-foreground text-xs">Trim values to a character range</p>
+                </div>
+                <Checkbox
+                  checked={trimEnabled}
+                  onCheckedChange={(checked: boolean) => {
+                    setTrimEnabled(checked);
+                    updateConfig(hashEnabled, checked);
+                  }}
+                />
+              </div>
+              {trimEnabled && (
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor={`${columnId}-trim-start`}>Start index</Label>
+                    <Input
+                      id={`${columnId}-trim-start`}
+                      type="number"
+                      value={trimStart}
+                      onChange={(e) => {
+                        setTrimStart(e.target.value);
+                        updateConfig(hashEnabled, true);
+                      }}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor={`${columnId}-trim-end`}>End index (optional)</Label>
+                    <Input
+                      id={`${columnId}-trim-end`}
+                      placeholder="Leave empty for no limit"
+                      type="number"
+                      value={trimEnd}
+                      onChange={(e) => {
+                        setTrimEnd(e.target.value);
+                        updateConfig(hashEnabled, true);
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </Card.Content>
+    </Card>
+  );
+};
+
+const ConfigColumnsStep = ({
+  columnsConfig,
+  selectedColumns,
+  setColumnsConfig
+}: {
+  columnsConfig: { [key: string]: $ProjectDatasetColumnConfig };
+  selectedColumns: SelectedColumnsRecord;
+  setColumnsConfig: (colId: string, config: $ProjectDatasetColumnConfig) => void;
+}) => {
+  const entries = Object.entries(selectedColumns);
+  const configuredCount = Object.keys(columnsConfig).length;
+
+  const handleConfigChange = useCallback(
+    (columnId: string, config: $ProjectDatasetColumnConfig | null) => {
+      if (config === null) {
+        // Remove from config by setting to empty
+        setColumnsConfig(columnId, undefined as unknown as $ProjectDatasetColumnConfig);
+      } else {
+        setColumnsConfig(columnId, config);
+      }
+    },
+    [setColumnsConfig]
+  );
+
+  return (
+    <div className="space-y-4">
+      <Card>
+        <Card.Content className="pt-6">
+          <p className="text-muted-foreground text-sm">
+            Optionally apply transformations to your selected columns. Toggle on any column to configure hashing or
+            trimming. Columns without transformations will be included as-is.
+          </p>
+          <p className="text-muted-foreground mt-2 text-sm tabular-nums">
+            {configuredCount} of {entries.length} columns have transformations
+          </p>
+        </Card.Content>
+      </Card>
+
+      {entries.map(([columnId, column]) => (
+        <ColumnConfigCard
+          column={column}
+          columnId={columnId}
+          config={columnsConfig[columnId]}
+          key={columnId}
+          onConfigChange={handleConfigChange}
+        />
+      ))}
     </div>
   );
 };
 
-// --- Config Columns Step ---
-
-const ConfigColumnsStep = ({
-  selectedColumns,
-  setColumnsConfig
-}: {
-  selectedColumns: SelectedColumnsRecord;
-  setColumnsConfig: (colId: string, colConfig: $ProjectDatasetColumnConfig) => void;
-}) => {
-  const formValidation = useMemo(() => {
-    const obj: { [key: string]: z.ZodTypeAny } = {};
-    for (const columnId in selectedColumns) {
-      obj[columnId] = z.boolean().default(false);
-      obj[columnId + 'HashLength'] = z.int().gte(0).optional();
-      obj[columnId + 'HashSalt'] = z.string().optional();
-      obj[columnId + 'TrimStart'] = z.int().gte(0).optional();
-      obj[columnId + 'TrimEnd'] = z.int().gte(0).optional();
-    }
-    return z.object(obj) as z.ZodType<{ [key: string]: any }>;
-  }, [selectedColumns]);
-
-  const formContent = useMemo(() => {
-    const content: any[] = [];
-    for (const columnId in selectedColumns) {
-      const col = selectedColumns[columnId]!;
-      const fields: { [key: string]: any } = {};
-
-      fields[columnId] = {
-        kind: 'boolean',
-        label: `Add configuration for column "${col.name}"?`,
-        variant: 'checkbox'
-      };
-
-      const dynamicFields = [
-        { suffix: 'HashLength', label: 'Hash Length', kind: 'number' as const },
-        { suffix: 'HashSalt', label: 'Hash Salt', kind: 'string' as const },
-        { suffix: 'TrimStart', label: 'Trim Start', kind: 'number' as const },
-        { suffix: 'TrimEnd', label: 'Trim End', kind: 'number' as const }
-      ];
-
-      for (const field of dynamicFields) {
-        fields[columnId + field.suffix] = {
-          deps: [columnId],
-          kind: 'dynamic',
-          render(data: { [key: string]: any }) {
-            if (!data[columnId]) return null;
-            return { kind: field.kind, label: field.label, variant: 'input' };
-          }
-        };
-      }
-
-      content.push({
-        description: col.description ?? `Configuration for column "${col.name}"`,
-        fields,
-        title: col.name
-      });
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return content;
-  }, [selectedColumns]);
-
-  const handleSubmit = useCallback(
-    (data: z.infer<typeof formValidation>) => {
-      for (const columnId in selectedColumns) {
-        if (data[columnId]) {
-          const config: $ProjectDatasetColumnConfig = { hash: null, trim: null };
-          if (data[columnId + 'HashLength'] === 0 || data[columnId + 'HashLength']) {
-            config.hash = {
-              length: data[columnId + 'HashLength'] as number,
-              salt: (data[columnId + 'HashSalt'] as string) ?? null
-            };
-          }
-          if (data[columnId + 'TrimStart'] === 0 || data[columnId + 'TrimStart']) {
-            config.trim = {
-              end: (data[columnId + 'TrimEnd'] as number) ?? null,
-              start: data[columnId + 'TrimStart'] as number
-            };
-          }
-          setColumnsConfig(columnId, config);
-        }
-      }
-    },
-    [selectedColumns, setColumnsConfig]
-  );
-
-  return (
-    <Form
-      content={formContent}
-      submitBtnLabel="Save Column Config"
-      validationSchema={formValidation}
-      onSubmit={handleSubmit}
-    />
-  );
-};
-
 // --- Main Route Component ---
-
-const STEP_META: { [K in $ProjectDatasetConfigStep]: { description: string; title: string } } = {
-  selectColumns: {
-    title: 'Select Columns',
-    description: 'Choose which columns from this dataset to include in the project.'
-  },
-  configRows: {
-    title: 'Configure Rows',
-    description: 'Set row range filters to limit the data included.'
-  },
-  configColumns: {
-    title: 'Configure Columns',
-    description: 'Optionally apply hash or trim transformations to selected columns.'
-  }
-};
 
 const RouteComponent = () => {
   const { projectId, datasetId } = Route.useParams();
@@ -542,14 +625,11 @@ const RouteComponent = () => {
   const [store] = useState(() => createProjectDatasetConfigStore(projectId, datasetId));
   const {
     columnsConfig,
-    currentColumnIdIndex,
     currentStep,
-    pageSize,
     reset,
     rowConfig,
     selectedColumns,
     setColumnsConfig,
-    setCurrentColumnIdIndex,
     setRowConfig,
     setSelectedColumns,
     setStep
@@ -557,8 +637,8 @@ const RouteComponent = () => {
 
   const selectedColumnsIdArray = Object.keys(selectedColumns);
 
-  const handlePreviousStep = (step: $ProjectDatasetConfigStep) => {
-    switch (step) {
+  const handlePreviousStep = () => {
+    switch (currentStep) {
       case 'configColumns':
         setStep('configRows');
         break;
@@ -568,20 +648,6 @@ const RouteComponent = () => {
       case 'selectColumns':
         break;
     }
-  };
-
-  const handlePreviousConfigColumnsPage = () => {
-    if (currentStep !== 'configColumns') return;
-    setCurrentColumnIdIndex(currentColumnIdIndex - pageSize > 0 ? currentColumnIdIndex - pageSize : 0);
-  };
-
-  const handleNextConfigColumnsPage = () => {
-    if (currentStep !== 'configColumns') return;
-    setCurrentColumnIdIndex(
-      currentColumnIdIndex + pageSize < selectedColumnsIdArray.length
-        ? currentColumnIdIndex + pageSize
-        : selectedColumnsIdArray.length
-    );
   };
 
   const handleSubmitConfig = () => {
@@ -610,13 +676,12 @@ const RouteComponent = () => {
           });
         },
         onSuccess() {
+          reset();
           void navigate({ to: '/portal/projects/$projectId', params: { projectId } });
         }
       }
     );
   };
-
-  const meta = STEP_META[currentStep];
 
   return (
     <div>
@@ -652,87 +717,44 @@ const RouteComponent = () => {
 
       <StepIndicator currentStep={currentStep} />
 
-      <Card>
-        <Card.Header>
-          <Card.Title className="text-base">{meta.title}</Card.Title>
-          <Card.Description>{meta.description}</Card.Description>
-        </Card.Header>
-        <Separator />
-        <Card.Content className="pt-4">
-          {(() => {
-            switch (currentStep) {
-              case 'configColumns': {
-                const selectedColumnsForPage: SelectedColumnsRecord = {};
-                selectedColumnsIdArray.slice(currentColumnIdIndex, currentColumnIdIndex + pageSize).forEach((colId) => {
-                  selectedColumnsForPage[colId] = selectedColumns[colId]!;
-                });
+      {currentStep === 'selectColumns' && (
+        <SelectColumnsStep datasetId={datasetId} setSelectedColumns={setSelectedColumns} setStep={setStep} />
+      )}
 
-                return (
-                  <div className="space-y-4">
-                    <ConfigColumnsStep selectedColumns={selectedColumnsForPage} setColumnsConfig={setColumnsConfig} />
-                    {selectedColumnsIdArray.length > pageSize && (
-                      <div className="flex items-center justify-center gap-2">
-                        <Button
-                          disabled={currentColumnIdIndex === 0}
-                          size="sm"
-                          variant="outline"
-                          onClick={handlePreviousConfigColumnsPage}
-                        >
-                          <ChevronLeftIcon className="mr-1 size-3.5" />
-                          {t('paginationPrevious')}
-                        </Button>
-                        <p className="text-muted-foreground text-xs tabular-nums">
-                          {Math.floor(currentColumnIdIndex / pageSize) + 1} /{' '}
-                          {Math.ceil(selectedColumnsIdArray.length / pageSize)}
-                        </p>
-                        <Button
-                          disabled={currentColumnIdIndex + pageSize >= selectedColumnsIdArray.length}
-                          size="sm"
-                          variant="outline"
-                          onClick={handleNextConfigColumnsPage}
-                        >
-                          {t('paginationNext')}
-                          <ChevronRightIcon className="ml-1 size-3.5" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-              case 'configRows':
-                return <ConfigRowsStep setRowConfig={setRowConfig} setStep={setStep} />;
-              case 'selectColumns':
-                return (
-                  <SelectColumnsStep datasetId={datasetId} setSelectedColumns={setSelectedColumns} setStep={setStep} />
-                );
-              default:
-                return null;
-            }
-          })()}
-        </Card.Content>
-        <Separator />
-        <Card.Footer className="flex items-center justify-between pt-4">
+      {currentStep === 'configRows' && <ConfigRowsStep setRowConfig={setRowConfig} setStep={setStep} />}
+
+      {currentStep === 'configColumns' && (
+        <ConfigColumnsStep
+          columnsConfig={columnsConfig}
+          selectedColumns={selectedColumns}
+          setColumnsConfig={setColumnsConfig}
+        />
+      )}
+
+      {/* Footer navigation — shown on steps 2 and 3 */}
+      {currentStep !== 'selectColumns' && (
+        <div className="mt-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Button
-              disabled={currentStep === 'selectColumns'}
-              size="sm"
-              variant="outline"
-              onClick={() => handlePreviousStep(currentStep)}
-            >
+            <Button size="sm" variant="outline" onClick={handlePreviousStep}>
               <ArrowLeftIcon className="mr-1.5 size-3.5" />
-              {t('previousConfigStep')}
+              {t({ en: 'Back', fr: 'Retour' })}
             </Button>
             <Button size="sm" variant="outline" onClick={reset}>
               <RotateCcwIcon className="mr-1.5 size-3.5" />
-              {t('restart')}
+              {t({ en: 'Start Over', fr: 'Recommencer' })}
             </Button>
           </div>
-          <Button disabled={selectedColumnsIdArray.length === 0} size="sm" onClick={handleSubmitConfig}>
-            <SendIcon className="mr-1.5 size-3.5" />
-            {t('finishConfig')}
-          </Button>
-        </Card.Footer>
-      </Card>
+          {currentStep === 'configColumns' && (
+            <Button disabled={selectedColumnsIdArray.length === 0} size="sm" onClick={handleSubmitConfig}>
+              <SendIcon className="mr-1.5 size-3.5" />
+              {t({
+                en: 'Add to Project',
+                fr: 'Ajouter au projet'
+              })}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
