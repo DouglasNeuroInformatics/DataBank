@@ -27,7 +27,7 @@ export const DatasetPagination = ({
   };
 
   return (
-    <div className="flex items-center justify-between border-t py-3">
+    <div className="mt-5 flex items-center justify-between border-t py-5">
       <p className="text-muted-foreground hidden text-sm sm:block">
         {kind === 'COLUMN' ? t('columnPagination') : t('rowPagination')}
       </p>
