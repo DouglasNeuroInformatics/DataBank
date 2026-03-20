@@ -1,14 +1,14 @@
 /* eslint-disable perfectionist/sort-objects */
 import { $DatasetViewPagination, licensesObjects } from '@databank/core';
 import type { $DatasetViewPagination as DatasetViewPaginationType } from '@databank/core';
-import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
+import { Badge, Button, Card, Separator } from '@douglasneuroinformatics/libui/components';
 import { useDestructiveAction, useDownload, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import { ArrowLeftIcon, TrashIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
-import { DatasetPagination } from '@/components/DatasetPagination';
+import { DatasetPaginationControls } from '@/components/DatasetPaginationControls';
 import { DatasetTable } from '@/components/DatasetTable';
 import { DownloadDropdowns } from '@/components/DownloadDropdowns';
 import { PageHeading } from '@/components/PageHeading';
@@ -114,7 +114,7 @@ const RouteComponent = () => {
 
       <Card className="mb-6">
         <Card.Content className="pt-6">
-          <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-3">
+          <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{t('createdAt')}</dt>
               <dd className="mt-1 text-sm">{new Date(dataset.createdAt).toLocaleDateString()}</dd>
@@ -127,10 +127,16 @@ const RouteComponent = () => {
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 {t('datasetLicense')}
               </dt>
+              <dd className="mt-1 text-sm" title={licenseInfo?.name}>
+                {dataset.license}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+                {t({ en: 'Permission', fr: 'Permission' })}
+              </dt>
               <dd className="mt-1">
-                <Badge title={licenseInfo?.name} variant="secondary">
-                  {dataset.license}
-                </Badge>
+                <Badge variant="secondary">{dataset.permission}</Badge>
               </dd>
             </div>
           </dl>
@@ -139,29 +145,26 @@ const RouteComponent = () => {
 
       <div>
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold">Data</h3>
+          <h3 className="text-base font-semibold">{t({ en: 'Data', fr: 'Données' })}</h3>
           <DownloadDropdowns
             onDataDownload={(format) => handleDataDownload(format)}
             onMetadataDownload={(format) => handleMetadataDownload(format)}
           />
         </div>
-        <DatasetPagination
-          currentPage={columnPagination.currentPage}
-          itemsPerPage={columnPagination.itemsPerPage}
-          kind="COLUMN"
-          setDatasetPagination={setColumnPagination}
-          totalNumberOfItems={dataset.totalNumberOfColumns}
-        />
+        <div className="flex flex-col gap-6 py-6">
+          <Separator />
+          <DatasetPaginationControls
+            columnPagination={columnPagination}
+            rowPagination={rowPagination}
+            setColumnPagination={setColumnPagination}
+            setRowPagination={setRowPagination}
+            totalNumberOfColumns={dataset.totalNumberOfColumns}
+            totalNumberOfRows={dataset.totalNumberOfRows}
+          />
+        </div>
         <div className="overflow-hidden rounded-md border">
           <DatasetTable isManager={false} isProject={true} {...dataset} id={datasetId} primaryKeys={[]} />
         </div>
-        <DatasetPagination
-          currentPage={rowPagination.currentPage}
-          itemsPerPage={rowPagination.itemsPerPage}
-          kind="ROW"
-          setDatasetPagination={setRowPagination}
-          totalNumberOfItems={dataset.totalNumberOfRows}
-        />
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import { zodValidator } from '@tanstack/zod-adapter';
 import { PencilIcon, TrashIcon, UsersIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
-import { DatasetPagination } from '@/components/DatasetPagination';
+import { DatasetPaginationControls } from '@/components/DatasetPaginationControls';
 import { DatasetTable } from '@/components/DatasetTable';
 import { DownloadDropdowns } from '@/components/DownloadDropdowns';
 import { PageHeading } from '@/components/PageHeading';
@@ -180,23 +180,14 @@ const RouteComponent = () => {
         </div>
         <div className="flex flex-col gap-6 py-6">
           <Separator />
-          <div className="flex items-center gap-6">
-            <DatasetPagination
-              currentPage={columnPagination.currentPage}
-              itemsPerPage={columnPagination.itemsPerPage}
-              kind="COLUMN"
-              setDatasetPagination={setColumnPagination}
-              totalNumberOfItems={dataset.totalNumberOfColumns}
-            />
-            <Separator className="h-10" orientation="vertical" />
-            <DatasetPagination
-              currentPage={rowPagination.currentPage}
-              itemsPerPage={rowPagination.itemsPerPage}
-              kind="ROW"
-              setDatasetPagination={setRowPagination}
-              totalNumberOfItems={dataset.totalNumberOfRows}
-            />
-          </div>
+          <DatasetPaginationControls
+            columnPagination={columnPagination}
+            rowPagination={rowPagination}
+            setColumnPagination={setColumnPagination}
+            setRowPagination={setRowPagination}
+            totalNumberOfColumns={dataset.totalNumberOfColumns}
+            totalNumberOfRows={dataset.totalNumberOfRows}
+          />
         </div>
         <div className="overflow-hidden rounded-md border">
           <DatasetTable isManager={isManager} isProject={false} {...dataset} />
