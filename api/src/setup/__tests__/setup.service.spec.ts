@@ -34,11 +34,11 @@ describe('SetupService', () => {
   describe('getState', () => {
     it('should return that the app is not setup if there are no items in the setup collection', async () => {
       setupConfigModel.count.mockResolvedValueOnce(0);
-      await expect(setupService.getState()).resolves.toStrictEqual({ isSetup: false });
+      await expect(setupService.getState()).resolves.toStrictEqual({ isDemo: false, isSetup: false });
     });
     it('should return that the app is setup if there are one or more items in the setup collection', async () => {
       setupConfigModel.count.mockResolvedValueOnce(1);
-      await expect(setupService.getState()).resolves.toStrictEqual({ isSetup: true });
+      await expect(setupService.getState()).resolves.toStrictEqual({ isDemo: false, isSetup: true });
     });
   });
 
