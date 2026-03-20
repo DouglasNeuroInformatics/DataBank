@@ -194,7 +194,7 @@ const formatSummary = (column: $ProjectColumnSummary): string => {
       return column.enumSummary.distribution.map((entry) => `${entry['']}: ${entry.count}`).join(', ');
     case 'FLOAT':
       return Object.entries(column.floatSummary)
-        .map(([key, value]) => `${key}: ${value.toFixed(2)}`)
+        .map(([key, value]) => `${key}: ${value?.toFixed(2) ?? 'N/A'}`)
         .join(', ');
     case 'INT':
       return Object.entries(column.intSummary)

@@ -1,5 +1,4 @@
-import { $TabularDataset } from '@databank/core';
-import type { $DatasetViewPagination } from '@databank/core';
+import type { $DatasetViewPagination, $TabularDataset } from '@databank/core';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -17,7 +16,8 @@ export const projectDatasetQueryOptions = (
         columnPaginationDto: columnPagination,
         rowPaginationDto: rowPagination
       });
-      return $TabularDataset.parse(response.data);
+      // TODO: the API returns a subset of $TabularDataset (no id, status, primaryKeys) - validate properly
+      return response.data as Omit<$TabularDataset, 'id' | 'primaryKeys' | 'status'>;
     },
     queryKey: [PROJECT_DATASET_QUERY_KEY, projectId, datasetId, { columnPagination, rowPagination }]
   });

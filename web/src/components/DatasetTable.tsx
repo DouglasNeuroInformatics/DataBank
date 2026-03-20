@@ -9,7 +9,7 @@ import { useSetColumnDataPermissionMutation } from '@/hooks/mutations/useSetColu
 import { useSetColumnMetadataPermissionMutation } from '@/hooks/mutations/useSetColumnMetadataPermissionMutation';
 import { useToggleColumnNullableMutation } from '@/hooks/mutations/useToggleColumnNullableMutation';
 
-type DatasetTableProps = Omit<$TabularDataset, 'permission'> & { isManager: boolean; isProject: boolean };
+type DatasetTableProps = Omit<$TabularDataset, 'permission' | 'status'> & { isManager: boolean; isProject: boolean };
 
 const COLUMN_TYPES = ['INT', 'FLOAT', 'STRING', 'DATETIME', 'ENUM'] as const;
 const PERMISSION_LEVELS = ['LOGIN', 'MANAGER', 'PUBLIC', 'VERIFIED'] as const;

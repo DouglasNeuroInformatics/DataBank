@@ -153,7 +153,7 @@ const RouteComponent = () => {
           totalNumberOfItems={dataset.totalNumberOfColumns}
         />
         <div className="overflow-hidden rounded-md border">
-          <DatasetTable isManager={false} isProject={true} {...dataset} />
+          <DatasetTable isManager={false} isProject={true} {...dataset} id={datasetId} primaryKeys={[]} />
         </div>
         <DatasetPagination
           currentPage={rowPagination.currentPage}
