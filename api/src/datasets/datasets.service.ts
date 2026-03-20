@@ -129,26 +129,6 @@ export class DatasetsService {
     return this.columnService.changeColumnMetadataPermission(columnId, newPermissionLevel);
   }
 
-  // async changeDatasetDataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-  //   const dataset = await this.canModifyDataset(datasetId, currentUserId);
-
-  //   if (!dataset.tabularData) {
-  //     throw new NotFoundException(`There is not tabular data in this dataset with id ${datasetId}`);
-  //   }
-
-  //   return await this.columnService.updateMany(dataset.tabularData.id, {
-  //     dataPermission: { permission: permissionLevel }
-  //   });
-  // }
-
-  // async changeDatasetMetadataPermission(datasetId: string, currentUserId: string, permissionLevel: PermissionLevel) {
-  //   const dataset = await this.canModifyDataset(datasetId, currentUserId);
-  //   if (!dataset) {
-  //     throw new UnprocessableEntityException(`The current user is not allowed to modify the dataset with id ${datasetId}`);
-  //   }
-  //   return await this.tabularDataService.changeTabularColumnsMetadataPermission(datasetId, permissionLevel);
-  // }
-
   async createDataset(createTabularDatasetDto: $CreateDataset, file: Express.Multer.File | string, managerId: string) {
     const currUser = await this.usersService.findById(managerId);
     if (!currUser.datasetIds) {
@@ -179,62 +159,40 @@ export class DatasetsService {
       return baseDataset;
     }
 
-    // Add a job to the file-upload queue
-    let dataset;
+    // Write file to disk if it's a file upload
+    let filePath: string | undefined;
     if (typeof file !== 'string') {
-      // Resolve once from configuration or env
       await fs.promises.mkdir(this.uploadsDir, { recursive: true });
-      // Generate a collision-free, sanitised filename
       const safeName = crypto.randomUUID() + path.extname(file.originalname);
-      const filePath = path.join(this.uploadsDir, safeName);
+      filePath = path.join(this.uploadsDir, safeName);
       await fs.promises.writeFile(filePath, file.buffer);
-      dataset = await this.datasetModel.create({
-        data: {
-          datasetType: createTabularDatasetDto.datasetType,
-          description: createTabularDatasetDto.description,
-          isReadyToShare:
-            typeof createTabularDatasetDto.isReadyToShare === 'string'
-              ? createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true'
-              : Boolean(createTabularDatasetDto.isReadyToShare),
-          license: createTabularDatasetDto.license,
-          managerIds: [managerId],
-          name: createTabularDatasetDto.name,
-          permission: createTabularDatasetDto.permission,
-          status: 'Processing'
-        }
-      });
+    }
+
+    const dataset = await this.datasetModel.create({
+      data: {
+        datasetType: createTabularDatasetDto.datasetType,
+        description: createTabularDatasetDto.description,
+        isReadyToShare: this.parseBooleanField(createTabularDatasetDto.isReadyToShare),
+        license: createTabularDatasetDto.license,
+        managerIds: [managerId],
+        name: createTabularDatasetDto.name,
+        permission: createTabularDatasetDto.permission,
+        status: 'Processing'
+      }
+    });
+
+    if (typeof file !== 'string') {
       await this.fileUploadQueue.add('handle-file-upload', {
         datasetId: dataset.id,
-        filePath,
-        isJSON:
-          typeof createTabularDatasetDto.isJSON === 'string'
-            ? createTabularDatasetDto.isJSON.toLowerCase() === 'true'
-            : Boolean(createTabularDatasetDto.isJSON),
+        filePath: filePath!,
+        isJSON: this.parseBooleanField(createTabularDatasetDto.isJSON),
         permission: createTabularDatasetDto.permission,
         primaryKeys: createTabularDatasetDto.primaryKeys ?? undefined
       });
     } else {
-      dataset = await this.datasetModel.create({
-        data: {
-          datasetType: createTabularDatasetDto.datasetType,
-          description: createTabularDatasetDto.description,
-          isReadyToShare:
-            typeof createTabularDatasetDto.isReadyToShare === 'string'
-              ? createTabularDatasetDto.isReadyToShare.toLowerCase() === 'true'
-              : Boolean(createTabularDatasetDto.isReadyToShare),
-          license: createTabularDatasetDto.license,
-          managerIds: [managerId],
-          name: createTabularDatasetDto.name,
-          permission: createTabularDatasetDto.permission,
-          status: 'Processing'
-        }
-      });
       await this.fileUploadQueue.add('handle-string-upload', {
         datasetId: dataset.id,
-        isJSON:
-          typeof createTabularDatasetDto.isJSON === 'string'
-            ? createTabularDatasetDto.isJSON.toLowerCase() === 'true'
-            : Boolean(createTabularDatasetDto.isJSON),
+        isJSON: this.parseBooleanField(createTabularDatasetDto.isJSON),
         permission: createTabularDatasetDto.permission,
         primaryKeys: createTabularDatasetDto.primaryKeys,
         uploadedString: file
@@ -293,186 +251,28 @@ export class DatasetsService {
   }
 
   async downloadDataById(datasetId: string, currentUserId: string, format: $TabularDataDownloadFormat) {
-    const userStatus = await this.getUserStatusById(currentUserId, datasetId);
-
-    const dataset = await this.datasetModel.findUnique({
-      include: {
-        tabularData: {
-          include: {
-            columns: true
-          }
-        }
-      },
-      where: {
-        id: datasetId
-      }
-    });
-
-    if (!dataset) {
-      throw new NotFoundException();
-    }
-
-    if (!dataset.tabularData?.id) {
-      throw new NotFoundException('No such tabular data available!');
-    }
-
-    const colNumber = dataset.tabularData.columns.length;
-
-    if (!dataset.tabularData.columns[0]?.id) {
-      throw new NotFoundException('No columns found!');
-    }
-    const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
-
-    const datasetView = await this.tabularDataService.getViewById(
-      dataset.tabularData.id,
-      userStatus,
-      {
-        currentPage: 1,
-        itemsPerPage: rowNumber
-      },
-      {
-        currentPage: 1,
-        itemsPerPage: colNumber
-      }
-    );
-
+    const permissionLevel = await this.getPermissionLevel(currentUserId, datasetId);
+    const datasetView = await this.getFullDatasetView(datasetId, permissionLevel);
     return this.formatDataDownloadString(format, datasetView);
   }
 
   async downloadMetadataById(datasetId: string, currentUserId: string, format: $TabularDataDownloadFormat) {
-    const userStatus = await this.getUserStatusById(currentUserId, datasetId);
-
-    const dataset = await this.datasetModel.findUnique({
-      include: {
-        tabularData: {
-          include: {
-            columns: true
-          }
-        }
-      },
-      where: {
-        id: datasetId
-      }
-    });
-
-    if (!dataset) {
-      throw new NotFoundException();
-    }
-
-    if (!dataset.tabularData?.id) {
-      throw new NotFoundException('No such tabular data available!');
-    }
-
-    const colNumber = dataset.tabularData.columns.length;
-
-    if (!dataset.tabularData.columns[0]?.id) {
-      throw new NotFoundException('No columns found!');
-    }
-    const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
-
-    const datasetView = await this.tabularDataService.getViewById(
-      dataset.tabularData.id,
-      userStatus,
-      {
-        currentPage: 1,
-        itemsPerPage: rowNumber
-      },
-      {
-        currentPage: 1,
-        itemsPerPage: colNumber
-      }
-    );
-
+    const permissionLevel = await this.getPermissionLevel(currentUserId, datasetId);
+    const datasetView = await this.getFullDatasetView(datasetId, permissionLevel);
     return this.formatMetadataDownloadString(format, datasetView);
   }
 
   async downloadPublicDataById(datasetId: string, format: $TabularDataDownloadFormat) {
-    const dataset = await this.datasetModel.findUnique({
-      include: {
-        tabularData: {
-          include: {
-            columns: true
-          }
-        }
-      },
-      where: {
-        id: datasetId
-      }
-    });
-
+    const dataset = await this.datasetModel.findUnique({ where: { id: datasetId } });
     if (!dataset || dataset.permission !== 'PUBLIC') {
       throw new NotFoundException('No such public dataset is found!');
     }
-
-    if (!dataset.tabularData?.id) {
-      throw new NotFoundException('No such tabular data available!');
-    }
-
-    const colNumber = dataset.tabularData.columns.length;
-
-    if (!dataset.tabularData.columns[0]?.id) {
-      throw new NotFoundException('No columns found!');
-    }
-    const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
-
-    const datasetView = await this.tabularDataService.getViewById(
-      dataset.tabularData.id,
-      'PUBLIC',
-      {
-        currentPage: 1,
-        itemsPerPage: rowNumber
-      },
-      {
-        currentPage: 1,
-        itemsPerPage: colNumber
-      }
-    );
-
+    const datasetView = await this.getFullDatasetView(datasetId, 'PUBLIC');
     return this.formatDataDownloadString(format, datasetView);
   }
 
   async downloadPublicMetadataById(datasetId: string, format: $TabularDataDownloadFormat) {
-    const dataset = await this.datasetModel.findUnique({
-      include: {
-        tabularData: {
-          include: {
-            columns: true
-          }
-        }
-      },
-      where: {
-        id: datasetId
-      }
-    });
-
-    if (!dataset) {
-      throw new NotFoundException();
-    }
-
-    if (!dataset.tabularData?.id) {
-      throw new NotFoundException('No such tabular data available!');
-    }
-
-    const colNumber = dataset.tabularData.columns.length;
-
-    if (!dataset.tabularData.columns[0]?.id) {
-      throw new NotFoundException('No columns found!');
-    }
-    const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
-
-    const datasetView = await this.tabularDataService.getViewById(
-      dataset.tabularData.id,
-      'PUBLIC',
-      {
-        currentPage: 1,
-        itemsPerPage: rowNumber
-      },
-      {
-        currentPage: 1,
-        itemsPerPage: colNumber
-      }
-    );
-
+    const datasetView = await this.getFullDatasetView(datasetId, 'PUBLIC');
     return this.formatMetadataDownloadString(format, datasetView);
   }
 
@@ -685,6 +485,28 @@ export class DatasetsService {
     };
   }
 
+  async getPermissionLevel(userId: string, datasetId: string): Promise<PermissionLevel> {
+    const user = await this.usersService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User Not Found!');
+    }
+
+    const dataset = await this.datasetModel.findUnique({ where: { id: datasetId } });
+    if (!dataset) {
+      throw new NotFoundException('Dataset Not Found!');
+    }
+
+    if (dataset.managerIds.includes(userId)) {
+      return 'MANAGER';
+    } else if (user.verifiedAt) {
+      return 'VERIFIED';
+    } else if (user.confirmedAt) {
+      return 'LOGIN';
+    } else {
+      throw new UnprocessableEntityException('Unexpected User Status!');
+    }
+  }
+
   async getProjectDatasetViewById(
     projectDataset: $ProjectDataset,
     rowPagination: $DatasetViewPagination,
@@ -755,28 +577,6 @@ export class DatasetsService {
     return resDatasetsInfo;
   }
 
-  async getUserStatusById(userId: string, datasetId: string): Promise<PermissionLevel> {
-    const user = await this.usersService.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User Not Found!');
-    }
-
-    const dataset = await this.datasetModel.findUnique({ where: { id: datasetId } });
-    if (!dataset) {
-      throw new NotFoundException('Dataset Not Found!');
-    }
-
-    if (dataset.managerIds.includes(userId)) {
-      return 'MANAGER';
-    } else if (user.verifiedAt) {
-      return 'VERIFIED';
-    } else if (user.confirmedAt) {
-      return 'LOGIN';
-    } else {
-      throw new UnprocessableEntityException('Unexpected User Status!');
-    }
-  }
-
   async getViewById(
     datasetId: string,
     currentUserId: string,
@@ -796,17 +596,7 @@ export class DatasetsService {
       throw new NotFoundException();
     }
 
-    const currUser = await this.usersService.findById(currentUserId);
-    let userStatus: PermissionLevel;
-    if (dataset.managerIds.includes(currentUserId)) {
-      userStatus = 'MANAGER';
-    } else if (currUser.verifiedAt) {
-      userStatus = 'VERIFIED';
-    } else if (currUser.confirmedAt) {
-      userStatus = 'LOGIN';
-    } else {
-      throw new UnprocessableEntityException('Unexpected user status!');
-    }
+    const userStatus = await this.getPermissionLevel(currentUserId, datasetId);
 
     if (!dataset.isReadyToShare && !dataset.managerIds.includes(currentUserId)) {
       throw new UnprocessableEntityException('The dataset is not ready for share!');
@@ -968,10 +758,10 @@ export class DatasetsService {
   }
 
   private formatMetadataBodyString(delimiter: ',' | '\t', columnName: string, datasetMetadata: $TabularColumnSummary) {
-    const metadata_row = [];
+    const metadataRow = [];
     switch (datasetMetadata.kind) {
       case 'DATETIME':
-        metadata_row.push(
+        metadataRow.push(
           ...[
             columnName,
             datasetMetadata.kind,
@@ -995,7 +785,7 @@ export class DatasetsService {
         datasetMetadata.enumSummary.distribution.forEach((entry) => {
           enumSummaryObj[entry['']] = entry.count;
         });
-        metadata_row.push(
+        metadataRow.push(
           ...[
             columnName,
             datasetMetadata.kind,
@@ -1016,7 +806,7 @@ export class DatasetsService {
         break;
       }
       case 'FLOAT':
-        metadata_row.push(
+        metadataRow.push(
           ...[
             columnName,
             datasetMetadata.kind,
@@ -1036,7 +826,7 @@ export class DatasetsService {
         );
         break;
       case 'INT':
-        metadata_row.push(
+        metadataRow.push(
           ...[
             columnName,
             datasetMetadata.kind,
@@ -1057,7 +847,7 @@ export class DatasetsService {
         break;
 
       case 'STRING':
-        metadata_row.push(
+        metadataRow.push(
           ...[
             columnName,
             datasetMetadata.kind,
@@ -1076,7 +866,7 @@ export class DatasetsService {
           ]
         );
     }
-    return metadata_row.join(delimiter) + '\n';
+    return metadataRow.join(delimiter) + '\n';
   }
 
   private formatProjectColumn(
@@ -1161,5 +951,52 @@ export class DatasetsService {
       default:
         throw new UnprocessableEntityException('Unexpected Column Type');
     }
+  }
+
+  private async getFullDatasetView(datasetId: string, permissionLevel: PermissionLevel): Promise<$TabularDatasetView> {
+    const dataset = await this.datasetModel.findUnique({
+      include: {
+        tabularData: {
+          include: {
+            columns: true
+          }
+        }
+      },
+      where: {
+        id: datasetId
+      }
+    });
+
+    if (!dataset) {
+      throw new NotFoundException();
+    }
+
+    if (!dataset.tabularData?.id) {
+      throw new NotFoundException('No such tabular data available!');
+    }
+
+    const colNumber = dataset.tabularData.columns.length;
+
+    if (!dataset.tabularData.columns[0]?.id) {
+      throw new NotFoundException('No columns found!');
+    }
+    const rowNumber = await this.columnService.getLengthById(dataset.tabularData.columns[0].id);
+
+    return this.tabularDataService.getViewById(
+      dataset.tabularData.id,
+      permissionLevel,
+      {
+        currentPage: 1,
+        itemsPerPage: rowNumber
+      },
+      {
+        currentPage: 1,
+        itemsPerPage: colNumber
+      }
+    );
+  }
+
+  private parseBooleanField(value: boolean | string): boolean {
+    return typeof value === 'string' ? value.toLowerCase() === 'true' : Boolean(value);
   }
 }

@@ -131,21 +131,8 @@ export class ProjectsService {
       throw new UnprocessableEntityException(`project ${projectId} dataset ${datasetId} has no columns`);
     }
 
-    // set initial row number to number of entries in a column
-    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
-    if (projectDataset.rowFilter) {
-      if (projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
-        rowNumber = projectDataset.rowFilter.rowMax - projectDataset.rowFilter.rowMin;
-      } else if (!projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
-        rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
-        // check for invalid row min input (row min greater than the largest possible value of rows)
-        if (rowNumber < 0) {
-          throw new UnprocessableEntityException('Row number per page is negative! Check the row min value');
-        }
-      } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
-        rowNumber = projectDataset.rowFilter.rowMax;
-      }
-    }
+    const totalRows = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
+    const rowNumber = this.calculateEffectiveRowCount(totalRows, projectDataset.rowFilter);
 
     const projectDatasetView = await this.datasetService.getProjectDatasetViewById(
       this.formatProjectDataset(projectDataset),
@@ -183,21 +170,9 @@ export class ProjectsService {
     if (projectDataset.columnIds.length === 0) {
       throw new UnprocessableEntityException(`project ${projectId} dataset ${datasetId} has no columns`);
     }
-    // set initial row number to number of entries in a column
-    let rowNumber: number = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
-    if (projectDataset.rowFilter) {
-      if (projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
-        rowNumber = projectDataset.rowFilter.rowMax - projectDataset.rowFilter.rowMin;
-      } else if (!projectDataset.rowFilter.rowMax && projectDataset.rowFilter.rowMin) {
-        rowNumber = rowNumber - projectDataset.rowFilter.rowMin;
-        // check for invalid row min input (row min greater than the largest possible value of rows)
-        if (rowNumber < 0) {
-          throw new UnprocessableEntityException('Row number per page is negative! Check the row min value');
-        }
-      } else if (projectDataset.rowFilter.rowMax && !projectDataset.rowFilter.rowMin) {
-        rowNumber = projectDataset.rowFilter.rowMax;
-      }
-    }
+
+    const totalRows = await this.datasetService.getColumnLengthById(projectDataset.columnIds[0]!);
+    const rowNumber = this.calculateEffectiveRowCount(totalRows, projectDataset.rowFilter);
 
     const projectDatasetView = await this.datasetService.getProjectDatasetViewById(
       this.formatProjectDataset(projectDataset),
@@ -288,9 +263,6 @@ export class ProjectsService {
         user with id ${currentUserId}`);
     }
 
-    // const isProjectManager = this.isProjectManager(currentUserId, project.id);
-    // return { ...project, isProjectManager };
-
     return project;
   }
 
@@ -341,19 +313,7 @@ export class ProjectsService {
   public async isProjectManager(currentUserId: string, projectId: string) {
     const user = await this.usersService.findById(currentUserId);
     const project = await this.getProjectById(currentUserId, projectId);
-
-    const datasetIdSet = new Set();
-    for (const curr_datasetId of user.datasetIds) {
-      datasetIdSet.add(curr_datasetId);
-    }
-
-    for (const dataset of project.datasets) {
-      if (datasetIdSet.has(dataset.datasetId)) {
-        return true;
-      }
-    }
-
-    return false;
+    return project.datasets.some((dataset) => user.datasetIds.includes(dataset.datasetId));
   }
 
   async removeDataset(currentUserId: string, projectId: string, datasetId: string) {
@@ -402,6 +362,26 @@ export class ProjectsService {
       }
     });
     return updateProject;
+  }
+
+  private calculateEffectiveRowCount(
+    totalRows: number,
+    rowFilter: null | { rowMax: null | number; rowMin: number }
+  ): number {
+    let rowNumber = totalRows;
+    if (rowFilter) {
+      if (rowFilter.rowMax && rowFilter.rowMin) {
+        rowNumber = rowFilter.rowMax - rowFilter.rowMin;
+      } else if (!rowFilter.rowMax && rowFilter.rowMin) {
+        rowNumber = rowNumber - rowFilter.rowMin;
+        if (rowNumber < 0) {
+          throw new UnprocessableEntityException('Row number per page is negative! Check the row min value');
+        }
+      } else if (rowFilter.rowMax && !rowFilter.rowMin) {
+        rowNumber = rowFilter.rowMax;
+      }
+    }
+    return rowNumber;
   }
 
   private formatProjectDataset(projectDatasetData: ProjectDataset): $ProjectDataset {

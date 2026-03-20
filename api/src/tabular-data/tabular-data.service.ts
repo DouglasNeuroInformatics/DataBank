@@ -14,6 +14,7 @@ import type { PermissionLevel, Prisma } from '@prisma/client';
 import pl from 'nodejs-polars';
 import type { DataFrame } from 'nodejs-polars';
 
+import { shouldHideData } from '@/columns/column-data.utils';
 import { ColumnsService } from '@/columns/columns.service';
 
 @Injectable()
@@ -22,26 +23,6 @@ export class TabularDataService {
     @InjectModel('TabularData') private readonly tabularDataModel: Model<'TabularData'>,
     private readonly columnsService: ColumnsService
   ) {}
-
-  async changeTabularColumnsMetadataPermission(datasetId: string, permissionLevel: PermissionLevel) {
-    const tabularData = await this.tabularDataModel.findUnique({
-      include: {
-        columns: true
-      },
-      where: {
-        datasetId
-      }
-    });
-    if (!tabularData) {
-      throw new NotFoundException(`Cannot find tabular with dataset id ${datasetId}`);
-    }
-
-    for (const col of tabularData.columns) {
-      await this.columnsService.changeColumnMetadataPermission(col.id, permissionLevel);
-    }
-
-    return tabularData;
-  }
 
   // create tabular dataset
   async create(df: DataFrame, datasetId: string, primaryKeys: string[], permission: PermissionLevel = 'MANAGER') {
@@ -282,37 +263,13 @@ export class TabularDataService {
     const columnIdsModifyData = new Set<string>();
     const columnIdsModifyMetadata = new Set<string>();
 
-    if (userStatus === 'VERIFIED') {
-      columnsFromDB.forEach((col) => {
-        if (col.dataPermission === 'MANAGER') {
-          columnIdsModifyData.add(col._id.$oid);
-        }
-        if (col.summaryPermission === 'MANAGER') {
-          columnIdsModifyMetadata.add(col._id.$oid);
-        }
-      });
-    } else if (userStatus === 'LOGIN') {
-      columnsFromDB.forEach((col) => {
-        if (col.dataPermission === 'MANAGER' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyData.add(col._id.$oid);
-        }
-        if (col.summaryPermission === 'MANAGER' || col.summaryPermission === 'VERIFIED') {
-          columnIdsModifyMetadata.add(col._id.$oid);
-        }
-      });
-    } else if (userStatus === 'PUBLIC') {
-      columnsFromDB.forEach((col) => {
-        if (col.dataPermission === 'MANAGER' || col.dataPermission === 'LOGIN' || col.dataPermission === 'VERIFIED') {
-          columnIdsModifyData.add(col._id.$oid);
-        }
-        if (
-          col.summaryPermission === 'MANAGER' ||
-          col.summaryPermission === 'VERIFIED' ||
-          col.summaryPermission === 'LOGIN'
-        ) {
-          columnIdsModifyMetadata.add(col._id.$oid);
-        }
-      });
+    for (const col of columnsFromDB) {
+      if (shouldHideData(userStatus, col.dataPermission as PermissionLevel)) {
+        columnIdsModifyData.add(col._id.$oid);
+      }
+      if (shouldHideData(userStatus, col.summaryPermission as PermissionLevel)) {
+        columnIdsModifyMetadata.add(col._id.$oid);
+      }
     }
 
     const columnIds: { [key: string]: string } = {};
