@@ -1,5 +1,3 @@
-/* eslint-disable perfectionist/sort-classes */
-
 import { $CreateDataset, $DatasetInfo, $DatasetViewPagination, $EditDatasetInfo } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
@@ -25,146 +23,6 @@ export class DatasetsController {
     @Param('managerEmailToAdd') managerEmailToAdd: string
   ) {
     return this.datasetsService.addManager(datasetId, managerId, managerEmailToAdd);
-  }
-
-  @ApiOperation({ summary: 'Create Dataset' })
-  @Post('create')
-  @RouteAccess({ role: 'STANDARD' })
-  @UseInterceptors(FileInterceptor('file'))
-  createDataset(
-    @Body() data: $CreateDataset,
-    @UploadedFile() file: Express.Multer.File,
-    @CurrentUser('id') managerId: string
-  ) {
-    return this.datasetsService.createDataset(data, file, managerId);
-  }
-
-  @ApiOperation({ summary: 'Delete Dataset' })
-  @Delete(':id')
-  @RouteAccess({ role: 'STANDARD' })
-  deleteDataset(@Param('id') datasetId: string, @CurrentUser('id') currentUserId: string) {
-    return this.datasetsService.deleteDataset(datasetId, currentUserId);
-  }
-
-  @ApiOperation({ summary: 'Get all Public Datasets' })
-  @Get('public')
-  @RouteAccess('public')
-  getPublic() {
-    return this.datasetsService.getPublic();
-  }
-
-  @ApiOperation({ summary: 'Get One Public Dataset by Id' })
-  @Post('public/:id')
-  @RouteAccess('public')
-  getOnePublicById(
-    @Param('id') datasetId: string,
-    @Body('rowPagination') rowPagination: $DatasetViewPagination,
-    @Body('columnPagination') columnPagination: $DatasetViewPagination
-  ) {
-    return this.datasetsService.getOnePublicById(datasetId, rowPagination, columnPagination);
-  }
-
-  @ApiOperation({ summary: 'Download Public Dataset Data' })
-  @Get('public/download-data/:id/:format')
-  @RouteAccess('public')
-  downloadPublicDataById(@Param('id') datasetId: string, @Param('format') format: 'CSV' | 'TSV') {
-    return this.datasetsService.downloadPublicDataById(datasetId, format);
-  }
-
-  @ApiOperation({ summary: 'Download Public Dataset Metadata' })
-  @Get('public/download-metadata/:id/:format')
-  @RouteAccess('public')
-  downloadPublicMetadataById(@Param('id') datasetId: string, @Param('format') format: 'CSV' | 'TSV') {
-    return this.datasetsService.downloadPublicMetadataById(datasetId, format);
-  }
-
-  @ApiOperation({ summary: 'Get All Available Datasets' })
-  @Get()
-  @RouteAccess({ role: 'STANDARD' })
-  getAvailable(@CurrentUser('id') currentUserId: string): Promise<$DatasetInfo[]> {
-    return this.datasetsService.getAvailable(currentUserId);
-  }
-
-  @ApiOperation({ summary: 'Get All Available Datasets Owned By the Current Manager' })
-  @Get('owned-by')
-  @RouteAccess({ role: 'STANDARD' })
-  getAllByManagerId(@CurrentUser('id') currentUserId: string) {
-    return this.datasetsService.getAllByManagerId(currentUserId);
-  }
-
-  @ApiOperation({ summary: 'Get All columns given the dataset id' })
-  @Get('columns/:id')
-  @RouteAccess({ role: 'STANDARD' })
-  getColumnsById(@Param('id') datasetId: string, @CurrentUser('id') currentUserId: string) {
-    return this.datasetsService.getColumnsById(datasetId, currentUserId);
-  }
-
-  @ApiOperation({ summary: 'Get the View of a Dataset' })
-  @Post(':id')
-  @RouteAccess({ role: 'STANDARD' })
-  getViewById(
-    @Param('id') datasetId: string,
-    @CurrentUser('id') currentUserId: string,
-    @Body('rowPagination') datasetViewrowPagination: $DatasetViewPagination,
-    @Body('columnPagination') datasetViewcolumnPagination: $DatasetViewPagination
-  ) {
-    return this.datasetsService.getViewById(
-      datasetId,
-      currentUserId,
-      datasetViewrowPagination,
-      datasetViewcolumnPagination
-    );
-  }
-
-  @ApiOperation({ summary: 'Download Dataset Data' })
-  @Get('/download-data/:id/:format')
-  @RouteAccess({ role: 'STANDARD' })
-  downloadDataById(
-    @Param('id') datasetId: string,
-    @CurrentUser('id') currentUserId: string,
-    @Param('format') format: 'CSV' | 'TSV'
-  ) {
-    return this.datasetsService.downloadDataById(datasetId, currentUserId, format);
-  }
-
-  @ApiOperation({ summary: 'Download Dataset Metadata' })
-  @Get('/download-metadata/:id/:format')
-  @RouteAccess({ role: 'STANDARD' })
-  downloadMetadataById(
-    @Param('id') datasetId: string,
-    @CurrentUser('id') currentUserId: string,
-    @Param('format') format: 'CSV' | 'TSV'
-  ) {
-    return this.datasetsService.downloadMetadataById(datasetId, currentUserId, format);
-  }
-
-  @ApiOperation({ summary: 'Remove Manager from Dataset' })
-  @Delete('managers/:id/:managerIdToRemove')
-  @RouteAccess({ role: 'STANDARD' })
-  removeManager(
-    @Param('id') datasetId: string,
-    @CurrentUser('id') managerId: string,
-    @Param('managerIdToRemove') managerIdToRemove: string
-  ) {
-    return this.datasetsService.removeManager(datasetId, managerId, managerIdToRemove);
-  }
-
-  @ApiOperation({ summary: 'Set Dataset Ready to Share' })
-  @Patch('share/:id')
-  @RouteAccess({ role: 'STANDARD' })
-  setReadyToShare(@Param('id') datasetId: string, @CurrentUser('id') managerId: string) {
-    return this.datasetsService.setReadyToShare(datasetId, managerId);
-  }
-
-  @ApiOperation({ summary: 'Edit Dataset Information' })
-  @Patch('info/:id')
-  @RouteAccess({ role: 'STANDARD' })
-  editDatasetInfo(
-    @Param('id') datasetId: string,
-    @CurrentUser('id') managerId: string,
-    @Body('editDatasetInfoDto') editDatasetInfoDto: $EditDatasetInfo
-  ) {
-    return this.datasetsService.editDatasetInfo(datasetId, managerId, editDatasetInfoDto);
   }
 
   @ApiOperation({ summary: 'Change Data Permission Level of a Column' })
@@ -196,6 +54,18 @@ export class DatasetsController {
     );
   }
 
+  @ApiOperation({ summary: 'Create Dataset' })
+  @Post('create')
+  @RouteAccess({ role: 'STANDARD' })
+  @UseInterceptors(FileInterceptor('file'))
+  createDataset(
+    @Body() data: $CreateDataset,
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser('id') managerId: string
+  ) {
+    return this.datasetsService.createDataset(data, file, managerId);
+  }
+
   @ApiOperation({ summary: 'Delete a Column' })
   @Delete('/column/:id/:columnId')
   @RouteAccess({ role: 'STANDARD' })
@@ -205,6 +75,116 @@ export class DatasetsController {
     @CurrentUser('id') userId: string
   ) {
     return this.datasetsService.deleteColumnById(datasetId, columnId, userId);
+  }
+
+  @ApiOperation({ summary: 'Delete Dataset' })
+  @Delete(':id')
+  @RouteAccess({ role: 'STANDARD' })
+  deleteDataset(@Param('id') datasetId: string, @CurrentUser('id') currentUserId: string) {
+    return this.datasetsService.deleteDataset(datasetId, currentUserId);
+  }
+
+  @ApiOperation({ summary: 'Download Dataset Data' })
+  @Get('/download-data/:id/:format')
+  @RouteAccess({ role: 'STANDARD' })
+  downloadDataById(
+    @Param('id') datasetId: string,
+    @CurrentUser('id') currentUserId: string,
+    @Param('format') format: 'CSV' | 'TSV'
+  ) {
+    return this.datasetsService.downloadDataById(datasetId, currentUserId, format);
+  }
+
+  @ApiOperation({ summary: 'Download Dataset Metadata' })
+  @Get('/download-metadata/:id/:format')
+  @RouteAccess({ role: 'STANDARD' })
+  downloadMetadataById(
+    @Param('id') datasetId: string,
+    @CurrentUser('id') currentUserId: string,
+    @Param('format') format: 'CSV' | 'TSV'
+  ) {
+    return this.datasetsService.downloadMetadataById(datasetId, currentUserId, format);
+  }
+
+  @ApiOperation({ summary: 'Download Public Dataset Data' })
+  @Get('public/download-data/:id/:format')
+  @RouteAccess('public')
+  downloadPublicDataById(@Param('id') datasetId: string, @Param('format') format: 'CSV' | 'TSV') {
+    return this.datasetsService.downloadPublicDataById(datasetId, format);
+  }
+
+  @ApiOperation({ summary: 'Download Public Dataset Metadata' })
+  @Get('public/download-metadata/:id/:format')
+  @RouteAccess('public')
+  downloadPublicMetadataById(@Param('id') datasetId: string, @Param('format') format: 'CSV' | 'TSV') {
+    return this.datasetsService.downloadPublicMetadataById(datasetId, format);
+  }
+
+  @ApiOperation({ summary: 'Edit Dataset Information' })
+  @Patch('info/:id')
+  @RouteAccess({ role: 'STANDARD' })
+  editDatasetInfo(
+    @Param('id') datasetId: string,
+    @CurrentUser('id') managerId: string,
+    @Body('editDatasetInfoDto') editDatasetInfoDto: $EditDatasetInfo
+  ) {
+    return this.datasetsService.editDatasetInfo(datasetId, managerId, editDatasetInfoDto);
+  }
+
+  @ApiOperation({ summary: 'Get All Available Datasets Owned By the Current Manager' })
+  @Get('owned-by')
+  @RouteAccess({ role: 'STANDARD' })
+  getAllByManagerId(@CurrentUser('id') currentUserId: string) {
+    return this.datasetsService.getAllByManagerId(currentUserId);
+  }
+
+  @ApiOperation({ summary: 'Get All Available Datasets' })
+  @Get()
+  @RouteAccess({ role: 'STANDARD' })
+  getAvailable(@CurrentUser('id') currentUserId: string): Promise<$DatasetInfo[]> {
+    return this.datasetsService.getAvailable(currentUserId);
+  }
+
+  @ApiOperation({ summary: 'Get All columns given the dataset id' })
+  @Get('columns/:id')
+  @RouteAccess({ role: 'STANDARD' })
+  getColumnsById(@Param('id') datasetId: string, @CurrentUser('id') currentUserId: string) {
+    return this.datasetsService.getColumnsById(datasetId, currentUserId);
+  }
+
+  @ApiOperation({ summary: 'Get One Public Dataset by Id' })
+  @Post('public/:id')
+  @RouteAccess('public')
+  getOnePublicById(
+    @Param('id') datasetId: string,
+    @Body('rowPagination') rowPagination: $DatasetViewPagination,
+    @Body('columnPagination') columnPagination: $DatasetViewPagination
+  ) {
+    return this.datasetsService.getOnePublicById(datasetId, rowPagination, columnPagination);
+  }
+
+  @ApiOperation({ summary: 'Get all Public Datasets' })
+  @Get('public')
+  @RouteAccess('public')
+  getPublic() {
+    return this.datasetsService.getPublic();
+  }
+
+  @ApiOperation({ summary: 'Get the View of a Dataset' })
+  @Post(':id')
+  @RouteAccess({ role: 'STANDARD' })
+  getViewById(
+    @Param('id') datasetId: string,
+    @CurrentUser('id') currentUserId: string,
+    @Body('rowPagination') datasetViewrowPagination: $DatasetViewPagination,
+    @Body('columnPagination') datasetViewcolumnPagination: $DatasetViewPagination
+  ) {
+    return this.datasetsService.getViewById(
+      datasetId,
+      currentUserId,
+      datasetViewrowPagination,
+      datasetViewcolumnPagination
+    );
   }
 
   @ApiOperation({ summary: 'Change Data Type of a Column' })
@@ -217,6 +197,24 @@ export class DatasetsController {
     @Body() columnType: $ColumnDataType
   ) {
     return this.datasetsService.mutateColumnType(datasetId, columnId, userId, columnType.kind);
+  }
+
+  @ApiOperation({ summary: 'Remove Manager from Dataset' })
+  @Delete('managers/:id/:managerIdToRemove')
+  @RouteAccess({ role: 'STANDARD' })
+  removeManager(
+    @Param('id') datasetId: string,
+    @CurrentUser('id') managerId: string,
+    @Param('managerIdToRemove') managerIdToRemove: string
+  ) {
+    return this.datasetsService.removeManager(datasetId, managerId, managerIdToRemove);
+  }
+
+  @ApiOperation({ summary: 'Set Dataset Ready to Share' })
+  @Patch('share/:id')
+  @RouteAccess({ role: 'STANDARD' })
+  setReadyToShare(@Param('id') datasetId: string, @CurrentUser('id') managerId: string) {
+    return this.datasetsService.setReadyToShare(datasetId, managerId);
   }
 
   @ApiOperation({ summary: 'Toggle Column Data Nullable' })
