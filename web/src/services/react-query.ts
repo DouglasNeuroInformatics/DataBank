@@ -1,4 +1,4 @@
-import { QueryClient } from '@tanstack/react-query';
+import { MutationCache, QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -9,5 +9,11 @@ export const queryClient = new QueryClient({
       staleTime: Infinity,
       throwOnError: true
     }
-  }
+  },
+  // TODO: temporary hack — invalidate all queries on any mutation success
+  mutationCache: new MutationCache({
+    onSuccess: () => {
+      void queryClient.invalidateQueries();
+    }
+  })
 });
