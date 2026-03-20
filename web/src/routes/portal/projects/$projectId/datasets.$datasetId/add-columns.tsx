@@ -9,16 +9,7 @@ import type {
   $ProjectDatasetRowConfig,
   $ProjectDatasetSelectedColumn
 } from '@databank/core';
-import {
-  Button,
-  Card,
-  Checkbox,
-  Form,
-  Input,
-  Label,
-  SearchBar,
-  Table
-} from '@douglasneuroinformatics/libui/components';
+import { Button, Checkbox, Form, Input, Label, SearchBar, Table } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { cn } from '@douglasneuroinformatics/libui/utils';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -296,12 +287,14 @@ const SelectColumnsStep = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <SearchBar
-          placeholder="Search columns..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onValueChange={(value) => table.getColumn('name')?.setFilterValue(value)}
-        />
+      <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <SearchBar
+            placeholder="Search columns..."
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            onValueChange={(value) => table.getColumn('name')?.setFilterValue(value)}
+          />
+        </div>
         <p className="text-muted-foreground shrink-0 text-sm tabular-nums">
           {selectedCount} of {totalCount} selected
         </p>
@@ -375,24 +368,31 @@ const ConfigRowsStep = ({
   setStep: (step: $ProjectDatasetConfigStep) => void;
 }) => {
   return (
-    <Card>
-      <Card.Content className="pt-6">
-        <p className="text-muted-foreground mb-6 text-sm">
-          Optionally limit which rows are included. Leave maximum empty to include all rows from the starting index.
+    <div className="overflow-hidden rounded-md border">
+      <div className="border-b px-6 py-5">
+        <h3 className="text-sm font-medium">Row Range</h3>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Optionally limit which rows are included. Leave maximum empty to include all rows.
         </p>
+      </div>
+      <div className="px-6 py-5">
         <Form
-          content={{
-            rowMin: {
-              kind: 'number',
-              label: 'Starting row index',
-              variant: 'input'
-            },
-            rowMax: {
-              kind: 'number',
-              label: 'Maximum row index (optional)',
-              variant: 'input'
+          content={[
+            {
+              fields: {
+                rowMin: {
+                  kind: 'number',
+                  label: 'Starting row index',
+                  variant: 'input'
+                },
+                rowMax: {
+                  kind: 'number',
+                  label: 'Maximum row index (optional)',
+                  variant: 'input'
+                }
+              }
             }
-          }}
+          ]}
           submitBtnLabel="Continue"
           validationSchema={z
             .object({
@@ -407,8 +407,8 @@ const ConfigRowsStep = ({
             setStep('configColumns');
           }}
         />
-      </Card.Content>
-    </Card>
+      </div>
+    </div>
   );
 };
 
@@ -450,115 +450,111 @@ const ColumnConfigCard = ({
   };
 
   return (
-    <Card>
-      <Card.Content className="pt-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-medium">{column.name}</p>
-            <p className="text-muted-foreground text-xs uppercase">{column.kind}</p>
-          </div>
-          <Checkbox checked={isEnabled} onCheckedChange={(checked: boolean) => handleToggle(checked)} />
+    <div className="border-b px-6 py-5 last:border-b-0">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium">{column.name}</p>
+          <p className="text-muted-foreground text-xs uppercase">{column.kind}</p>
         </div>
+        <Checkbox checked={isEnabled} onCheckedChange={(checked: boolean) => handleToggle(checked)} />
+      </div>
 
-        {isEnabled && (
-          <div className="mt-4 space-y-4">
-            {/* Hash Config */}
-            <div className="rounded-md border p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">Hash</p>
-                  <p className="text-muted-foreground text-xs">
-                    Apply a hash transformation to this column&apos;s values
-                  </p>
-                </div>
-                <Checkbox
-                  checked={hashEnabled}
-                  onCheckedChange={(checked: boolean) => {
-                    setHashEnabled(checked);
-                    updateConfig(checked, trimEnabled);
-                  }}
-                />
+      {isEnabled && (
+        <div className="mt-4 space-y-3">
+          <div className="border-l-2 pl-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Hash</p>
+                <p className="text-muted-foreground text-xs">
+                  Apply a hash transformation to this column&apos;s values
+                </p>
               </div>
-              {hashEnabled && (
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`${columnId}-hash-length`}>Length</Label>
-                    <Input
-                      id={`${columnId}-hash-length`}
-                      type="number"
-                      value={hashLength}
-                      onChange={(e) => {
-                        setHashLength(e.target.value);
-                        updateConfig(true, trimEnabled);
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`${columnId}-hash-salt`}>Salt (optional)</Label>
-                    <Input
-                      id={`${columnId}-hash-salt`}
-                      placeholder="Enter salt..."
-                      type="text"
-                      value={hashSalt}
-                      onChange={(e) => {
-                        setHashSalt(e.target.value);
-                        updateConfig(true, trimEnabled);
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
+              <Checkbox
+                checked={hashEnabled}
+                onCheckedChange={(checked: boolean) => {
+                  setHashEnabled(checked);
+                  updateConfig(checked, trimEnabled);
+                }}
+              />
             </div>
-
-            {/* Trim Config */}
-            <div className="rounded-md border p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">Trim</p>
-                  <p className="text-muted-foreground text-xs">Trim values to a character range</p>
+            {hashEnabled && (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor={`${columnId}-hash-length`}>Length</Label>
+                  <Input
+                    id={`${columnId}-hash-length`}
+                    type="number"
+                    value={hashLength}
+                    onChange={(e) => {
+                      setHashLength(e.target.value);
+                      updateConfig(true, trimEnabled);
+                    }}
+                  />
                 </div>
-                <Checkbox
-                  checked={trimEnabled}
-                  onCheckedChange={(checked: boolean) => {
-                    setTrimEnabled(checked);
-                    updateConfig(hashEnabled, checked);
-                  }}
-                />
+                <div className="space-y-1.5">
+                  <Label htmlFor={`${columnId}-hash-salt`}>Salt (optional)</Label>
+                  <Input
+                    id={`${columnId}-hash-salt`}
+                    placeholder="Enter salt..."
+                    type="text"
+                    value={hashSalt}
+                    onChange={(e) => {
+                      setHashSalt(e.target.value);
+                      updateConfig(true, trimEnabled);
+                    }}
+                  />
+                </div>
               </div>
-              {trimEnabled && (
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`${columnId}-trim-start`}>Start index</Label>
-                    <Input
-                      id={`${columnId}-trim-start`}
-                      type="number"
-                      value={trimStart}
-                      onChange={(e) => {
-                        setTrimStart(e.target.value);
-                        updateConfig(hashEnabled, true);
-                      }}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor={`${columnId}-trim-end`}>End index (optional)</Label>
-                    <Input
-                      id={`${columnId}-trim-end`}
-                      placeholder="Leave empty for no limit"
-                      type="number"
-                      value={trimEnd}
-                      onChange={(e) => {
-                        setTrimEnd(e.target.value);
-                        updateConfig(hashEnabled, true);
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
           </div>
-        )}
-      </Card.Content>
-    </Card>
+
+          <div className="border-l-2 pl-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Trim</p>
+                <p className="text-muted-foreground text-xs">Trim values to a character range</p>
+              </div>
+              <Checkbox
+                checked={trimEnabled}
+                onCheckedChange={(checked: boolean) => {
+                  setTrimEnabled(checked);
+                  updateConfig(hashEnabled, checked);
+                }}
+              />
+            </div>
+            {trimEnabled && (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor={`${columnId}-trim-start`}>Start index</Label>
+                  <Input
+                    id={`${columnId}-trim-start`}
+                    type="number"
+                    value={trimStart}
+                    onChange={(e) => {
+                      setTrimStart(e.target.value);
+                      updateConfig(hashEnabled, true);
+                    }}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor={`${columnId}-trim-end`}>End index (optional)</Label>
+                  <Input
+                    id={`${columnId}-trim-end`}
+                    placeholder="Leave empty for no limit"
+                    type="number"
+                    value={trimEnd}
+                    onChange={(e) => {
+                      setTrimEnd(e.target.value);
+                      updateConfig(hashEnabled, true);
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -588,27 +584,26 @@ const ConfigColumnsStep = ({
 
   return (
     <div className="space-y-4">
-      <Card>
-        <Card.Content className="pt-6">
-          <p className="text-muted-foreground text-sm">
-            Optionally apply transformations to your selected columns. Toggle on any column to configure hashing or
-            trimming. Columns without transformations will be included as-is.
-          </p>
-          <p className="text-muted-foreground mt-2 text-sm tabular-nums">
-            {configuredCount} of {entries.length} columns have transformations
-          </p>
-        </Card.Content>
-      </Card>
+      <div className="flex items-center justify-between">
+        <p className="text-muted-foreground text-sm">
+          Toggle columns to apply hash or trim transformations. Columns left off will be included as-is.
+        </p>
+        <p className="text-muted-foreground shrink-0 text-sm tabular-nums">
+          {configuredCount} of {entries.length} configured
+        </p>
+      </div>
 
-      {entries.map(([columnId, column]) => (
-        <ColumnConfigCard
-          column={column}
-          columnId={columnId}
-          config={columnsConfig[columnId]}
-          key={columnId}
-          onConfigChange={handleConfigChange}
-        />
-      ))}
+      <div className="overflow-hidden rounded-md border">
+        {entries.map(([columnId, column]) => (
+          <ColumnConfigCard
+            column={column}
+            columnId={columnId}
+            config={columnsConfig[columnId]}
+            key={columnId}
+            onConfigChange={handleConfigChange}
+          />
+        ))}
+      </div>
     </div>
   );
 };
