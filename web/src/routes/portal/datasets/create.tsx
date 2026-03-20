@@ -19,8 +19,11 @@ const $CreateDatasetFormValidation = z.object({
   datasetType: z.enum(['BASE', 'TABULAR']),
   license: $DatasetLicenses,
   name: z.string().min(1),
-  hasPrimaryKeys: z.boolean(),
-  primaryKeys: z.array(z.object({ key: z.string() })),
+  hasPrimaryKeys: z.boolean().optional().default(false),
+  primaryKeys: z
+    .array(z.object({ key: z.string() }))
+    .optional()
+    .default([]),
   isOpenSource: z.boolean().optional(),
   searchLicenseString: z.string().optional()
 });
@@ -46,13 +49,14 @@ const RouteComponent = () => {
     requestFormData.append('license', String(formData.license));
     requestFormData.append('name', formData.name);
     requestFormData.append('description', formData.description ?? '');
-    formData.primaryKeys.forEach((entry) => requestFormData.append('primaryKeys', entry.key));
+    formData.primaryKeys?.forEach((entry) => requestFormData.append('primaryKeys', entry.key));
     requestFormData.append('isJSON', 'false');
     requestFormData.append('isReadyToShare', 'false');
     requestFormData.append('permission', 'MANAGER');
 
-    if (!file) return;
-    requestFormData.append('file', file);
+    if (file) {
+      requestFormData.append('file', file);
+    }
 
     createDatasetMutation.mutate(requestFormData, {
       onError() {

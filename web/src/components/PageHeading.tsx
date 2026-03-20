@@ -6,7 +6,7 @@ export const PageHeading: React.FC<{
   centered?: boolean;
   children: string;
   className?: string;
-  description?: string;
+  description?: null | string;
 }> = ({ actions, centered, children, className, description }) => {
   return (
     <div className={cn('flex flex-col gap-2 py-6', className)}>

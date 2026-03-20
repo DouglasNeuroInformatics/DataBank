@@ -81,9 +81,9 @@ const RouteComponent = () => {
                   void navigate({
                     params: { projectId: project.id },
                     search: {
-                      description: project.description,
+                      description: project.description ?? undefined,
                       expiryDate: project.expiry,
-                      externalId: project.externalId,
+                      externalId: project.externalId ?? undefined,
                       name: project.name
                     },
                     to: '/portal/projects/$projectId/edit'
@@ -134,7 +134,7 @@ const RouteComponent = () => {
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 {t('projectExternalId')}
               </dt>
-              <dd className="mt-1 text-sm">{project.externalId || '-'}</dd>
+              <dd className="mt-1 text-sm">{project.externalId ?? '-'}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
