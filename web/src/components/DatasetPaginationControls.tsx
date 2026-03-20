@@ -29,7 +29,7 @@ export const DatasetPaginationControls = ({
         setDatasetPagination={setColumnPagination}
         totalNumberOfItems={totalNumberOfColumns}
       />
-      <Separator className="h-10" orientation="vertical" />
+      <Separator className="h-8" orientation="vertical" />
       <DatasetPagination
         currentPage={rowPagination.currentPage}
         itemsPerPage={rowPagination.itemsPerPage}

@@ -28,7 +28,7 @@ export const DatasetPagination = ({
 
   return (
     <div className="flex w-full items-center justify-between">
-      <div className="flex flex-1 items-center justify-end gap-2">
+      <div className="flex flex-1 items-center justify-end gap-4">
         <ActionDropdown
           options={['10', '20', '50', '100', 'All']}
           title={(kind === 'COLUMN' ? t('columnsPerPage') : t('rowsPerPage')).concat(`: ${itemsPerPage}`)}
@@ -38,24 +38,26 @@ export const DatasetPagination = ({
           {kind === 'COLUMN' ? t({ en: 'Column ' }) : t({ en: 'Row ' })}
           {currentPage} / {totalNumberOfPage}
         </p>
-        <Button
-          disabled={currentPage === 1}
-          size="sm"
-          type="button"
-          variant="outline"
-          onClick={() => setDatasetPagination({ currentPage: currentPage - 1, itemsPerPage })}
-        >
-          <ChevronLeftIcon className="size-4" />
-        </Button>
-        <Button
-          disabled={currentPage === totalNumberOfPage}
-          size="sm"
-          type="button"
-          variant="outline"
-          onClick={() => setDatasetPagination({ currentPage: currentPage + 1, itemsPerPage })}
-        >
-          <ChevronRightIcon className="size-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            disabled={currentPage === 1}
+            size="icon"
+            type="button"
+            variant="outline"
+            onClick={() => setDatasetPagination({ currentPage: currentPage - 1, itemsPerPage })}
+          >
+            <ChevronLeftIcon className="size-4" />
+          </Button>
+          <Button
+            disabled={currentPage === totalNumberOfPage}
+            size="icon"
+            type="button"
+            variant="outline"
+            onClick={() => setDatasetPagination({ currentPage: currentPage + 1, itemsPerPage })}
+          >
+            <ChevronRightIcon className="size-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
