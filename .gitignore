@@ -145,5 +145,5 @@ testemails.txt
 *.csv
 !demo-dataset.csv
 
-.claude
+.claude/settings.local.json
 TODO.md
