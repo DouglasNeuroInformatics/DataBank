@@ -2,6 +2,8 @@ import { ConfigService } from '@douglasneuroinformatics/libnest';
 import { BullModule } from '@nestjs/bullmq';
 import { Global, Module } from '@nestjs/common';
 
+import { FastifyMultipartInitializer } from './fastify-multipart.initializer.js';
+
 @Global()
 @Module({
   imports: [
@@ -16,6 +18,7 @@ import { Global, Module } from '@nestjs/common';
         };
       }
     })
-  ]
+  ],
+  providers: [FastifyMultipartInitializer]
 })
 export class VendorModule {}
