@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.0.1-beta.1",
   "private": true,
-  "packageManager": "pnpm@10.7.1",
+  "packageManager": "pnpm@11.8.0",
   "engines": {
-    "node": ">=v22.11.0"
+    "node": "24.x"
   },
   "scripts": {
     "build": "env-cmd turbo run build",
@@ -23,10 +23,10 @@
     "test:coverage": "pnpm test --coverage"
   },
   "devDependencies": {
-    "@douglasneuroinformatics/eslint-config": "^5.3.2",
+    "@douglasneuroinformatics/eslint-config": "^6.0.0",
     "@douglasneuroinformatics/prettier-config": "^0.0.2",
-    "@douglasneuroinformatics/tsconfig": "^1.0.3",
-    "@types/node": "^22.x",
+    "@douglasneuroinformatics/tsconfig": "^2.0.0",
+    "@types/node": "^24.x",
     "@vitest/coverage-v8": "^3.1.1",
     "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
@@ -36,25 +36,8 @@
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "turbo": "^2.4.4",
-    "typescript": "5.6.x",
+    "typescript": "6.0.x",
     "vitest": "^3.1.1"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@import-meta-env/unplugin",
-      "@nestjs/core",
-      "@prisma/client",
-      "@prisma/engines",
-      "@swc/core",
-      "cypress",
-      "esbuild",
-      "nestjs-pino",
-      "mongodb-memory-server",
-      "prisma"
-    ],
-    "ignoredBuiltDependencies": [
-      "@scarf/scarf"
-    ]
   },
   "os": [
     "darwin",
