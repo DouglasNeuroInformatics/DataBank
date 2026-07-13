@@ -1,15 +1,17 @@
 import fs from 'node:fs';
 
-import { $BooleanLike, $NumberLike, $UrlLike } from '@douglasneuroinformatics/libjs';
-import { $BaseEnv } from '@douglasneuroinformatics/libnest';
+import { $BooleanLike, $NumberLike } from '@douglasneuroinformatics/libjs';
+import { $BaseEnv, $MongoEnv } from '@douglasneuroinformatics/libnest';
 import { z } from 'zod/v4';
+
+export type $Env = z.infer<typeof $Env>;
 export const $Env = $BaseEnv
   .omit({ API_PORT: true })
+  .extend($MongoEnv.shape)
   .extend({
     API_DEV_SERVER_PORT: $NumberLike.pipe(z.int().nonnegative()).optional(),
     MAX_VALIDATION_ATTEMPTS: $NumberLike.pipe(z.number().positive().int()),
     MONGO_PORT: $NumberLike.pipe(z.number().positive().int()),
-    MONGO_URI: $UrlLike,
     MONGO_VERSION: z.string().min(1),
     SMTP_AUTH_PASSWORD: z.string().min(1),
     SMTP_AUTH_USERNAME: z.string().min(1),

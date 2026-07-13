@@ -4,7 +4,7 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import type { Request } from 'express';
+import type { FastifyRequest } from 'fastify';
 
 import type { ProtectedRouteAccess, RouteAccessType } from '../core/decorators/route-access.decorator.js';
 
@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<Request>();
+    const request = context.switchToHttp().getRequest<FastifyRequest>();
     const routeAccess = this.getRouteAccess(context);
 
     // If public route, then no need to verify integrity of token
@@ -51,15 +51,14 @@ export class AuthGuard implements CanActivate {
     }
 
     // Attach user to request for route handlers
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    request.user = Object.assign(request.user ?? {}, payload) as any;
+    request.user = Object.assign(request.user ?? {}, payload);
 
     // Access user permissions
     return this.isAuthorized(request.user?.role, routeAccess);
   }
 
   /** Return the access token from the request header, or null if non-existant or malformed */
-  private extractTokenFromHeader(request: Request): null | string {
+  private extractTokenFromHeader(request: FastifyRequest): null | string {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     if (type === 'Bearer' && typeof token === 'string') {
       return token;

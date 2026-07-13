@@ -1,13 +1,14 @@
 import { $CreateDataset, $DatasetInfo, $DatasetViewPagination, $EditDatasetInfo } from '@databank/core';
 import { CurrentUser } from '@douglasneuroinformatics/libnest';
-import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import type { FastifyRequest } from 'fastify';
 
 import { RouteAccess } from '@/core/decorators/route-access.decorator';
 
 import { DatasetsService } from './datasets.service.js';
 import { $ColumnDataType, $PermissionLevelObj } from './dto/datasets.dto.js';
+import { parseMultipartRequest } from './multipart.utils.js';
 
 @ApiTags('Datasets')
 @Controller({ path: 'datasets' })
@@ -57,12 +58,9 @@ export class DatasetsController {
   @ApiOperation({ summary: 'Create Dataset' })
   @Post('create')
   @RouteAccess({ role: 'STANDARD' })
-  @UseInterceptors(FileInterceptor('file'))
-  createDataset(
-    @Body() data: $CreateDataset,
-    @UploadedFile() file: Express.Multer.File,
-    @CurrentUser('id') managerId: string
-  ) {
+  async createDataset(@Req() request: FastifyRequest, @CurrentUser('id') managerId: string) {
+    const { fields, file } = await parseMultipartRequest(request, 'file');
+    const data = $CreateDataset.parse(fields);
     return this.datasetsService.createDataset(data, file, managerId);
   }
 

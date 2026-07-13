@@ -1,9 +1,9 @@
-import { acceptLanguage, AppFactory } from '@douglasneuroinformatics/libnest';
-import { PrismaClient } from '@prisma/client';
+import { acceptLanguage, AppFactory, PrismaModule } from '@douglasneuroinformatics/libnest';
 
 import { AuthModule } from './auth/auth.module.js';
 import { ColumnsModule } from './columns/columns.module.js';
 import { $Env } from './core/env.schema.js';
+import { PrismaModuleOptionsFactory } from './core/prisma.js';
 import { DatasetsModule } from './datasets/datasets.module.js';
 import { I18nModule } from './i18n/i18n.module.js';
 import { ProjectsModule } from './projects/projects.module';
@@ -37,17 +37,12 @@ export default AppFactory.create({
     ColumnsModule,
     DatasetsModule,
     I18nModule,
+    PrismaModule.forRootAsync({ useClass: PrismaModuleOptionsFactory }),
     ProjectsModule,
     SetupModule,
     TabularDataModule,
     UsersModule,
     VendorModule
   ],
-  prisma: {
-    client: {
-      constructor: PrismaClient
-    },
-    dbPrefix: 'data-bank'
-  },
   version: '1'
 });

@@ -1,7 +1,21 @@
+allowBuilds:
+  '@import-meta-env/unplugin': true
+  '@nestjs/core': true
+  '@prisma/client': true
+  '@prisma/engines': true
+  '@scarf/scarf': false
+  '@swc/core': true
+  'cypress': true
+  'esbuild': true
+  'nestjs-pino': true
+  'mongodb-memory-server': true
+  'prisma': true
+  msgpackr-extract: true
 catalog:
   '@douglasneuroinformatics/libjs': ^3.1.0
   type-fest: ^4.26.1
   zod: '3.25.x'
+minimumReleaseAge: 10080
 packages:
   - api
   - core

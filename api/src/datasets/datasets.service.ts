@@ -29,6 +29,8 @@ import { UsersService } from '@/users/users.service.js';
 
 import { FileUploadQueueName } from './datasets.constants.js';
 
+import type { UploadedFile } from './multipart.utils.js';
+
 @Injectable()
 export class DatasetsService {
   private readonly uploadsDir: string;
@@ -129,7 +131,11 @@ export class DatasetsService {
     return this.columnService.changeColumnMetadataPermission(columnId, newPermissionLevel);
   }
 
-  async createDataset(createTabularDatasetDto: $CreateDataset, file: Express.Multer.File | string, managerId: string) {
+  async createDataset(
+    createTabularDatasetDto: $CreateDataset,
+    file: string | undefined | UploadedFile,
+    managerId: string
+  ) {
     const currUser = await this.usersService.findById(managerId);
     if (!currUser.datasetIds) {
       throw new NotFoundException('User Not Found or datasetId field does not exist in this user!');
@@ -264,7 +270,7 @@ export class DatasetsService {
 
   async downloadPublicDataById(datasetId: string, format: $TabularDataDownloadFormat) {
     const dataset = await this.datasetModel.findUnique({ where: { id: datasetId } });
-    if (!dataset || dataset.permission !== 'PUBLIC') {
+    if (dataset?.permission !== 'PUBLIC') {
       throw new NotFoundException('No such public dataset is found!');
     }
     const datasetView = await this.getFullDatasetView(datasetId, 'PUBLIC');

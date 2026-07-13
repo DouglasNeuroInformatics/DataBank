@@ -3,7 +3,6 @@ import path from 'node:path';
 
 import type { Locale } from '@databank/core';
 import { Injectable } from '@nestjs/common';
-import type { Request } from 'express';
 import type { MergeDeep } from 'type-fest';
 
 import type en from './translations/en.json';
@@ -27,14 +26,6 @@ export class I18nService {
       en: this.loadTranslations('en'),
       fr: this.loadTranslations('fr')
     };
-  }
-
-  /** Extract the user's preferred locale from the `Accept-Language` header */
-  extractLocale(req: Request): Locale {
-    if (req.acceptsLanguages()[0]?.toLowerCase().startsWith('fr')) {
-      return 'fr';
-    }
-    return 'en';
   }
 
   loadTranslations(locale: Locale) {
