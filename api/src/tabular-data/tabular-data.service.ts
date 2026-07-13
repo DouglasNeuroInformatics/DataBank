@@ -264,10 +264,10 @@ export class TabularDataService {
     const columnIdsModifyMetadata = new Set<string>();
 
     for (const col of columnsFromDB) {
-      if (shouldHideData(userStatus, col.dataPermission as PermissionLevel)) {
+      if (shouldHideData(userStatus, col.dataPermission)) {
         columnIdsModifyData.add(col._id.$oid);
       }
-      if (shouldHideData(userStatus, col.summaryPermission as PermissionLevel)) {
+      if (shouldHideData(userStatus, col.summaryPermission)) {
         columnIdsModifyMetadata.add(col._id.$oid);
       }
     }

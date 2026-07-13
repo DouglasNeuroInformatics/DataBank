@@ -2,7 +2,6 @@ import { $CreateUser } from '@databank/core';
 import { CryptoService, getModelToken } from '@douglasneuroinformatics/libnest';
 import { ConflictException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import type { Prisma, User } from '@prisma/client';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Mock } from 'vitest';
 
@@ -76,7 +75,7 @@ describe('UsersService', () => {
         userModel.findUnique.mockReturnValueOnce({ email: 'johnsmith@gmail.com' });
         await expect(usersService.findByEmail('johnsmith@gmail.com')).resolves.toEqual({
           email: 'johnsmith@gmail.com'
-        } as unknown as Prisma.Prisma__UserClient<User>);
+        });
       });
     });
 
@@ -88,7 +87,7 @@ describe('UsersService', () => {
         await expect(usersService.getAll()).resolves.toEqual([
           { email: 'johnsmith@gmail.com' },
           { email: 'abc@outlook.com' }
-        ] as unknown as Promise<User[]>);
+        ] as unknown);
       });
     });
   });

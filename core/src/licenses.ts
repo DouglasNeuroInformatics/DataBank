@@ -17,7 +17,7 @@ const licensesArrayLowercase: [string, LicenseWithLowercase][] = licensesArray.m
       lowercaseLicenseId: key.toLowerCase(),
       lowercaseName: value.name.toLowerCase(),
       ...value
-    } as LicenseWithLowercase
+    }
   ];
 });
 

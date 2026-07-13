@@ -264,7 +264,7 @@ export class DatasetsService {
 
   async downloadPublicDataById(datasetId: string, format: $TabularDataDownloadFormat) {
     const dataset = await this.datasetModel.findUnique({ where: { id: datasetId } });
-    if (!dataset || dataset.permission !== 'PUBLIC') {
+    if (dataset?.permission !== 'PUBLIC') {
       throw new NotFoundException('No such public dataset is found!');
     }
     const datasetView = await this.getFullDatasetView(datasetId, 'PUBLIC');
