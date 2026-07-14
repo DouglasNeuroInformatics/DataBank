@@ -11,18 +11,15 @@ import { match } from 'ts-pattern';
 import { z } from 'zod/v4';
 
 import { PageHeading } from '@/components/PageHeading';
+import { PrimaryKeySelector } from '@/components/PrimaryKeySelector';
 import { useCreateDatasetMutation } from '@/hooks/mutations/useCreateDatasetMutation';
+import { parseColumnNames } from '@/utils/csv';
 
 const $CreateDatasetFormValidation = z.object({
   description: z.string().optional(),
   datasetType: z.enum(['BASE', 'TABULAR']),
   license: $DatasetLicenses,
-  name: z.string().min(1),
-  hasPrimaryKeys: z.boolean().optional().default(false),
-  primaryKeys: z
-    .array(z.object({ key: z.string() }))
-    .optional()
-    .default([])
+  name: z.string().min(1)
 });
 
 type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
@@ -36,6 +33,14 @@ const RouteComponent = () => {
 
   const [formData, setFormData] = useState<CreateDatasetFormData | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [columns, setColumns] = useState<string[]>([]);
+  const [primaryKeys, setPrimaryKeys] = useState<string[]>([]);
+
+  const resetFile = () => {
+    setFile(null);
+    setColumns([]);
+    setPrimaryKeys([]);
+  };
 
   const createDataset = () => {
     if (!formData) return;
@@ -45,7 +50,7 @@ const RouteComponent = () => {
     requestFormData.append('license', String(formData.license));
     requestFormData.append('name', formData.name);
     requestFormData.append('description', formData.description ?? '');
-    formData.primaryKeys?.forEach((entry) => requestFormData.append('primaryKeys', entry.key));
+    primaryKeys.forEach((key) => requestFormData.append('primaryKeys', key));
     requestFormData.append('isJSON', 'false');
     requestFormData.append('isReadyToShare', 'false');
     requestFormData.append('permission', 'MANAGER');
@@ -67,24 +72,40 @@ const RouteComponent = () => {
     });
   };
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (!acceptedFiles[0]) {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    const acceptedFile = acceptedFiles[0];
+    if (!acceptedFile) {
       addNotification({
         type: 'error',
         message: t({ en: 'Unexpected file error', fr: 'Erreur de fichier inattendue' })
       });
-    } else if (!acceptedFiles[0].name.includes('.csv') && !acceptedFiles[0].name.includes('.tsv')) {
+    } else if (!acceptedFile.name.includes('.csv') && !acceptedFile.name.includes('.tsv')) {
       addNotification({
         type: 'error',
         message: t({ en: 'Only CSV or TSV files are allowed!', fr: 'Seuls les fichiers CSV ou TSV sont autorisés!' })
       });
-    } else if (acceptedFiles[0].size > MAX_UPLOAD_FILE_SIZE) {
+    } else if (acceptedFile.size > MAX_UPLOAD_FILE_SIZE) {
       addNotification({
         type: 'error',
         message: t({ en: 'File size larger than 1 GB', fr: 'La taille du fichier est supérieure à 1 Go' })
       });
     } else {
-      setFile(acceptedFiles[0]);
+      let parsedColumns: string[];
+      try {
+        parsedColumns = await parseColumnNames(acceptedFile);
+      } catch {
+        addNotification({
+          type: 'error',
+          message: t({
+            en: 'Failed to read the column names from this file',
+            fr: 'Échec de la lecture des noms de colonnes de ce fichier'
+          })
+        });
+        return;
+      }
+      setFile(acceptedFile);
+      setColumns(parsedColumns);
+      setPrimaryKeys([]);
     }
   }, []);
 
@@ -92,7 +113,7 @@ const RouteComponent = () => {
     accept: { 'text/csv': ['.csv'], 'text/plain': ['.csv', '.tsv'] },
     maxFiles: 1,
     maxSize: MAX_UPLOAD_FILE_SIZE,
-    onDrop
+    onDrop: (acceptedFiles) => void onDrop(acceptedFiles)
   });
 
   const element = match(formData)
@@ -109,39 +130,6 @@ const RouteComponent = () => {
                 label: t('datasetType'),
                 options: { BASE: t('datasetTypeBase'), TABULAR: t('datasetTypeTabular') },
                 variant: 'select'
-              },
-              hasPrimaryKeys: {
-                kind: 'dynamic',
-                deps: ['datasetType'],
-                render: (data) =>
-                  data.datasetType === 'TABULAR'
-                    ? {
-                        kind: 'boolean',
-                        label: t({
-                          en: 'Do you want to add primary keys to your dataset?',
-                          fr: 'Voulez-vous ajouter des clés primaires à votre jeu de données?'
-                        }),
-                        variant: 'radio'
-                      }
-                    : null
-              },
-              primaryKeys: {
-                kind: 'dynamic',
-                deps: ['hasPrimaryKeys'],
-                render: (data) =>
-                  data.hasPrimaryKeys
-                    ? {
-                        kind: 'record-array',
-                        label: t({ en: 'Primary Keys', fr: 'Clés primaires' }),
-                        fieldset: {
-                          key: {
-                            kind: 'string',
-                            variant: 'input',
-                            label: t({ en: 'Variable/Column Name as a key', fr: 'Nom de variable/colonne comme clé' })
-                          }
-                        }
-                      }
-                    : null
               }
             }
           },
@@ -216,8 +204,11 @@ const RouteComponent = () => {
               </>
             )}
           </div>
+          {file && columns.length > 0 && (
+            <PrimaryKeySelector columns={columns} value={primaryKeys} onChange={setPrimaryKeys} />
+          )}
           <div className="flex gap-3">
-            <Button className="flex-1" disabled={!file} variant="outline" onClick={() => setFile(null)}>
+            <Button className="flex-1" disabled={!file} variant="outline" onClick={resetFile}>
               {t('reset')}
             </Button>
             <Button
@@ -234,7 +225,7 @@ const RouteComponent = () => {
     );
 
   return (
-    <div className="mx-auto w-full max-w-xl">
+    <div className="mx-auto w-full max-w-2xl">
       <PageHeading centered>{t('createDataset')}</PageHeading>
       {element}
     </div>

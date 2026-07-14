@@ -442,10 +442,6 @@
     "en": "Previous Config Step",
     "fr": "Étape de configuration précédente"
   },
-  "primaryKeys": {
-    "en": "Primary keys (use , as the delimiter)",
-    "fr": "Clés primaires (utilisez la virgule « , » comme délimiteur)"
-  },
   "projectDataset": {
     "en": "Project Dataset",
     "fr": "Base de données du projet"

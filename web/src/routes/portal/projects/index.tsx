@@ -78,7 +78,7 @@ const RouteComponent = () => {
       </PageHeading>
       {projects.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16">
-          <FolderOpenIcon className="text-muted-foreground/50 size-12" />
+          <FolderOpenIcon className="text-muted-foreground size-6!" />
           <p className="text-muted-foreground mt-4 text-lg font-medium">
             {t({
               en: 'No Projects Yet',
