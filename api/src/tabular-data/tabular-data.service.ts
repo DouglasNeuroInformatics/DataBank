@@ -5,7 +5,8 @@ import {
   $ProjectTabularDatasetView,
   $TabularColumnSummary,
   $TabularDatasetView,
-  $UpdatePrimaryKeys
+  $UpdatePrimaryKeys,
+  formatISODateTime
 } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
 import { InjectModel } from '@douglasneuroinformatics/libnest';
@@ -145,7 +146,7 @@ export class TabularDataService {
         case 'DATETIME':
           currColumnView.datetimeData.map((entry, i) => {
             rows[i] ??= {};
-            rows[i][currColumnView.name] = entry.value!.toDateString()!;
+            rows[i][currColumnView.name] = formatISODateTime(entry.value!);
           });
           metaData[currColumnView.name] = {
             count: currColumnView.summary.count,
@@ -298,7 +299,7 @@ export class TabularDataService {
             if (columnIdsModifyData.has(col._id.$oid)) {
               rows[i][col.name] = 'Hidden';
             } else {
-              rows[i][col.name] = entry.value.$date ? new Date(entry.value.$date).toDateString() : null;
+              rows[i][col.name] = entry.value.$date ? formatISODateTime(new Date(entry.value.$date)) : null;
             }
           });
 
