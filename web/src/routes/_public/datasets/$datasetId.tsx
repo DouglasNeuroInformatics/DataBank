@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { z } from 'zod/v4';
 
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { publicDatasetQueryOptions, usePublicDatasetQuery } from '@/hooks/queries/usePublicDatasetQuery';
 
@@ -95,7 +96,7 @@ const RouteComponent = () => {
   const totalNulls = Object.values(dataset.metadata).reduce((sum, col) => sum + col.nullCount, 0);
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <PageContainer>
       <PageHeading
         actions={
           <Badge className="rounded-md px-2 py-1.5 text-xs" variant="secondary">
@@ -197,7 +198,7 @@ const RouteComponent = () => {
           </Card.Content>
         </Card>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

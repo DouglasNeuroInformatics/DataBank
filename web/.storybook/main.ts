@@ -20,11 +20,6 @@ const config: StorybookConfig = {
       directory: '../src/components',
       files: '**/*.stories.@(js|jsx|ts|tsx)',
       titlePrefix: 'Components'
-    },
-    {
-      directory: '../src/features',
-      files: '**/*.stories.@(js|jsx|ts|tsx)',
-      titlePrefix: 'Features'
     }
   ],
   viteFinal(config) {

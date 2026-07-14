@@ -1,10 +1,21 @@
 import { licensesObjects } from '@databank/core';
-import { Button, Card } from '@douglasneuroinformatics/libui/components';
+import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDestructiveAction, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { CalendarIcon, DatabaseIcon, PencilIcon, PlusIcon, TrashIcon, UsersIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  DatabaseIcon,
+  EllipsisVerticalIcon,
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
+  UsersIcon
+} from 'lucide-react';
 
+import { EmptyState } from '@/components/EmptyState';
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
+import { SectionHeading } from '@/components/SectionHeading';
 import { useDeleteProjectMutation } from '@/hooks/mutations/useDeleteProjectMutation';
 import { projectDatasetsQueryOptions, useProjectDatasetsQuery } from '@/hooks/queries/useProjectDatasetsQuery';
 import { projectIsManagerQueryOptions, useProjectIsManagerQuery } from '@/hooks/queries/useProjectIsManagerQuery';
@@ -29,7 +40,7 @@ const RouteComponent = () => {
   });
 
   return (
-    <div>
+    <PageContainer>
       <PageHeading
         actions={
           isManager ? (
@@ -67,10 +78,24 @@ const RouteComponent = () => {
                 <UsersIcon className="mr-1.5 size-3.5" />
                 {t('manageProjectUsers')}
               </Button>
-              <Button size="sm" variant="danger" onClick={() => deleteProject()}>
-                <TrashIcon className="mr-1.5 size-3.5" />
-                {t('deleteProject')}
-              </Button>
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild>
+                  <Button
+                    aria-label={t({ en: 'More actions', fr: "Plus d'actions" })}
+                    size="icon"
+                    type="button"
+                    variant="ghost"
+                  >
+                    <EllipsisVerticalIcon />
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content align="end">
+                  <DropdownMenu.Item className="text-destructive gap-2" onClick={() => deleteProject()}>
+                    <TrashIcon className="size-4" />
+                    {t('deleteProject')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
             </>
           ) : undefined
         }
@@ -79,28 +104,28 @@ const RouteComponent = () => {
         {project.name}
       </PageHeading>
 
-      <Card className="mb-6">
+      <Card className="mb-8">
         <Card.Content className="pt-6">
-          <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{t('createdAt')}</dt>
-              <dd className="mt-1 text-sm">{new Date(project.createdAt).toLocaleDateString()}</dd>
+              <dd className="mt-1.5 text-sm">{new Date(project.createdAt).toLocaleDateString()}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{t('updatedAt')}</dt>
-              <dd className="mt-1 text-sm">{new Date(project.updatedAt).toLocaleDateString()}</dd>
+              <dd className="mt-1.5 text-sm">{new Date(project.updatedAt).toLocaleDateString()}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 {t('projectExternalId')}
               </dt>
-              <dd className="mt-1 text-sm">{project.externalId ?? '-'}</dd>
+              <dd className="mt-1.5 text-sm">{project.externalId ?? '-'}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 {t('projectExpiry')}
               </dt>
-              <dd className="mt-1 flex items-center gap-1 text-sm">
+              <dd className="mt-1.5 flex items-center gap-1 text-sm">
                 <CalendarIcon className="text-muted-foreground size-3.5" />
                 {new Date(project.expiry).toLocaleDateString()}
               </dd>
@@ -109,36 +134,33 @@ const RouteComponent = () => {
         </Card.Content>
       </Card>
 
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-base font-semibold">{t('projectDatasets')}</h2>
-        </div>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() =>
-            void navigate({
-              params: { projectId: project.id },
-              to: '/portal/projects/$projectId/add-dataset'
-            })
-          }
-        >
-          <PlusIcon className="mr-1.5 size-3.5" />
-          {t('addDatasetToProject')}
-        </Button>
-      </div>
+      <SectionHeading
+        actions={
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() =>
+              void navigate({
+                params: { projectId: project.id },
+                to: '/portal/projects/$projectId/add-dataset'
+              })
+            }
+          >
+            <PlusIcon className="mr-1.5 size-3.5" />
+            {t('addDatasetToProject')}
+          </Button>
+        }
+      >
+        {t('projectDatasets')}
+      </SectionHeading>
       {datasets.length === 0 ? (
-        <Card>
-          <Card.Content className="flex flex-col items-center justify-center py-12">
-            <DatabaseIcon className="text-muted-foreground/50 size-10" />
-            <p className="text-muted-foreground mt-3 text-sm">
-              {t({
-                en: 'No Datasets Added to This Project Yet',
-                fr: 'Aucun base de données ajouté à ce projet pour le moment'
-              })}
-            </p>
-          </Card.Content>
-        </Card>
+        <EmptyState
+          icon={DatabaseIcon}
+          title={t({
+            en: 'No Datasets Added to This Project Yet',
+            fr: 'Aucun jeu de données ajouté à ce projet pour le moment'
+          })}
+        />
       ) : (
         <Card>
           <Card.Content className="divide-y p-0">
@@ -182,7 +204,7 @@ const RouteComponent = () => {
           </Card.Content>
         </Card>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

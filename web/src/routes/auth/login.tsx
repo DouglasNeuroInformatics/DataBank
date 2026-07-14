@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { $LoginCredentials, DEMO_USERS } from '@databank/core';
-import { Card, Dialog, Form, Table, Tooltip } from '@douglasneuroinformatics/libui/components';
+import { Button, Card, Dialog, Form, Table, Tooltip } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { InfoIcon, LogInIcon } from 'lucide-react';
@@ -16,20 +16,17 @@ const DemoBanner = ({ onLogin }: { onLogin: (credentials: $LoginCredentials) => 
   const { t } = useTranslation('common');
   return (
     <Dialog>
-      <div className="flex w-full items-center justify-center bg-sky-700 leading-tight text-white">
-        <div className="container py-1.5">
-          <div className="flex flex-col items-center justify-between lg:flex-row">
-            <div className="my-1 flex items-center gap-3">
-              <InfoIcon className="hidden h-5 w-5 lg:block" />
+      <div className="bg-muted flex w-full items-center justify-center border-b leading-tight">
+        <div className="container py-2">
+          <div className="flex flex-col items-center justify-between gap-2 lg:flex-row">
+            <div className="text-muted-foreground flex items-center gap-2">
+              <InfoIcon className="hidden size-4 shrink-0 lg:block" />
               <p className="text-center text-sm font-medium lg:text-left">{t('demo.welcome')}</p>
             </div>
             <Dialog.Trigger asChild>
-              <button
-                className="my-1.5 w-full max-w-md rounded-md border border-sky-400 px-2.5 py-1.5 text-sm font-medium hover:bg-sky-600 hover:shadow-lg lg:w-auto"
-                type="button"
-              >
+              <Button className="w-full lg:w-auto" size="sm" type="button" variant="outline">
                 {t('demo.tryDemo')}
-              </button>
+              </Button>
             </Dialog.Trigger>
           </div>
         </div>

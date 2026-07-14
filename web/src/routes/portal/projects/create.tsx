@@ -5,6 +5,7 @@ import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { z } from 'zod/v4';
 
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { useCreateProjectMutation } from '@/hooks/mutations/useCreateProjectMutation';
 import { useAppStore } from '@/store';
@@ -38,7 +39,7 @@ const RouteComponent = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-xl">
+    <PageContainer width="form">
       <PageHeading centered>
         {t({
           en: 'Create New Project',
@@ -61,7 +62,7 @@ const RouteComponent = () => {
         validationSchema={$CreateProjectFormValidation}
         onSubmit={(data) => createProject(data)}
       />
-    </div>
+    </PageContainer>
   );
 };
 

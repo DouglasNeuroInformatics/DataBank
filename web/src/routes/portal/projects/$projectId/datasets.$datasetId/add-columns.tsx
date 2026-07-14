@@ -42,6 +42,7 @@ import { useStore } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { createStore } from 'zustand/vanilla';
 
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { useAddDatasetToProjectMutation } from '@/hooks/mutations/useAddDatasetToProjectMutation';
 import { columnSummariesQueryOptions, useColumnSummariesQuery } from '@/hooks/queries/useColumnSummariesQuery';
@@ -721,7 +722,7 @@ const RouteComponent = () => {
   };
 
   return (
-    <div>
+    <PageContainer>
       <PageHeading
         actions={
           <Button
@@ -792,7 +793,7 @@ const RouteComponent = () => {
           )}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

@@ -6,6 +6,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { DatabaseIcon, FolderOpenIcon, PlusIcon } from 'lucide-react';
 import { motion, useSpring, useTransform } from 'motion/react';
 
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { dashboardSummaryQueryOptions, useDashboardSummaryQuery } from '@/hooks/queries/useDashboardSummaryQuery';
 
@@ -62,9 +63,9 @@ const RouteComponent = () => {
   const { data } = useDashboardSummaryQuery();
 
   return (
-    <div>
+    <PageContainer>
       <PageHeading>{t('dashboard')}</PageHeading>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard
           createHref="/portal/datasets/create"
           createLabel={t('createDataset')}
@@ -83,7 +84,7 @@ const RouteComponent = () => {
           value={data.projectCounts}
         />
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

@@ -19,7 +19,7 @@
     "@douglasneuroinformatics/libjs": "catalog:",
     "@douglasneuroinformatics/liblicense": "^1.0.0",
     "@douglasneuroinformatics/libpasswd": "^0.0.3",
-    "@douglasneuroinformatics/libui": "^6.2.0",
+    "@douglasneuroinformatics/libui": "^6.8.0",
     "@tanstack/react-query": "^5.91.2",
     "@tanstack/react-query-devtools": "^5.91.3",
     "@tanstack/react-router": "^1.167.5",
