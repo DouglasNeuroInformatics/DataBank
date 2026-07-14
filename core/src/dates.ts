@@ -8,7 +8,11 @@ import { DateTime } from 'luxon';
  * the server's local zone.
  */
 export const formatISODate = (date: Date): string => {
-  return DateTime.fromJSDate(date, { zone: 'utc' }).toISODate()!;
+  const dt = DateTime.fromJSDate(date, { zone: 'utc' });
+  if (!dt.isValid) {
+    throw new TypeError(`Invalid Date: ${String(date)}`);
+  }
+  return dt.toISODate();
 };
 
 /**
@@ -18,7 +22,11 @@ export const formatISODate = (date: Date): string => {
  * the full precision of the instant is preserved across systems.
  */
 export const formatISODateTime = (date: Date): string => {
-  return DateTime.fromJSDate(date, { zone: 'utc' }).toISO()!;
+  const dt = DateTime.fromJSDate(date, { zone: 'utc' });
+  if (!dt.isValid) {
+    throw new TypeError(`Invalid Date: ${String(date)}`);
+  }
+  return dt.toISO();
 };
 
 /**
