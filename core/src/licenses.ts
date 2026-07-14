@@ -5,57 +5,13 @@ const licensesArray = Array.from(licenses);
 
 const licensesObjects = Object.fromEntries(licensesArray);
 
-type LicenseWithLowercase = (typeof licensesObjects)[string] & {
-  lowercaseLicenseId: string;
-  lowercaseName: string;
-};
-
-const licensesArrayLowercase: [string, LicenseWithLowercase][] = licensesArray.map(([key, value]) => {
-  return [
-    key,
-    {
-      lowercaseLicenseId: key.toLowerCase(),
-      lowercaseName: value.name.toLowerCase(),
-      ...value
-    }
-  ];
-});
-
-const licensesWithLowercase = Object.fromEntries(licensesArrayLowercase);
-
-const openSourceLicensesArray = licensesArrayLowercase.filter(([_, entry]) => entry.isOpenSource);
-
-const nonOpenSourceLicensesArray = licensesArrayLowercase.filter(([_, entry]) => !entry.isOpenSource);
-
-const openSourceLicenses = Object.fromEntries(openSourceLicensesArray);
-
-const nonOpenSourceLicenses = Object.fromEntries(nonOpenSourceLicensesArray);
-
-// Reference: https://opensource.org/blog/the-most-popular-licenses-for-each-language-2023
-const mostFrequentOpenSourceLicensesArray = Object.entries(openSourceLicenses).filter(
-  ([key, _]) => key.includes('MIT') || key.includes('Apache-2.0') || key.includes('BSD') || key.includes('GPL')
-);
-
-const mostFrequentOpenSourceLicenses = Object.fromEntries(
-  mostFrequentOpenSourceLicensesArray.map(([key, value]) => {
-    return [key, value.name];
-  })
+// Labels embed the SPDX id because the combobox filters on the label, so this matches
+// both a search for "Apache License 2.0" and one for "Apache-2.0"
+const licenseOptions: { [key: string]: string } = Object.fromEntries(
+  licensesArray.map(([id, license]) => [id, `${license.name} (${id})`])
 );
 
 const $DatasetLicenses = z.enum(Object.keys(licensesObjects) as [string, ...string[]]);
 type $DatasetLicenses = z.infer<typeof $DatasetLicenses>;
 
-export {
-  $DatasetLicenses,
-  licensesArray,
-  licensesArrayLowercase,
-  licensesObjects,
-  licensesWithLowercase,
-  mostFrequentOpenSourceLicenses,
-  nonOpenSourceLicenses,
-  nonOpenSourceLicensesArray,
-  openSourceLicenses,
-  openSourceLicensesArray
-};
-
-export type { LicenseWithLowercase };
+export { $DatasetLicenses, licenseOptions, licensesObjects };

@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import { useCallback, useState } from 'react';
 
-import { $DatasetLicenses } from '@databank/core';
+import { $DatasetLicenses, licenseOptions } from '@databank/core';
 import { Button, Form, Spinner } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -12,7 +12,6 @@ import { z } from 'zod/v4';
 
 import { PageHeading } from '@/components/PageHeading';
 import { useCreateDatasetMutation } from '@/hooks/mutations/useCreateDatasetMutation';
-import { useDebounceLicensesFilter } from '@/hooks/useDebounceLicensesFilter';
 
 const $CreateDatasetFormValidation = z.object({
   description: z.string().optional(),
@@ -23,9 +22,7 @@ const $CreateDatasetFormValidation = z.object({
   primaryKeys: z
     .array(z.object({ key: z.string() }))
     .optional()
-    .default([]),
-  isOpenSource: z.boolean().optional(),
-  searchLicenseString: z.string().optional()
+    .default([])
 });
 
 type CreateDatasetFormData = z.infer<typeof $CreateDatasetFormValidation>;
@@ -39,7 +36,6 @@ const RouteComponent = () => {
 
   const [formData, setFormData] = useState<CreateDatasetFormData | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const { licenseOptions, subscribe } = useDebounceLicensesFilter();
 
   const createDataset = () => {
     if (!formData) return;
@@ -152,31 +148,20 @@ const RouteComponent = () => {
           {
             title: t({ en: 'Dataset License', fr: 'Licence du jeu de données' }),
             description: t({
-              en: 'Select a license for your dataset',
-              fr: 'Sélectionnez une licence pour votre jeu de données'
+              en: 'Search by license name or SPDX identifier',
+              fr: 'Recherchez par nom de licence ou identifiant SPDX'
             }),
             fields: {
-              isOpenSource: {
-                kind: 'boolean',
-                label: t({ en: 'Is License Open Source', fr: 'La licence est-elle open source' }),
-                variant: 'radio'
-              },
-              searchLicenseString: {
-                kind: 'string',
-                label: t({ en: 'Search for licenses', fr: 'Rechercher des licences' }),
-                variant: 'input'
-              },
               license: {
                 kind: 'string',
-                label: t({ en: 'Select License', fr: 'Sélectionner une licence' }),
+                label: t({ en: 'License', fr: 'Licence' }),
                 options: licenseOptions,
-                variant: 'select'
+                variant: 'combobox'
               }
             }
           }
         ]}
         submitBtnLabel={t({ en: 'Confirm', fr: 'Confirmer' })}
-        subscribe={subscribe}
         validationSchema={$CreateDatasetFormValidation}
         onSubmit={(data) => setFormData(data)}
       />
