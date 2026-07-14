@@ -27,13 +27,13 @@ const $CreateUser = z.object({
 });
 
 type User = {
-  confirmedAt: null | number | undefined;
-  creationTime?: number;
+  confirmedAt: Date | null | undefined;
+  creationTime?: Date;
   email: string;
   firstName: string;
   lastName: string;
   role: $UserRole;
-  verifiedAt: null | number | undefined;
+  verifiedAt: Date | null | undefined;
 };
 
 type $CreateUser = z.infer<typeof $CreateUser>;
