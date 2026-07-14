@@ -162,8 +162,8 @@ importers:
         specifier: ^0.0.3
         version: 0.0.3(typescript@6.0.3)
       '@douglasneuroinformatics/libui':
-        specifier: ^6.8.0
-        version: 6.8.1(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(immer@11.1.11)(neverthrow@8.2.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
+        specifier: ^6.8.2
+        version: 6.8.2(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(immer@11.1.11)(neverthrow@8.2.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
       '@tanstack/react-query':
         specifier: ^5.91.2
         version: 5.101.2(react@19.2.7)
@@ -474,9 +474,9 @@ packages:
     resolution:
       { integrity: sha512-ag36tPgh9KxrcZzzc793M5GYyJcTSXXeDR0dZxa4+1Bk3RuDBsePNACKftypZKZFHZxvT8NIokLeRqRoNOquFA== }
 
-  '@douglasneuroinformatics/libui@6.8.1':
+  '@douglasneuroinformatics/libui@6.8.2':
     resolution:
-      { integrity: sha512-uiQG0M/slaiMV/YG5Grnzh+CyQl/cRoHcIe9sJsBB5onajM9Zfv06D/mnbogiGlRDOLibNabuQBio0bbZBT9Qw== }
+      { integrity: sha512-Jl7/PegI2IXsIUX50YI59KHG9Q4Km/mMhr1CY/MkOZ+7YLkBx/9GXLl9l4rG9/ZIgJpBO6fOPkp1sxzJRH5w9g== }
     engines: { node: 22.x }
     peerDependencies:
       react: ^19.1.0
@@ -7159,7 +7159,7 @@ snapshots:
     dependencies:
       type-fest: 4.41.0
 
-  '@douglasneuroinformatics/libui@6.8.1(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(immer@11.1.11)(neverthrow@8.2.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)':
+  '@douglasneuroinformatics/libui@6.8.2(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(immer@11.1.11)(neverthrow@8.2.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)':
     dependencies:
       '@base-ui/react': 1.6.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@douglasneuroinformatics/libjs': 3.2.1(neverthrow@8.2.0)(zod@3.25.76)
