@@ -9,6 +9,12 @@ catalogs:
     '@douglasneuroinformatics/libjs':
       specifier: ^3.1.0
       version: 3.2.1
+    '@types/luxon':
+      specifier: ^3.7.0
+      version: 3.7.2
+    luxon:
+      specifier: ^3.7.2
+      version: 3.7.2
     type-fest:
       specifier: ^4.26.1
       version: 4.41.0
@@ -140,12 +146,19 @@ importers:
       '@douglasneuroinformatics/liblicense':
         specifier: ^1.0.0
         version: 1.0.0
+      luxon:
+        specifier: 'catalog:'
+        version: 3.7.2
       type-fest:
         specifier: 'catalog:'
         version: 4.41.0
       zod:
         specifier: 'catalog:'
         version: 3.25.76
+    devDependencies:
+      '@types/luxon':
+        specifier: 'catalog:'
+        version: 3.7.2
 
   web:
     dependencies:
@@ -2787,6 +2800,10 @@ packages:
   '@types/jsonwebtoken@9.0.10':
     resolution:
       { integrity: sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA== }
+
+  '@types/luxon@3.7.2':
+    resolution:
+      { integrity: sha512-gW+Oib+vUtGJBtNC8V9Reww0oIpusw+4m81uncg9REGZAJfqOQHfo/nkabnc7w0QReXyPqjrbWMJk6NuAkiX3Q== }
 
   '@types/methods@1.1.4':
     resolution:
@@ -8955,6 +8972,8 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
       '@types/node': 22.20.0
+
+  '@types/luxon@3.7.2': {}
 
   '@types/methods@1.1.4': {}
 
