@@ -19,6 +19,12 @@
       "skillPath": "skills/engineering/codebase-design/SKILL.md",
       "computedHash": "6d9d51d8caa01633fd00cf87089c5618c982321f942ac69f62565dc001c6b22f"
     },
+    "design-an-interface": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/deprecated/design-an-interface/SKILL.md",
+      "computedHash": "aef348a9af675b771635623b5aa7790da4d40adc1ee88b58b6fd116eda2047d8"
+    },
     "diagnosing-bugs": {
       "source": "mattpocock/skills",
       "sourceType": "github",
