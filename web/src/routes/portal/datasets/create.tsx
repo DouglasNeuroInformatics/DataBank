@@ -102,7 +102,7 @@ const RouteComponent = () => {
               datasetType: {
                 kind: 'string',
                 label: t('datasetType'),
-                options: { BASE: 'Base', TABULAR: 'Tabular' },
+                options: { BASE: t('datasetTypeBase'), TABULAR: t('datasetTypeTabular') },
                 variant: 'select'
               },
               hasPrimaryKeys: {
