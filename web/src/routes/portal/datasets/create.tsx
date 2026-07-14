@@ -10,6 +10,7 @@ import { useDropzone } from 'react-dropzone';
 import { match } from 'ts-pattern';
 import { z } from 'zod/v4';
 
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { PrimaryKeySelector } from '@/components/PrimaryKeySelector';
 import { useCreateDatasetMutation } from '@/hooks/mutations/useCreateDatasetMutation';
@@ -225,10 +226,10 @@ const RouteComponent = () => {
     );
 
   return (
-    <div className="mx-auto w-full max-w-2xl">
-      <PageHeading centered>{t('createDataset')}</PageHeading>
+    <PageContainer width="form">
+      <PageHeading>{t('createDataset')}</PageHeading>
       {element}
-    </div>
+    </PageContainer>
   );
 };
 

@@ -4,6 +4,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { ArrowLeftIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { UserInfoCard } from '@/components/UserInfoCard';
 import { useAddProjectUserMutation } from '@/hooks/mutations/useAddProjectUserMutation';
@@ -41,7 +42,7 @@ const RouteComponent = () => {
   };
 
   return (
-    <div>
+    <PageContainer>
       <PageHeading
         actions={
           <Button
@@ -123,7 +124,7 @@ const RouteComponent = () => {
           ))}
         </Card.Content>
       </Card>
-    </div>
+    </PageContainer>
   );
 };
 

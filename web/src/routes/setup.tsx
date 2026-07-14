@@ -15,8 +15,8 @@ const RouteComponent = () => {
   const createSetupMutation = useCreateSetupMutation();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <Card className="w-full grow px-4 sm:m-8 sm:max-w-xl sm:grow-0 md:max-w-2xl">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-8">
+      <Card className="w-full max-w-2xl px-4">
         <Card.Header className="flex items-center justify-center">
           <Logo className="m-2 h-auto w-16" />
           <Heading variant="h2">{t({ en: 'Setup' })}</Heading>

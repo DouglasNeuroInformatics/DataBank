@@ -1,17 +1,18 @@
 /* eslint-disable perfectionist/sort-objects */
 import { $DatasetViewPagination, licensesObjects } from '@databank/core';
 import type { $DatasetViewPagination as DatasetViewPaginationType } from '@databank/core';
-import { Badge, Button, Card, Separator } from '@douglasneuroinformatics/libui/components';
+import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDestructiveAction, useDownload, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
-import { ArrowLeftIcon, TrashIcon } from 'lucide-react';
+import { ArrowLeftIcon, EllipsisVerticalIcon, TrashIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
-import { DatasetPaginationControls } from '@/components/DatasetPaginationControls';
 import { DatasetTable } from '@/components/DatasetTable';
-import { DownloadDropdowns } from '@/components/DownloadDropdowns';
+import { DatasetToolbar } from '@/components/DatasetToolbar';
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
+import { SectionHeading } from '@/components/SectionHeading';
 import { useDownloadProjectDataMutation } from '@/hooks/mutations/useDownloadProjectDataMutation';
 import { useDownloadProjectMetadataMutation } from '@/hooks/mutations/useDownloadProjectMetadataMutation';
 import { useRemoveProjectDatasetMutation } from '@/hooks/mutations/useRemoveProjectDatasetMutation';
@@ -84,7 +85,7 @@ const RouteComponent = () => {
   const licenseInfo = licensesObjects[dataset.license];
 
   return (
-    <div>
+    <PageContainer>
       <PageHeading
         actions={
           <>
@@ -100,10 +101,24 @@ const RouteComponent = () => {
               })}
             </Button>
             {isManager && (
-              <Button size="sm" variant="danger" onClick={() => deleteDataset()}>
-                <TrashIcon className="mr-1.5 size-3.5" />
-                {t('deleteDataset')}
-              </Button>
+              <DropdownMenu>
+                <DropdownMenu.Trigger asChild>
+                  <Button
+                    aria-label={t({ en: 'More actions', fr: "Plus d'actions" })}
+                    size="icon"
+                    type="button"
+                    variant="ghost"
+                  >
+                    <EllipsisVerticalIcon />
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content align="end">
+                  <DropdownMenu.Item className="text-destructive gap-2" onClick={() => deleteDataset()}>
+                    <TrashIcon className="size-4" />
+                    {t('deleteDataset')}
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
             )}
           </>
         }
@@ -112,22 +127,22 @@ const RouteComponent = () => {
         {dataset.name}
       </PageHeading>
 
-      <Card className="mb-6">
+      <Card className="mb-8">
         <Card.Content className="pt-6">
-          <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{t('createdAt')}</dt>
-              <dd className="mt-1 text-sm">{new Date(dataset.createdAt).toLocaleDateString()}</dd>
+              <dd className="mt-1.5 text-sm">{new Date(dataset.createdAt).toLocaleDateString()}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{t('updatedAt')}</dt>
-              <dd className="mt-1 text-sm">{new Date(dataset.updatedAt).toLocaleDateString()}</dd>
+              <dd className="mt-1.5 text-sm">{new Date(dataset.updatedAt).toLocaleDateString()}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 {t('datasetLicense')}
               </dt>
-              <dd className="mt-1 text-sm" title={licenseInfo?.name}>
+              <dd className="mt-1.5 text-sm" title={licenseInfo?.name}>
                 {dataset.license}
               </dd>
             </div>
@@ -135,38 +150,35 @@ const RouteComponent = () => {
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                 {t({ en: 'Permission', fr: 'Permission' })}
               </dt>
-              <dd className="mt-1">
-                <Badge variant="secondary">{dataset.permission}</Badge>
-              </dd>
+              <dd className="mt-1.5 text-sm">{dataset.permission}</dd>
             </div>
           </dl>
         </Card.Content>
       </Card>
 
-      <div>
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold">{t({ en: 'Data', fr: 'Données' })}</h3>
-          <DownloadDropdowns
+      <SectionHeading
+        actions={
+          <DatasetToolbar
+            columnPagination={columnPagination}
+            setColumnPagination={setColumnPagination}
+            totalNumberOfColumns={dataset.totalNumberOfColumns}
             onDataDownload={(format) => handleDataDownload(format)}
             onMetadataDownload={(format) => handleMetadataDownload(format)}
           />
-        </div>
-        <div className="flex flex-col gap-6 py-6">
-          <Separator />
-          <DatasetPaginationControls
-            columnPagination={columnPagination}
-            rowPagination={rowPagination}
-            setColumnPagination={setColumnPagination}
-            setRowPagination={setRowPagination}
-            totalNumberOfColumns={dataset.totalNumberOfColumns}
-            totalNumberOfRows={dataset.totalNumberOfRows}
-          />
-        </div>
-        <div className="overflow-hidden rounded-md border">
-          <DatasetTable isManager={false} isProject={true} {...dataset} id={datasetId} primaryKeys={[]} />
-        </div>
-      </div>
-    </div>
+        }
+      >
+        {t({ en: 'Data', fr: 'Données' })}
+      </SectionHeading>
+      <DatasetTable
+        isManager={false}
+        isProject={true}
+        rowPagination={rowPagination}
+        setRowPagination={setRowPagination}
+        {...dataset}
+        id={datasetId}
+        primaryKeys={[]}
+      />
+    </PageContainer>
   );
 };
 

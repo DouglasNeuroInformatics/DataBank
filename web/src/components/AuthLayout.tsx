@@ -13,7 +13,7 @@ type AuthLayoutProps = {
 export const AuthLayout = ({ children, maxWidth, title }: AuthLayoutProps) => {
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <div className="flex w-full grow flex-col items-center justify-center">
+      <div className="flex w-full grow flex-col items-center justify-center px-4 py-8">
         <Card
           className={cn(
             'sm:bg-card w-full border-none bg-inherit px-2.5 py-1.5 sm:border-solid',

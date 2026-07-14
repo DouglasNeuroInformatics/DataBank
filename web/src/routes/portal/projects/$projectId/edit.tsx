@@ -9,6 +9,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { ArrowLeftIcon } from 'lucide-react';
 import { z } from 'zod/v4';
 
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { useEditProjectInfoMutation } from '@/hooks/mutations/useEditProjectInfoMutation';
 
@@ -48,7 +49,7 @@ const RouteComponent = () => {
   );
 
   return (
-    <div className="mx-auto w-full max-w-xl">
+    <PageContainer width="form">
       <PageHeading
         actions={
           <Button
@@ -91,7 +92,7 @@ const RouteComponent = () => {
         validationSchema={$EditProjectInfoDto}
         onSubmit={(data) => handleSubmit(data)}
       />
-    </div>
+    </PageContainer>
   );
 };
 

@@ -1,7 +1,9 @@
+import { Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute } from '@tanstack/react-router';
 import { MailIcon, UserIcon } from 'lucide-react';
 
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { useAppStore } from '@/store';
 
@@ -19,21 +21,23 @@ const RouteComponent = () => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-xl">
+    <PageContainer width="form">
       <PageHeading>{t('preferences')}</PageHeading>
-      <div className="flex items-center gap-4">
-        <div className="bg-muted flex size-14 items-center justify-center rounded-full">
-          <UserIcon className="text-muted-foreground size-8!" />
-        </div>
-        <div>
-          <p className="text-lg font-medium">{fullName}</p>
-          <p className="text-muted-foreground flex items-center gap-1.5 text-sm">
-            <MailIcon className="size-3.5" />
-            {currentUser?.email}
-          </p>
-        </div>
-      </div>
-    </div>
+      <Card>
+        <Card.Content className="flex items-center gap-4 pt-6">
+          <div className="bg-muted flex size-14 shrink-0 items-center justify-center rounded-full">
+            <UserIcon className="text-muted-foreground size-7!" />
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-base font-medium">{fullName}</p>
+            <p className="text-muted-foreground flex items-center gap-1.5 text-sm">
+              <MailIcon className="size-3.5 shrink-0" />
+              <span className="truncate">{currentUser?.email}</span>
+            </p>
+          </div>
+        </Card.Content>
+      </Card>
+    </PageContainer>
   );
 };
 

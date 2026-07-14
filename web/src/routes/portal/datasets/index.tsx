@@ -1,9 +1,11 @@
 import { $DatasetInfo } from '@databank/core';
-import { Badge, Button, Card } from '@douglasneuroinformatics/libui/components';
+import { Badge, Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDestructiveAction, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { DatabaseIcon, PlusIcon, TrashIcon } from 'lucide-react';
+import { DatabaseIcon, EllipsisVerticalIcon, PlusIcon, TrashIcon } from 'lucide-react';
 
+import { EmptyState } from '@/components/EmptyState';
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { useDeleteDatasetMutation } from '@/hooks/mutations/useDeleteDatasetMutation';
 import { datasetsQueryOptions, useDatasetsQuery } from '@/hooks/queries/useDatasetsQuery';
@@ -18,28 +20,30 @@ const DatasetCard = ({ dataset, isManager }: { dataset: $DatasetInfo; isManager:
     deleteDatasetMutation.mutate(dataset.id);
   });
 
+  const statusLabel = {
+    Fail: t({ en: 'Failed', fr: 'Échec' }),
+    Processing: t({ en: 'Processing', fr: 'En traitement' }),
+    Success: t({ en: 'Ready', fr: 'Prêt' })
+  }[dataset.status];
+
   return (
-    <Card className="flex flex-col transition-shadow hover:shadow-md">
+    <Card className="flex h-full flex-col transition-shadow hover:shadow-md">
       <Card.Header className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="min-w-0 flex-1">
-            <Card.Title className="truncate">{dataset.name}</Card.Title>
-            {dataset.description && (
-              <Card.Description className="mt-1 line-clamp-2">{dataset.description}</Card.Description>
-            )}
-          </div>
+        <div className="flex items-start justify-between gap-2">
+          <Card.Title className="truncate">{dataset.name}</Card.Title>
           {dataset.status !== 'Success' && (
-            <Badge className="ml-2 shrink-0" variant={dataset.status === 'Fail' ? 'destructive' : 'secondary'}>
-              {dataset.status}
+            <Badge className="shrink-0" variant={dataset.status === 'Fail' ? 'destructive' : 'secondary'}>
+              {statusLabel}
             </Badge>
           )}
         </div>
+        <Card.Description className="line-clamp-2 min-h-10">{dataset.description}</Card.Description>
       </Card.Header>
       <Card.Content className="pb-3">
         <dl className="text-muted-foreground grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <dt className="font-medium">{t('datasetLicense')}</dt>
+          <dt className="font-medium">{t({ en: 'License', fr: 'Licence' })}</dt>
           <dd className="truncate">{dataset.license}</dd>
-          <dt className="font-medium">{t('createdAt')}</dt>
+          <dt className="font-medium">{t({ en: 'Created', fr: 'Créé le' })}</dt>
           <dd>{new Date(dataset.createdAt).toLocaleDateString()}</dd>
         </dl>
       </Card.Content>
@@ -52,11 +56,25 @@ const DatasetCard = ({ dataset, isManager }: { dataset: $DatasetInfo; isManager:
         >
           {isManager ? t('manageDataset') : t('viewDataset')}
         </Button>
-        {dataset.status === 'Fail' && isManager && (
-          <Button size="sm" variant="danger" onClick={() => deleteDataset()}>
-            <TrashIcon className="mr-1.5 size-3.5" />
-            {t('delete')}
-          </Button>
+        {isManager && (
+          <DropdownMenu>
+            <DropdownMenu.Trigger asChild>
+              <Button
+                aria-label={t({ en: 'More actions', fr: "Plus d'actions" })}
+                size="icon"
+                type="button"
+                variant="ghost"
+              >
+                <EllipsisVerticalIcon />
+              </Button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content align="end">
+              <DropdownMenu.Item className="text-destructive gap-2" onClick={() => deleteDataset()}>
+                <TrashIcon className="size-4" />
+                {t('delete')}
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu>
         )}
       </Card.Footer>
     </Card>
@@ -70,7 +88,7 @@ const RouteComponent = () => {
   const { data: datasets } = useDatasetsQuery();
 
   return (
-    <div>
+    <PageContainer>
       <PageHeading
         actions={
           <Button size="sm" onClick={() => void navigate({ to: '/portal/datasets/create' })}>
@@ -85,25 +103,23 @@ const RouteComponent = () => {
         })}
       </PageHeading>
       {datasets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <DatabaseIcon className="text-muted-foreground/50 size-12" />
-          <p className="text-muted-foreground mt-4 text-lg font-medium">
-            {t({
-              en: 'No Datasets Available',
-              fr: 'Aucun base de données disponible'
-            })}
-          </p>
-          <p className="text-muted-foreground mt-1 text-sm">
-            {t({
-              en: 'Create your first dataset to get started.',
-              fr: 'Créez votre premier base de données pour commencer.'
-            })}
-          </p>
-          <Button className="mt-6" variant="outline" onClick={() => void navigate({ to: '/portal/datasets/create' })}>
-            <PlusIcon className="mr-1.5 size-4" />
-            {t('createDataset')}
-          </Button>
-        </div>
+        <EmptyState
+          action={
+            <Button variant="outline" onClick={() => void navigate({ to: '/portal/datasets/create' })}>
+              <PlusIcon className="mr-1.5 size-4" />
+              {t('createDataset')}
+            </Button>
+          }
+          description={t({
+            en: 'Create your first dataset to get started.',
+            fr: 'Créez votre premier jeu de données pour commencer.'
+          })}
+          icon={DatabaseIcon}
+          title={t({
+            en: 'No Datasets Available',
+            fr: 'Aucun jeu de données disponible'
+          })}
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {datasets.map((dataset) => {
@@ -112,7 +128,7 @@ const RouteComponent = () => {
           })}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

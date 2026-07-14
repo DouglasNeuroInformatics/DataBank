@@ -38,42 +38,37 @@ const Header = () => {
 
   return (
     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-      <header className="text-muted-foreground fixed top-0 z-10 w-full bg-white/80 shadow-sm backdrop-blur-lg dark:bg-slate-800/75">
+      <header className="bg-card/80 fixed top-0 z-10 w-full border-b backdrop-blur-lg">
         <div className="container flex items-center justify-between py-3">
           <Link className="flex h-10 items-center no-underline [&>svg]:h-full [&>svg]:w-auto" to="/">
             <Logo />
-            {isDesktop && (
-              <span className="ml-3 whitespace-nowrap font-semibold tracking-tight">{t('common.platformName')}</span>
-            )}
+            <span className="ml-3 whitespace-nowrap font-semibold tracking-tight">{t('common.platformName')}</span>
           </Link>
-          {isDesktop ? (
-            <div className="flex items-center gap-6">
-              <nav className="flex items-center gap-4">
-                {navLinks.map(({ label, to }) => (
-                  <Link
-                    className="text-muted-foreground hover:text-foreground p-2 text-[0.9375rem] font-medium"
-                    key={to}
-                    to={to}
-                  >
-                    {label}
-                  </Link>
-                ))}
-              </nav>
-              <div className="h-8 w-px rounded-md bg-slate-300 dark:bg-slate-700" />
-              <div className="flex items-center gap-4">
-                <ThemeToggle className="[&>svg]:h-5! [&>svg]:w-auto!" variant="ghost" />
-                <LanguageToggle
-                  options={{ en: 'English', fr: 'Français' }}
-                  triggerClassName="[&>svg]:h-5! [&>svg]:w-auto!"
-                  variant="ghost"
-                />
-              </div>
+          <div className="hidden items-center gap-6 lg:flex">
+            <nav className="flex items-center gap-4">
+              {navLinks.map(({ label, to }) => (
+                <Link
+                  className="text-muted-foreground hover:text-foreground p-2 text-[0.9375rem] font-medium"
+                  key={to}
+                  to={to}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+            <Separator className="h-6" orientation="vertical" />
+            <div className="flex items-center gap-2">
+              <ThemeToggle className="[&>svg]:h-5! [&>svg]:w-auto!" variant="ghost" />
+              <LanguageToggle
+                options={{ en: 'English', fr: 'Français' }}
+                triggerClassName="[&>svg]:h-5! [&>svg]:w-auto!"
+                variant="ghost"
+              />
             </div>
-          ) : (
-            <Sheet.Trigger>
-              <MenuIcon className="h-7! w-auto!" />
-            </Sheet.Trigger>
-          )}
+          </div>
+          <Sheet.Trigger className="lg:hidden">
+            <MenuIcon className="text-muted-foreground hover:text-foreground h-7! w-auto!" />
+          </Sheet.Trigger>
         </div>
       </header>
       <Sheet.Content className="flex h-full flex-col gap-0">
@@ -112,8 +107,8 @@ const Header = () => {
 const Footer = () => {
   const { t } = useTranslation();
   return (
-    <footer className="mt-auto bg-white py-4 text-sm shadow-sm dark:bg-slate-800">
-      <div className="text-muted-foreground container hidden items-center justify-center gap-2 sm:flex">
+    <footer className="bg-card mt-auto border-t py-4 text-sm">
+      <div className="text-muted-foreground container flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
         <a
           className="hover:text-foreground"
           href="https://douglasneuroinformatics.ca/"

@@ -4,6 +4,8 @@ import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { CalendarIcon, FolderOpenIcon, PlusIcon } from 'lucide-react';
 
+import { EmptyState } from '@/components/EmptyState';
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { projectIsManagerQueryOptions, useProjectIsManagerQuery } from '@/hooks/queries/useProjectIsManagerQuery';
 import { projectsQueryOptions, useProjectsQuery } from '@/hooks/queries/useProjectsQuery';
@@ -15,10 +17,10 @@ const ProjectCard = ({ project }: { project: $ProjectInfo }) => {
   const { data: isProjectManager } = useProjectIsManagerQuery(project.id);
 
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card className="flex h-full flex-col transition-shadow hover:shadow-md">
       <Card.Header className="pb-3">
         <Card.Title className="truncate">{project.name}</Card.Title>
-        {project.description && <Card.Description className="line-clamp-2">{project.description}</Card.Description>}
+        <Card.Description className="line-clamp-2 min-h-10">{project.description}</Card.Description>
       </Card.Header>
       <Card.Content className="pb-3">
         <dl className="text-muted-foreground grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
@@ -31,7 +33,7 @@ const ProjectCard = ({ project }: { project: $ProjectInfo }) => {
           </dd>
         </dl>
       </Card.Content>
-      <Card.Footer>
+      <Card.Footer className="mt-auto pt-3">
         <Button size="sm" variant="outline" onClick={() => void navigate({ to: `/portal/projects/${project.id}` })}>
           {isProjectManager ? t('manageProject') : t('viewProject')}
         </Button>
@@ -62,7 +64,7 @@ const RouteComponent = () => {
   };
 
   return (
-    <div>
+    <PageContainer>
       <PageHeading
         actions={
           <Button size="sm" onClick={handleCreateProject}>
@@ -77,28 +79,26 @@ const RouteComponent = () => {
         {t('projects')}
       </PageHeading>
       {projects.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16">
-          <FolderOpenIcon className="text-muted-foreground size-6!" />
-          <p className="text-muted-foreground mt-4 text-lg font-medium">
-            {t({
-              en: 'No Projects Yet',
-              fr: 'Aucun projet pour le moment'
-            })}
-          </p>
-          <p className="text-muted-foreground mt-1 text-sm">
-            {t({
-              en: 'Create your first project to get started.',
-              fr: 'Créez votre premier projet pour commencer.'
-            })}
-          </p>
-          <Button className="mt-6" variant="outline" onClick={handleCreateProject}>
-            <PlusIcon className="mr-1.5 size-4" />
-            {t({
-              en: 'Create New Project',
-              fr: 'Créer un nouveau projet'
-            })}
-          </Button>
-        </div>
+        <EmptyState
+          action={
+            <Button variant="outline" onClick={handleCreateProject}>
+              <PlusIcon className="mr-1.5 size-4" />
+              {t({
+                en: 'Create New Project',
+                fr: 'Créer un nouveau projet'
+              })}
+            </Button>
+          }
+          description={t({
+            en: 'Create your first project to get started.',
+            fr: 'Créez votre premier projet pour commencer.'
+          })}
+          icon={FolderOpenIcon}
+          title={t({
+            en: 'No Projects Yet',
+            fr: 'Aucun projet pour le moment'
+          })}
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
@@ -106,7 +106,7 @@ const RouteComponent = () => {
           ))}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

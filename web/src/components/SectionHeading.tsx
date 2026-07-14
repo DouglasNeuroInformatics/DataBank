@@ -1,22 +1,23 @@
 import { Heading, Separator } from '@douglasneuroinformatics/libui/components';
-import { cn } from '@douglasneuroinformatics/libui/utils';
 
-export const PageHeading: React.FC<{
+/**
+ * Heading for a section nested within a page, one level below `PageHeading`.
+ */
+export const SectionHeading: React.FC<{
   actions?: React.ReactNode;
   children: string;
-  className?: string;
   description?: null | string;
-}> = ({ actions, children, className, description }) => {
+}> = ({ actions, children, description }) => {
   return (
-    <div className={cn('flex flex-col gap-2 py-6', className)}>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 pb-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <Heading variant="h2">{children}</Heading>
+          <Heading variant="h4">{children}</Heading>
           {description && <p className="text-muted-foreground mt-1 text-sm">{description}</p>}
         </div>
         {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
       </div>
-      <Separator className="mt-2" />
+      <Separator />
     </div>
   );
 };

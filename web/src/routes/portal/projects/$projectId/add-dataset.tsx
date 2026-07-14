@@ -4,6 +4,7 @@ import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { ArrowLeftIcon, DatabaseIcon, PlusIcon } from 'lucide-react';
 
+import { PageContainer } from '@/components/PageContainer';
 import { PageHeading } from '@/components/PageHeading';
 import { ownedDatasetsQueryOptions, useOwnedDatasetsQuery } from '@/hooks/queries/useOwnedDatasetsQuery';
 
@@ -14,7 +15,7 @@ const RouteComponent = () => {
   const { data: datasets } = useOwnedDatasetsQuery();
 
   return (
-    <div>
+    <PageContainer>
       <PageHeading
         actions={
           <Button
@@ -95,7 +96,7 @@ const RouteComponent = () => {
           </Card.Content>
         </Card>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

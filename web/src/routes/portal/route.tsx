@@ -38,7 +38,7 @@ const UserDropup = () => {
   return (
     <DropdownMenu>
       <DropdownMenu.Trigger asChild>
-        <Button className="p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700" size="icon" type="button" variant="ghost">
+        <Button className="hover:bg-accent p-2.5" size="icon" type="button" variant="ghost">
           <CircleUserRoundIcon className="size-5!" />
         </Button>
       </DropdownMenu.Trigger>
@@ -78,10 +78,7 @@ const DesktopSidebar = ({ navigation }: { navigation: NavItem[] }) => {
           return (
             <Tooltip key={item.href}>
               <Tooltip.Trigger
-                className={cn(
-                  'rounded-md p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700',
-                  isActive && 'bg-slate-200 dark:bg-slate-700'
-                )}
+                className={cn('hover:bg-accent rounded-md p-2.5', isActive && 'bg-accent text-accent-foreground')}
                 size="icon"
                 variant="ghost"
                 onClick={() => {
@@ -98,11 +95,11 @@ const DesktopSidebar = ({ navigation }: { navigation: NavItem[] }) => {
         })}
       </nav>
       <div className="flex flex-col items-center gap-1">
-        <ThemeToggle className="[&>svg]:size-5! p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700" variant="ghost" />
+        <ThemeToggle className="[&>svg]:size-5! hover:bg-accent p-2.5" variant="ghost" />
         <LanguageToggle
           contentClassName="mb-1 translate-y-1"
           options={{ en: 'English', fr: 'Français' }}
-          triggerClassName="[&>svg]:size-5! p-2.5 hover:bg-slate-200 dark:hover:bg-slate-700"
+          triggerClassName="[&>svg]:size-5! p-2.5 hover:bg-accent"
           variant="ghost"
         />
         <Separator className="mx-auto my-2 w-8" />
@@ -145,7 +142,9 @@ const MobileNavbar = ({ navigation }: { navigation: NavItem[] }) => {
               <Link
                 className={cn(
                   'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium',
-                  isActive ? 'bg-slate-200 dark:bg-slate-700' : ''
+                  isActive
+                    ? 'bg-accent text-accent-foreground'
+                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                 )}
                 key={item.href}
                 to={item.href}

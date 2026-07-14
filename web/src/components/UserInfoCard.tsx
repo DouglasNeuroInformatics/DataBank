@@ -30,7 +30,7 @@ export const UserInfoCard = ({ actionLabel, canRemove, onRemove, userId }: UserI
         </div>
       </div>
       {canRemove && (
-        <Button size="sm" variant="danger" onClick={onRemove}>
+        <Button className="text-destructive" size="sm" variant="outline" onClick={onRemove}>
           <TrashIcon className="mr-1.5 size-3.5" />
           {actionLabel}
         </Button>
