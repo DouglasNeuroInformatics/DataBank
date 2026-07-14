@@ -74,37 +74,56 @@ const RouteComponent = () => {
       <Form
         content={[
           {
-            description: 'Basic dataset information details',
+            description: t({
+              en: 'Basic dataset information details',
+              fr: 'Détails des informations de base du jeu de données'
+            }),
             fields: {
-              name: { kind: 'string', label: 'New Dataset Name', variant: 'input', placeholder: name },
+              name: {
+                kind: 'string',
+                label: t({ en: 'New Dataset Name', fr: 'Nouveau nom du jeu de données' }),
+                variant: 'input',
+                placeholder: name
+              },
               description: {
                 kind: 'string',
-                label: 'New Dataset Description',
+                label: t({ en: 'New Dataset Description', fr: 'Nouvelle description du jeu de données' }),
                 variant: 'input',
                 placeholder: description
               },
               permission: {
                 kind: 'string',
-                label: `Permission (Current: ${permission})`,
+                label: `${t({ en: 'Permission', fr: 'Permission' })} (${t({ en: 'Current', fr: 'Actuel' })}: ${permission})`,
                 options: permissionOption,
                 variant: 'select'
               }
             },
-            title: 'Basic Dataset Information'
+            title: t({ en: 'Basic Dataset Information', fr: 'Informations de base du jeu de données' })
           },
           {
-            description: 'Select a license for your dataset',
+            description: t({
+              en: 'Select a license for your dataset',
+              fr: 'Sélectionnez une licence pour votre jeu de données'
+            }),
             fields: {
-              isOpenSource: { kind: 'boolean', label: 'Is License Open Source', variant: 'radio' },
-              searchLicenseString: { kind: 'string', label: 'Search for licenses', variant: 'input' },
+              isOpenSource: {
+                kind: 'boolean',
+                label: t({ en: 'Is License Open Source', fr: 'La licence est-elle open source' }),
+                variant: 'radio'
+              },
+              searchLicenseString: {
+                kind: 'string',
+                label: t({ en: 'Search for licenses', fr: 'Rechercher des licences' }),
+                variant: 'input'
+              },
               license: {
                 kind: 'string',
-                label: `Select License (Current: ${license})`,
+                label: `${t({ en: 'Select License', fr: 'Sélectionner une licence' })} (${t({ en: 'Current', fr: 'Actuel' })}: ${license})`,
                 options: licenseOptions,
                 variant: 'select'
               }
             },
-            title: 'Dataset License'
+            title: t({ en: 'Dataset License', fr: 'Licence du jeu de données' })
           }
         ]}
         resetBtn={true}

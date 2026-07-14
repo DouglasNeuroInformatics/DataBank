@@ -73,11 +73,20 @@ const RouteComponent = () => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (!acceptedFiles[0]) {
-      addNotification({ type: 'error', message: 'Unexpected file error' });
+      addNotification({
+        type: 'error',
+        message: t({ en: 'Unexpected file error', fr: 'Erreur de fichier inattendue' })
+      });
     } else if (!acceptedFiles[0].name.includes('.csv') && !acceptedFiles[0].name.includes('.tsv')) {
-      addNotification({ type: 'error', message: 'Only CSV or TSV files are allowed!' });
+      addNotification({
+        type: 'error',
+        message: t({ en: 'Only CSV or TSV files are allowed!', fr: 'Seuls les fichiers CSV ou TSV sont autorisés!' })
+      });
     } else if (acceptedFiles[0].size > MAX_UPLOAD_FILE_SIZE) {
-      addNotification({ type: 'error', message: 'File size larger than 1 GB' });
+      addNotification({
+        type: 'error',
+        message: t({ en: 'File size larger than 1 GB', fr: 'La taille du fichier est supérieure à 1 Go' })
+      });
     } else {
       setFile(acceptedFiles[0]);
     }
@@ -95,7 +104,7 @@ const RouteComponent = () => {
       <Form
         content={[
           {
-            title: 'Basic Dataset Information',
+            title: t({ en: 'Basic Dataset Information', fr: 'Informations de base du jeu de données' }),
             fields: {
               name: { kind: 'string', label: t('datasetName'), variant: 'input' },
               description: { kind: 'string', label: t('datasetDescription'), variant: 'textarea' },
@@ -110,7 +119,14 @@ const RouteComponent = () => {
                 deps: ['datasetType'],
                 render: (data) =>
                   data.datasetType === 'TABULAR'
-                    ? { kind: 'boolean', label: 'Do you want to add primary keys to your dataset?', variant: 'radio' }
+                    ? {
+                        kind: 'boolean',
+                        label: t({
+                          en: 'Do you want to add primary keys to your dataset?',
+                          fr: 'Voulez-vous ajouter des clés primaires à votre jeu de données?'
+                        }),
+                        variant: 'radio'
+                      }
                     : null
               },
               primaryKeys: {
@@ -120,24 +136,46 @@ const RouteComponent = () => {
                   data.hasPrimaryKeys
                     ? {
                         kind: 'record-array',
-                        label: 'Primary Keys',
-                        fieldset: { key: { kind: 'string', variant: 'input', label: 'Variable/Column Name as a key' } }
+                        label: t({ en: 'Primary Keys', fr: 'Clés primaires' }),
+                        fieldset: {
+                          key: {
+                            kind: 'string',
+                            variant: 'input',
+                            label: t({ en: 'Variable/Column Name as a key', fr: 'Nom de variable/colonne comme clé' })
+                          }
+                        }
                       }
                     : null
               }
             }
           },
           {
-            title: 'Dataset License',
-            description: 'Select a license for your dataset',
+            title: t({ en: 'Dataset License', fr: 'Licence du jeu de données' }),
+            description: t({
+              en: 'Select a license for your dataset',
+              fr: 'Sélectionnez une licence pour votre jeu de données'
+            }),
             fields: {
-              isOpenSource: { kind: 'boolean', label: 'Is License Open Source', variant: 'radio' },
-              searchLicenseString: { kind: 'string', label: 'Search for licenses', variant: 'input' },
-              license: { kind: 'string', label: 'Select License', options: licenseOptions, variant: 'select' }
+              isOpenSource: {
+                kind: 'boolean',
+                label: t({ en: 'Is License Open Source', fr: 'La licence est-elle open source' }),
+                variant: 'radio'
+              },
+              searchLicenseString: {
+                kind: 'string',
+                label: t({ en: 'Search for licenses', fr: 'Rechercher des licences' }),
+                variant: 'input'
+              },
+              license: {
+                kind: 'string',
+                label: t({ en: 'Select License', fr: 'Sélectionner une licence' }),
+                options: licenseOptions,
+                variant: 'select'
+              }
             }
           }
         ]}
-        submitBtnLabel="Confirm"
+        submitBtnLabel={t({ en: 'Confirm', fr: 'Confirmer' })}
         subscribe={subscribe}
         validationSchema={$CreateDatasetFormValidation}
         onSubmit={(data) => setFormData(data)}
@@ -161,7 +199,9 @@ const RouteComponent = () => {
       createDatasetMutation.isPending ? (
         <div className="flex flex-col items-center justify-center py-12">
           <Spinner />
-          <p className="text-muted-foreground mt-4 text-sm">Uploading dataset...</p>
+          <p className="text-muted-foreground mt-4 text-sm">
+            {t({ en: 'Uploading dataset...', fr: 'Chargement du jeu de données...' })}
+          </p>
         </div>
       ) : (
         <div className="space-y-4">

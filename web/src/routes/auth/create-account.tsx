@@ -10,15 +10,20 @@ import { AuthLayout } from '@/components/AuthLayout';
 import { useCreateAccountMutation } from '@/hooks/mutations/useCreateAccountMutation';
 import { useAppStore } from '@/store';
 
-const $CreateAccount = z.object({
-  email: z.string().regex(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  password: z
-    .string()
-    .min(1)
-    .refine((val) => estimatePasswordStrength(val).success, 'Insufficient Password Strength')
-});
+const createValidationSchema = (t: any) =>
+  z.object({
+    email: z.string().regex(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/),
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+    password: z
+      .string()
+      .min(1)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
+      .refine(
+        (val) => estimatePasswordStrength(val).success,
+        t({ en: 'Insufficient Password Strength', fr: 'Force de mot de passe insuffisante' })
+      )
+  });
 
 const RouteComponent = () => {
   const accessToken = useAppStore((s) => s.auth.ctx.accessToken);
@@ -37,7 +42,9 @@ const RouteComponent = () => {
     }
   }, [accessToken]);
 
-  const createAccount = (data: z.infer<typeof $CreateAccount>) => {
+  const validationSchema = createValidationSchema(t);
+
+  const createAccount = (data: z.infer<typeof validationSchema>) => {
     createAccountMutation.mutate(data, {
       onSuccess() {
         addNotification({ message: t('pleaseSignIn'), type: 'success' });
@@ -75,7 +82,7 @@ const RouteComponent = () => {
             variant: 'password'
           }
         }}
-        validationSchema={$CreateAccount}
+        validationSchema={validationSchema}
         onSubmit={(data) => createAccount(data)}
       />
     </AuthLayout>

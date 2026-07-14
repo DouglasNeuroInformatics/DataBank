@@ -110,6 +110,7 @@ const Header = () => {
 };
 
 const Footer = () => {
+  const { t } = useTranslation();
   return (
     <footer className="mt-auto bg-white py-4 text-sm shadow-sm dark:bg-slate-800">
       <div className="text-muted-foreground container hidden items-center justify-center gap-2 sm:flex">
@@ -119,7 +120,7 @@ const Footer = () => {
           rel="noreferrer"
           target="_blank"
         >
-          Douglas Neuroinformatics
+          {t({ en: 'Douglas Neuroinformatics', fr: 'Douglas Neuroinformatics' })}
         </a>
         <span>&#183;</span>
         <a
@@ -128,7 +129,7 @@ const Footer = () => {
           rel="noreferrer"
           target="_blank"
         >
-          GitHub
+          {t({ en: 'GitHub', fr: 'GitHub' })}
         </a>
         <span>&#183;</span>
         <a
@@ -137,11 +138,11 @@ const Footer = () => {
           rel="noreferrer"
           target="_blank"
         >
-          Open Data Capture
+          {t({ en: 'Open Data Capture', fr: 'Capture de données ouvertes' })}
         </a>
       </div>
       <p className="text-muted-foreground mt-1.5 text-center">
-        &copy; {new Date().getFullYear()} Douglas Neuroinformatics Platform
+        &copy; {new Date().getFullYear()} {t({ en: 'Douglas Neuroinformatics Platform' })}
       </p>
     </footer>
   );

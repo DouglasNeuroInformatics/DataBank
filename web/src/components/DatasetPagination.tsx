@@ -22,7 +22,8 @@ export const DatasetPagination = ({
   const totalNumberOfPage = Math.ceil(totalNumberOfItems / itemsPerPage);
 
   const handleSelectPageOption = (option: string) => {
-    const itemsPerPage = option === 'All' ? totalNumberOfItems : parseInt(option);
+    const allLabel = t({ en: 'All', fr: 'Tous' });
+    const itemsPerPage = option === allLabel ? totalNumberOfItems : parseInt(option);
     setDatasetPagination({ currentPage: 1, itemsPerPage });
   };
 
@@ -30,12 +31,12 @@ export const DatasetPagination = ({
     <div className="flex w-full items-center justify-between">
       <div className="flex flex-1 items-center justify-end gap-4">
         <ActionDropdown
-          options={['10', '20', '50', '100', 'All']}
+          options={['10', '20', '50', '100', t({ en: 'All', fr: 'Tous' })]}
           title={(kind === 'COLUMN' ? t('columnsPerPage') : t('rowsPerPage')).concat(`: ${itemsPerPage}`)}
           onSelection={(options) => handleSelectPageOption(options)}
         />
         <p className="text-muted-foreground whitespace-nowrap text-sm tabular-nums">
-          {kind === 'COLUMN' ? t({ en: 'Column ' }) : t({ en: 'Row ' })}
+          {kind === 'COLUMN' ? t({ en: 'Column ', fr: 'Colonne ' }) : t({ en: 'Row ', fr: 'Ligne ' })}
           {currentPage} / {totalNumberOfPage}
         </p>
         <div className="flex items-center gap-2">

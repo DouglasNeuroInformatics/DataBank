@@ -152,7 +152,7 @@ const RouteComponent = () => {
                     )}
                     <div className="text-muted-foreground mt-2 flex flex-col text-sm">
                       <p>
-                        <span className="font-semibold tracking-tight">{t({ en: 'License: ' })}</span>
+                        <span className="font-semibold tracking-tight">{t({ en: 'License: ', fr: 'Licence : ' })}</span>
                         {licensesObjects[dataset.license]?.name ?? dataset.license}
                       </p>
                       <p>
