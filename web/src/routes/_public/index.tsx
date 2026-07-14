@@ -18,14 +18,14 @@ type Feature = {
 const FeatureCard = ({ description, icon: Icon, label }: Feature) => {
   return (
     <Card className="h-full">
-      <Card.Header className="gap-3">
-        <div className="bg-muted text-muted-foreground flex size-10 items-center justify-center rounded-full">
-          <Icon className="size-5!" />
+      <Card.Header className="gap-1">
+        <div className="bg-muted text-muted-foreground flex w-full items-center justify-center rounded-full">
+          <Icon className="size-6!" />
         </div>
-        <Card.Title className="text-base">{label}</Card.Title>
+        <Card.Title className="text-center text-base">{label}</Card.Title>
       </Card.Header>
       <Card.Content>
-        <p className="text-muted-foreground text-sm">{description}</p>
+        <p className="text-muted-foreground text-center text-sm">{description}</p>
       </Card.Content>
     </Card>
   );
