@@ -206,7 +206,7 @@ export const DatasetTable = (dataset: DatasetTableProps) => {
   });
 
   const columns = useMemo<ColumnDef<DatasetRow>[]>(() => {
-    return dataset.columns.map((column) => ({
+    return dataset.columns.map((column, index) => ({
       accessorFn: (row) => row[column],
       cell: ({ getValue }) => {
         const value = getValue();
@@ -217,7 +217,7 @@ export const DatasetTable = (dataset: DatasetTableProps) => {
       },
       enableSorting: false,
       header: () => <ColumnHeader column={column} dataset={dataset} onDeleteColumn={handleDeleteColumn} />,
-      id: column
+      id: `column-${index}`
     }));
   }, [dataset, handleDeleteColumn, t]);
 
