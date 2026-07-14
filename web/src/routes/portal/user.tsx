@@ -15,7 +15,7 @@ const RouteComponent = () => {
   } else if (currentUser?.firstName) {
     fullName = currentUser.firstName;
   } else {
-    fullName = 'Unnamed User';
+    fullName = t({ en: 'Unnamed User', fr: 'Utilisateur sans nom' });
   }
 
   return (

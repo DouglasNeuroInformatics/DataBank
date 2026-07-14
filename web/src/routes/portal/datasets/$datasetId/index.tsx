@@ -161,7 +161,9 @@ const RouteComponent = () => {
               </dd>
             </div>
             <div>
-              <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Permission</dt>
+              <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+                {t({ en: 'Permission', fr: 'Permission' })}
+              </dt>
               <dd className="mt-1">
                 <Badge variant="secondary">{dataset.permission}</Badge>
               </dd>
@@ -172,7 +174,7 @@ const RouteComponent = () => {
 
       <div>
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-semibold">Data</h3>
+          <h3 className="text-base font-semibold">{t({ en: 'Data', fr: 'Données' })}</h3>
           <DownloadDropdowns
             onDataDownload={(format) => handleDataDownload(format)}
             onMetadataDownload={(format) => handleMetadataDownload(format)}

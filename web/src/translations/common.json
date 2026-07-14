@@ -56,8 +56,8 @@
     "fr": "Confirmer"
   },
   "confirmCreateBaseDataset": {
-    "en": "Please confirm that you want to create a BASE dataset without any files",
-    "fr": "Veuillez confirmer la création d'une base de données de BASE sans aucun fichier."
+    "en": "Please confirm that you want to create a metadata-only dataset, without uploading any data file",
+    "fr": "Veuillez confirmer la création d'une base de données avec métadonnées seulement, sans téléverser de fichier de données"
   },
   "contactOwner": {
     "en": "Contact owner",
@@ -146,6 +146,15 @@
   "datasetType": {
     "en": "Dataset Type",
     "fr": "Type de base de données"
+  },
+
+  "datasetTypeBase": {
+    "en": "Base (Metadata Only)",
+    "fr": "Base (métadonnées seulement)"
+  },
+  "datasetTypeTabular": {
+    "en": "Tabular (Upload a CSV/TSV file)",
+    "fr": "Tabulaire (téléverser un fichier CSV/TSV)"
   },
   "datasets": {
     "en": "Datasets",

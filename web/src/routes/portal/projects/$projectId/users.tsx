@@ -106,7 +106,8 @@ const RouteComponent = () => {
             })}
           </Card.Title>
           <Card.Description>
-            {userIds.length} {userIds.length === 1 ? 'user' : 'users'}
+            {userIds.length}{' '}
+            {userIds.length === 1 ? t({ en: 'user', fr: 'utilisateur' }) : t({ en: 'users', fr: 'utilisateurs' })}
           </Card.Description>
         </Card.Header>
         <Separator />

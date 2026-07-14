@@ -32,7 +32,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
       return (
         <DropdownMenu.Portal>
           <DropdownMenu.SubContent>
-            <div className="p-2 text-sm">No Permission</div>
+            <div className="p-2 text-sm">{t({ en: 'No Permission', fr: 'Pas de permission' })}</div>
           </DropdownMenu.SubContent>
         </DropdownMenu.Portal>
       );
@@ -58,9 +58,15 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
       <DropdownMenu.Portal>
         <DropdownMenu.SubContent>
           <div className="space-y-1 p-2 text-sm">
-            <p className="font-medium">Type: {metadataObj.kind}</p>
-            <p>Null Count: {metadataObj.nullCount}</p>
-            <p>Count: {metadataObj.count}</p>
+            <p className="font-medium">
+              {t({ en: 'Type', fr: 'Type' })}: {metadataObj.kind}
+            </p>
+            <p>
+              {t({ en: 'Null Count', fr: 'Compte nul' })}: {metadataObj.nullCount}
+            </p>
+            <p>
+              {t({ en: 'Count', fr: 'Compte' })}: {metadataObj.count}
+            </p>
             {Object.keys(summary).length > 0 && (
               <>
                 <hr className="my-1.5" />
@@ -98,10 +104,10 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                           {!tabularDataset.isProject ? (
                             <>
                               <DropdownMenu.Label>
-                                {`Data Permission: ${tabularDataset.metadata[column]!.dataPermission}`}
+                                {`${t({ en: 'Data Permission', fr: 'Permission des données' })}: ${tabularDataset.metadata[column]!.dataPermission}`}
                               </DropdownMenu.Label>
                               <DropdownMenu.Label>
-                                {`Metadata Permission: ${tabularDataset.metadata[column]!.metadataPermission}`}
+                                {`${t({ en: 'Metadata Permission', fr: 'Permission des métadonnées' })}: ${tabularDataset.metadata[column]!.metadataPermission}`}
                               </DropdownMenu.Label>
                               <DropdownMenu.Separator />
                             </>
@@ -206,7 +212,7 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
                     )}
                     <DropdownMenu.Group>
                       <DropdownMenu.Sub>
-                        <DropdownMenu.SubTrigger>Metadata</DropdownMenu.SubTrigger>
+                        <DropdownMenu.SubTrigger>{t({ en: 'Metadata', fr: 'Métadonnées' })}</DropdownMenu.SubTrigger>
                         {getSummary(column)}
                       </DropdownMenu.Sub>
                     </DropdownMenu.Group>
@@ -221,7 +227,11 @@ export const DatasetTable = (tabularDataset: DatasetTableProps) => {
             <Table.Row key={i}>
               {tabularDataset.columns.map((currCol, j) => (
                 <Table.Cell className="whitespace-nowrap" key={j}>
-                  {typeof currRow[currCol] === 'boolean' ? (currRow[currCol] ? 'TRUE' : 'FALSE') : currRow[currCol]}
+                  {typeof currRow[currCol] === 'boolean'
+                    ? currRow[currCol]
+                      ? t({ en: 'TRUE', fr: 'VRAI' })
+                      : t({ en: 'FALSE', fr: 'FAUX' })
+                    : currRow[currCol]}
                 </Table.Cell>
               ))}
             </Table.Row>

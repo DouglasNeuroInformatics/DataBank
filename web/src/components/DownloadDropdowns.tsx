@@ -20,8 +20,8 @@ export const DownloadDropdowns = ({ onDataDownload, onMetadataDownload }: Downlo
           </Button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content align="end">
-          <DropdownMenu.Item onClick={() => onDataDownload('CSV')}>CSV</DropdownMenu.Item>
-          <DropdownMenu.Item onClick={() => onDataDownload('TSV')}>TSV</DropdownMenu.Item>
+          <DropdownMenu.Item onClick={() => onDataDownload('CSV')}>{t({ en: 'CSV', fr: 'CSV' })}</DropdownMenu.Item>
+          <DropdownMenu.Item onClick={() => onDataDownload('TSV')}>{t({ en: 'TSV', fr: 'TSV' })}</DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu>
       <DropdownMenu>
@@ -32,8 +32,8 @@ export const DownloadDropdowns = ({ onDataDownload, onMetadataDownload }: Downlo
           </Button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content align="end">
-          <DropdownMenu.Item onClick={() => onMetadataDownload('CSV')}>CSV</DropdownMenu.Item>
-          <DropdownMenu.Item onClick={() => onMetadataDownload('TSV')}>TSV</DropdownMenu.Item>
+          <DropdownMenu.Item onClick={() => onMetadataDownload('CSV')}>{t({ en: 'CSV', fr: 'CSV' })}</DropdownMenu.Item>
+          <DropdownMenu.Item onClick={() => onMetadataDownload('TSV')}>{t({ en: 'TSV', fr: 'TSV' })}</DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu>
     </div>

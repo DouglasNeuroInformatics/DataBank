@@ -57,7 +57,7 @@ const RouteComponent = () => {
           },
           expiry: { kind: 'date', label: t('projectExpiry') }
         }}
-        submitBtnLabel="Confirm"
+        submitBtnLabel={t({ en: 'Confirm', fr: 'Confirmer' })}
         validationSchema={$CreateProjectFormValidation}
         onSubmit={(data) => createProject(data)}
       />

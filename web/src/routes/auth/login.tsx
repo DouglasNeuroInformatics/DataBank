@@ -69,10 +69,10 @@ const DemoBanner = ({ onLogin }: { onLogin: (credentials: $LoginCredentials) => 
                   <Table.Cell className="p-3 px-2.5 text-xs sm:px-3.5 sm:text-sm">{user.lastName}</Table.Cell>
                   <Table.Cell className="p-3 px-2.5 text-xs sm:px-3.5 sm:text-sm">
                     {user.email === DEMO_USERS[0]!.email
-                      ? 'Dataset Manager'
+                      ? t({ en: 'Dataset Manager', fr: 'Gestionnaire de jeu de données' })
                       : user.verifiedAt
-                        ? 'Verified User'
-                        : 'Login User'}
+                        ? t({ en: 'Verified User', fr: 'Utilisateur vérifié' })
+                        : t({ en: 'Login User', fr: 'Utilisateur de connexion' })}
                   </Table.Cell>
                   <Table.Cell className="p-3 px-2.5 sm:px-3.5">
                     <Tooltip delayDuration={500}>

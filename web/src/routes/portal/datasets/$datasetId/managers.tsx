@@ -102,7 +102,10 @@ const RouteComponent = () => {
             })}
           </Card.Title>
           <Card.Description>
-            {managerIds.length} {managerIds.length === 1 ? 'manager' : 'managers'}
+            {managerIds.length}{' '}
+            {managerIds.length === 1
+              ? t({ en: 'manager', fr: 'gestionnaire' })
+              : t({ en: 'managers', fr: 'gestionnaires' })}
           </Card.Description>
         </Card.Header>
         <Separator />
