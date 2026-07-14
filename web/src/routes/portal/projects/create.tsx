@@ -40,7 +40,7 @@ const RouteComponent = () => {
 
   return (
     <PageContainer width="form">
-      <PageHeading>
+      <PageHeading centered>
         {t({
           en: 'Create New Project',
           fr: 'Créer un nouveau projet'

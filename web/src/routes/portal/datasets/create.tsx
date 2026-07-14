@@ -227,7 +227,7 @@ const RouteComponent = () => {
 
   return (
     <PageContainer width="form">
-      <PageHeading>{t('createDataset')}</PageHeading>
+      <PageHeading centered>{t('createDataset')}</PageHeading>
       {element}
     </PageContainer>
   );
