@@ -1,4 +1,4 @@
-import { $ProjectInfo } from '@databank/core';
+import { $ProjectInfo, formatISODate } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useNotificationsStore, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -29,7 +29,7 @@ const ProjectCard = ({ project }: { project: $ProjectInfo }) => {
           <dt className="font-medium">{t('projectExpiry')}</dt>
           <dd className="flex items-center gap-1">
             <CalendarIcon className="size-3" />
-            {new Date(project.expiry).toLocaleDateString()}
+            {formatISODate(new Date(project.expiry))}
           </dd>
         </dl>
       </Card.Content>

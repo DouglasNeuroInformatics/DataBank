@@ -1,4 +1,4 @@
-import { $DatasetInfo } from '@databank/core';
+import { $DatasetInfo, formatISODate } from '@databank/core';
 import { Badge, Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDestructiveAction, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -44,7 +44,7 @@ const DatasetCard = ({ dataset, isManager }: { dataset: $DatasetInfo; isManager:
           <dt className="font-medium">{t({ en: 'License', fr: 'Licence' })}</dt>
           <dd className="truncate">{dataset.license}</dd>
           <dt className="font-medium">{t({ en: 'Created', fr: 'Créé le' })}</dt>
-          <dd>{new Date(dataset.createdAt).toLocaleDateString()}</dd>
+          <dd>{formatISODate(new Date(dataset.createdAt))}</dd>
         </dl>
       </Card.Content>
       <Card.Footer className="mt-auto flex items-center justify-between gap-2 pt-3">

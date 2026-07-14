@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import { $DatasetViewPagination, licensesObjects } from '@databank/core';
+import { $DatasetViewPagination, formatISODate, licensesObjects } from '@databank/core';
 import { Badge, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute } from '@tanstack/react-router';
@@ -164,14 +164,14 @@ const RouteComponent = () => {
                   <CalendarIcon className="size-3.5" />
                   {t({ en: 'Created', fr: 'Créé' })}
                 </dt>
-                <dd className="text-sm font-medium">{new Date(dataset.createdAt).toLocaleDateString()}</dd>
+                <dd className="text-sm font-medium">{formatISODate(new Date(dataset.createdAt))}</dd>
               </div>
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground flex items-center gap-2 text-sm">
                   <ClockIcon className="size-3.5" />
                   {t({ en: 'Updated', fr: 'Mis à jour' })}
                 </dt>
-                <dd className="text-sm font-medium">{new Date(dataset.updatedAt).toLocaleDateString()}</dd>
+                <dd className="text-sm font-medium">{formatISODate(new Date(dataset.updatedAt))}</dd>
               </div>
             </dl>
           </Card.Content>
