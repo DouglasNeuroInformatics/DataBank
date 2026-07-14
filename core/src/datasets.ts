@@ -23,7 +23,12 @@ const $CreateDataset = z.object({
   license: $DatasetLicenses,
   name: z.string(),
   permission: $PermissionLevel,
-  primaryKeys: z.string().array().optional().default([])
+  // a multipart field that occurs exactly once is received as a string, rather than an array of length one
+  primaryKeys: z
+    .union([z.string(), z.string().array()])
+    .optional()
+    .default([])
+    .transform((primaryKeys) => (typeof primaryKeys === 'string' ? [primaryKeys] : primaryKeys))
 });
 type $CreateDataset = z.infer<typeof $CreateDataset>;
 
