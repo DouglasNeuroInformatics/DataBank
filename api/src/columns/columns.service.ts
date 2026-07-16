@@ -14,6 +14,14 @@ import type { Series } from 'nodejs-polars';
 
 import { getColumnDataArray } from './column-data.utils';
 
+/**
+ * Polars `pl.Date` series expose their values as integers counting days since
+ * the Unix epoch (1970-01-01). Multiplying by this constant converts a day
+ * count into the millisecond timestamp expected by `new Date(...)`. The
+ * resulting instant is interpreted in UTC.
+ */
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
 type ProjectColumnView = Pick<
   NonNullable<Awaited<ReturnType<Model<'TabularColumn'>['findUnique']>>>,
   | 'dataPermission'
@@ -589,8 +597,8 @@ export class ColumnsService {
         return {
           count: currSeries.len() - currSeries.nullCount(),
           datetimeSummary: {
-            max: new Date(currSeries.max() * 24 * 3600 * 1000),
-            min: new Date(currSeries.min() * 24 * 3600 * 1000)
+            max: new Date(currSeries.max() * MS_PER_DAY),
+            min: new Date(currSeries.min() * MS_PER_DAY)
           },
           nullCount: currSeries.nullCount()
         };

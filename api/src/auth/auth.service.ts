@@ -69,7 +69,7 @@ export class AuthService {
 
     // If there is an existing, non-expired code, use that since we record attempts for security
     let confirmEmailInfo: ConfirmEmailInfo;
-    if (user.confirmEmailInfo && user.confirmEmailInfo.expiryAt > new Date(Date.now())) {
+    if (user.confirmEmailInfo && user.confirmEmailInfo.expiryAt > new Date()) {
       confirmEmailInfo = user.confirmEmailInfo;
     } else {
       confirmEmailInfo = {
@@ -99,7 +99,7 @@ export class AuthService {
       throw new ForbiddenException('Validation code is undefined. Please request a validation code.');
     }
 
-    const isExpired = user.confirmEmailInfo.expiryAt < new Date(Date.now());
+    const isExpired = user.confirmEmailInfo.expiryAt < new Date();
     if (isExpired) {
       throw new ForbiddenException('Validation code is expired. Please request a new validation code.');
     }

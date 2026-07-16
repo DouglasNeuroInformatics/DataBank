@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 
-import { $DatasetViewPagination, licensesObjects } from '@databank/core';
+import { $DatasetViewPagination, formatISODate, licensesObjects } from '@databank/core';
 import type { $DatasetViewPagination as DatasetViewPaginationType } from '@databank/core';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDestructiveAction, useDownload, useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -161,11 +161,11 @@ const RouteComponent = () => {
           <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{t('createdAt')}</dt>
-              <dd className="mt-1.5 text-sm">{new Date(dataset.createdAt).toLocaleDateString()}</dd>
+              <dd className="mt-1.5 text-sm">{formatISODate(new Date(dataset.createdAt))}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{t('updatedAt')}</dt>
-              <dd className="mt-1.5 text-sm">{new Date(dataset.updatedAt).toLocaleDateString()}</dd>
+              <dd className="mt-1.5 text-sm">{formatISODate(new Date(dataset.updatedAt))}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">

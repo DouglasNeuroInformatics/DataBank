@@ -1,4 +1,4 @@
-import { licensesObjects } from '@databank/core';
+import { formatISODate, licensesObjects } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -73,7 +73,7 @@ const RouteComponent = () => {
                       </p>
                       <p>
                         <span className="font-semibold tracking-tight">{t({ en: 'Created: ', fr: 'Créé : ' })}</span>
-                        {new Date(dataset.createdAt).toLocaleDateString()}
+                        {formatISODate(new Date(dataset.createdAt))}
                       </p>
                     </div>
                   </div>

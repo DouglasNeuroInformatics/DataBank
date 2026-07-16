@@ -30,7 +30,7 @@ model User {
 
   role UserRole @default(STANDARD)
 
-  createdAt DateTime @default(now()) @db.Date
+  createdAt DateTime @default(now())
 
   confirmEmailInfo ConfirmEmailInfo?
 
@@ -58,8 +58,8 @@ model Dataset {
   id             String          @id @default(auto()) @map("_id") @db.ObjectId
   name           String
   description    String?
-  createdAt      DateTime        @default(now()) @db.Date
-  updatedAt      DateTime        @default(now()) @updatedAt @db.Date
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now()) @updatedAt
   license        String
   managers       User[]          @relation(fields: [managerIds], references: [id])
   managerIds     String[]        @db.ObjectId

@@ -1,4 +1,4 @@
-import { licensesObjects } from '@databank/core';
+import { formatISODate, licensesObjects } from '@databank/core';
 import type { $DatasetInfo } from '@databank/core';
 import { Button, Card } from '@douglasneuroinformatics/libui/components';
 import { useTranslation } from '@douglasneuroinformatics/libui/hooks';
@@ -36,7 +36,7 @@ const DatasetCard: React.FC<{ dataset: $DatasetInfo; index: number }> = ({ datas
               {dataset.license}
             </dd>
             <dt className="font-medium">{t({ en: 'Created', fr: 'Créé' })}</dt>
-            <dd>{new Date(dataset.createdAt).toLocaleDateString()}</dd>
+            <dd>{formatISODate(new Date(dataset.createdAt))}</dd>
           </dl>
         </Card.Content>
         <Card.Footer className="mt-auto pt-3">

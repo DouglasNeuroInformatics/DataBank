@@ -12,7 +12,8 @@ import {
   $ProjectDataset,
   $TabularColumnSummary,
   $TabularDataDownloadFormat,
-  $TabularDatasetView
+  $TabularDatasetView,
+  formatISODateTime
 } from '@databank/core';
 import type { $DatasetCardProps, $DatasetInfo, $TabularDataset } from '@databank/core';
 import type { Model } from '@douglasneuroinformatics/libnest';
@@ -776,8 +777,8 @@ export class DatasetsService {
             datasetMetadata.nullable,
             datasetMetadata.count,
             datasetMetadata.nullCount,
-            datasetMetadata.datetimeSummary.max,
-            datasetMetadata.datetimeSummary.min,
+            formatISODateTime(datasetMetadata.datetimeSummary.max),
+            formatISODateTime(datasetMetadata.datetimeSummary.min),
             '',
             '',
             '',

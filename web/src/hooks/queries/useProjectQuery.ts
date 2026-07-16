@@ -1,17 +1,18 @@
+import { parseISODate } from '@databank/core';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { z } from 'zod/v4';
 
 // TODO - this needs to be synced correctly with the backend
 const $Project = z.object({
-  createdAt: z.coerce.date(),
+  createdAt: z.union([z.iso.datetime(), z.iso.date()]).transform(parseISODate),
   datasets: z.array(z.any()),
   description: z.string().nullish(),
-  expiry: z.coerce.date(),
+  expiry: z.union([z.iso.datetime(), z.iso.date()]).transform(parseISODate),
   externalId: z.string().nullish(),
   id: z.string(),
   name: z.string(),
-  updatedAt: z.coerce.date(),
+  updatedAt: z.union([z.iso.datetime(), z.iso.date()]).transform(parseISODate),
   userIds: z.array(z.string())
 });
 

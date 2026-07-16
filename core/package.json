@@ -10,9 +10,13 @@
   "scripts": {
     "lint": "tsc && eslint --fix src"
   },
+  "devDependencies": {
+    "@types/luxon": "catalog:"
+  },
   "dependencies": {
     "@douglasneuroinformatics/libjs": "catalog:",
     "@douglasneuroinformatics/liblicense": "^1.0.0",
+    "luxon": "catalog:",
     "type-fest": "catalog:",
     "zod": "catalog:"
   }

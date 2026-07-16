@@ -1,4 +1,4 @@
-import { licensesObjects } from '@databank/core';
+import { formatISODate, licensesObjects } from '@databank/core';
 import { Button, Card, DropdownMenu } from '@douglasneuroinformatics/libui/components';
 import { useDestructiveAction, useTranslation } from '@douglasneuroinformatics/libui/hooks';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -109,11 +109,11 @@ const RouteComponent = () => {
           <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{t('createdAt')}</dt>
-              <dd className="mt-1.5 text-sm">{new Date(project.createdAt).toLocaleDateString()}</dd>
+              <dd className="mt-1.5 text-sm">{formatISODate(new Date(project.createdAt))}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{t('updatedAt')}</dt>
-              <dd className="mt-1.5 text-sm">{new Date(project.updatedAt).toLocaleDateString()}</dd>
+              <dd className="mt-1.5 text-sm">{formatISODate(new Date(project.updatedAt))}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
@@ -127,7 +127,7 @@ const RouteComponent = () => {
               </dt>
               <dd className="mt-1.5 flex items-center gap-1 text-sm">
                 <CalendarIcon className="text-muted-foreground size-3.5" />
-                {new Date(project.expiry).toLocaleDateString()}
+                {formatISODate(new Date(project.expiry))}
               </dd>
             </div>
           </dl>
@@ -181,7 +181,7 @@ const RouteComponent = () => {
                         <span className="font-semibold tracking-tight">
                           {t({ en: 'Updated: ', fr: 'Mis à jour : ' })}
                         </span>
-                        {new Date(dataset.updatedAt).toLocaleDateString()}
+                        {formatISODate(new Date(dataset.updatedAt))}
                       </p>
                     </div>
                   </div>
